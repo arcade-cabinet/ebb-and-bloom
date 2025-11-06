@@ -10,7 +10,7 @@ default:
 
 # Start development server (process-compose managed)
 dev:
-    process-compose up dev
+    process-compose up vite-dev
 
 # Start full development environment (dev server + tests + typecheck)
 dev-full:
