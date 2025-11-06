@@ -97,8 +97,9 @@ export class WorldCore {
   getTile(worldX, worldY) {
     const cx = Math.floor(worldX / this.CHUNK_SIZE);
     const cy = Math.floor(worldY / this.CHUNK_SIZE);
-    const tx = worldX % this.CHUNK_SIZE;
-    const ty = worldY % this.CHUNK_SIZE;
+    // Fix negative coordinate modulo - JS modulo returns negative for negative inputs
+    const tx = ((worldX % this.CHUNK_SIZE) + this.CHUNK_SIZE) % this.CHUNK_SIZE;
+    const ty = ((worldY % this.CHUNK_SIZE) + this.CHUNK_SIZE) % this.CHUNK_SIZE;
     
     const chunk = this.chunks.get(`${cx},${cy}`);
     if (!chunk || !chunk.tiles[ty]) return null;

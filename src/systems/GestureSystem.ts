@@ -243,9 +243,10 @@ export class EnhancedGestureController {
       clearTimeout(this.holdTimer);
     }
     
-    this.element.removeEventListener('touchstart', this.handleTouchStart.bind(this));
-    this.element.removeEventListener('touchmove', this.handleTouchMove.bind(this));
-    this.element.removeEventListener('touchend', this.handleTouchEnd.bind(this));
+    // Use stored bound references to properly remove listeners
+    this.element.removeEventListener('touchstart', this.boundHandleTouchStart);
+    this.element.removeEventListener('touchmove', this.boundHandleTouchMove);
+    this.element.removeEventListener('touchend', this.boundHandleTouchEnd);
   }
 }
 

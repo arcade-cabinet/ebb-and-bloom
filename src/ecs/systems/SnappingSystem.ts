@@ -5,8 +5,8 @@
 
 import { defineQuery } from 'bitecs';
 import type { IWorld } from 'bitecs';
-import { Position, Inventory } from '../ecs/components';
-import { Tile } from '../ecs/components';
+import { Position, Inventory } from '../components';
+import { Tile } from '../components';
 
 // Affinity bit flags (32-bit mask)
 export const AffinityFlags = {
