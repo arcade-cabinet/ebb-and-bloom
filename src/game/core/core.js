@@ -17,11 +17,12 @@ export class WorldCore {
     this.TILE_SIZE = 8; // 8x8 sprite tiles
     
     // Biome thresholds for meadow generation
+    // Noise values range from -1 to 1, normalized to 0-1
     this.BIOME_THRESHOLDS = {
-      water: -0.3,
-      grass: 0.2,
-      flower: 0.5,
-      ore: 0.7
+      water: 0.3,  // < 0.3 = water
+      grass: 0.5,  // 0.3-0.5 = grass
+      flower: 0.7, // 0.5-0.7 = flowers
+      ore: 0.85    // > 0.85 = ore deposits
     };
     
     // Chunks storage
@@ -63,16 +64,21 @@ export class WorldCore {
           0.5
         ) + 1) / 2;
         
-        // Determine tile type based on noise
-        let type = 'grass';
+        // Determine tile type based on noise (0-1 range)
+        // Lower values = water, higher = ore
+        let type = 'grass'; // default
+        
         if (noiseValue < this.BIOME_THRESHOLDS.water) {
           type = 'water';
-        } else if (noiseValue < this.BIOME_THRESHOLDS.grass) {
+        } else if (noiseValue >= this.BIOME_THRESHOLDS.water && noiseValue < this.BIOME_THRESHOLDS.grass) {
           type = 'grass';
-        } else if (noiseValue < this.BIOME_THRESHOLDS.flower) {
+        } else if (noiseValue >= this.BIOME_THRESHOLDS.grass && noiseValue < this.BIOME_THRESHOLDS.flower) {
           type = 'flower';
-        } else if (noiseValue > this.BIOME_THRESHOLDS.ore) {
+        } else if (noiseValue >= this.BIOME_THRESHOLDS.ore) {
           type = 'ore';
+        } else {
+          // Fallback for edge cases
+          type = 'grass';
         }
         
         chunk.tiles[ty][tx] = {

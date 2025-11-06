@@ -81,15 +81,17 @@ export class GameScene extends Phaser.Scene {
   }
 
   renderWorld() {
-    // Get visible tiles around player
+    // Get visible tiles around player (optimized viewport culling)
     const playerTilePos = this.player.getTilePosition(8);
+    const viewRadius = 60; // Tiles to render around player
+    
     const visibleTiles = this.worldCore.getVisibleTiles(
       playerTilePos.x,
       playerTilePos.y,
-      60
+      viewRadius
     );
     
-    // Clear existing sprites
+    // Clear existing sprites (reuse sprite pool in future optimization)
     this.tileSprites.forEach(sprite => sprite.destroy());
     this.tileSprites = [];
     
@@ -161,12 +163,15 @@ export class GameScene extends Phaser.Scene {
     }
     
     // Re-render world when player moves significantly (optimization)
+    // Only re-render when moved 25+ tiles to reduce draw calls
     if (!this.lastRenderPos) {
       this.lastRenderPos = { x: this.player.x, y: this.player.y };
     }
     const dx = Math.abs(this.player.x - this.lastRenderPos.x);
     const dy = Math.abs(this.player.y - this.lastRenderPos.y);
-    if (dx > 200 || dy > 200) {
+    const renderThreshold = 25 * 8; // 25 tiles * 8 pixels
+    
+    if (dx > renderThreshold || dy > renderThreshold) {
       this.renderWorld();
       this.lastRenderPos = { x: this.player.x, y: this.player.y };
     }
@@ -200,8 +205,9 @@ export class GameScene extends Phaser.Scene {
     const tile = this.worldCore.getTile(tilePos.x, tilePos.y);
     
     if (tile && (tile.type === 'ore' || tile.type === 'water')) {
-      // Auto-collect resources (simplified for POC)
-      if (Phaser.Math.Between(0, 60) === 0) {
+      // Auto-collect resources with better probability
+      // 5% chance per frame = ~3 times per second at 60FPS
+      if (Phaser.Math.Between(0, 20) === 0) {
         this.player.collectResource(tile.type);
       }
     }
