@@ -1,0 +1,422 @@
+// Snippet 1 - Context: #### Code Blueprint: Yuka + BitECS + Zustand Diff Add `Pack` schema: `{ leader: 'u32', loyalty: 'f32', size: 'u8', affMask: 'u32' }`. Query: `packQuery([Pack, Position])`. In `ecosystem.js` (updateCritters):
+
+// Pack assembly tick (every cycle)
+function updatePacks() {
+  // Yuka group query: Cluster critters <32px
+  const clusters = yukaFlockClusters(critterQuery(world)); // Custom: GroupBehavior output
+  clusters.forEach(cluster => {
+    if (cluster.length >= 3) {
+      const packId = bitecs.addEntity(world, [Pack, Position]);
+      Pack.leader[packId] = cluster[0]; // Strongest trait
+      Pack.size[packId] = cluster.length;
+      Pack.loyalty[packId] = 0.5 + (behavior.harmony * 0.2);
+      Pack.affMask[packId] = avgTraits(cluster); // Inherited mask
+      // Yuka: Assign group steering to pack
+      const group = new Yuka.GroupBehavior(cluster.map(c => critterVehicles[c]));
+      cluster.forEach(c => critterVehicles[c].steering.add(group));
+    }
+  });
+  // Interactions: Query rival packs, roll diplomacy
+  packQuery(world).forEach(pId => {
+    const rivals = getRivalPacks(pId); // Aff overlap <2
+    if (rivals.length && noise.noise2D(pId, Date.now()) > 0.7) {
+      triggerTurfWar(pId, rivals[0]); // Yuka pursue, resolve yield contest
+      Pack.loyalty[pId] -= 0.1;
+    }
+  });
+  useGame.setState({ packStates: serializePacks(world) }); // For UI
+}
+
+// Turf stub
+function triggerTurfWar(p1, p2) {
+  // Yuka duel: Pursue until separation >64px, winner = higher loyalty
+  const winner = Math.random() > 0.5 ? p1 : p2; // Bias traits
+  // Award snap to winner's aff
+}
+
+// ---
+
+// Snippet 2 - Context: #### Code Blueprint: ECS + Zustand + Yuka Diff Add to `Pack`: `status: 'questing' | 'scattered' | 'defected'`, `grudgeLevel: 'u8'`. In `ecosystem.js` (resolveQuest extension):
+
+function resolveQuest(packId, outcome = 'fail') {
+  const pack = getPack(packId);
+  if (outcome === 'fail') {
+    pack.size /= 2; // Scatter
+    pack.loyalty = Math.max(0, pack.loyalty - 0.2);
+    if (pack.loyalty < 0.3) {
+      const rivalId = spawnRivalPack(pack); // New ECS entity, genes | void
+      rival.yukaBehavior = new Yuka.AttackBehavior(playerPos); // Raid steer
+      useGame.setState({ packRegistry: [...get().packRegistry, rivalPackState(rivalId)] });
+    }
+    // Backlash: Twist whisper
+    if (pack.whisperTrait) {
+      playerAura.debuff = 'haunt'; // ECS on player
+      pollution += pack.size * 0.5; // Pulse
+    }
+    // World scar: Mutate target tile
+    const scarId = getTargetTile(pack.goal);
+    Biome.type[scarId] |= voidMask; // Affinity taint
+    snapCheck(scarId); // Corrupt chains
+  }
+  // Redemption stub: Spawn 1-3 shard entities
+  for (let i = 0; i < Math.min(3, pack.size / 4); i++) {
+    addEntity(Shard, randomNear(pack.pos));
+  }
+}
+
+// ---
+
+// Snippet 3 - Context: #### Code Blueprint: ECS + Zustand + Yuka Diff Add ECS: `Shard` component (`{genes: 'u32', grudge: 'u8', ritualType: 'u8' }`). `Ritual` archetype (`{siteId: 'u32', progress: 'f32', offerings: 'u32' }`). In `ecosystem.js` (ritual tick):
+
+function enactRitual(ritualId, type, offerings) {
+  const ritual = getRitual(ritualId);
+  ritual.offerings |= offerings; // Affinity bits
+  ritual.progress += 1 / cycles; // Tick
+  if (ritual.progress >= 1) {
+    const shards = queryShardsNear(ritual.siteId);
+    const roll = noise.noise2D(ritualId, behavior.harmony);
+    let success = roll > 0.4 + (type === 'whimsy' ? 0.2 : 0);
+    if (playerTraitMatch(shards[0])) success += 0.15;
+    if (success) {
+      const reformedPack = reformPack(shards); // Average genes, addEntity(Pack)
+      reformedPack.loyalty += 0.3;
+      useGame.setState({ packRegistry: [...get().packRegistry, packState(reformedPack)], evoPoints: get().evoPoints + shards.length * 1.5 });
+      pollution -= 5; // Harmony heal
+    } else {
+      // Fail: Shatter
+      shards.forEach(shard => {
+        if (Math.random() > 0.5) spawnMiniRival(shard); // Yuka wander-attack
+        else addPollutionBurst(ritual.siteId, 5);
+      });
+    }
+    removeEntity(ritualId); // End
+  }
+}
+
+// ---
+
+// Snippet 4 - Context: #### Code Blueprint: ECS + Zustand + Yuka Diff Add to `Pack`: `taint: 'u32'`, `tameProgress: 'f32'`. In `ecosystem.js` (taming tick, called from Ionic long-press):
+
+function startTaming(rivalId, phase = 'lure') {
+  const rival = getPack(rivalId);
+  rival.tameProgress = 0;
+  rival.status = 'taming';
+  // Phase logic
+  if (phase === 'lure') {
+    spawnBait(rival.goal, behavior.harmony > 0.6 ? lifeMask : metalMask);
+    rival.yukaBehavior = new Yuka.SeekBehavior(baitPos);
+  } else if (phase === 'trial') {
+    // Yuka duel: Add ArriveBehavior to clash zone
+    rival.yukaBehavior.steering.add(new Yuka.ArriveBehavior(playerAuraZone));
+  }
+  // Bond roll
+  setTimeout(() => resolveTaming(rivalId), cycleTime);
+}
+
+function resolveTaming(rivalId) {
+  const rival = getPack(rivalId);
+  const roll = noise.noise2D(rivalId, pollution);
+  const progress = rival.tameProgress + (roll * (behavior.harmony * 0.5 + 0.3)); // Skew
+  if (progress >= 1) {
+    // Rekin: Hybrid genes
+    rival.genes = (rival.genes & playerGenes) >> 1 | (rival.taint * 0.2); // Dilute
+    rival.status = 'allied';
+    rival.taint *= 0.8; // Cleanse
+    // Perk spawn: addEntity(UniqueSnap, perkType(rival.genes))
+    useGame.setState({ packRegistry: updateAllied(rival), evoPoints: get().evoPoints + calcPayoff(rival) });
+  } else {
+    // Backlash
+    rival.size *= 1.2;
+    if (roll < 0.2) infectNearbyPacks(rival.pos, 0.1); // Loyalty dip
+    pollution += rival.maturity * 2;
+  }
+  // Scar if entrenched
+  if (rival.grudgeLevel > 5) mutateScar(rival.territory);
+}
+
+// ---
+
+// Snippet 5 - Context: #### Code Blueprint: ECS + Zustand + Yuka Diff Add to `Pack`: `severanceScar: 'u32'` (affinity of leftover). In `ecosystem.js` (purge action, from Ionic swipe-down on rival):
+
+function initiatePurge(rivalId, riteSnap) {
+  const rival = getPack(rivalId);
+  if (!validRite(riteSnap, rival.taint)) return; // Cost check
+  spawnPurgeFront(rival.pos, playerTraits); // Temp entities
+  const front = getFront(); // Yuka group
+  front.yukaBehavior = new Yuka.WanderBehavior(rival.territory, 128); // Propagate
+  setTimeout(() => clashPurge(rivalId), clashTime);
+}
+
+function clashPurge(rivalId) {
+  const rival = getPack(rivalId);
+  const roll = noise.noise2D(rivalId + 'purge', behavior.conquest);
+  const success = roll > (0.3 + (behavior.harmony * 0.2)); // Skew
+  if (success) {
+    removeEntities(rival.packIds); // Erase
+    reclaimTerritory(rival.territory); // +Yields ECS
+    const scarId = addEntity(Scar, rival.pos);
+    Scar.affinity[scarId] = calcScarAff(behavior); // Heat/life etc.
+    snapCheck(scarId); // New chains
+    useGame.setState({ packRegistry: filterOut(rivalId), evoPoints: get().evoPoints + (rival.grudgeDebt * 1.5) });
+  } else if (roll > 0.1) {
+    // Rebound: 30% survive
+    rival.size *= 0.7;
+    rival.status = 'wraith';
+    rival.yukaBehavior = new Yuka.HideBehavior(playerPos); // Stealth raids
+    pollution += 5;
+    spawnRelicVoid(rival.pos);
+  } else {
+    // Amplification
+    rival.size *= 1.5;
+    infectPacks(nearbyPacks(rival.pos), 0.2); // Loyalty
+    pollution += rival.maturity * 3;
+    if (pollution > 70) mutateWorld(); // Shock
+    playerAura.debuff = 'reverb'; // Temp trait jam
+  }
+  // Haunt roll
+  if (roll < 0.1) playerTraits.taint |= voidBit; // Debuff
+}
+
+// ---
+
+// Snippet 6 - Context: #### Code Blueprint: ECS + Zustand + Yuka Diff Add ECS: `Shard` component (`{ aff: 'u32', taint: 'u8', fused: 'u8' }`). Query: `shardQuery = defineQuery([Position, Shard])`. In `ecosystem.js` (loot tick, post-purge/fail):
+
+function spawnVengeanceShard(pos, grudgeGenes) {
+  const id = addEntity(world, [Position, Shard]);
+  Position.x[id] = pos.x; Position.y[id] = pos.y;
+  Shard.aff[id] = grudgeGenes | wildBit; // Procedural
+  Shard.taint[id] = Math.floor(Math.random() * 100); // 0-99%
+  useGame.setState({ shardVault: [...get().shardVault, { id: id.toString(), aff: Shard.aff[id], taint: Shard.taint[id] }] });
+}
+
+function harvestShard(shardId) {
+  const shard = getShard(shardId);
+  const roll = noise.noise2D(shardId, playerTraits.aff);
+  if (roll > (0.2 + (shard.taint / 100))) { // Success skew
+    // Unfurl stub: If adj snap, fuse
+    const adj = getAdjacents(shard.pos);
+    if (adj.length) {
+      const newAff = Shard.aff[shardId] | adj[0].aff;
+      spawnSnap(newAff, shard.pos); // Chain start
+      pollution += shard.taint / 20; // Risk
+    }
+    removeEntity(shardId);
+    useGame.setState((state) => ({ shardVault: state.shardVault.filter(s => s.id !== shardId.toString()) }));
+  } else {
+    // Bleed
+    pollution += 5;
+    spawnWisp(shard.pos); // Mini-rival
+  }
+}
+
+function fuseShards(shardIds) {
+  if (shardIds.length < 3) return;
+  const avgAff = shardIds.reduce((sum, id) => sum + Shard.aff[id], 0) / shardIds.length;
+  const avgTaint = Math.min(100, shardIds.reduce((sum, id) => sum + Shard.taint[id], 0) / shardIds.length);
+  const relicId = addEntity(world, [Relic]); // New type
+  Relic.aff[relicId] = avgAff;
+  Relic.taint[relicId] = avgTaint * (behavior.conquest > 0.6 ? 1 : 0.5); // Skew
+  // Evo cost/payoff
+  useGame.setState({ evoPoints: get().evoPoints - 1 + (shardIds.length * 1.5) });
+  shardIds.forEach(id => removeEntity(id));
+}
+
+// ---
+
+// Snippet 7 - Context: #### Code Blueprint: ECS + Zustand + Yuka Diff Add to `Pack`: `huntProd: 'u32'` (aff tuned). In `ecosystem.js` (dispatch from Ionic):
+
+function dispatchShardHunt(packId, prodAff, goalType) {
+  const pack = getPack(packId);
+  pack.huntProd = prodAff;
+  pack.status = 'hunting';
+  // Yuka tune
+  const resonanceTarget = findNearestShard(prodAff); // Query shards
+  pack.yukaGroup.steering.add(new Yuka.SeekBehavior(resonanceTarget));
+  // Event sim loop
+  let eventCount = 0;
+  const interval = setInterval(() => {
+    if (eventCount++ > Math.random() * 4 + 2) { // Duration
+      clearInterval(interval);
+      resolveHunt(packId);
+    } else {
+      simHuntEvent(pack, goalType); // Ping/ambush etc.
+    }
+  }, cycleTime / 4);
+}
+
+function resolveHunt(packId) {
+  const pack = getPack(packId);
+  const roll = noise.noise2D(packId + 'hunt', behavior.conquest);
+  const haulSize = Math.floor(pack.size / 5 + roll * 3);
+  if (roll > 0.4) {
+    // Bounty
+    for (let i = 0; i < haulSize; i++) {
+      const shardAff = pack.huntProd | (noise.noise2D(i, packId) > 0.95 ? nexusBit : 0);
+      spawnVengeanceShard(randomScarNear(pack.pos), shardAff);
+    }
+    pack.loyalty += 0.1;
+    if (roll > 0.95) autoFuseNexus(haulSize > 3 ? haulSize : 3); // Relic
+  } else if (roll > 0.1) {
+    // Stir: Partial + fracture
+    spawnVengeanceShard(pack.pos, pack.huntProd);
+    fractureNearbyShards(pack.pos, 2); // Bleed
+    pollution += 8;
+    spawnWispSwarm(pack.pos);
+  } else {
+    // Lash
+    pack.size *= 0.8;
+    stirGlobalShards(3); // Risk rivals
+    if (pollution > 70) mutateWorld();
+  }
+  pack.status = 'idle';
+  useGame.setState({ packRegistry: updateRegistry(), shardVault: get().shardVault }); // Refresh
+}
+
+// ---
+
+// Snippet 8 - Context: #### Code Blueprint: ECS + Zustand + Yuka Diff Add ECS: `Nexus` component (`{ clutchAff: 'u32', catalyst: 'u32', foldType: 'u8' }`—0=flourish,1=fracture,2=shatter). In `ecosystem.js` (ritual from modal):
+
+function attuneNexusFusion(clutchIds, catalystTrait) {
+  const attuned = clutchIds.every(id => shardAffMatch(id, clutchIds[0])); // >70%
+  if (!attuned) return { error: 'Mismatch' };
+  const nexusId = addEntity(world, [Nexus]);
+  Nexus.clutchAff[nexusId] = averageAff(clutchIds); // Shared bits
+  Nexus.catalyst[nexusId] = catalystTrait;
+  // Yuka echo sim
+  const echoFlock = spawnEchoProxies(clutchIds.length); // Temp critters
+  echoFlock.yukaBehavior = new Yuka.FlockBehavior(nexusCorePos); // Converge
+  setTimeout(() => resolveFusion(nexusId), fusionCycle);
+}
+
+function resolveFusion(nexusId) {
+  const nexus = getNexus(nexusId);
+  const roll = noise.noise2D(nexusId, behavior.conquest);
+  const taintAvg = averageTaint(clutchIds);
+  let foldType = roll > (0.3 + (1 - taintAvg/100) * 0.4) ? 0 : (roll > 0.1 ? 1 : 2); // Skew
+  if (behavior.harmony > 0.6) foldType = Math.min(foldType, 1); // No full shatter
+  if (foldType === 0) {
+    // Flourish: Fold grid
+    expandChunk(nexus.pos, nexus.clutchAff, 20); // +Size with aff biomes
+    useGame.setState({ evoPoints: get().evoPoints + clutchSize * 2, shardVault: [] }); // Clear
+  } else if (foldType === 1) {
+    // Fracture: Mini
+    expandChunk(nexus.pos, nexus.clutchAff, 10);
+    pollution += 10;
+    warpRandomTile(nexus.pos); // Echo
+  } else {
+    // Shatter: Abyss
+    spawnAbyss(nexus.pos, 5); // Void chunk
+    pollution += 30;
+    if (pollution > 70) mutateWorld();
+    playerAura.debuff('fractured', 3); // Cycles
+    spawnAbyssNexus(nexus.pos); // Seed
+  }
+  // Clean clutch
+  clutchIds.forEach(id => removeEntity(id));
+  removeEntity(nexusId);
+}
+
+// ---
+
+// Snippet 9 - Context: #### Code Blueprint: ECS + Zustand + Yuka Diff Add ECS: `Abyss` component (`{ depth: 'u8', prog: 'f32', rigAff: 'u32' }`). Query: `abyssQuery = defineQuery([Position, Abyss])`. In `ecosystem.js` (rite from tab):
+
+function startAbyssReclaim(abyssId, rigType) {
+  const abyss = getAbyss(abyssId);
+  abyss.rigAff = rigType; // Life/bind etc.
+  abyss.prog = 0;
+  abyss.status = 'reclaiming';
+  // Yuka pioneers
+  const pioneerWave = spawnPioneerPack(abyss.pos); // Temp or loyal pack
+  pioneerWave.yukaBehavior = new Yuka.SeekBehavior(abyssRim); // Stitch edges
+  let phase = 1;
+  const interval = setInterval(() => {
+    if (phase === 1) { // Stitch
+      simStitchEvent(pioneerWave, abyss);
+      abyss.prog += 0.25 + (behavior.harmony * 0.1);
+    } else if (phase === 2) { // Surge
+      pioneerWave.yukaBehavior = new Yuka.FlockBehavior(abyssCore);
+      simSurgeEvent(pioneerWave);
+      abyss.prog += 0.35;
+    }
+    if (abyss.prog >= 1 || phase > 3) {
+      clearInterval(interval);
+      resolveReclaim(abyssId);
+    }
+    phase++;
+  }, cycleTime);
+}
+
+function resolveReclaim(abyssId) {
+  const abyss = getAbyss(abyssId);
+  const roll = noise.noise2D(abyssId + 'reclaim', behavior.conquest);
+  const depthMod = 1 - (abyss.depth / 5);
+  let outcome = roll > (0.35 - depthMod * 0.2) ? 'bloom' : (roll > 0.1 ? 'hunger' : 'swallow');
+  if (behavior.harmony > 0.6) outcome = outcome === 'swallow' ? 'hunger' : outcome;
+  if (outcome === 'bloom') {
+    // Reweave
+    flipBiomeChunk(abyss.pos, abyss.rigAff | voidBit * 0.15, abyss.size); // Hybrid
+    useGame.setState({ evoPoints: get().evoPoints + abyss.depth * 3, abyssFronts: filterOut(abyssId) });
+    spawnNexusEcho(abyss.pos); // Hunt ping
+  } else if (outcome === 'hunger') {
+    flipBiomeChunk(abyss.pos, abyss.rigAff | voidBit * 0.5, abyss.size / 2); // Partial
+    pollution += 15;
+    spawnFissureShard(abyss.pos);
+  } else {
+    // Swallow
+    expandAbyss(abyss.pos, 2);
+    pollution += 20;
+    if (pollution > 70) mutateWorld();
+    playerAura.debuff('echoed', 2);
+    spawnTideRelic(abyss.pos);
+  }
+  abyss.status = 'idle';
+}
+
+// ---
+
+// Snippet 10 - Context: #### Code Blueprint: ECS + Zustand + Yuka Diff Add ECS: `Guardian` component (`{ phase: 'u8', momentum: 'f32', echoAff: 'u32' }`). Query: `guardianQuery = defineQuery([Position, Guardian])`. In `ecosystem.js` (on rift attune):
+
+function spawnRiftGuardian(riftSeed, oldGrudge) {
+  const id = addEntity(world, [Position, Guardian]);
+  Position.x[id] = riftPos.x; Position.y[id] = riftPos.y;
+  Guardian.echoAff[id] = oldGrudge | noiseSeed(riftSeed); // Hybrid
+  Guardian.momentum[id] = 100;
+  Guardian.phase[id] = 1;
+  const guardianYuka = new Yuka.Vehicle(); // Core entity
+  guardianYuka.position.set(riftPos.x, riftPos.y, 0);
+  guardianYuka.steering.add(new Yuka.SeekBehavior(playerPos)); // Lunge phases
+  // Phase tick
+  setInterval(() => {
+    if (Guardian.momentum[id] <= 0) {
+      Guardian.phase[id]++;
+      if (Guardian.phase[id] > 5) resolveGuardian(id, 'win');
+    } else if (Guardian.momentum[id] > 200) resolveGuardian(id, 'loss');
+  }, phaseTime);
+}
+
+function gestureFold(gestureType, targetId) { // From touch
+  const guardian = getGuardian(targetId);
+  const resMod = traitResonance(playerTraits, Guardian.echoAff[targetId]);
+  let drain = 20 + resMod * 10; // Swipe/pinch etc.
+  if (gestureType === 'pinch') drain += 15; // Siphon extra
+  Guardian.momentum[targetId] -= drain;
+  if (gestureType === 'spread') { // Weave
+    if (behavior.harmony > 0.6) hybridBiome(riftPos, Guardian.echoAff[targetId]);
+  }
+  // Pack flank if dispatched
+  if (activePack) yukaFlank(activePack, guardianYuka);
+  hapticImpact(gestureType); // Capacitor buzz
+}
+
+function resolveGuardian(id, outcome) {
+  if (outcome === 'win') {
+    const relicClutch = generateBridgeRelic(Guardian.echoAff[id]);
+    useGame.setState({ shardVault: [...get().shardVault, ...relicClutch], hopBonus: 'guardianEcho' });
+    hopToNewWorld(); // Seamless
+  } else {
+    // Loss: Stranded
+    spawnLimboChunk(riftPos);
+    useGame.setState({ evoPoints: get().evoPoints * 0.7, packRegistry: scatterPacks(get().packRegistry) });
+  }
+  removeEntity(id);
+}

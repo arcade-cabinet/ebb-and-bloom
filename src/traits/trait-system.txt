@@ -1,0 +1,149 @@
+// Snippet 1 - Context: #### Code Blueprint: ECS + Zustand Diff Add to BitECS: `GeneTrait` component (`{ bits: 'u32', level: 'u8' }`—bitmask for affinities, level for dilution). In `ecosystem.js` (Yuka update):
+
+// Inheritance tick
+function inheritTraits() {
+  critterQuery(world).forEach(cId => {
+    if (yukaDist(cId, player) < auraRange) {
+      const playerGenes = Trait.genes[player]; // u32 mask
+      const roll = noise.noise2D(cId, Date.now() * 0.001);
+      if (roll > 0.8 - behavior.harmony * 0.1) { // Skewed chance
+        const newGene = bitecs.addComponent(world, GeneTrait, cId);
+        GeneTrait.bits[newGene] = playerGenes >> 1; // Dilute (shift bits)
+        GeneTrait.level[newGene] = Trait.level[player] / 2; // Int divide
+        // Yuka: Add "mimic" state (seek player more if harmony)
+      }
+    }
+  });
+  useGame.setState({ critterGenePool: updatePool(world) }); // Zustand sync
+}
+
+// ---
+
+// Snippet 2 - Context: Add to BitECS: `GeneTrait` component (`{ bits: 'u32', level: 'u8' }`—bitmask for affinities, level for dilution). In `ecosystem.js` (Yuka update): In Zustand `useGame`:
+
+// Getter
+const genePool = () => useGame((state) => state.critterGenePool);
+
+// Action
+const evolvePack = (packId: string) => {
+  // Average genes, spawn hybrids
+  set((state) => ({ /* new critters */ }));
+};
+
+// ---
+
+// Snippet 3 - Context: #### Code Blueprint: ECS + Zustand + Yuka Diff Add ECS: `Pack` component (`{ id: 'u32', maturity: 'u8', loyalty: 'f32' }`). Query: `packQuery = defineQuery([Position, GeneTrait, Pack])`. In `ecosystem.js` (quest tick):
+
+// Dispatch hook (from Ionic long-press)
+function dispatchQuest(packId, goal, whisperTrait) {
+  const pack = getPack(packId); // Zustand pull
+  pack.status = 'questing'; // ECS update
+  const yukaGoal = new Yuka.GoalBehavior(goalTarget(goal)); // Biome seek
+  if (whisperTrait) pack.genes |= whisperTrait.bits; // Temp lend
+  pack.yukaGroup.steering.add(yukaGoal);
+  // Event sim: setTimeout(resolveQuest, duration * 60000);
+}
+
+function resolveQuest(packId) {
+  const pack = getPack(packId);
+  const roll = noise.noise2D(packId, Date.now());
+  let outcome = roll > 0.4 ? 'success' : (roll > 0.1 ? 'partial' : 'fail');
+  if (behavior.conquest > 0.6) outcome = roll > 0.6 ? outcome : 'fail'; // Skew
+  // Haul spawn: if success, addEntity(Resource, haulType(outcome))
+  pack.loyalty += outcome === 'success' ? 0.1 : (outcome === 'fail' ? -0.2 : 0);
+  if (pack.loyalty < 0.3) spawnRivalPack(pack); // Defection
+  useGame.setState({ packRegistry: updateRegistry() });
+}
+
+// ---
+
+// Snippet 4 - Context: Add ECS: `Pack` component (`{ id: 'u32', maturity: 'u8', loyalty: 'f32' }`). Query: `packQuery = defineQuery([Position, GeneTrait, Pack])`. In `ecosystem.js` (quest tick): In Zustand `useGame`:
+
+// State add
+packRegistry: [{ id: string, size: number, genes: number, loyalty: number, status: 'idle' | 'questing' | 'defected' }[]],
+
+// Action
+dispatchQuest: (packId: string, goal: string, whisper?: string) => {
+  // Call ecosystem.js, set status
+  set((state) => ({ packRegistry: state.packRegistry.map(p => p.id === packId ? { ...p, status: 'questing' } : p) }));
+},
+
+// Getter
+activeQuests = () => useGame((state) => state.packRegistry.filter(p => p.status === 'questing'));
+
+// ---
+
+// Snippet 5 - Context: Based on the full conversation (parsed via sections, keywords, and mechanics), here's the unpacked value as nested MD/TS files for `/docs` and `/src`. This seeds the repo—vision as north star, mechanics as blueprint, dev as roadmap. Full convo's ~50K chars condensed to ~5K actionable; no fluff. Plop into GitHub, and it's bootstrap-ready. ### /docs/vision.md ### /docs/mechanics/traits.md
+
+# Trait Atlas
+
+10 core prototypes + hybrids (aff seeds: heat=cleave, flow=tide, etc.). Cost 1-3 Evo, dilute 50% on inheritance. Synergies ripple (flow + life = tidal nurture).
+
+## Core Traits
+1. **Flipper Feet (Flow, 1)**: +Swim, floods to life|flow snaps. Inheritance: Webbed pads (Yuka school tighter). Synergy: +Life = Bloom Tide (regrow floods).
+
+2. **Chainsaw Hands (Heat, 2)**: +Chop radius, metal snaps. Inheritance: Burr Claw (+raid yield, -loyalty). Synergy: +Metal = Scorch Forge (2x drill, 15% corrupt).
+
+3. **Whimsy Vine (Wild, 1)**: Cosmetic warps, +serenity. Inheritance: Giggle Sprout (pranks for loot). Synergy: +Void = Chaos Haunt (prank hauls).
+
+4. **Root Bind (Bind, 1)**: +Rig hold in abyss. Inheritance: Thorn Net (traps wisps). Synergy: +Life = Everroot (self-regrow).
+
+5. **Surge Coil (Power, 2)**: +Surge drain in clash. Inheritance: Spark Fur (stun flank). Synergy: +Heat = Thunder Cleave (AOE purge).
+
+6. **Nurture Bloom (Life, 1)**: +Loyalty imprint. Inheritance: Symbiote Petal (Evo gifts). Synergy: +Flow = Verdant Tide (heal pollution).
+
+7. **Forge Plate (Metal, 2)**: +Snap durability. Inheritance: Iron Hide (tank raids). Synergy: +Bind = Bulwark Weave (unbreakable rigs).
+
+8. **Haunt Whisper (Void, 3)**: +Taint siphon. Inheritance: Echo Shade (stealth quest). Synergy: +Wild = Abyss Prank (random haunts).
+
+9. **Twist Echo (Wild Echo, 2)**: Random aff twist on snaps. Inheritance: Fickle Kin (whimsy evos). Synergy: +Power = Chaos Surge (unpredictable boosts).
+
+10. **Tidal Scar (Flow Void, 3)**: +Abyss prog. Inheritance: Ink Fin (dive nexus). Synergy: +Life = Shadow Reef (hybrid blooms).
+
+## Hybrids (Noise-Rolled)
+11. **Burr Surge (Heat Power, 2)**: +AOE drain. Inheritance: Spark Burr (chain-stun). Synergy: +Void = Thunder Haunt (stun wisps).
+
+12. **Vine Haunt (Bind Void, 3)**: +Rig hold with bleed. Inheritance: Echo Thorn (stealth traps). Synergy: +Life = Wraith Grove (shadow regrow).
+
+13. **Forge Bloom (Metal Life, 2)**: +Self-regrow snaps. Inheritance: Iron Petal (tank gifts). Synergy: +Flow = Verdant Bulwark (tidal forges).
+
+14. **Twist Haunt (Wild Void, 3)**: Random warp siphon. Inheritance: Fickle Shade (prank hauls). Synergy: +Power = Abyss Whirl (unpredictable surges).
+
+15. **Tidal Forge (Flow Metal, 2)**: +Yield prog. Inheritance: Ink Plate (dive forges). Synergy: +Heat = Scorch Current (ink alloys).
+
+// ---
+
+// Snippet 6 - Context: ### /docs/vision.md ### /docs/mechanics/traits.md ### /docs/dev/stages.md
+
+# Dev Stages (8 Weeks MVP)
+
+1. **Core Seed (W1-2)**: 5x5 Perlin chunk world, touch stride (swipe/joystick catalyst). Basic snap (ore+water=alloy, haptic/pollution). POC: 10min meadow frolic, 60FPS APK.
+
+2. **Catalyst Touch (W2-3)**: Evo creator (drag pixel parts, 10 points). Terraform gestures (swipe carve, pinch infuse trait). Aura proximity inheritance. POC: Build & scar chunk.
+
+3. **Ecosystem Kin (W3-4)**: Spawn 3 packs (Yuka flocks). Inheritance tick (20% roll). Simple quest (dispatch scar probe). Nova tease (10min reset). POC: 15min loop with ripple.
+
+4. **Grudge Ache (W4-6)**: Resonance clash (swipe drain, pinch siphon). Abyss rite (stitch/surge/bloom). Grudge rivals (purge/tame). Haptic/gyro polish. POC: 20min siege & reclaim.
+
+5. **Stardust Breath (W6-7)**: Scar gate rite (nexus pinch-fold). Hop bop (chunk unload/load, carry scar). Constellation map. POC: 30min arc with 2 siblings.
+
+6. **Nova Elegy (W7-8)**: Full cycle (45min reset, journal persist). Shader suite (FXAA haze). Mobile bloom (haptic gestures, expo tests). POC: 1hr loop, APK ship.
+
+## Guardrails
+- Diversity: 50% noise-roll new affs/cycle; similarity <0.2 (Jaro-Winkler for haikus).
+- Vibe Probes: Weekly betas (linger rate 70%).
+
+// ---
+
+// Snippet 7 - Context: ### /docs/mechanics/traits.md ### /docs/dev/stages.md ### /src/hooks/useEvoMorph.ts
+
+export const useEvoMorph = (trait: string, progress: number) => {
+  // POC: Morph state for trait unfurl (0-1 progress)
+  const intensity = progress > 0.5 ? 0.5 : 0.2; // Haptic/audio sync
+  const warp = progress * 0.05; // Shader UV distort
+
+  // Morph to hybrid (e.g., flipper to tidal scar)
+  const hybridAff = trait === 'flipper' ? 'flow_void' : 'heat_power'; // Atlas seed
+
+  return { intensity, warp, hybridAff };
+};

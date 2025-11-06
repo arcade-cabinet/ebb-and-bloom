@@ -1,50 +1,53 @@
-# Product Context
+# Enhanced Product Context
 
-## Why This Exists
-Ebb & Bloom addresses the desire for mobile games that offer:
-- **Meaningful progression** without predatory monetization
-- **Intimate exploration** vs endless procedural sprawl
-- **Emergent narratives** through player actions and evolution systems
-- **Touch-native gameplay** designed for mobile, not ported
+## What Makes This Special
 
-## Problems It Solves
-1. **Mobile game fatigue**: Repetitive grind loops and pay-to-win mechanics
-2. **Shallow procedural generation**: Infinite worlds without depth or consequence
-3. **Disconnected gameplay**: No sense of world impact or evolutionary legacy
-4. **Poor mobile UX**: Desktop games awkwardly ported to touch controls
+### The "Ache" Philosophy
+This game is built around emotional resonance, not mechanical optimization. Every design decision serves the feeling of:
+- **Intimate connection** to a single world that remembers you
+- **Tidal rhythm** of growth and decay
+- **Evolutionary legacy** through trait inheritance
+- **Tactile poetry** via touch gestures and haptic feedback
 
-## How It Works
-### Core Loop (Stage 1)
-1. **Stride & Explore**: Swipe to move catalyst through procedurally generated meadow chunks
-2. **Gather Resources**: Tap to collect ore, water, and other materials
-3. **Craft & Build**: Gesture-based crafting (drag ore + water = alloy)
-4. **Leave Scars**: Your actions create persistent pollution/changes in the world
-5. **Evolve**: Proximity-based trait inheritance system (future stages)
+### Why Mobile-Only
+Not a port - designed from scratch for touch:
+- Gestures are the primary language (swipe, pinch, long-press)
+- Haptic feedback creates physical connection to world
+- Portrait orientation for one-handed play
+- 60FPS performance target on mid-range Android
 
-### User Experience Goals
-- **First 30 seconds**: Smooth onboarding, immediately start exploring
-- **First 5 minutes**: Collect first resource, craft first item
-- **First 10 minutes**: Explore multiple chunks, see world variety
-- **First 30 minutes**: Understand crafting combos, see world scarring effects
+### Core Innovation: Magnetic Resource Snapping
+Unlike traditional crafting menus, resources "snap" together based on proximity and affinity. Ore + Water = Alloy happens naturally when you place them adjacent. Scales infinitely through procedural permutations.
 
-### Key Differentiators
-- **One persistent world** vs infinite random worlds
-- **Modular creature system** with visual trait inheritance
-- **Gesture-driven interactions** built for touch
-- **Haptic feedback integration** for tactile game feel
-- **Deterministic world gen** (same seed = same world)
+### Trait Inheritance System
+Your creature's traits don't just affect you - they influence the ecosystem:
+- Proximity-based inheritance (creatures near you evolve similar traits)
+- Dilution mechanics (traits weaken by 50% each generation)
+- Hybrid emergence (flow + void = tidal scar)
+- Behavioral mirroring (your playstyle shapes creature AI)
 
 ## Target Experience
-Players should feel:
-- **Curious**: What's in the next chunk?
-- **Impactful**: My actions matter to this world
-- **Creative**: Experimenting with crafting combinations
-- **Connected**: Building relationship with catalyst and creatures
-- **Contemplative**: Tidal rhythms and evolutionary ache
 
-## Not This
-- Endless runner or idle game
-- Gacha/loot box mechanics
-- PvP or competitive multiplayer
-- Desktop-first design
-- Purely survival/combat focused
+### First 10 Minutes
+- Create modular pixel creature with trait allocation
+- Stride through procedurally generated meadow
+- Discover first resource snap (ore + water = alloy)
+- Feel haptic feedback and see pollution increase
+- Watch world react to your actions
+
+### First Hour
+- Unlock multiple trait combinations
+- Build first creature pack via proximity inheritance
+- Experience minor pollution shock (world mutation)
+- Complete first resource chain (wood → tool → advanced snap)
+- See haiku journal capture your story
+
+### Long-term Engagement
+- 45-minute nova cycles reset world but persist journal
+- Rare stardust travel to sibling worlds (5-10 variants)
+- Deep trait exploration (25 total traits with synergies)
+- Emergent narratives from ecosystem evolution
+- Community seed sharing (deterministic world gen)
+
+---
+Extracted from 48,000-word comprehensive design session
