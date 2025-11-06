@@ -91,7 +91,7 @@ Sprite: { textureKey: ui32 }
 #### Trait Components (10 total)
 ```typescript
 FlipperFeet: { level: ui8 }        // Water speed, flow affinity
-ChainshawHands: { level: ui8 }     // Wood harvest, scares critters
+ChainsawHands: { level: ui8 }     // Wood harvest, scares critters
 DrillArms: { level: ui8 }          // Ore mining, reveals veins
 WingGliders: { level: ui8 }        // Glide distance, aerial view
 EchoSonar: { level: ui8 }          // Resource ping radius

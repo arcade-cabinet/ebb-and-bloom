@@ -83,7 +83,7 @@ function update(delta) {
 - **Sprite**: `{ textureKey: ui32 }`
 - **Pack**: `{ leaderId: ui32, loyalty: f32, size: ui8, affMask: ui32, packType: ui8 }`
 - **Critter**: `{ species: ui8, packId: ui32, role: ui8, inheritedTrait: ui8, needState: ui8 }`
-- **10 Trait Components**: FlipperFeet, ChainshawHands, DrillArms, etc.
+- **10 Trait Components**: FlipperFeet, ChainsawHands, DrillArms, etc.
 
 ### Systems (Fully Implemented) ✅
 1. **MovementSystem** - Applies velocity to position with friction

@@ -31,7 +31,7 @@
 ### Fully Implemented (Stage 1 Complete)
 
 #### ECS Architecture (BitECS)
-- **10 Trait Components**: FlipperFeet, ChainshawHands, DrillArms, WingGliders, EchoSonar, BioLumGlow, StorageSacs, FiltrationGills, ShieldCarapace, ToxinSpines
+- **10 Trait Components**: FlipperFeet, ChainsawHands, DrillArms, WingGliders, EchoSonar, BioLumGlow, StorageSacs, FiltrationGills, ShieldCarapace, ToxinSpines
 - **Synergy Calculator**: Burr-tide, Vein Hunter, Purity Beacon
 - **Movement System**: Velocity-based with friction
 - **Crafting System**: Recipe matching and resource checks

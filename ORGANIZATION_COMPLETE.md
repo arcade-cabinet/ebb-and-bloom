@@ -190,19 +190,24 @@ Successfully reorganized 60+ sprawling documentation files, updated all memory b
 
 ## Files Modified/Created
 
-### Created (12 new files)
+### Created (17 new files)
 1. `/docs/VISION.md`
 2. `/docs/ARCHITECTURE.md`
 3. `/docs/DEVELOPMENT.md`
-4. `/memory-bank/PROGRESS_ASSESSMENT.md`
-5. `/src/ecs/README.md`
-6. `/src/systems/README.md`
-7. `/src/game/README.md`
-8. `/src/stores/README.md`
-9. `/src/test/README.md`
-10. `/memory-bank/archive/` (directory + 70+ archived files)
-11. `/memory-bank/reference/` (directory + 14+ reference files)
-12. This summary document
+4. `/docs/SPLASH_SCREENS.md`
+5. `/docs/ASSET_PLACEMENT.md`
+6. `/docs/CODE_QUALITY_STANDARDS.md`
+7. `/memory-bank/PROGRESS_ASSESSMENT.md`
+8. `/src/ecs/README.md`
+9. `/src/systems/README.md`
+10. `/src/game/README.md`
+11. `/src/stores/README.md`
+12. `/src/test/README.md`
+13. `/public/splash/README.md`
+14. `/public/intro/README.md`
+15. `/memory-bank/archive/` (directory with 70+ archived files)
+16. `/memory-bank/reference/` (directory with 14+ reference docs)
+17. `ORGANIZATION_COMPLETE.md` (this summary document)
 
 ### Updated (6 files)
 1. `/memory-bank/productContext.md` (complete rewrite)

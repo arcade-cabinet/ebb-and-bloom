@@ -29,7 +29,7 @@
 
 **1. 02-traits.md (resolved)** - Trait System ✅
 - **Implemented**: 10 traits with synergy calculator
-  - Locomotion: FlipperFeet, ChainshawHands, DrillArms, WingGliders
+  - Locomotion: FlipperFeet, ChainsawHands, DrillArms, WingGliders
   - Sensory: EchoSonar, BioLumGlow
   - Utility: StorageSacs, FiltrationGills
   - Combat: ShieldCarapace, ToxinSpines
