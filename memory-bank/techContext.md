@@ -13,10 +13,11 @@
 - **Vue 3.5.13**: Composition API, reactive state
 
 ### Game Engine & Architecture
-- **Phaser 3.87.0**: 2D rendering engine (WebGL)
+- **Phaser 3.87.0**: 2D rendering engine (WebGL) - INTERIM, will migrate to raycast 3D
 - **BitECS 0.3.40**: High-performance Entity-Component-System
 - **Yuka 0.7.8**: AI steering behaviors (prepared for Stage 2)
 - **Zustand 5.0.2**: Lightweight state management
+- **Raycast Engine**: Target vision (custom or raycast.js ~5KB) - Stage 3+
 
 ### Build & Dev Tools
 - **Vite 6.0.3**: Fast dev server with HMR
@@ -35,7 +36,8 @@
 │  ┌───────────────────────────────────┐  │
 │  │       Ionic Vue (UI Layer)        │  │
 │  │  ┌─────────────────────────────┐  │  │
-│  │  │   Phaser (Rendering Only)   │  │  │
+│  │  │   Raycast 3D (Rendering)    │  │  │
+│  │  │   (Phaser 2D - Interim)     │  │  │
 │  │  │                             │  │  │
 │  │  │  Reads from ECS ──┐         │  │  │
 │  │  └────────────────────┼─────────┘  │  │
@@ -72,7 +74,7 @@
 ### Data Flow Principles
 
 1. **ECS as Source of Truth**: All game state lives in BitECS
-2. **Phaser Reads Only**: Rendering layer never modifies game state
+2. **Raycast/Phaser Reads Only**: Rendering layer never modifies game state (Phaser interim, Raycast target)
 3. **Zustand for UI**: Syncs ECS state to Vue components (one-way)
 4. **Systems Modify State**: Only ECS systems can change components
 
@@ -240,7 +242,9 @@ interface GameState {
 
 **Critical Rule**: Zustand NEVER writes to ECS. ECS systems write to components, then sync to Zustand for UI display.
 
-### Phaser Integration (`src/game/GameScene.ts`)
+### Rendering Integration (`src/game/GameScene.ts`)
+**Current**: Phaser 3 (2D tile-based) - interim foundation  
+**Target**: Raycast 3D engine (Stage 3+)
 
 ```typescript
 class GameScene extends Phaser.Scene {
@@ -453,16 +457,23 @@ Java 17 (Zulu)      # For Gradle builds
 ## Future Technical Considerations
 
 ### Stage 2+ (Planned)
+- **Combat System**: Wisp clashes, momentum-based gestures
 - **Shaders**: GLSL for visual effects (pollution haze, water flow)
-- **Web Audio**: Procedural audio synthesis (ambient soundscapes)
-- **Service Workers**: Offline persistence, background processing
 
-### Stage 3+ (Future)
+### Stage 3+ (Raycast 3D Migration - COMMITTED)
+- **Raycast Engine**: Custom or raycast.js (~5KB)
+- **Heightmap Generation**: Perlin noise for ebb/bloom ridges
+- **Gesture Controls**: Swipe-turn, pinch-zoom, tap-stride
+- **Visual Style**: Pseudo-3D slice rendering
+- **Performance Validation**: 60 FPS on mid-range Android
+
+### Stage 4+ (Future)
+- **Web Audio**: Procedural audio synthesis (ambient soundscapes)
 - **WebGL2**: Advanced rendering (particle systems, lighting)
 - **WebAssembly**: Performance-critical world gen (if needed)
 - **Cloud Sync**: Optional cross-device saves
 
-### Stage 4+ (Stretch Goals)
+### Stage 5+ (Stretch Goals)
 - **Real-time Multiplayer**: WebRTC for co-op
 - **Shader Graphs**: Visual effects system
 - **VR Support**: Oculus Quest port
@@ -475,11 +486,19 @@ Java 17 (Zulu)      # For Gradle builds
 - Proper separation of data and logic
 - Future-proof for complex gameplay
 
-### Why Phaser as Rendering Layer?
+### Why Phaser as Rendering Layer? (Interim)
 - Mature 2D engine with excellent WebGL renderer
 - Large community and resources
 - Good mobile performance
 - Easy to keep separate from game logic
+- **Note**: Interim foundation for raycast 3D migration (Stage 3+)
+
+### Why Raycast 3D? (Target Vision - COMMITTED)
+- Efficient (seed-driven, no asset bloat)
+- Feels vast without VRAM suck
+- Mobile-friendly (~100 rays per frame, 60FPS target)
+- DOS-era aesthetic (matches vision)
+- Procedural (seed ties to evo history)
 
 ### Why Zustand over Redux/Vuex?
 - Lightweight (< 1KB)
@@ -497,4 +516,4 @@ Java 17 (Zulu)      # For Gradle builds
 
 **Last Updated**: 2025-11-06
 **Architecture Version**: Stage 1 Complete (ECS + Systems)
-**Next**: Stage 2 (Combat, Rituals, Nova Cycles)
+**Next**: Stage 2 (Combat, Content Expansion, UX Polish)

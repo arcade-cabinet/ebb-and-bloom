@@ -1,21 +1,23 @@
 # Architecture - Ebb & Bloom
 
-**Version**: 1.0.0  
-**Date**: 2025-11-06  
-**Stage**: Stage 1 Complete
+**Version**: 2.0.0  
+**Date**: 2025-01-XX  
+**Status**: Frozen - Raycast 3D Architecture Committed
+
+---
 
 ## System Architecture Overview
 
-Ebb & Bloom uses a clean Entity-Component-System (ECS) architecture with BitECS, where game logic is completely separated from rendering (Phaser) and UI state (Zustand).
+Ebb & Bloom uses a clean Entity-Component-System (ECS) architecture with BitECS, where game logic is completely separated from rendering (Raycast 3D) and UI state (Zustand).
 
 ```
-┌───────────────────────────────────────┐
-│    Capacitor (Native Mobile APIs)     │
-├───────────────────────────────────────┤
-│           Ionic Vue (UI Layer)        │
-│  ┌─────────────────────────────────┐  │
-│  │    Phaser (Rendering ONLY)      │  │
-│  │      Reads from ECS  ←──┐       │  │
+┌─────────────────────────────────────────┐
+│          Capacitor (Native Mobile)      │
+├─────────────────────────────────────────┤
+│           Ionic Vue (UI Layer)          │
+│  ┌───────────────────────────────────┐  │
+│  │   Raycast 3D (Rendering ONLY)    │  │
+│  │      Reads from ECS  ←──┐         │  │
 │  └──────────────────────────┼───────┘  │
 │                             │          │
 │  ┌──────────────────────────▼───────┐  │
@@ -29,88 +31,228 @@ Ebb & Bloom uses a clean Entity-Component-System (ECS) architecture with BitECS,
 │  │  Zustand (UI State - Read Only) │  │
 │  │   Syncs FROM ECS for display    │  │
 │  └──────────────────────────────────┘  │
-└───────────────────────────────────────┘
+└─────────────────────────────────────────┘
 ```
 
 ### Core Principle: ECS as Single Source of Truth
 
-**Rule**: All game state lives in BitECS components. Systems modify components. Phaser and Zustand only READ, never WRITE.
+**Rule**: All game state lives in BitECS components. Systems modify components. Raycast renderer and Zustand only READ, never WRITE.
 
 ---
 
-## Implementation Details
+## Rendering Architecture: Raycasted 3D
 
-See [techContext.md](/memory-bank/techContext.md) for complete technical details including:
-- All ECS components and their structures
-- All system implementations
-- Performance optimizations
-- CI/CD pipeline
-- Testing infrastructure
+### Vision: Raycast Engine
+- **Approach**: Wolfenstein-style raycasting with modern smoothing
+- **Why**: Efficient, seed-driven, feels vast without VRAM suck
+- **Mobile-Friendly**: ~100 rays per frame (60FPS target)
+- **Aesthetic**: DOS-era inspired, modern-smoothed
 
-See [PROGRESS_ASSESSMENT.md](/memory-bank/PROGRESS_ASSESSMENT.md) for:
-- Implementation status by design doc
-- System completion percentages
-- Missing features (Stage 2+)
-- Quality assessments
+### Current State (Interim)
+- **Implementation**: 2D tile-based (Phaser 3)
+- **Status**: Foundation for raycast migration
+- **Timeline**: Stage 2+ (after performance validation)
 
----
+### Target Implementation
+- **Engine**: Custom raycast or raycast.js library (~5KB)
+- **Heightmaps**: Perlin noise for ebb valleys + bloom ridges
+- **Controls**: Gesture-based (swipe-turn, pinch-zoom, tap-stride)
+- **Visual Style**: Pseudo-3D slice rendering
+  - Color gradients: Indigo ebb (close) → Emerald bloom (far)
+  - Void haze overlay (20% darken when void affinity high)
+  - Particle effects: Blue wisps (flow), red sparks (heat)
 
-## Package Structure
-
+### Data Flow
 ```
-src/
-├── ecs/                    # Entity-Component-System (BitECS)
-│   ├── components/         # Data containers
-│   │   ├── index.ts        # Core: Position, Velocity, Inventory
-│   │   └── traits.ts       # 10 trait components + synergies
-│   ├── systems/            # Game logic
-│   │   ├── MovementSystem.ts
-│   │   ├── CraftingSystem.ts
-│   │   ├── SnappingSystem.ts
-│   │   ├── PackSystem.ts
-│   │   ├── PollutionSystem.ts
-│   │   └── BehaviorSystem.ts
-│   ├── entities/           # Entity factories
-│   │   └── index.ts        # createPlayer, createCritter
-│   └── world.ts            # ECS world management
-│
-├── game/                   # Phaser rendering layer
-│   ├── core/               # World generation
-│   │   ├── perlin.ts       # Perlin noise generator
-│   │   └── core.ts         # WorldCore (chunk management)
-│   ├── player/             # (deprecated - migrated to ECS)
-│   └── GameScene.ts        # Main game loop
-│
-├── systems/                # Cross-cutting systems
-│   ├── HaikuScorer.ts      # Narrative diversity guard
-│   ├── HapticSystem.ts     # Touch feedback
-│   └── GestureSystem.ts    # Touch input
-│
-├── stores/                 # Zustand state management
-│   └── gameStore.ts        # UI state (synced from ECS)
-│
-├── views/                  # Vue UI overlays
-│   ├── Home.vue
-│   ├── Creator.vue         # (placeholder)
-│   ├── Log.vue
-│   └── Tabs.vue
-│
-├── router/                 # Vue Router
-│   └── index.ts
-│
-└── test/                   # Vitest test suites
-    ├── components.test.ts
-    ├── movement.test.ts
-    ├── crafting.test.ts
-    ├── haiku.test.ts
-    ├── snapping.test.ts
-    ├── pollution-behavior.test.ts
-    └── pack.test.ts
+User Input → Systems (modify ECS) → Zustand (read) → UI Display
+                                   → Raycast (read) → Rendering
 ```
 
+**NEVER**: UI or Raycast modifying ECS directly
+
 ---
 
-## Design Decisions
+## System Decomposition
+
+### Rendering Layer
+- **Vision**: Raycasted 3D (Wolfenstein-style)
+- **Current**: Phaser 3 (2D tile-based) - interim
+- **Responsibility**: Visual representation only (READ-ONLY from ECS)
+- **Key Constraint**: 60 FPS on mid-range Android
+
+### World Generation
+- **Approach**: Perlin noise, chunk-based, deterministic seeds
+- **Current**: 64x64 grid, 3 biomes, tile-based
+- **Vision**: Raycasted heightmaps, infinite generation, streaming
+- **Key Constraint**: <3s load time, <2s world gen
+
+### Simulation/Ecology
+- **Approach**: BitECS (Entity-Component-System)
+- **Systems**: Movement, Crafting, Snapping, Pack, Pollution, Behavior
+- **AI**: YukaJS (steering behaviors, FSM)
+- **Key Constraint**: <5ms per frame for ECS systems
+
+### Crafting System
+- **Approach**: Affinity-based magnetic snapping
+- **Current**: Basic snapping (ore + water = alloy)
+- **Vision**: Infinite permutations, demand-responsive scaling
+- **Key Constraint**: 10-deep chain cap, batch queries
+
+### Persistence/Saves
+- **Approach**: IndexedDB (web) / Capacitor Filesystem (native)
+- **Current**: Basic save/load
+- **Vision**: Cross-world persistence, journal persistence
+- **Key Constraint**: Async saves, <100ms save time
+
+### Content Pipelines
+- **Approach**: Procedural generation (no hand-authored content)
+- **Current**: Basic world gen, critter spawning
+- **Vision**: Emergent villages and quests
+- **Key Constraint**: Infinite variety, no repetition
+
+### Platform/Engine Wrapper
+- **Current**: Vue/Capacitor/Ionic
+- **Vision**: Mobile-first, web fallback
+- **Key Constraint**: APK <15MB, 60 FPS mobile
+
+---
+
+## ECS Architecture (BitECS)
+
+### Components (`src/ecs/components/`)
+
+#### Core Components
+```typescript
+Position: { x: f32, y: f32 }
+Velocity: { x: f32, y: f32 }
+Inventory: { ore: ui16, water: ui16, alloy: ui16, ... }
+Sprite: { textureKey: ui32 }
+```
+
+#### Trait Components (10 total)
+```typescript
+FlipperFeet: { level: ui8 }        // Water speed, flow affinity
+ChainsawHands: { level: ui8 }     // Wood harvest, scares critters
+DrillArms: { level: ui8 }          // Ore mining, reveals veins
+WingGliders: { level: ui8 }        // Glide distance, aerial view
+EchoSonar: { level: ui8 }          // Resource ping radius
+BioLumGlow: { level: ui8 }         // Night vision, attracts critters
+StorageSacs: { level: ui8 }        // Inventory capacity
+FiltrationGills: { level: ui8 }    // Pollution resistance
+ShieldCarapace: { level: ui8 }     // Damage reduction
+ToxinSpines: { level: ui8 }         // Counter-attack
+```
+
+#### Social Components
+```typescript
+Pack: {
+  leaderId: ui32,      // Entity ID of leader
+  loyalty: f32,        // 0-1 loyalty to player
+  size: ui8,           // Number of members
+  affMask: ui32,       // Inherited affinity traits
+  packType: ui8        // neutral/ally/rival
+}
+
+Critter: {
+  species: ui8,        // fish/squirrel/bird/beaver
+  packId: ui32,        // Pack entity ID (0 if solo)
+  role: ui8,           // leader/specialist/follower
+  inheritedTrait: ui8, // Diluted trait from player
+  needState: ui8       // idle/foraging/fleeing
+}
+```
+
+### Systems (`src/ecs/systems/`)
+
+#### MovementSystem
+- Applies velocity to position
+- Handles friction and deceleration
+- Delta-time based updates
+- Query: `[Position, Velocity]`
+
+#### CraftingSystem
+- Recipe matching engine
+- Resource validation
+- Inventory updates
+- Pollution tracking
+- Query: `[Inventory]`
+
+#### SnappingSystem
+- Affinity-based resource combinatorics
+- 8-bit flag matching (HEAT, FLOW, BIND, POWER, LIFE, METAL, VOID, WILD)
+- Procedural haiku generation for snaps
+- Query: `[Position, Inventory]`
+
+#### PackSystem
+- Formation logic (3-15 critters)
+- Loyalty calculation (0-1 scale)
+- Role assignment (leader/specialist/follower)
+- Pack schism mechanics (split at <0.3 loyalty)
+- Query: `[Pack, Position]` and `[Critter, Position]`
+
+#### PollutionSystem
+- Tracks global pollution (0-100%)
+- Calculates shock thresholds (Whisper 40%, Tempest 70%, Collapse 90%)
+- Playstyle-specific mutations
+- Purity Grove mitigation
+- Query: `[all entities]` (global state)
+
+#### BehaviorSystem
+- Profiles Harmony/Conquest/Frolick playstyle
+- Rolling 100-action window
+- World reaction modifiers
+- No punishment - just consequences
+- Query: `[player entity]` (behavior tracking)
+
+---
+
+## Performance Strategy
+
+### Targets
+- **60 FPS**: Steady on mid-range Android (Snapdragon 700+)
+- **Frame Time**: <16.67ms per frame
+- **Memory**: <150MB RAM
+- **Load Time**: <3 seconds to playable
+- **Battery**: <10% drain per hour
+
+### Optimizations
+1. **Viewport Culling**: Only render visible tiles/chunks
+2. **Sprite Pooling**: Reuse sprites (no create/destroy in loop)
+3. **ECS Architecture**: Cache-friendly memory layout
+4. **Batch Updates**: Group component modifications
+5. **Throttle AI**: Yuka updates to 100ms
+6. **Chunk-Based Loading**: Load on demand, cache generated
+7. **Raycast Efficiency**: ~100 rays per frame, distance-based LOD
+
+---
+
+## Technology Stack
+
+### Core Framework
+- **pnpm 9.x**: Package manager
+- **TypeScript 5.7+**: Type safety
+- **Node >= 20.x**: Runtime
+
+### Mobile Framework
+- **Capacitor 6.1+**: Native mobile bridge
+- **Ionic Vue 8.7+**: Mobile UI components
+- **Vue 3.5+**: Composition API
+
+### Game Engine & Architecture
+- **BitECS 0.3+**: High-performance ECS
+- **Yuka 0.7+**: AI steering behaviors
+- **Zustand 5.0+**: Lightweight state management
+- **Raycast Engine**: Custom or raycast.js (target)
+
+### Build & Dev Tools
+- **Vite 6.0+**: Fast dev server
+- **Vitest 2.1+**: Unit testing
+- **GitHub Actions**: CI/CD automation
+- **Renovate Bot**: Automated dependency updates
+
+---
+
+## Architecture Decisions
 
 ### Why BitECS?
 - High performance (cache-friendly memory layout)
@@ -118,11 +260,11 @@ src/
 - Proper separation of data and logic
 - Future-proof for complex gameplay
 
-### Why Phaser as Rendering Layer?
-- Mature 2D engine with excellent WebGL
-- Large community
-- Good mobile performance
-- Easy to keep separate from game logic
+### Why Raycast Over Full 3D?
+- Efficient (seed-driven, no asset bloat)
+- Feels vast without VRAM suck
+- Mobile-friendly (~100 rays per frame)
+- DOS-era aesthetic (matches vision)
 
 ### Why Zustand over Redux/Vuex?
 - Lightweight (< 1KB)
@@ -130,70 +272,11 @@ src/
 - Framework agnostic
 - Perfect for ECS → UI sync
 
-### Why pnpm over npm?
-- 3x faster installs
-- Strict dependency resolution
-- Efficient disk usage
-
----
-
-## Data Flow
-
-### Game Loop
-```
-1. Input → GestureSystem detects touch
-2. Systems modify ECS components:
-   - MovementSystem updates Position/Velocity
-   - CraftingSystem updates Inventory
-   - PackSystem updates Pack/Critter
-   - PollutionSystem updates global state
-3. Zustand reads from ECS for UI display
-4. Phaser reads from ECS for rendering
-```
-
-### Critical Rule: One-Way Data Flow
-```
-User Input → Systems (modify ECS) → Zustand (read) → UI Display
-                                   → Phaser (read) → Rendering
-```
-
-**NEVER**: UI or Phaser modifying ECS directly
-
----
-
-## Performance Strategy
-
-### Implemented Optimizations
-1. **Viewport Culling**: Only render visible tiles
-2. **Sprite Pooling**: Reuse sprites instead of creating new
-3. **Distance-Based Updates**: Re-render chunks only when needed
-4. **ECS Architecture**: Cache-friendly data layout
-5. **WebGL**: Hardware-accelerated rendering
-
-### Targets
-- 60 FPS on mid-range Android
-- < 16.67ms frame time
-- < 150MB RAM
-- < 3s load time
-
----
-
-## Testing Strategy
-
-### 57/57 Tests Passing ✅
-
-- **Components** (4): ECS component validation
-- **Movement** (3): Position/velocity updates
-- **Crafting** (3): Recipe matching
-- **Haiku** (8): Similarity and diversity
-- **Snapping** (6): Affinity-based combining
-- **Pollution** (15): Shocks and playstyle
-- **Pack** (18): Formation, loyalty, roles
-
-### CI/CD Integration
-- Tests run before every build
-- Build blocks if tests fail
-- Coverage tracked
+### Why Vue/Capacitor?
+- Mobile-first framework
+- Native plugin support
+- Web fallback (PWA)
+- Good performance on mobile
 
 ---
 
@@ -202,25 +285,21 @@ User Input → Systems (modify ECS) → Zustand (read) → UI Display
 ### Combat System
 - New ECS components: Health, Combat, Momentum
 - New system: CombatSystem
-- Gesture integration
+- Gesture integration (swipe clashes, pinch siphons)
 
-### Ritual System
-- New components: Ritual, Abyss, Rig
-- New system: RitualSystem
-- Yuka AI integration for pioneer waves
+### Content Systems
+- Recipe expansion (10+ recipes)
+- Trait expansion (15+ traits)
+- Biome expansion (5+ biomes)
 
-### Nova Cycles
-- New components: NovaTimer, Journal
-- New system: NovaCycleSystem
-- Persistence layer
-
-### Stardust Hops
-- New components: WorldSeed, Constellation
-- New system: HopSystem
-- Cross-world state management
+### Raycasted 3D Migration
+- Replace Phaser 2D with raycast engine
+- Heightmap-based world generation
+- Gesture-based camera controls
+- Performance validation on mobile
 
 ---
 
-*For detailed technical specifications, see `/memory-bank/techContext.md`*  
-*For implementation progress, see `/memory-bank/PROGRESS_ASSESSMENT.md`*  
-*Last Updated: 2025-11-06*
+**Last Updated**: 2025-01-XX  
+**Version**: 2.0.0 (Raycast 3D Architecture Committed)  
+**Status**: Frozen - Master Architecture Document

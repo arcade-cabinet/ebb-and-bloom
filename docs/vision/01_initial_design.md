@@ -1,27 +1,27 @@
 # Stage 01: Initial Design - "EvoForge" Concept
 
-**Lines**: 1-500 (Initial USER pitch → Grok refines into cohesive concept)  
+**Context from Chat Replay**: Lines 1-500 (Initial USER pitch → Grok refines into cohesive concept)  
 **Key Evolution**: Raw idea → Structured design with core pillars
 
 ---
 
-## Original Vision (USER)
+## Intent & Player Fantasy
 
 A procedurally generated game for GitHub Pages:
 - **Tile-based world** with magnetic snapping (BitECS)
-- **Tiny pixel animals** with AI behavior (YukaJS) 
+- **Tiny pixel animals** with AI behavior (YukaJS)
 - **Spore-like character creator** - traits affect gameplay not just looks
 - **Resource gathering & terraforming** that makes the world react
 - **No win condition** - endless evolution
 
 ---
 
-## Core Design Pillars (Established)
+## Mechanics & Systems
 
 ### 1. World Generation & Terraforming
 - **64x64 grid** of 16x16 pixel tiles (scalable to 128x128)
 - **Perlin noise** biomes: forests, rivers, plains
-- **Magnetic Snapping via BitECS**: 
+- **Magnetic Snapping via BitECS**:
   - Each tile = ECS entity with `BiomeType`, `AdjacencyRules`, `TerraformAffinity`
   - Incompatible snaps trigger "stress events"
   - Creates emergent puzzles
@@ -60,94 +60,76 @@ A procedurally generated game for GitHub Pages:
 
 ---
 
-## Game Flow
+## Worldgen & Ecology
 
-```
-START
-  ↓
-Character Creator (10 pts, traits)
-  ↓
-Spawn in procedural world
-  ↓
-┌─────────────────────────────────┐
-│ CORE LOOP (Endless)             │
-│  1. Terraform / Gather          │
-│  2. World reacts (2-5min cycle) │
-│  3. Critters evolve             │
-│  4. Pollution accumulates       │
-│  5. Shock events (40%/70%)      │
-│  6. Earn Evo Points             │
-│  7. Upgrade traits              │
-└─────────────────────────────────┘
-```
+**Procgen Approach**:
+- Perlin noise for biome generation
+- Deterministic seeds (shareable worlds)
+- Chunk-based loading (64x64 tiles per chunk)
+- Adjacency rules via BitECS queries
 
----
-
-## Playstyle Profiling (Introduced)
-
-**Yuka tracks player behavior** via rolling window (last 100 actions):
-
-### Harmony Axis
-- Balanced changes (plant after chop)
-- Triggers: Symbiotic goals, critters cooperate
-
-### Conquest Axis  
-- Extractive chains (80% destructive)
-- Triggers: Survivalism, predators bulk up, resources hide
-
-### Frolick Axis
-- Low-impact whimsy (wandering)
-- Triggers: Delight events, rare non-resource traits
-
-**No punishment** - just consequence. World mirrors your playstyle.
-
----
-
-## Technical Foundation
-
-**Core Stack**:
-- **GitHub Pages** deployment
-- **BitECS** - ECS architecture for tiles/entities
-- **YukaJS** - AI steering/behaviors
-- **Perlin noise** - Procedural world gen
-- **IndexedDB** - Save persistence
-- **Canvas2D** - Rendering (pixel art, retro-futuristic)
-- **Vanilla JS** or minimal Phaser framework
-
-**Performance Targets**:
+**Constraints**:
 - <5MB total assets (pixel art PNGs)
 - 60FPS on mobile browsers
 - Throttle AI updates to 100ms
 
 ---
 
-## MVP Scope
+## Progression & Economy
 
-**Start with**:
-- 3 biomes
-- 5 critter types
-- 10 traits
-- Basic snap mechanics (ore + water = alloy)
+**Resources → Alloys**:
+- Basic: Wood + Water = Mud
+- Ore + Water = Alloy
+- Scaling: Alloy + Power = Circuit → Circuit + Wood = Drill
 
-**Expand later**:
-- More biomes, recipes, traits
-- Advanced shock types
-- Community seed sharing
-
----
-
-## Key Concepts Established
-
-1. **"You are the catalyst"** - Poetic narration of changes
-2. **Magnetic snapping** - Core resource combination mechanic
-3. **Procedural consequences not punishment** - Harmony/Conquest/Frolick
-4. **Shocks as world transformation** - Not fail states, but resets
-5. **Endless sandbox** - No win condition, just milestones
-6. **Evo Points economy** - Trait progression system
+**Tech Gates**:
+- Evo Points unlock trait slots
+- Trait synergies unlock new interactions
+- Pollution thresholds unlock shock events
 
 ---
 
-## Questions Still Open (at this stage)
+## UX/Camera/Controls
+
+**Camera Scheme**: Top-down 2D view (Canvas2D)
+- WASD/arrow keys for movement
+- Mouse for terraforming tools (raycast from cursor to tile)
+- Touch-friendly for mobile GitHub Pages
+
+**Controls**: Basic keyboard/mouse/touch
+
+---
+
+## Technical Direction
+
+**Renderer**: Canvas2D (no WebGL bloat)
+**Physics**: None (tile-based)
+**Engine Stack**: Vanilla JS + BitECS + YukaJS + Simplex-noise
+**Platform**: GitHub Pages (static hosting)
+
+---
+
+## Scope/Constraints
+
+**Mobile Perf**: Target 60FPS on mobile browsers
+**Memory**: <5MB total assets
+**Battery**: Throttle AI updates to 100ms
+
+---
+
+## Decision Log
+
+- ✅ **BitECS for ECS**: Efficient archetype storage, O(1) queries
+- ✅ **YukaJS for AI**: Lightweight steering behaviors, FSM support
+- ✅ **Canvas2D rendering**: No WebGL bloat, GitHub Pages compatible
+- ✅ **Perlin noise**: Deterministic, shareable seeds
+- ✅ **No win condition**: Endless sandbox with shock events
+- ✅ **Pollution system**: Scalar tracking per tile/chunk
+- ✅ **IndexedDB saves**: No backend required
+
+---
+
+## Open Questions
 
 - Exact trait synergies (Chainsaw + Flipper = ?)
 - How magnetic snapping scales to complex permutations

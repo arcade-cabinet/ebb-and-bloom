@@ -1,47 +1,45 @@
 # Stage 03: Mobile Platform Integration
 
-**Lines**: 1200-1800 (GitHub Pages evaluation → Capacitor/Ionic commitment)  
+**Context from Chat Replay**: Lines 1200-1800 (GitHub Pages evaluation → Capacitor/Ionic commitment)  
 **Key Evolution**: Web prototype → Native mobile experience
 
 ---
 
-## The Pivot Question
+## Intent & Player Fantasy
 
-USER asks: **"Valid question BUT are we crippling the game needlessly with GitHub Pages? Is this kind of sexiness BUILT for capacitor and android / web?"**
-
-This stage represents the critical architectural decision to NOT limit the game to GitHub Pages, but instead embrace a **hybrid mobile-first** architecture.
+Critical architectural decision to NOT limit the game to GitHub Pages, but instead embrace a **hybrid mobile-first** architecture. The game's "sexiness" is built for mobile—touch gestures, haptics, and intimate world connection demand native capabilities.
 
 ---
 
-## Decision: Hybrid Mobile Architecture
+## Mechanics & Systems
 
-### GitHub Pages (MVP Foundation)
-**Strengths**:
-- Lightning prototyping - push code, instant playable
-- Zero-cost deploys, instant URL shares
-- Cross-platform freebie (desktop, mobile, PWA)
-- Perfect for AI handoff chain
-- Procedural gen (Perlin + BitECS) works great
+### Decision: Hybrid Mobile Architecture
+
+**GitHub Pages (MVP Foundation)**:
+- ✅ Lightning prototyping - push code, instant playable
+- ✅ Zero-cost deploys, instant URL shares
+- ✅ Cross-platform freebie (desktop, mobile, PWA)
+- ✅ Perfect for AI handoff chain
+- ✅ Procedural gen (Perlin + BitECS) works great
 
 **Pain Points**:
-- No native haptics (vibrate on snap)
-- Offline caching quirks (service worker finicky)
-- No battery optimizations
-- Discovery drought (no app store presence)
-- Hard to monetize
+- ❌ No native haptics (vibrate on snap)
+- ❌ Offline caching quirks (service worker finicky)
+- ❌ No battery optimizations
+- ❌ Discovery drought (no app store presence)
+- ❌ Hard to monetize
 
-### Capacitor Solution
-**Hybrid Heaven**:
-- Web app becomes native shell (APK/IPA in minutes)
-- Plugins unlock native features:
+**Capacitor Solution**:
+- ✅ Web app becomes native shell (APK/IPA in minutes)
+- ✅ Plugins unlock native features:
   - File I/O for bigger saves
   - Geolocation for real-world seed gen
   - AR previews potential
   - Native haptic feedback
-- **NO REWRITE** - same HTML/JS/CSS
-- Better IndexedDB wrappers for offline
-- Google Play/App Store distribution
-- PWA mode as web fallback
+- ✅ **NO REWRITE** - same HTML/JS/CSS
+- ✅ Better IndexedDB wrappers for offline
+- ✅ Google Play/App Store distribution
+- ✅ PWA mode as web fallback
 
 **Performance Wins**:
 - 120FPS bursts vs browser 60FPS cap
@@ -50,9 +48,9 @@ This stage represents the critical architectural decision to NOT limit the game 
 
 ---
 
-## Ionic Framework Integration
+## Worldgen & Ecology
 
-### Why Ionic Over Raw Capacitor
+**Ionic Framework Integration**:
 - **Mobile-first UI polish**: Touch-optimized modals, swipeable toolbars
 - **Gesture system**: Swipe to terraform, pinch to zoom
 - **Theming magic**: Dark/light modes that tint with pollution
@@ -61,127 +59,48 @@ This stage represents the critical architectural decision to NOT limit the game 
 - **Phaser embeds seamlessly** in `<ion-content>`
 - **PWA-to-App bridge** - enhances Pages MVP
 
-### Three Framework Options Explored
-
-#### Option 1: Stencil (Ionic vanilla)
-- Pure web components
-- No framework lock-in
-- Import via CDN
-
-#### Option 2: **Ionic Vue** (CHOSEN)
-- Perfect pairing with Vue 3 composition API
-- Reactive state management
-- Component library integration
-- TypeScript support
-
-#### Option 3: Ionic Angular/React
-- Heavier frameworks
-- More boilerplate
-- Not chosen for this project
+**Three Framework Options Explored**:
+1. **Stencil** (Ionic vanilla) - Pure web components, no framework lock-in
+2. **Ionic Vue** (CHOSEN) - Perfect pairing with Vue 3 composition API
+3. **Ionic Angular/React** - Heavier frameworks, not chosen
 
 ---
 
-## State Management Decision
+## Progression & Economy
 
-### Two Candidates
-
-#### Pinia (First Introduced)
-**Pros**:
-- Official Vue state library
-- DevTools integration
-- Plugin ecosystem
-- TypeScript-first
-
-**Implementation**:
-```ts
-// stores/game.ts
-export const useGameStore = defineStore('game', () => {
-  const pollution = ref(0);
-  const behavior = ref({ harmony: 0.3, conquest: 0.3, frolick: 0.4 });
-  
-  const performSnap = async (aff1, aff2) => {
-    // ... snap logic
-    await Haptics.impact({ style: 'light' });
-  };
-  
-  return { pollution, behavior, performSnap };
-});
-```
-
-#### Zustand (Alternative Discussed)
-**Pros**:
-- Minimalist (1KB)
-- No boilerplate
-- Provider-free
-- Framework agnostic
-
-**Implementation**:
-```ts
-export const useGame = create<GameStore>((set, get) => ({
-  pollution: 0,
-  performSnap: async (aff1, aff2) => {
-    // ... snap logic
-    await Haptics.impact({ style: 'light' });
-  }
-}));
-```
-
-**CRITICAL NOTE**: Conversation discussed BOTH options, but actual implementation chose **Pinia**
+**State Management Decision**:
+- **Pinia** (First Introduced): Official Vue state library, DevTools integration
+- **Zustand** (Alternative Discussed): Minimalist (1KB), no boilerplate
+- **CRITICAL NOTE**: Conversation discussed BOTH options, but actual implementation chose **Pinia** (later switched to Zustand in current codebase)
 
 ---
 
-## Mobile UX Enhancements
+## UX/Camera/Controls
 
-### Touch Interactions
+**Touch Interactions**:
 - **Swipe to terraform**: Directional gestures change biomes
 - **Long-press to inspect**: Tile affinity tooltips
 - **Pinch-zoom**: World navigation
 - **Tap to harvest**: Proximity-based resource gathering
 
-### Ionic Components Integration
-
-#### Creator Modal
-```vue
-<ion-modal>
-  <ion-content>
-    <ion-title>Design Your Catalyst</ion-title>
-    <canvas id="editor"></canvas>
-    <ion-button>Chainsaw Arms</ion-button>
-    <ion-button>Flipper Feet</ion-button>
-  </ion-content>
-</ion-modal>
-```
-
-#### Status Toolbar (Bottom)
-```vue
-<ion-toolbar slot="bottom" color="dark">
-  <ion-title>Pollution: {{ pollution }}</ion-title>
-  <ion-label>Style: {{ maxStyle }}</ion-label>
-</ion-toolbar>
-```
-
-#### World Canvas Embed
-```vue
-<ion-content fullscreen>
-  <div id="game-container">
-    <canvas id="world"></canvas>
-  </div>
-</ion-content>
-```
-
-### Haptic Feedback
+**Haptic Feedback**:
 - **Light tap**: Resource snap success
 - **Medium impact**: Trait evolution
 - **Heavy rumble**: Shock event (70% pollution)
 - **Pattern vibrations**: Pack quest completion
 
+**Ionic Components Integration**:
+- Creator Modal: `<ion-modal>` with reactive editor
+- Status Toolbar: Bottom `<ion-toolbar>` with pollution/style
+- World Canvas Embed: `<ion-content fullscreen>` wrapper
+
 ---
 
-## Technical Architecture
+## Technical Direction
 
-### Stack Evolution
-**Before (Web-only)**:
+**Stack Evolution**:
 ```
+Before (Web-only):
 GitHub Pages
   ↓
 Canvas2D / Phaser
@@ -189,10 +108,8 @@ Canvas2D / Phaser
 BitECS + YukaJS
   ↓
 IndexedDB
-```
 
-**After (Hybrid)**:
-```
+After (Hybrid):
 Capacitor Native Shell
   ↓
 Ionic Vue Components
@@ -206,7 +123,7 @@ Pinia State Management
 Native Plugins (Haptics, Filesystem, etc.)
 ```
 
-### Project Structure
+**Project Structure**:
 ```
 evo-forge/
 ├── capacitor.config.ts
@@ -227,7 +144,17 @@ evo-forge/
 └── ios/
 ```
 
-### Build & Deploy
+---
+
+## Scope/Constraints
+
+**Mobile Perf**:
+- Target 60FPS on mid-range Android
+- <16.67ms frame time
+- <150MB RAM
+- <3s load time
+
+**Build & Deploy**:
 ```bash
 # Web development
 npm run dev
@@ -244,58 +171,27 @@ npm run build
 gh-pages -d dist
 ```
 
----
-
-## Monetization Strategy
-
-### Free Web Tier
-- Full game on GitHub Pages
-- PWA installable
-- Community seed sharing
-
-### Premium Mobile ($1.99)
-- Native app (Google Play / App Store)
-- Exclusive "apex traits" pack
-- Offline save sync
-- Premium haptic patterns
-- Ad-free
-
-### Optional Ads
-- Capacitor ad plugins for conquest modes
-- Rewarded video for Evo Point boost
+**Monetization Strategy**:
+- Free Web Tier: Full game on GitHub Pages, PWA installable
+- Premium Mobile ($1.99): Native app, exclusive traits, offline sync, premium haptics, ad-free
+- Optional Ads: Capacitor ad plugins for conquest modes
 
 ---
 
-## Key Design Decisions
+## Decision Log
 
-1. **Hybrid over native**: Keep JS ecosystem (BitECS/Yuka)
-2. **Ionic Vue over vanilla**: Component library + reactivity
-3. **Pinia over Zustand**: Official Vue integration (though both discussed)
-4. **Capacitor plugins**: Native features without rewrite
-5. **Phaser Canvas mode**: Works in both web and native
-6. **Touch-first design**: Gestures as primary input
-7. **Haptic feedback**: Core to mobile experience
-8. **Dual deployment**: Web (Pages) + Mobile (stores)
-
----
-
-## Advanced Mobile Features (Future)
-
-### Geolocation Integration
-- Real-world GPS coordinates seed world generation
-- "Evolve where you walk"
-- AR preview potential
-
-### Pack Quest System
-**Introduced as mobile-native feature**:
-- Maturity + loyalty mechanics
-- Dispatch packs on missions
-- Success/failure with consequences
-- Redemption arcs for failed quests
+- ✅ **Hybrid over native**: Keep JS ecosystem (BitECS/Yuka)
+- ✅ **Ionic Vue over vanilla**: Component library + reactivity
+- ✅ **Pinia over Zustand**: Official Vue integration (though both discussed)
+- ✅ **Capacitor plugins**: Native features without rewrite
+- ✅ **Phaser Canvas mode**: Works in both web and native
+- ✅ **Touch-first design**: Gestures as primary input
+- ✅ **Haptic feedback**: Core to mobile experience
+- ✅ **Dual deployment**: Web (Pages) + Mobile (stores)
 
 ---
 
-## What's Still Open
+## Open Questions
 
 - iOS specific UI/UX polish
 - Android back button handling

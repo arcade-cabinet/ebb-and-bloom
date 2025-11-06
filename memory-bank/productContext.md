@@ -2,7 +2,9 @@
 
 ## What We're Building
 
-**Ebb & Bloom** is a mobile-first procedural evolution game where you embody a modular pixel catalyst whose actions ripple through a living, breathing world. It's about intimate connection to a single world that remembers you, tidal rhythms of growth and decay, and evolutionary legacy through trait inheritance.
+**Ebb & Bloom** is a mobile-first procedural, raycasted 3D world simulation game with infinite generation, reactive ecology, resource harvesting, crafting (materials → alloys), and emergent villages/quests. DOS-era-inspired aesthetic (Wolfenstein-style), modern-smoothed. You embody a modular pixel catalyst whose actions ripple through a living, breathing world. It's about intimate connection to a single world that remembers you, tidal rhythms of growth and decay, and evolutionary legacy through trait inheritance.
+
+**Rendering Vision**: Raycasted 3D (Wolfenstein-style) - committed. Current 2D tile-based implementation is interim foundation.
 
 ## Core Philosophy: "One-World Ache"
 
@@ -15,10 +17,10 @@
 
 ### Why Mobile-Only
 - **Touch-First Design**: Not a port - designed from scratch for gestures
-  - Swipe to stride and carve terrain
-  - Pinch to zoom and siphon resources  
+  - Swipe to stride and carve terrain (raycast turn)
+  - Pinch to zoom and siphon resources (raycast FOV)
   - Hold to dispatch critter packs on quests
-  - Gyro tilt for depth perception
+  - Gyro tilt for depth perception (optional)
 - **Haptic Feedback**: Physical connection to world events
   - Light buzz for harmony blooms
   - Heavy rumble for combat lashes
@@ -120,7 +122,6 @@ src/
 ### Conquest Players (Grinders)
 - Fast resource yields
 - Grudge-based combat
-- Abyss reclamation
 - Pack raids and turf wars
 - Risk/reward optimization
 
@@ -147,20 +148,24 @@ Your creature's traits don't just affect you - they influence the ecosystem:
 Every significant action generates a procedural haiku that captures the moment:
 - Jaro-Winkler similarity prevents repetition
 - Narrative diversity guard (<20% overlap)
-- Journal persists across nova cycles
+- Journal captures player's story over time
 - Metaphor bank procedurally generates phrases
 
 ## Future Vision (Stage 2+)
 
+### Rendering: Raycast 3D Migration (COMMITTED)
+- **Vision**: Raycasted 3D (Wolfenstein-style) with modern smoothing
+- **Current**: 2D tile-based (Phaser 3) - interim foundation
+- **Target**: Custom raycast engine or raycast.js (~5KB)
+- **Timeline**: Stage 3 (after performance validation)
+- **Status**: Vision committed, implementation pending
+
 ### Not Yet Implemented
 - **Combat System**: Wisp clashes, momentum-based gestures
-- **Ritual Mechanics**: Ceremonial abyss reclamation
-- **Nova Cycles**: 45-90min world resets with journal persistence
-- **Stardust Hops**: Rare travel to 5-10 sibling worlds
 - **Audio System**: Procedural soundscapes
-- **Visual Effects**: Shaders for pollution haze, water flow
+- **Visual Effects**: Shaders for pollution haze, water flow (raycast)
 - **Catalyst Creator**: Modular pixel editor (8x8 atlas)
-- **Terraform Gestures**: Swipe to carve, pinch to infuse
+- **Terraform Gestures**: Swipe to carve, pinch to infuse (raycast)
 
 ## Technical Foundation
 
@@ -181,7 +186,6 @@ Every significant action generates a procedural haiku that captures the moment:
 
 ### Intimate Pull
 - 80% one-world immersion with depth strata
-- 20% stardust breaths (earned, scar-tied hops)
 - Most play time in single world evolution
 
 ### Style Skew
@@ -190,8 +194,8 @@ Every significant action generates a procedural haiku that captures the moment:
 - **Frolick**: Whimsy detours, low stakes, cosmetic focus
 
 ### Risk Ache
-- Pollution as tidal debt (mendable vs. abyss creeps)
-- Nova resets persist lore (Outer Wilds-style wisdom)
+- Pollution as tidal debt (mendable through actions)
+- Journal captures player's story over time
 - Shock types scale consequences
 
 ### Mobile Flow
@@ -205,7 +209,7 @@ Every significant action generates a procedural haiku that captures the moment:
 - APK only 4MB (very lean, good for mobile)
 - UI/UX flow needs polish
 - Limited content variety (5 recipes, 10 traits)
-- No combat/ritual implementation yet
+- No combat implementation yet
 - No audio system
 - Placeholder visual effects
 
@@ -219,4 +223,4 @@ Every significant action generates a procedural haiku that captures the moment:
 
 **Last Updated**: 2025-11-06
 **Current Phase**: Stage 1 Complete, Moving to Documentation & Architecture Organization
-**Next**: Stage 2 implementation (Combat, Rituals, Nova Cycles)
+**Next**: Stage 2 implementation (Combat, Content Expansion, UX Polish)

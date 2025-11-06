@@ -236,9 +236,8 @@ Cleanup completed:
 
 ### ⏳ Partially Implemented (2/15 docs)
 1. **01-coreLoop.md** (60KB) - Pack system done, but missing:
-   - Abyss reclamation mechanics
-   - Nova cycles
-   - Stardust hops
+   - Combat system
+   - Village emergence
 
 2. **07-mobileUX.md** (100KB) - Gestures done, but missing:
    - Complete catalyst creator UI
@@ -247,7 +246,6 @@ Cleanup completed:
 
 ### ❌ Not Yet Implemented (5/15 docs)
 1. **04-combat.md** (57KB) - Wisp clashes, combat gestures
-2. **05-rituals.md** (34KB) - Ceremonial mechanics
 3. **10-performance.md** - Targets defined, tracked in CI
 4. **12-balance.md** - Reference for future tuning
 5. **13-audio.md** - Stage 3+
@@ -305,7 +303,6 @@ Cleanup completed:
 - Limited recipes (only 5)
 - Limited traits (only 10)
 - No combat system yet
-- No ritual mechanics yet
 - No audio system yet
 - No visual effects yet
 
@@ -313,8 +310,8 @@ Cleanup completed:
 - 2 TODOs in codebase
 - Lots of .txt/.py extracts to clean up
 - Missing Stage 2 features
-- No nova cycles yet
-- No stardust hops yet
+- No combat system yet
+- No villages/quests yet
 
 ## Merge Criteria
 
@@ -335,7 +332,7 @@ Cleanup completed:
 - Code cleanup
 
 ### ❌ Not Required for Merge
-- Stage 2 features (combat, rituals)
+- Stage 2 features (combat, villages)
 - UI/UX polish (post-merge)
 - Content expansion (post-merge)
 - Audio system (Stage 3+)
@@ -350,34 +347,145 @@ Cleanup completed:
 5. ✅ Clean up archived extracts from src/
 6. ✅ Address all PR review feedback
 7. ✅ Resolve all review threads
+8. ✅ Create master vision/architecture documents
+9. ✅ Commit to raycast 3D vision
+10. ✅ Commit to hybrid brand identity (Option D)
 
-### Post-Merge (Next Session)
-1. Merge PR #3
-2. Stage 2 UX Polish planning
-3. Splash screen asset integration
-4. Catalyst creator UI implementation
-5. Onboarding flow design
+### Next Implementation: Core Gameplay Expansion 🎯
 
-### Short-Term (Stage 2 UX Polish)
-1. UI/UX polish pass
-2. Gesture tutorials
-3. Catalyst creator modal
-4. Onboarding flow
-5. Performance validation on device
+#### Priority 1: UX Polish - HIGHEST PRIORITY
+**Goal**: Address "very clunky" feedback, create smooth onboarding
 
-### Stage 2 (Next Major Phase)
-1. Combat system (wisp clashes)
-2. Ritual mechanics (abyss reclamation)
-3. Nova cycles (45-90min resets)
-4. Stardust hops (5-10 siblings)
-5. Audio system foundations
+**Dependencies**: None
 
-### Stage 3+ (Future)
-1. Visual effects (shaders)
-2. Advanced mobile UX
-3. Content expansion (more recipes/traits)
-4. Balance tuning
-5. Community features
+**Tasks**:
+1. **Onboarding Flow**
+   - First-time player experience
+   - Interactive tutorials for gestures
+   - Catalyst creator UI (trait selection, Evo point allocation)
+   - Visual feedback for all actions
+
+2. **Gesture Polish**
+   - Refine touch interactions
+   - Add haptic sync to all gestures
+   - Improve visual feedback (particles, animations)
+   - Test on real devices
+
+3. **UI/UX Polish**
+   - Polish existing UI components
+   - Add status indicators
+   - Improve information hierarchy
+   - Mobile-first refinements
+
+**Deliverable**: Smooth 10-minute onboarding experience
+
+---
+
+#### Priority 2: Combat System
+**Goal**: Implement wisp clashes with momentum-based combat
+
+**Dependencies**: None (can work in parallel with Priority 1)
+
+**Tasks**:
+1. **Combat ECS Components**
+   - Health component
+   - Combat component
+   - Momentum component
+
+2. **CombatSystem**
+   - Gesture-based attacks (swipe clashes, pinch siphons)
+   - Affinity resonance mechanics
+   - Loot and rewards
+
+3. **Integration**
+   - Connect to existing systems
+   - Add visual effects
+   - Test balance
+
+**Deliverable**: Working combat system with gesture controls
+
+---
+
+#### Priority 3: Content Expansion
+**Goal**: Expand core fun mechanics with more content
+
+**Dependencies**: None (can work in parallel)
+
+**Rationale**: Focus on enhancing what's already fun:
+- More recipes (10+ total)
+- More traits (15+ total)
+- More biomes (5+ total)
+- Enhanced visual feedback for snapping
+- Enhanced trait inheritance visuals
+
+**Tasks**:
+1. **Recipe Expansion**
+   - Add 5+ new recipes
+   - Test balance and difficulty scaling
+   - Add visual/haptic feedback
+
+2. **Trait Expansion**
+   - Add 5+ new traits
+   - Test synergies and balance
+   - Add visual evolution effects
+
+3. **Biome Expansion**
+   - Add 2+ new biomes
+   - Test generation variety
+   - Add unique resources
+
+**Deliverable**: Expanded content variety without added complexity
+
+---
+
+#### Priority 4: Raycast 3D Migration
+**Goal**: Migrate from 2D tiles to raycasted 3D
+
+**Dependencies**: After Priorities 1-3 complete (or can validate performance in parallel)
+
+**Tasks**:
+1. **Performance Validation**
+   - Implement basic raycast POC
+   - Test on mid-range Android device
+   - Benchmark performance (target: 60 FPS)
+   - **Decision Point**: If performance sufficient → proceed, if insufficient → stay 2D
+
+2. **Raycast Engine Integration** (if performance validated)
+   - Replace Phaser 2D with raycast engine
+   - Heightmap generation
+   - Gesture controls (swipe-turn, pinch-zoom)
+
+3. **Visual Polish** (if performance validated)
+   - Pseudo-3D slice rendering
+   - Color gradients (indigo ebb → emerald bloom)
+   - Particle effects
+
+4. **Testing & Optimization** (if performance validated)
+   - Performance optimization
+   - Device testing
+   - Fallback plan if needed
+
+**Deliverable**: Raycasted 3D rendering (or enhanced 2D if performance insufficient)
+
+---
+
+## Implementation Priorities
+
+### Must Have (Next Implementation)
+1. **UX Polish** - Address "very clunky" feedback (Priority 1)
+2. **Combat System** - Core gameplay expansion (Priority 2)
+3. **Content Expansion** - More recipes, traits, biomes (Priority 3)
+
+### Should Have (After Must Have)
+4. **Raycast 3D Migration** - After performance validation (Priority 4)
+5. **Device Testing** - Real hardware validation (can do in parallel)
+
+### Nice to Have (Future)
+6. **Audio System** - Procedural soundscapes
+7. **Visual Effects** - Shaders, particles
+8. **Villages & Quests** - Emergent content systems
+9. **Community Features** - Seed sharing, haiku export
+
 
 ## Summary
 

@@ -1,386 +1,227 @@
 # Vision - Ebb & Bloom
 
-**Version**: 1.0.0  
-**Date**: 2025-11-06  
-**Stage**: Stage 1 Complete → Stage 2 Planning
-
-## Table of Contents
-1. [Core Philosophy](#core-philosophy)
-2. [What Makes This Special](#what-makes-this-special)
-3. [Player Experience](#player-experience)
-4. [Design Pillars](#design-pillars)
-5. [Inspirations](#inspirations)
-6. [Target Audience](#target-audience)
+**Version**: 2.0.0  
+**Date**: 2025-01-XX  
+**Status**: Frozen - Raycast 3D Vision Committed
 
 ---
 
-## Core Philosophy
+## Core Vision
 
-### "One-World Ache, Tidal Evo Ripples"
+**Ebb & Bloom** is a procedural, raycasted 3D world simulation game with infinite generation, reactive ecology, resource harvesting, crafting (materials → alloys), and emergent villages/quests. DOS-era-inspired aesthetic (Wolfenstein-style), modern-smoothed with lighting, interpolation, and post-processing.
 
-**Ebb & Bloom** is about intimate connection to a single, living world that remembers your every action. You are a modular pixel catalyst - a creature whose traits ripple through the ecosystem, shaping it through the tidal rhythm of growth (bloom) and decay (ebb).
+### Tagline
+**"Shape Worlds. Traits Echo. Legacy Endures."**
 
-### The Experience We're Creating
+**Approach**: Hybrid - Gameplay clarity + poetic resonance
 
-**80% Single World Immersion**
-- Deep connection to ONE procedurally generated world
-- Every action leaves scars that the world remembers
-- Hours exploring layers and depth, not breadth
-- Your traits inherit into the local ecosystem
-- Packs form and evolve based on your playstyle
+**Rationale**: Clear gameplay verbs (Shape, Craft, Evolve) communicate what you DO, while poetic language (Echo, Remember, Legacy) captures the emotional resonance. Avoids pure mysticism while maintaining depth.
 
-**20% Poetic Exiles**
-- Rare earned hops to 5-10 sibling worlds
-- Carry ONE scar echo across worlds
-- Kin calls pull you back home
-- Not escape, but breathing room
-
-### Not This
-
-❌ **NOT** an infinite universe explorer (No Man's Sky scope)  
-❌ **NOT** a collect-em-all progression grind  
-❌ **NOT** a menu-driven crafting sim  
-❌ **NOT** a desktop game ported to mobile  
-❌ **NOT** a multiplayer competitive arena
-
-### This Instead
-
-✅ **Intimate**: One world you reshape over hours, not minutes  
-✅ **Tidal**: Ebb (pollution/decay) and Bloom (growth/harmony) cycles  
-✅ **Evolutionary**: Your traits inherit into the ecosystem  
-✅ **Touch-First**: Gestures as primary language, haptics as heartbeat  
-✅ **Impermanent**: Nova cycles reset world but persist journal wisdom
+### Brand Voice
+**Hybrid**: Poetic for world/atmosphere, technical for systems, playful for onboarding
 
 ---
 
-## What Makes This Special
+## Player Fantasy
 
-### Innovation #1: Magnetic Resource Snapping
+**Core Verbs**: Explore → harvest → craft (materials → alloys) → build → influence ecology → encounter emergent villages/quests/fauna
 
-**Traditional crafting**: Open menu → select recipe → wait for craft → close menu
+**World Look**: Raycasted 3D aesthetic reminiscent of DOS-era worlds (Wolfenstein-style), smoothed and modernized. Not voxel-chunky.
 
-**Ebb & Bloom**: Place ore next to water → SNAP! They fuse into alloy
+**Simulation Bias**: The world reacts to player stewardship vs. exploitation. No punishment—just consequences that mirror playstyle.
 
-- **Magnetic Proximity**: Resources attract when adjacent
+**Platform Bias**: Mobile-first viability is important, but fun > framework. Target: 60 FPS on mid-range Android (Snapdragon 700+).
+
+---
+
+## Core Mechanics
+
+### 1. Magnetic Resource Snapping
+- **Traditional crafting**: Open menu → select recipe → wait → close menu
+- **Ebb & Bloom**: Place ore next to water → SNAP! They fuse into alloy
 - **Affinity-Based**: 8-bit flags determine what combines (HEAT + FLOW = alloy)
 - **Procedural Permutations**: Infinite combinations through affinity overlap
 - **No Menus**: Touch to gather, swipe to place, world handles the rest
+- **Scales with Player**: Demand-responsive world anticipates needs
 
-### Innovation #2: Trait Inheritance Ecosystem
-
-**Your traits don't just affect you - they shape the world:**
-
+### 2. Trait Inheritance Ecosystem
 - **Proximity-Based**: Creatures near you evolve similar traits
   - Example: Your flipper feet → critters gain webbed paws
-  
 - **Dilution Mechanics**: Traits weaken 50% per generation
-  - Level 3 flipper → Level 1 webbed paws → Level 0 (fades)
-  
 - **Hybrid Emergence**: Opposing traits create new forms
   - flow + void = tidal scar
   - heat + life = forge bloom
-  
 - **Behavioral Mirroring**: Your playstyle shapes creature AI
   - Harmony player → cooperative packs that gift resources
   - Conquest player → aggressive raiders that contest territory
   - Frolick player → whimsical herds that dance and explore
 
-### Innovation #3: Procedural Haiku Journaling
-
-**Every significant moment generates a haiku** that captures the emotional resonance:
-
-```
-Flipper wakes the vein;
-Paws remember the tide's grace—
-Kin bloom from your stride.
-```
-
+### 3. Procedural Haiku Journaling
+- **Every significant moment** generates a haiku capturing emotional resonance
 - **Jaro-Winkler Guard**: Prevents repetition (<20% similarity)
 - **Procedural Metaphors**: Generated from action context
-- **Persistent Across Cycles**: Journal survives nova resets
-- **Stardust Kin Calls**: Haikus hint at sibling world connections
+- **Persistent Journal**: Haikus capture significant moments
 
-### Innovation #4: Touch as Language
+### 4. Touch as Language
+- **Gestures aren't shortcuts—they ARE the game**
+- **Swipe**: Stride, carve terrain (forward momentum)
+- **Pinch**: Zoom, siphon resources (focus)
+- **Hold**: Dispatch packs on quests (command)
+- **Tap**: Collect, interact (light touch)
+- **Double-Tap**: Quick action (urgency)
+- **Drag**: Move inventory (deliberate)
+- **Rotate**: Camera, inspect (perspective)
 
-**Gestures aren't shortcuts - they ARE the game:**
-
-| Gesture | Game Action | Feel |
-|---------|-------------|------|
-| **Swipe** | Stride, carve terrain | Forward momentum |
-| **Pinch** | Zoom, siphon resources | Focus |
-| **Hold** | Dispatch packs on quests | Command |
-| **Tap** | Collect, interact | Light touch |
-| **Double-Tap** | Quick action | Urgency |
-| **Drag** | Move inventory | Deliberate |
-| **Rotate** | Camera, inspect | Perspective |
-
-**Haptic Feedback = World's Heartbeat:**
+**Haptic Feedback = World's Heartbeat**:
 - Light buzz for harmony blooms
 - Heavy rumble for combat lashes
-- Crescendo for nova pulse
-- Heartbeat for abyss reclamation
+- Crescendo for major world transformations
+- Heartbeat for world evolution
 
 ---
 
-## Player Experience
+## Rendering Vision: Raycasted 3D
 
-### First 10 Minutes (Onboarding)
+### Why Raycast Over Full 3D
+- ✅ **Efficient**: Seed-driven, no asset bloat
+- ✅ **Feels Vast**: Without VRAM suck
+- ✅ **Procedural**: Seed ties to evo history (pollution + time hash = thornier ridges)
+- ✅ **Mobile-Friendly**: ~100 rays per frame (60FPS mobile)
+- ✅ **DOS-Era Aesthetic**: Wolfenstein-style, modern-smoothed
 
-**Goal**: Feel the world breathe under your touch
+### Why Not Full 3D Models
+- ❌ Asset gen per chunk = nightmare on mobile
+- ❌ VRAM bloat
+- ❌ Not seed-driven (requires storage)
 
-1. **Catalyst Creation** (2 min)
-   - Modular pixel editor opens
-   - Allocate 10 Evo points across 10 traits
-   - See synergies light up (flipper + chainsaw = burr-tide)
-   - Choose starting traits based on playstyle
+### Implementation Approach
+- **Raycast Engine**: Custom or raycast.js library (~5KB)
+- **Heightmaps**: Perlin noise for ebb valleys + bloom ridges
+- **Gesture Controls**: Swipe-turn, pinch-zoom, tap-stride
+- **Visual Style**: Pseudo-3D slice rendering
+  - Color gradients: Indigo ebb (close) → Emerald bloom (far)
+  - Void haze overlay (20% darken when void affinity high)
+  - Particle effects: Blue wisps (flow), red sparks (heat)
 
-2. **First Stride** (3 min)
-   - Swipe to move - feel haptic ripple
-   - World unfolds via Perlin noise
-   - Discover first biome (water/grass/flowers/ore)
-   - Critters scatter and observe
+**Status**: Vision committed. Current implementation is 2D tile-based (interim). Raycast 3D is the target.
 
-3. **First Snap** (5 min)
-   - Tap ore tile → collect (buzz)
-   - Tap water tile → collect (ripple)
-   - Place them adjacent → SNAP! (rumble + haiku)
-   - Alloy created, pollution ticks up 1%
-   - Journal logs first haiku
+---
 
-### First Hour (Core Loop)
+## World Generation
 
-**Goal**: Build connection to world, start evolutionary ripple
+### Procedural Approach
+- **Perlin Noise**: Organic terrain generation
+- **Chunk-Based**: Infinite generation, streaming
+- **Deterministic Seeds**: Shareable worlds
+- **Heightmaps**: Ebb valleys + bloom ridges
+- **Biome Synthesis**: Forests, rivers, plains, lava, void
 
-- **Stride & Explore** (20 min)
-  - Discover 3-4 biome types
-  - Collect variety of resources
-  - Notice critters watching you
-  
-- **Snap & Evolve** (20 min)
-  - Complete 5-8 snap combinations
-  - Pollution rises to ~15%
-  - First trait inheritance triggers
-  - Pack forms near you (3 critters → 1 pack)
-  
-- **Pack Quest** (10 min)
-  - Long-press pack → dispatch on quest
-  - Wait 2-3 minutes (can explore meanwhile)
-  - Pack returns with shard or lashes back
-  - Loyalty shifts based on outcome
-  
-- **First Shock** (10 min)
-  - Pollution hits 40% → Whisper Shock
-  - World darkens slightly
-  - Mutation appears (new resource variant)
-  - Haiku logs the transformation
+### Village/Quest Emergence
+- **Simulation Rules**: Not scripts
+- **Behavior-Driven**: Village types adapt to playstyle
+- **Procedural Generation**: No hand-authored content, infinite variety
+- **Pack Quest System**: Mobile-native feature (dispatch packs on missions)
 
-### First Session (1-2 hours)
+---
 
-**Goal**: Complete one evolutionary arc, feel the ache
+## Progression & Economy
 
-- Build 3-5 packs with different roles
-- Experience loyalty schism (pack splits)
-- Complete 15-20 snap combinations
-- Hit Tempest Shock (70% pollution)
-- Unlock first synergy (Burr-tide or Vein Hunter)
-- Journal contains 10-15 haikus telling your story
-- Feel pull toward deeper content (combat, rituals)
+### Resources → Alloys
+- **Basic**: Wood + Water = Mud
+- **Mid-Chain**: Ore + Water = Alloy → Alloy + Power = Circuit
+- **Deep Chains**: Circuit + Wood + Heat = Drill → Drill + Geothermal = Piston Pump
+- **Infinite Scaling**: Scales with player demands, not against
 
-### Long-Term Engagement
+### Tech Gates
+- **Evo Points**: Unlock trait slots (start 2, max 5)
+- **Trait Synergies**: Unlock new interactions
+- **Pollution Thresholds**: Unlock shock events
+- **Demand Vectors**: World auto-expands snaps based on needs
 
-**Goal**: Make every playthrough feel personal
+---
 
-- **Nova Cycles** (45-90 min)
-  - World resets but journal persists
-  - Stardust eggs hatch variants of your packs
-  - Each cycle deepens your understanding
-  - Outer Wilds-style knowledge progression
-  
-- **Stardust Hops** (rare, earned)
-  - Complete deep ritual → unlock rift
-  - Travel to 1 of 5-10 sibling worlds
-  - Carry ONE scar echo that mutates
-  - Kin calls pull you between worlds
-  
-- **Playstyle Evolution**
-  - Harmony: Symbiotic groves, purity focus
-  - Conquest: Abyss raids, grudge chains
-  - Frolick: Whimsy warps, cosmetic collection
-  
-- **Community Echoes**
-  - Share world seeds via QR code
-  - Trade stardust shards via Bluetooth
-  - Compare haiku journals
-  - Discover others' evolutionary paths
+## Player Experience Pillars
+
+### Harmony Players (35%)
+- **Motivation**: Create symbiotic ecosystems
+- **Session**: 30-60 min, multiple times per week
+- **Enjoys**: Pack cooperation, purity groves, serenity points
+- **Avoids**: Combat, pollution, aggressive gameplay
+- **World Response**: Cooperative critters, sustainable loops, faster Evo Points
+
+### Conquest Players (30%)
+- **Motivation**: Optimize yields, master systems
+- **Session**: 45-90 min, daily grinding
+- **Enjoys**: Aggressive resource gathering, high-risk snaps, territorial packs
+- **Avoids**: Slow progression, low stakes
+- **World Response**: Fortified resources, apex evolutions, faster shocks
+
+### Frolick Players (25%)
+- **Motivation**: Discover narrative, collect experiences
+- **Session**: 20-45 min, irregular but dedicated
+- **Enjoys**: Haiku journal, whimsy warps, cosmetics
+- **Avoids**: Pressure, optimization, combat
+- **World Response**: Delight events, whimsical traits, low-stakes exploration
+
+### Hybrid Players (10%)
+- **Motivation**: Variety and experimentation
+- **Session**: Variable
+- **Enjoys**: Trying different playstyles
+- **System Support**: Fluid transitions between playstyles
 
 ---
 
 ## Design Pillars
 
 ### 1. Intimate Scale
-
-**Principle**: Quality over quantity - one world that evolves WITH you
-
-- 80% of playtime in single world
-- Depth through layers (surface → abyss)
-- Every action has consequences
-- World remembers your history
-- Packs inherit your traits
-
-**Anti-Pattern**: Throwing more content = better game
+- **80% Single World**: Deep immersion in one procedurally generated world
+- **Quality over Quantity**: One world that evolves WITH you
+- **Depth through Layers**: Surface exploration with procedural depth
+- **Every Action Has Consequences**: World remembers your history
 
 ### 2. Tidal Rhythm
-
-**Principle**: Growth and decay are both beautiful
-
-- Pollution isn't punishment - it's transformation
-- Shocks mutate world into new forms
-- Nova cycles create impermanent ache
-- Bloom: Harmony players nurture life
-- Ebb: Conquest players embrace void
-
-**Anti-Pattern**: Good vs. evil morality
+- **Growth and Decay**: Both are beautiful
+- **Pollution isn't Punishment**: It's transformation
+- **Shocks Mutate World**: Into new forms
+- **Endless Evolution**: World transforms but never resets
 
 ### 3. Touch as Poetry
-
-**Principle**: Gestures should feel like conducting world's symphony
-
-- No buttons - only touch
-- Haptics create physical bond
-- Gestures build momentum
-- One-handed portrait play
-- 60 FPS non-negotiable
-
-**Anti-Pattern**: Touch as mouse replacement
+- **Gestures = Conducting World's Symphony**
+- **No Buttons**: Only touch
+- **Haptics Create Physical Bond**: World's heartbeat
+- **One-Handed Portrait Play**: 60 FPS non-negotiable
 
 ### 4. Evolutionary Memory
-
-**Principle**: Your legacy outlives you
-
-- Traits inherit into ecosystem
-- Journal persists across cycles
-- Stardust echoes carry between worlds
-- Packs quest your old scars
-- Haikus narrate your arc
-
-**Anti-Pattern**: Progress as numbers going up
+- **Your Legacy Outlives You**: Traits inherit into ecosystem
+- **Journal Persists**: Captures your story over time
+- **Packs Quest Your Old Scars**: Haikus narrate your arc
 
 ### 5. Mobile-First Forever
-
-**Principle**: Not a port - designed for touch from day one
-
-- Gestures are primary input
-- Haptics are essential feedback
-- Portrait orientation default
-- One-handed play possible
-- Battery-conscious rendering
-- Lean APK (4MB!)
-
-**Anti-Pattern**: "We'll optimize for mobile later"
-
----
-
-## Inspirations
-
-### Elite (1984)
-**What We Learned**: Procedural generation as survival, not buzzword
-- Single seed generates universe
-- Deterministic = shareable
-- Constraints breed creativity
-- 32KB to infinity
-
-**What We Applied**: 
-- Seeded world generation
-- Deterministic reproducibility
-- Perlin noise efficiency
-- Chunk-based loading
-
-### Outer Wilds
-**What We Learned**: Impermanence creates meaning
-- 22-minute time loops
-- Knowledge persists, world resets
-- One system, endless depth
-- Discovery through curiosity
-
-**What We Applied**:
-- Nova cycles (45-90 min)
-- Journal persistence
-- Interconnected discovery
-- Witness, don't conquer
-
-### Subnautica
-**What We Learned**: One world's intimacy > many worlds' breadth
-- Biomes breathe with alien memory
-- Creatures as kin-curses
-- Terraforming as negotiation
-- Depth strata unlock layers
-
-**What We Applied**:
-- Single world focus
-- Depth exploration (surface → abyss)
-- Creature symbiosis
-- Tidal memory
-
-### No Man's Sky
-**What We Learned**: Procedural can feel personal
-- Planets remember your touch
-- Evolutionary discovery
-- Community seed sharing
-- Redemption through updates
-
-**What We Applied**:
-- Personal world connection
-- Trait inheritance ripples
-- Seed sharing via QR
-- Continuous improvement
+- **Not a Port**: Designed for touch from day one
+- **Gestures are Primary Input**: Not shortcuts
+- **Haptics are Essential**: Not optional
+- **Battery-Conscious**: Rendering optimizations
+- **Lean APK**: Target <15MB (currently 4MB)
 
 ---
 
 ## Target Audience
 
 ### Primary: Mobile-First Gamers
+- **Demographics**: Age 25-45, Android/iOS (mid-range devices)
+- **Session Length**: 10-60 minutes
+- **Play Style**: On commute, at lunch, evening wind-down
+- **Psychographics**: 
+  - Values quality over quantity
+  - Appreciates thoughtful design
+  - Seeks meditative experiences
+  - Enjoys discovery over optimization
+  - Prefers depth over breadth
 
-**Demographics**:
-- Age: 25-45
-- Platform: Android/iOS (mid-range devices)
-- Session Length: 10-60 minutes
-- Play Style: On commute, at lunch, evening wind-down
-
-**Psychographics**:
-- Values quality over quantity
-- Appreciates thoughtful design
-- Seeks meditative experiences
-- Enjoys discovery over optimization
-- Prefers depth over breadth
-
-### Playstyle Personas
-
-#### Harmony Player (35%): "Lila, the Garden Tender"
-- **Motivation**: Create symbiotic ecosystems
-- **Session**: 30-60 min, multiple times per week
-- **Enjoys**: Pack cooperation, purity groves, serenity points
-- **Avoids**: Combat, pollution, aggressive gameplay
-- **Quote**: "I want to see what blooms from my kindness"
-
-#### Conquest Player (30%): "Jax, the Vein Miner"
-- **Motivation**: Optimize yields, master systems
-- **Session**: 45-90 min, daily grinding
-- **Enjoys**: Abyss raids, grudge chains, high-risk snaps
-- **Avoids**: Slow progression, low stakes
-- **Quote**: "Show me the meta, let me break it"
-
-#### Frolick Player (25%): "Riley, the Wandering Poet"
-- **Motivation**: Discover narrative, collect experiences
-- **Session**: 20-45 min, irregular but dedicated
-- **Enjoys**: Haiku journal, whimsy warps, cosmetics
-- **Avoids**: Pressure, optimization, combat
-- **Quote**: "I'm here for the vibes and the stories"
-
-#### Hybrid Player (10%): "Switches between modes"
-- **Motivation**: Variety and experimentation
-- **Session**: Variable
-- **Enjoys**: Trying different playstyles
-- **Note**: System should support fluid transitions
+### Commercial Release Goals
+- **App Store Presence**: Google Play / App Store
+- **Monetization**: Free with optional premium ($1.99 for exclusive traits, offline sync, premium haptics)
+- **Community**: Seed sharing, haiku journals, strategy guides
 
 ---
 
@@ -389,8 +230,8 @@ Kin bloom from your stride.
 ### Player Engagement
 - **Session Length**: 20-60 minutes average
 - **Return Rate**: 70%+ linger rate (come back next session)
-- **Completion**: 30%+ complete one nova cycle
-- **Depth**: 50%+ trigger first stardust hop
+- **Completion**: 30%+ unlock all traits
+- **Depth**: 50%+ trigger all shock types
 
 ### Technical Quality
 - **Performance**: 60 FPS on mid-range Android (Snapdragon 700+)
@@ -404,68 +245,72 @@ Kin bloom from your stride.
 - **Sharing**: Players share world seeds with friends
 - **Journal**: Players screenshot and share haikus
 
-### Community Health
-- **Positive Sentiment**: >80% positive feedback
-- **Seed Sharing**: Active QR code exchange
-- **Content Creation**: Fan art, strategy guides, journals
-- **Retention**: 60%+ return after first week
+---
+
+## What Makes This Special
+
+### Innovation #1: Magnetic Resource Snapping
+No menus. Resources snap magnetically based on proximity and affinity. Scales infinitely through procedural permutations.
+
+### Innovation #2: Trait Inheritance Ecosystem
+Your traits don't just affect you—they shape the world. Creatures evolve similar traits, creating hybrid forms.
+
+### Innovation #3: Procedural Haiku Journaling
+Every significant moment generates a haiku. Jaro-Winkler guard prevents repetition. Journal persists across cycles.
+
+### Innovation #4: Touch as Language
+Gestures aren't shortcuts—they ARE the game. Haptics create physical bond with world events.
+
+### Innovation #5: Behavior-Driven World
+Yuka adapts and reacts based on player playstyle. No punishment—just consequences that mirror actions.
 
 ---
 
-## Design Constraints
+## Not This
 
-### Must Have
-✅ Touch-first controls (no keyboard/mouse)  
-✅ 60 FPS on mid-range Android  
-✅ Portrait orientation support  
-✅ One-handed play possible  
-✅ Offline gameplay (no internet required)  
-✅ Haptic feedback for all major actions  
-✅ < 15MB APK size (currently 4MB!)
-
-### Must Not
-❌ Require internet for core gameplay  
-❌ Use predatory monetization  
-❌ Gate content behind paywalls  
-❌ Include ads  
-❌ Require account creation  
-❌ Phone home player data  
-❌ Drain battery excessively
+❌ **NOT** an infinite universe explorer  
+❌ **NOT** a collect-em-all progression grind  
+❌ **NOT** a menu-driven crafting sim  
+❌ **NOT** a desktop game ported to mobile  
+❌ **NOT** a multiplayer competitive arena  
+❌ **NOT** a 2D tile-based game (current implementation is interim)
 
 ---
 
-## Future Vision (Stage 3+)
+## This Instead
 
-### Audio System
-- Procedural ambient soundscapes
-- Playstyle-aware music
-- Event-driven sound effects
-- Haptic-audio sync
-
-### Visual Effects
-- GLSL shaders for pollution haze
-- Particle systems for snaps
-- Water flow effects
-- Dynamic lighting
-
-### Content Expansion
-- 20+ snap recipes
-- 25+ trait variants
-- New biome types
-- Rare legendary creatures
-
-### Community Features
-- World seed leaderboards
-- Haiku journal sharing
-- Bluetooth shard trading
-- Cross-device cloud saves (optional)
+✅ **Intimate**: One world you reshape over hours, not minutes  
+✅ **Tidal**: Ebb (pollution/decay) and Bloom (growth/harmony) cycles  
+✅ **Evolutionary**: Your traits inherit into the ecosystem  
+✅ **Touch-First**: Gestures as primary language, haptics as heartbeat  
+✅ **Endless Evolution**: World transforms continuously, never resets  
+✅ **Raycasted 3D**: DOS-era aesthetic, modern-smoothed
 
 ---
 
-**This vision guides all development decisions. When in doubt, return to the core philosophy: "One-World Ache, Tidal Evo Ripples"**
+## Current State vs. Vision
+
+### Current Implementation (Interim)
+- **Rendering**: 2D tile-based (Phaser 3)
+- **Status**: Stage 1 complete, core systems implemented
+- **Purpose**: Foundation for raycast 3D migration
+
+### Vision (Target)
+- **Rendering**: Raycasted 3D (Wolfenstein-style)
+- **Status**: Vision committed, implementation pending
+- **Timeline**: Stage 2+ (after performance validation)
 
 ---
 
-*Last Updated: 2025-11-06*  
-*Version: 1.0.0 (Stage 1)*  
-*Next Review: After Stage 2 Sprint 1*
+## Open Questions (To Resolve)
+
+1. **Raycast Performance**: Can raycast achieve 60 FPS on mid-range Android?
+2. **Physics Integration**: Rapier vs. tile-based collision for raycast?
+3. **Village Emergence**: How do villages spawn and evolve from simulation rules?
+4. **Combat System**: How do wisp clashes work with gesture-based controls?
+
+---
+
+**Last Updated**: 2025-01-XX  
+**Version**: 2.0.0 (Raycast 3D Vision Committed)  
+**Status**: Frozen - Master Vision Document
