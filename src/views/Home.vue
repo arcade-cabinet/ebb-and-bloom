@@ -127,17 +127,48 @@ onUnmounted(() => {
 
 const terraform = async () => {
   await Haptics.impact({ style: ImpactStyle.Light });
-  // Touch position will be handled by Phaser input
+  gameStore.addEvent({
+    type: 'terraform',
+    title: 'Terraform Mode',
+    description: 'Long-press tiles to change biomes'
+  });
 };
 
 const collectResource = async () => {
   await Haptics.impact({ style: ImpactStyle.Medium });
-  // Trigger collection in game
+  gameStore.addEvent({
+    type: 'harvest',
+    title: 'Harvest Mode',
+    description: 'Tap tiles to collect resources'
+  });
 };
 
 const snapResources = async () => {
   await Haptics.impact({ style: ImpactStyle.Heavy });
-  // Trigger snapping system
+  
+  const inv = gameStore.playerInventory;
+  // Check for snap combinations
+  if (inv.ore >= 1 && inv.water >= 1) {
+    gameStore.updatePlayerInventory({
+      ...inv,
+      ore: inv.ore - 1,
+      water: inv.water - 1,
+      alloy: (inv.alloy || 0) + 1
+    });
+    
+    gameStore.addEvent({
+      type: 'snap',
+      title: 'Snap: Alloy Created!',
+      description: 'Ore + Water → Alloy',
+      haiku: 'Metal meets the flow\nForge whispers ancient secrets\nAlloy springs to life'
+    });
+  } else {
+    gameStore.addEvent({
+      type: 'info',
+      title: 'Cannot Snap',
+      description: 'Need Ore + Water for Alloy'
+    });
+  }
 };
 
 const showStats = () => {
