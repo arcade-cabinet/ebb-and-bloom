@@ -145,3 +145,9 @@ ios/
 
 # Build outputs
 build/
+
+# Playwright
+/test-results/
+/playwright-report/
+/playwright-results/
+/playwright/.cache/

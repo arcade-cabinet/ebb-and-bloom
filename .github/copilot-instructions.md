@@ -1,3 +1,11 @@
+---
+description: 'Comprehensive GitHub Copilot instructions for Ebb & Bloom mobile game development'
+title: 'Ebb & Bloom - Mobile Game Development Assistant'
+tools: ['codebase', 'search', 'fetch', 'problems', 'findTestFiles', 'githubRepo', 'usages']
+model: 'gpt-5'
+version: '2.0'
+---
+
 # GitHub Copilot Workspace Instructions
 
 You are working on **Ebb & Bloom**, a mobile-first procedural pixel-world evolution game built with Phaser 3, BitECS, Vue 3, Ionic, and Capacitor.

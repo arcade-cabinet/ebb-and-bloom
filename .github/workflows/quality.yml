@@ -19,15 +19,13 @@ jobs:
         with:
           fetch-depth: 0
       
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-      
-      - name: Setup Node.js
+      - name: Install mise
+        uses: jdx/mise-action@v2
+        
+      - name: Setup Node.js from .tool-versions
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: '.tool-versions'
           cache: 'pnpm'
       
       - name: Install dependencies
