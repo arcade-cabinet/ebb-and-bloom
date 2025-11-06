@@ -52,7 +52,6 @@ export class GameScene extends Phaser.Scene {
     // Initialize ECS World
     this.world = resetWorld();
     useGameStore().setWorld(this.world);
-    useGameStore().initialize();
     
     // Initialize systems
     this.movementSystem = createMovementSystem();
@@ -121,6 +120,13 @@ export class GameScene extends Phaser.Scene {
     
     // Last render position for optimization
     this.lastRenderPos = { x: Position.x[this.playerEid], y: Position.y[this.playerEid] };
+    
+    // Expose ECS world to window in development mode for testing
+    // This is set at the end to ensure all systems are fully initialized
+    if (import.meta.env.DEV) {
+      (window as any).ecsWorld = this.world;
+      (window as any).ecsInitialized = true;
+    }
   }
 
   renderWorld() {
