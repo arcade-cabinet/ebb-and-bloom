@@ -1,9 +1,10 @@
 /**
  * Main entry point for Ebb & Bloom
- * Initializes Vue, Ionic, Vue Router, and Capacitor
+ * Initializes Vue, Ionic, Vue Router, Pinia, and Capacitor
  */
 
 import { createApp } from 'vue';
+import { createPinia } from 'pinia';
 import { IonicVue } from '@ionic/vue';
 import App from './App.vue';
 import router from './router';
@@ -24,6 +25,12 @@ import '@ionic/vue/css/display.css';
 
 // Create Vue app
 const app = createApp(App);
+
+// Create Pinia store (correct for Ionic Vue)
+const pinia = createPinia();
+
+// Use Pinia
+app.use(pinia);
 
 // Use Ionic with Material Design for Android
 app.use(IonicVue, {
