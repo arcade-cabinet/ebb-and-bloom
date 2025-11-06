@@ -1,0 +1,9 @@
+// State add
+riftGuardians: [{ id: string, phase: number, momentum: number }[]],
+hopBonus: string | null,
+
+// Action
+gestureFold: (type: string, guardianId: string) => ecosystem.gestureFold(type, guardianId),
+
+// Getter
+activeGuardians = () => useGame((state) => state.riftGuardians.filter(g => g.momentum > 0));

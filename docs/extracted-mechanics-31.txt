@@ -1,0 +1,36 @@
+// Burr Surge Morph Sync POC
+const audioCtx = new AudioContext();
+const morph = () => {
+  // Base: Chainsaw grind (square osc + noise scrape)
+  const osc1 = audioCtx.createOscillator(); osc1.type = 'square'; osc1.frequency.setValueAtTime(150, audioCtx.currentTime); // Low growl
+  const noise = audioCtx.createBufferSource(); // Scrape noise
+  const buffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.5, audioCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * 0.3; // Filtered white noise
+  noise.buffer = buffer;
+  const filter = audioCtx.createBiquadFilter(); filter.type = 'bandpass'; filter.frequency.value = 300; // Metallic bite
+  const gain1 = audioCtx.createGain(); gain1.gain.setValueAtTime(0.4, audioCtx.currentTime); gain1.gain.exponentialRampToValueAtTime(0.15, audioCtx.currentTime + 0.6);
+  osc1.connect(gain1).connect(audioCtx.destination);
+  noise.connect(filter).connect(gain1); noise.start();
+  osc1.start();
+
+  // Twist: Power zap (FM mod + spark crackle, Perlin jitter)
+  const carrier = audioCtx.createOscillator(); carrier.frequency.setValueAtTime(400, audioCtx.currentTime + 0.3);
+  const modulator = audioCtx.createOscillator(); modulator.frequency.setValueAtTime(80, audioCtx.currentTime + 0.3); modulator.connect(carrier.frequency); // FM burr
+  const perlinJitter = (t) => 0.8 + 0.4 * Math.sin(t * 0.15 + Math.random() * Math.PI); // Chaotic edge
+  carrier.frequency.setTargetAtTime(400 + perlinJitter(0) * 200, audioCtx.currentTime + 0.3, 0.1); // Jitter zaps
+  const gain2 = audioCtx.createGain(); gain2.gain.setValueAtTime(0.25, audioCtx.currentTime + 0.3); gain2.gain.exponentialRampToValueAtTime(0.05, audioCtx.currentTime + 1);
+  carrier.connect(gain2).connect(audioCtx.destination);
+  modulator.start(audioCtx.currentTime + 0.3); carrier.start(audioCtx.currentTime + 0.3);
+
+  // Haptic Sync: Grind rumble to zap forks
+  const envelope = (time) => 0.6 + 0.4 * Math.sin(time * 0.3); // Perlin curve for burr
+  setInterval(() => {
+    const intensity = envelope(audio.currentTime) * 0.5; // 0-0.5g
+    Haptics.vibrate({ duration: 150 * intensity }); // Escalate pulses
+    if (audio.currentTime > 0.3) Haptics.impact({ style: 'medium' }); // Zap fork at twist
+  }, 150); // 6.67Hz sync to FM low-end
+};
+
+// Trigger on morph
+morph(); // Visual tie: Burr trail sparks with audio peaks

@@ -1,0 +1,157 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboardApproval"
+  ],
+  "dependencyDashboard": false,
+  "platformAutomerge": true,
+  "automerge": true,
+  "automergeType": "pr",
+  "automergeStrategy": "squash",
+  "schedule": [
+    "after 10pm every weekday",
+    "before 5am every weekday",
+    "every weekend"
+  ],
+  "timezone": "UTC",
+  "ignoreTests": false,
+  "prConcurrentLimit": 2,
+  "prCreation": "not-pending",
+  "prHourlyLimit": 0,
+  "rebaseWhen": "behind-base-branch",
+  "semanticCommits": "enabled",
+  "separateMajorMinor": true,
+  "separateMinorPatch": false,
+  "packageRules": [
+    {
+      "description": "Automerge non-major updates in a single PR",
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "groupName": "non-major dependencies",
+      "automerge": true,
+      "minimumReleaseAge": "3 days",
+      "schedule": [
+        "after 10pm every weekday",
+        "before 5am every weekday",
+        "every weekend"
+      ]
+    },
+    {
+      "description": "Group major updates separately for manual review",
+      "matchUpdateTypes": ["major"],
+      "groupName": "major dependencies",
+      "automerge": false,
+      "schedule": [
+        "after 10pm every weekday",
+        "before 5am every weekday",
+        "every weekend"
+      ],
+      "labels": ["dependencies", "major-upgrade"]
+    },
+    {
+      "description": "GitHub Actions - automerge minor/patch",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "GitHub Actions (non-major)",
+      "automerge": true,
+      "minimumReleaseAge": "3 days"
+    },
+    {
+      "description": "GitHub Actions - separate major updates",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["major"],
+      "groupName": "GitHub Actions (major)",
+      "automerge": false,
+      "labels": ["dependencies", "github-actions", "major-upgrade"]
+    },
+    {
+      "description": "npm packages - automerge non-major",
+      "matchManagers": ["npm"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "npm dependencies (non-major)",
+      "automerge": true,
+      "stabilityDays": 3
+    },
+    {
+      "description": "npm packages - separate major",
+      "matchManagers": ["npm"],
+      "matchUpdateTypes": ["major"],
+      "groupName": "npm dependencies (major)",
+      "automerge": false,
+      "labels": ["dependencies", "npm", "major-upgrade"]
+    },
+    {
+      "description": "Development dependencies - faster automerge",
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "dev dependencies (non-major)",
+      "automerge": true,
+      "minimumReleaseAge": "1 day"
+    },
+    {
+      "description": "Game engine packages require careful review",
+      "matchPackageNames": ["phaser", "bitecs", "yuka"],
+      "matchUpdateTypes": ["major", "minor"],
+      "groupName": "game engine updates",
+      "automerge": false,
+      "labels": ["dependencies", "game-engine"],
+      "reviewers": []
+    },
+    {
+      "description": "Capacitor ecosystem - bundle together",
+      "matchPackagePatterns": ["^@capacitor/"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "Capacitor (non-major)",
+      "automerge": true,
+      "minimumReleaseAge": "5 days"
+    },
+    {
+      "description": "Capacitor major updates",
+      "matchPackagePatterns": ["^@capacitor/"],
+      "matchUpdateTypes": ["major"],
+      "groupName": "Capacitor (major)",
+      "automerge": false,
+      "labels": ["dependencies", "capacitor", "major-upgrade"]
+    },
+    {
+      "description": "Ionic/Vue ecosystem",
+      "matchPackagePatterns": ["^@ionic/", "^vue", "^@vue/"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "Vue/Ionic (non-major)",
+      "automerge": true,
+      "minimumReleaseAge": "5 days"
+    },
+    {
+      "description": "Test framework updates",
+      "matchPackagePatterns": ["vitest", "@vitest/", "happy-dom", "@testing-library/"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "testing dependencies (non-major)",
+      "automerge": true,
+      "minimumReleaseAge": "3 days"
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": ["security"],
+    "automerge": true,
+    "schedule": ["at any time"]
+  },
+  "lockFileMaintenance": {
+    "enabled": true,
+    "automerge": true,
+    "schedule": [
+      "before 5am on monday"
+    ],
+    "commitMessageAction": "Update",
+    "commitMessageTopic": "pnpm lockfile"
+  },
+  "postUpdateOptions": [
+    "pnpmDedupe"
+  ],
+  "rangeStrategy": "bump",
+  "commitMessagePrefix": "chore(deps):",
+  "commitMessageAction": "update",
+  "commitMessageTopic": "{{depName}}",
+  "commitMessageExtra": "to {{#if isPinDigest}}{{{newDigestShort}}}{{else}}{{#if isMajor}}v{{{newMajor}}}{{else}}{{#if isSingleVersion}}v{{{newVersion}}}{{else}}{{{newValue}}}{{/if}}{{/if}}{{/if}}",
+  "prBodyTemplate": "This PR contains the following updates:\n\n| Package | Update | Change |\n|---|---|---|\n{{#each upgrades as |upgrade|}}\n| {{upgrade.depName}} | {{upgrade.updateType}} | `{{upgrade.currentValue}}` -> `{{upgrade.newValue}}` |\n{{/each}}\n\n---\n\n### Configuration\n\n📅 **Schedule**: {{schedule}}\n\n🚦 **Automerge**: {{#if automerge}}Enabled{{else}}Disabled{{/if}}\n\n♻ **Rebasing**: {{rebaseWhen}}\n\n---\n\n{{#if hasReleaseNotes}}\n### Release Notes\n\n{{#each upgrades as |upgrade|}}\n{{#if upgrade.hasReleaseNotes}}\n<details>\n<summary>{{upgrade.depName}}</summary>\n\n{{upgrade.releaseNotes}}\n</details>\n{{/if}}\n{{/each}}\n{{/if}}\n\n---\n\n*This PR was generated by [Renovate Bot](https://github.com/renovatebot/renovate)*"
+}

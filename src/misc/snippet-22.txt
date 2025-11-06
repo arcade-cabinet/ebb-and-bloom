@@ -1,0 +1,10 @@
+// Snippet 1 - Context: Add to `Pack`: `huntProd: 'u32'` (aff tuned). In `ecosystem.js` (dispatch from Ionic): In Zustand `useGame`:
+
+// Action
+dispatchShardHunt: (packId: string, prodAff: number, goalType: string) => {
+  set((state) => ({ packRegistry: state.packRegistry.map(p => p.id === packId ? { ...p, status: 'hunting' } : p) }));
+  ecosystem.dispatchShardHunt(packId, prodAff, goalType);
+},
+
+// Getter
+huntReadyPacks = () => useGame((state) => state.packRegistry.filter(p => p.loyalty > 0.6 && p.status === 'idle'));

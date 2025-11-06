@@ -1,0 +1,12 @@
+// State add
+packStates: [], // Array<{id: string, loyalty: number, size: number}>
+
+// Getter
+const loyalPacks = () => useGame(state => state.packStates.filter(p => p.loyalty > 0.7));
+
+// Action
+const influencePack = (packId: string, delta: number) => {
+  set(state => ({
+    packStates: state.packStates.map(p => p.id === packId ? { ...p, loyalty: clamp(p.loyalty + delta) } : p)
+  }));
+};

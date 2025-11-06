@@ -1,0 +1,24 @@
+function enactRitual(ritualId, type, offerings) {
+  const ritual = getRitual(ritualId);
+  ritual.offerings |= offerings; // Affinity bits
+  ritual.progress += 1 / cycles; // Tick
+  if (ritual.progress >= 1) {
+    const shards = queryShardsNear(ritual.siteId);
+    const roll = noise.noise2D(ritualId, behavior.harmony);
+    let success = roll > 0.4 + (type === 'whimsy' ? 0.2 : 0);
+    if (playerTraitMatch(shards[0])) success += 0.15;
+    if (success) {
+      const reformedPack = reformPack(shards); // Average genes, addEntity(Pack)
+      reformedPack.loyalty += 0.3;
+      useGame.setState({ packRegistry: [...get().packRegistry, packState(reformedPack)], evoPoints: get().evoPoints + shards.length * 1.5 });
+      pollution -= 5; // Harmony heal
+    } else {
+      // Fail: Shatter
+      shards.forEach(shard => {
+        if (Math.random() > 0.5) spawnMiniRival(shard); // Yuka wander-attack
+        else addPollutionBurst(ritual.siteId, 5);
+      });
+    }
+    removeEntity(ritualId); // End
+  }
+}

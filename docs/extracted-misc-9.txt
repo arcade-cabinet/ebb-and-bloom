@@ -1,0 +1,20 @@
+// Dispatch hook (from Ionic long-press)
+function dispatchQuest(packId, goal, whisperTrait) {
+  const pack = getPack(packId); // Zustand pull
+  pack.status = 'questing'; // ECS update
+  const yukaGoal = new Yuka.GoalBehavior(goalTarget(goal)); // Biome seek
+  if (whisperTrait) pack.genes |= whisperTrait.bits; // Temp lend
+  pack.yukaGroup.steering.add(yukaGoal);
+  // Event sim: setTimeout(resolveQuest, duration * 60000);
+}
+
+function resolveQuest(packId) {
+  const pack = getPack(packId);
+  const roll = noise.noise2D(packId, Date.now());
+  let outcome = roll > 0.4 ? 'success' : (roll > 0.1 ? 'partial' : 'fail');
+  if (behavior.conquest > 0.6) outcome = roll > 0.6 ? outcome : 'fail'; // Skew
+  // Haul spawn: if success, addEntity(Resource, haulType(outcome))
+  pack.loyalty += outcome === 'success' ? 0.1 : (outcome === 'fail' ? -0.2 : 0);
+  if (pack.loyalty < 0.3) spawnRivalPack(pack); // Defection
+  useGame.setState({ packRegistry: updateRegistry() });
+}

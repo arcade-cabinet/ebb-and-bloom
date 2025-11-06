@@ -1,0 +1,33 @@
+// Pack assembly tick (every cycle)
+function updatePacks() {
+  // Yuka group query: Cluster critters <32px
+  const clusters = yukaFlockClusters(critterQuery(world)); // Custom: GroupBehavior output
+  clusters.forEach(cluster => {
+    if (cluster.length >= 3) {
+      const packId = bitecs.addEntity(world, [Pack, Position]);
+      Pack.leader[packId] = cluster[0]; // Strongest trait
+      Pack.size[packId] = cluster.length;
+      Pack.loyalty[packId] = 0.5 + (behavior.harmony * 0.2);
+      Pack.affMask[packId] = avgTraits(cluster); // Inherited mask
+      // Yuka: Assign group steering to pack
+      const group = new Yuka.GroupBehavior(cluster.map(c => critterVehicles[c]));
+      cluster.forEach(c => critterVehicles[c].steering.add(group));
+    }
+  });
+  // Interactions: Query rival packs, roll diplomacy
+  packQuery(world).forEach(pId => {
+    const rivals = getRivalPacks(pId); // Aff overlap <2
+    if (rivals.length && noise.noise2D(pId, Date.now()) > 0.7) {
+      triggerTurfWar(pId, rivals[0]); // Yuka pursue, resolve yield contest
+      Pack.loyalty[pId] -= 0.1;
+    }
+  });
+  useGame.setState({ packStates: serializePacks(world) }); // For UI
+}
+
+// Turf stub
+function triggerTurfWar(p1, p2) {
+  // Yuka duel: Pursue until separation >64px, winner = higher loyalty
+  const winner = Math.random() > 0.5 ? p1 : p2; // Bias traits
+  // Award snap to winner's aff
+}

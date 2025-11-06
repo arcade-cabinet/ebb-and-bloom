@@ -1,0 +1,38 @@
+function initiatePurge(rivalId, riteSnap) {
+  const rival = getPack(rivalId);
+  if (!validRite(riteSnap, rival.taint)) return; // Cost check
+  spawnPurgeFront(rival.pos, playerTraits); // Temp entities
+  const front = getFront(); // Yuka group
+  front.yukaBehavior = new Yuka.WanderBehavior(rival.territory, 128); // Propagate
+  setTimeout(() => clashPurge(rivalId), clashTime);
+}
+
+function clashPurge(rivalId) {
+  const rival = getPack(rivalId);
+  const roll = noise.noise2D(rivalId + 'purge', behavior.conquest);
+  const success = roll > (0.3 + (behavior.harmony * 0.2)); // Skew
+  if (success) {
+    removeEntities(rival.packIds); // Erase
+    reclaimTerritory(rival.territory); // +Yields ECS
+    const scarId = addEntity(Scar, rival.pos);
+    Scar.affinity[scarId] = calcScarAff(behavior); // Heat/life etc.
+    snapCheck(scarId); // New chains
+    useGame.setState({ packRegistry: filterOut(rivalId), evoPoints: get().evoPoints + (rival.grudgeDebt * 1.5) });
+  } else if (roll > 0.1) {
+    // Rebound: 30% survive
+    rival.size *= 0.7;
+    rival.status = 'wraith';
+    rival.yukaBehavior = new Yuka.HideBehavior(playerPos); // Stealth raids
+    pollution += 5;
+    spawnRelicVoid(rival.pos);
+  } else {
+    // Amplification
+    rival.size *= 1.5;
+    infectPacks(nearbyPacks(rival.pos), 0.2); // Loyalty
+    pollution += rival.maturity * 3;
+    if (pollution > 70) mutateWorld(); // Shock
+    playerAura.debuff = 'reverb'; // Temp trait jam
+  }
+  // Haunt roll
+  if (roll < 0.1) playerTraits.taint |= voidBit; // Debuff
+}

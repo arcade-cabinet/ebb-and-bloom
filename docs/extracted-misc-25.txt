@@ -1,0 +1,51 @@
+function startAbyssReclaim(abyssId, rigType) {
+  const abyss = getAbyss(abyssId);
+  abyss.rigAff = rigType; // Life/bind etc.
+  abyss.prog = 0;
+  abyss.status = 'reclaiming';
+  // Yuka pioneers
+  const pioneerWave = spawnPioneerPack(abyss.pos); // Temp or loyal pack
+  pioneerWave.yukaBehavior = new Yuka.SeekBehavior(abyssRim); // Stitch edges
+  let phase = 1;
+  const interval = setInterval(() => {
+    if (phase === 1) { // Stitch
+      simStitchEvent(pioneerWave, abyss);
+      abyss.prog += 0.25 + (behavior.harmony * 0.1);
+    } else if (phase === 2) { // Surge
+      pioneerWave.yukaBehavior = new Yuka.FlockBehavior(abyssCore);
+      simSurgeEvent(pioneerWave);
+      abyss.prog += 0.35;
+    }
+    if (abyss.prog >= 1 || phase > 3) {
+      clearInterval(interval);
+      resolveReclaim(abyssId);
+    }
+    phase++;
+  }, cycleTime);
+}
+
+function resolveReclaim(abyssId) {
+  const abyss = getAbyss(abyssId);
+  const roll = noise.noise2D(abyssId + 'reclaim', behavior.conquest);
+  const depthMod = 1 - (abyss.depth / 5);
+  let outcome = roll > (0.35 - depthMod * 0.2) ? 'bloom' : (roll > 0.1 ? 'hunger' : 'swallow');
+  if (behavior.harmony > 0.6) outcome = outcome === 'swallow' ? 'hunger' : outcome;
+  if (outcome === 'bloom') {
+    // Reweave
+    flipBiomeChunk(abyss.pos, abyss.rigAff | voidBit * 0.15, abyss.size); // Hybrid
+    useGame.setState({ evoPoints: get().evoPoints + abyss.depth * 3, abyssFronts: filterOut(abyssId) });
+    spawnNexusEcho(abyss.pos); // Hunt ping
+  } else if (outcome === 'hunger') {
+    flipBiomeChunk(abyss.pos, abyss.rigAff | voidBit * 0.5, abyss.size / 2); // Partial
+    pollution += 15;
+    spawnFissureShard(abyss.pos);
+  } else {
+    // Swallow
+    expandAbyss(abyss.pos, 2);
+    pollution += 20;
+    if (pollution > 70) mutateWorld();
+    playerAura.debuff('echoed', 2);
+    spawnTideRelic(abyss.pos);
+  }
+  abyss.status = 'idle';
+}
