@@ -41,7 +41,7 @@ export default defineConfig({
   // Shared settings for all projects
   use: {
     // Base URL for the game (will be overridden per environment)
-    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:5173',
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || `http://localhost:${process.env.VITE_DEV_SERVER_PORT || process.env.PORT || '3000'}`,
     
     // Collect trace when retrying the failed test
     trace: 'on-first-retry',
@@ -115,7 +115,7 @@ export default defineConfig({
   // Local dev server (for Vite)
   webServer: process.env.CI || process.env.PLAYWRIGHT_SKIP_SERVER ? undefined : {
     command: 'pnpm dev',
-    url: 'http://localhost:5173',
+    url: `http://localhost:${process.env.VITE_DEV_SERVER_PORT || process.env.PORT || '3000'}`,
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
   },

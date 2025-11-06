@@ -4,6 +4,10 @@ import { resolve } from 'path';
 
 export default defineConfig({
   plugins: [vue()],
+  server: {
+    port: parseInt(process.env.VITE_DEV_SERVER_PORT || process.env.PORT || '3000', 10),
+    host: process.env.HOST || '0.0.0.0'
+  },
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src')

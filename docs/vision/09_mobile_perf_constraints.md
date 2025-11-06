@@ -165,3 +165,4 @@ Mobile-first viability is important, but fun > framework. Target 60 FPS on mobil
 
 **Next Stage**: Vertical slice plan and MVP scope
 
+
