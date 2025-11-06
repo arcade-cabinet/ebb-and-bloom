@@ -521,7 +521,7 @@ Cleanup completed:
 **Date**: 2025-11-06 (During agent automation setup)
 
 **Issue**: Dev server connectivity problems discovered while setting up Playwright E2E testing:
-- Vite dev server starts on port 5173 (not 3000 as initially configured)
+- Vite dev server started on port 5173 (expected: 3000 per updated vite.config.js using `VITE_DEV_SERVER_PORT` or `PORT` env vars)
 - Server appears to stop responding during Playwright test execution
 - All E2E tests fail with `ERR_CONNECTION_REFUSED`
 
