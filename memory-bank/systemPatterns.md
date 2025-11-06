@@ -57,6 +57,16 @@ gh api /repos/OWNER/REPO/pulls/<number>/reviews -X POST \
   --field body="Review response text" \
   --field event="COMMENT"
 
+# Resolve review threads (GraphQL API)
+gh api graphql -f query='
+  mutation {
+    resolveReviewThread(input: {threadId: "THREAD_ID"}) {
+      thread {
+        isResolved
+      }
+    }
+  }'
+
 # Note: Token needs these scopes:
 # - repo (required for PR access)
 # - workflow (for CI/CD)
