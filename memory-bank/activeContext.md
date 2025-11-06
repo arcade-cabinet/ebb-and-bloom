@@ -2,167 +2,207 @@
 
 **Version**: 4.0.0  
 **Date**: 2025-11-06  
-**Status**: Stage 2 Transition - 100% Documentation Alignment Complete
+**Status**: Stage 2 Development - Reflecting Authoritative Docs
 
 ---
 
 ## Current State ✅
 
-**Sprint Goal**: Complete Stage 2 Transition Alignment - 100% Documentation Accuracy ✅ **COMPLETE**
+**Sprint Goal**: Align memory-bank to authoritative docs/ folder ✅ **COMPLETE**
 
 **What Just Happened**:
-- ✅ Comprehensive alignment audit completed (70% → 100% aligned)
-- ✅ Identified 7 critical misalignments, created remediation plan
-- ✅ Created STAGE_2_COMPLETE_SCOPE.md (authoritative Stage 2 definition)
-- ✅ Created STAGE_1_GAP_ANALYSIS.md (17 gaps identified, 12 must fix)
-- ✅ Created ARCHITECTURE_TRANSITION_PATH.md (2D→raycast 3D plan)
-- ✅ Created STAGE_2_TRANSITION_ALIGNMENT.md (comprehensive report)
-- ✅ **DECISION**: Raycast 3D deferred to Stage 3 (pending performance validation)
-- ✅ **DECISION**: Stage 2 focuses on complete playable 2D mobile game
+- ✅ Read AUTHORITATIVE docs (VISION.md, ARCHITECTURE.md, TECH_STACK.md, ROADMAP.md)
+- ✅ Corrected misunderstanding: docs/ = source of truth, memory-bank/ = reflection
+- ✅ Identified KEY MISALIGNMENT: docs say Zustand, code uses Pinia
+- ✅ Updated memory-bank to accurately reflect authoritative vision
+- ✅ Cleared memory-bank of incorrectly placed "authoritative" documents
 
-**Status**: All memory-bank docs aligned to 100%. Zero ambiguity. Ready for Stage 2 implementation.
+**Status**: Memory-bank now REFLECTS authoritative docs. Ready for Stage 2 per ROADMAP.md.
 
 ---
 
 ## CLEAR NEXT STEPS
 
-### IMMEDIATE: Remediate Critical Misalignments (This PR)
-**Goal**: Fix architecture misalignments before Stage 2 development begins
+### CRITICAL ISSUE: Zustand vs Pinia Mismatch 🔴
+**Problem**: 
+- **docs/TECH_STACK.md says**: "Zustand 5.0+ (Locked)"  
+- **Actual code uses**: Pinia 3.0.4 (in package.json, working great)
+- **Impact**: Documentation lies about core architecture
 
-**Must Complete Before Stage 2 PR Merge**:
-1. ✅ **Zustand/Pinia Decision**: Keep Pinia, update all docs (COMPLETED in this analysis)
-2. ✅ **Rendering Architecture Clarity**: Raycast deferred to Stage 3 (DECIDED)
-3. ✅ **Stage 2 Scope Defined**: See STAGE_2_COMPLETE_SCOPE.md (COMPLETED)
-4. ✅ **Stage 1 Gaps Documented**: See STAGE_1_GAP_ANALYSIS.md (COMPLETED)
-5. ⏳ **Update All Memory-Bank Files**: Reflect new decisions (IN PROGRESS)
-6. ⏳ **Fix File Path References**: Correct doc references (PENDING)
-7. ⏳ **Update All Main Docs**: Align with memory-bank (PENDING)
-
-**Deliverable**: 100% aligned documentation, ready for Stage 2 development
+**Resolution Needed**:
+- EITHER: Install Zustand and migrate (rewrite gameStore.ts, test everything)
+- OR: Update docs/TECH_STACK.md and docs/ARCHITECTURE.md to say Pinia
+- **Recommendation**: Keep Pinia (working), update docs
 
 ---
 
-### STAGE 2 Priority 1: UX Polish (Sprints 1-2, 2 weeks)
-**Goal**: Address "very clunky" feedback, create smooth onboarding
+### Stage 2 Development (Per ROADMAP.md)
+**Timeline**: 8-12 weeks  
+**Status**: Foundation complete (Stage 1 ✅), ready to begin
 
-**Tasks**: See STAGE_2_COMPLETE_SCOPE.md Section 1
+#### Sprint 1-2: UX Polish (2 weeks)
+- Onboarding flow
+- Gesture tutorials  
+- Catalyst creator UI
+- Particle effects + haptic sync
+- Device testing
 
-**Deliverable**: Smooth 10-minute onboarding experience
+#### Sprint 3-4: Combat System (2 weeks)
+- Wisp clashes (momentum-based)
+- Gesture attacks (swipe/pinch)
+- Affinity resonance
+- Loot system
 
----
-
-### STAGE 2 Priority 2: Combat System (Sprints 3-4, 2 weeks)
-**Goal**: Implement wisp clashes with momentum-based combat
-
-**Tasks**: See STAGE_2_COMPLETE_SCOPE.md Section 2
-
-**Deliverable**: Working combat system with gesture controls
-
----
-
-### STAGE 2 Priority 3: Content Expansion (Sprints 5-6, 2 weeks)
-**Goal**: Expand core fun mechanics with more content
-
-**Tasks**: See STAGE_2_COMPLETE_SCOPE.md Section 3
-
-**Deliverable**: 15+ recipes, 15+ traits, 5+ biomes
+#### Sprint 5-6: Content Expansion (2 weeks)
+- 5+ new recipes
+- 5+ new traits
+- 2+ new biomes
+- Visual polish
 
 ---
 
-### STAGE 2 Priority 4: Performance & Polish (Sprints 7-8, 2 weeks)
-**Goal**: 60 FPS validated, all bugs fixed, ready for beta
+---
 
-**Tasks**: See STAGE_2_COMPLETE_SCOPE.md Section 4
+### Stage 3: Raycast 3D Migration (Per ROADMAP.md)
+**Timeline**: 4-6 weeks AFTER Stage 2  
+**Status**: Vision committed in docs/VISION.md
 
-**Deliverable**: Production-ready mobile game (2D optimized)
+#### Performance Validation (1 week) - DECISION GATE
+- Build raycast POC
+- Test on mid-range Android
+- Benchmark: 60 FPS achievable?
+- **Decision**: Proceed with raycast OR fallback to enhanced 2D
+
+#### If Validation Passes (3-4 weeks)
+- Raycast engine integration
+- Heightmap generation
+- Gesture controls (swipe-turn, pinch-zoom)
+- ECS integration
+
+#### If Validation Fails (fallback)
+- Stay 2D, enhance with shaders/effects
 
 ---
 
-### STAGE 3 (Future): Raycast 3D Migration
-**Goal**: Migrate from 2D tiles to raycasted 3D (10 weeks)
+---
 
-**Timeline**: After Stage 2 complete, pending performance validation
+## Key Insights from Authoritative Docs
 
-**Tasks**: See ARCHITECTURE_TRANSITION_PATH.md
+### From docs/VISION.md (v2.0.0 - Frozen)
+- **Core Vision**: Raycasted 3D world simulation, DOS-era aesthetic
+- **Status**: "Vision committed. Current implementation is 2D tile-based (interim). Raycast 3D is the target."
+- **Timeline**: "Stage 2+ (after performance validation)"
+- **Rendering**: "Raycasted 3D" is the target vision, 2D is interim
 
-**Decision Point**: Phase 1 performance validation is MANDATORY before commitment
+### From docs/ARCHITECTURE.md (v2.0.0 - Frozen)
+- **State Management**: Says "Zustand" but notes "Pinia (Vue-native state management)" in one section
+- **ECS**: BitECS is core, rendering is read-only
+- **Current Stage**: Stage 2 = Production 2D, Stage 3 = Raycast migration (conditional)
 
-**Fallback**: Enhanced 2D with shaders/effects (2 weeks if raycast fails)
+### From docs/TECH_STACK.md (v2.0.0 - Frozen)
+- **State**: "Zustand 5.0+ (Locked)" ← MISMATCH WITH CODE
+- **Rendering**: Phaser (current), Raycast (target)
+- **Status**: "Vision committed, implementation Stage 2+"
+
+### From docs/ROADMAP.md (v2.0.0 - Frozen)
+- **Stage 1**: Complete ✅
+- **Stage 2**: Core Gameplay Expansion (8-12 weeks)
+- **Stage 3**: Raycast 3D Migration (4-6 weeks, conditional)
+- **Stage 4**: Content Expansion
+- **Stage 5**: Polish & Launch
 
 ---
 
-## Implementation Priorities
-
-### Must Have (Stage 2 - Blocking)
-1. **UX Polish** - Onboarding, catalyst creator, tutorials (Sprints 1-2)
-2. **Combat System** - Wisp clashes, gesture attacks (Sprints 3-4)
-3. **Content Expansion** - 15+ recipes, 15+ traits, 5+ biomes (Sprints 5-6)
-4. **Performance & Polish** - 60 FPS, device testing, bug fixes (Sprints 7-8)
-
-### Stage 3 (After Stage 2)
-5. **Raycast 3D Migration** - Wolfenstein-style rendering (10 weeks, conditional)
-6. **Nova Cycles** - 45-90min world resets (2 weeks)
-7. **Stardust Hops** - World-hopping mechanics (2 weeks)
-
-### Stage 4+ (Future)
-8. **Villages & Quests** - Emergent content systems
-9. **Audio System** - Procedural soundscapes
-10. **Visual Effects** - Advanced shaders, particles
-11. **Community Features** - Seed sharing, haiku export
 
 ---
 
-## Key Decisions Made
+## Implementation Priority (From ROADMAP.md)
 
-### Rendering: Raycast 3D ✅ VISION GOAL (Stage 3)
-- **Vision**: Raycasted 3D (Wolfenstein-style) - target goal
-- **Current**: 2D tile-based (Phaser 3) - production-ready for Stage 2
-- **Timeline**: Stage 3 (pending performance validation)
-- **Decision**: Stage 2 completes 2D implementation first
-- **Fallback**: Enhanced 2D if raycast performance insufficient
+### Stage 2: Core Gameplay Expansion (Current) 🎯
+**Goal**: Playable vertical slice with core loop  
+**Timeline**: 8-12 weeks
 
-### Brand Identity: Option D (Hybrid) ✅ COMMITTED
+1. **UX Polish** (Sprints 1-2)
+2. **Combat System** (Sprints 3-4)
+3. **Content Expansion** (Sprints 5-6)
+
+### Stage 3: Raycast 3D Migration (Next)
+**Goal**: Migrate from 2D tiles to raycasted 3D  
+**Timeline**: 4-6 weeks (conditional on performance validation)
+
+### Stage 4: Content Expansion
+**Goal**: Expand content variety and depth  
+**Timeline**: 4-6 weeks
+- 10+ more recipes
+- 5+ more traits
+- Villages & quests
+
+### Stage 5: Polish & Launch
+**Goal**: Production-ready release  
+**Timeline**: 4-6 weeks
+- Audio system
+- Visual effects
+- Balance & tuning
+- App store launch
+
+---
+
+## Authoritative Vision (From docs/)
+
+### Rendering Architecture
+- **Vision** (docs/VISION.md): "Raycasted 3D" - committed vision
+- **Status** (docs/VISION.md): "Current implementation is 2D tile-based (interim). Raycast 3D is the target."
+- **Timeline** (docs/ROADMAP.md): Stage 3 (after Stage 2, conditional on performance)
+- **Current**: Phaser 3 (2D) - interim foundation
+
+### Brand Identity (Per docs/VISION.md)
 - **Tagline**: "Shape Worlds. Traits Echo. Legacy Endures."
-- **Brand Voice**: Hybrid - Poetic for world/atmosphere, technical for systems, playful for onboarding
+- **Approach**: Hybrid - Gameplay clarity + poetic resonance
+- **Brand Voice**: Poetic for world/atmosphere, technical for systems, playful for onboarding
 
-### Technology Stack: Locked ✅
-- **Platform**: Ionic/Vue/Capacitor
-- **ECS**: BitECS
-- **AI**: YukaJS
-- **State**: Pinia (NOT Zustand - docs will be updated)
-- **Rendering**: Phaser 3 (production Stage 2) → Raycast 3D (Stage 3 target)
+### Technology Stack (Per docs/TECH_STACK.md)
+- **Platform**: Ionic/Vue/Capacitor (Locked)
+- **ECS**: BitECS 0.3+ (Locked)
+- **AI**: YukaJS 0.7+ (Locked)
+- **State**: **Zustand 5.0+ (Locked)** ← MISMATCH: Code uses Pinia!
+- **Rendering**: Phaser 3.87+ (current) → Raycast (target, Stage 3)
 
 ---
 
-## Current Implementation Status
+## Current Implementation Status (Per docs/ROADMAP.md)
 
-### ✅ Complete (Stage 1)
-- ECS Architecture (BitECS) - 95% complete
-- 6 Game Systems (Movement, Crafting, Snapping, Pack, Pollution, Behavior)
-- 3 Cross-Cutting Systems (Haiku, Haptic, Gesture)
-- 57/57 Tests Passing
-- CI/CD Operational
+### ✅ Stage 1: Foundation COMPLETE
+- ECS Architecture (BitECS)
+- 10 Trait Components with synergies
+- Resource Snapping System (affinity-based)
+- Pack System (formation, loyalty, roles)
+- Pollution & Shock System
+- Behavior Profiling (Harmony/Conquest/Frolick)
+- Haptic System (20+ patterns)
+- Gesture System (7 gesture types)
+- World Generation (Perlin noise, chunk-based)
+- CI/CD Pipeline
 - Mobile Framework (Vue/Capacitor/Ionic)
-- **Gaps Identified**: 17 total (7 critical, 5 moderate, 5 minor)
+- **57/57 Tests Passing** ✅
 
-### 🎯 Stage 2 (8-12 weeks)
-- **Sprint 1-2**: UX Polish (onboarding, catalyst creator, tutorials)
-- **Sprint 3-4**: Combat System (wisp clashes, gesture attacks, loot)
-- **Sprint 5-6**: Content Expansion (15+ recipes, 15+ traits, 5+ biomes)
-- **Sprint 7-8**: Performance & Polish (60 FPS, device testing, bug fixes)
-- **Goal**: Complete, playable, polished mobile game (2D)
+### 🎯 Stage 2: Core Gameplay Expansion (Current)
+**Per ROADMAP.md: 8-12 weeks**
 
-### ⏳ Stage 3 (10 weeks)
-- **Phase 1**: Raycast performance validation (1 week) - DECISION GATE
-- **Phase 2-6**: Raycast migration (9 weeks) - if validation passes
-- **Fallback**: Enhanced 2D (2 weeks) - if raycast fails
-- **Also**: Nova Cycles, Stardust Hops implementation
+- Sprint 1-2: UX Polish
+- Sprint 3-4: Combat System
+- Sprint 5-6: Content Expansion
 
-### ⏳ Stage 4+ (Future)
-- Villages & Quests (emergent content)
-- Audio System (procedural soundscapes)
-- Visual Effects (advanced shaders)
-- Community Features (seed sharing)
+### ⏳ Stage 3: Raycast 3D Migration (Next)
+**Per ROADMAP.md: 4-6 weeks** (conditional)
+
+- Performance validation (1 week decision gate)
+- Raycast implementation (3-4 weeks if validated)
+- Migration & testing (1 week)
+- **Fallback**: Stay 2D if performance insufficient
+
+### ⏳ Stage 4-5: Content & Launch (Future)
+- Stage 4: Content expansion (4-6 weeks)
+- Stage 5: Polish & launch (4-6 weeks)
 
 ---
 
@@ -172,41 +212,53 @@ All prerequisites complete. Ready to begin Stage 2 implementation.
 
 ---
 
-## Success Criteria
+## Success Criteria (Per docs/ROADMAP.md)
 
-### Stage 2 Complete When (ALL MUST BE MET):
-- [ ] Smooth onboarding flow (10-minute tutorial completion >90%)
-- [ ] Catalyst creator UI functional (trait selection + Evo points)
-- [ ] Combat system working (all 3 playstyles viable)
-- [ ] Content expansion (15+ recipes, 15+ traits, 5+ biomes)
-- [ ] 60 FPS maintained on mid-range Android
-- [ ] <150MB RAM, <3s load time, <10% battery/hour
-- [ ] All 80+ tests passing (new systems have tests)
-- [ ] Tested on 3+ real Android devices
-- [ ] All critical bugs fixed
-- [ ] See STAGE_2_COMPLETE_SCOPE.md for full checklist
+### Stage 2 MVP Complete When:
+- [ ] Core loop playable (10-minute demo)
+- [ ] Combat system working
+- [ ] Content expansion complete (more recipes/traits/biomes)
+- [ ] UX flow smooth
+- [ ] Catalyst creator functional
+
+### Stage 2 Success Metrics (Per docs/ROADMAP.md):
+- **Session Length**: 20-60 minutes average
+- **Return Rate**: 70%+ linger rate
+- **Performance**: 60 FPS on mid-range Android
+- **Completion**: 30%+ unlock all traits
 
 ### Ready for Stage 3 (Raycast) When:
-- [ ] Stage 2 100% complete
-- [ ] Beta testing feedback reviewed
-- [ ] Raycast POC built and benchmarked
-- [ ] Performance validation: 60 FPS achieved on raycast POC
-- [ ] Decision made: proceed with raycast or fallback to enhanced 2D
+- [ ] Stage 2 100% complete per ROADMAP.md milestones
+- [ ] Raycast POC performance validated (60 FPS on mid-range Android)
+- [ ] Decision made: proceed with raycast OR enhanced 2D fallback
 
 ---
 
 ---
 
-## Critical References
+## CRITICAL: Zustand vs Pinia Mismatch
 
-- **Stage 2 Scope**: `memory-bank/STAGE_2_COMPLETE_SCOPE.md` (AUTHORITATIVE)
-- **Stage 1 Gaps**: `memory-bank/STAGE_1_GAP_ANALYSIS.md` (17 gaps identified)
-- **Transition Plan**: `memory-bank/ARCHITECTURE_TRANSITION_PATH.md` (2D→raycast)
-- **Alignment Report**: `memory-bank/STAGE_2_TRANSITION_ALIGNMENT.md` (7 critical issues)
+**The Issue**:
+- docs/TECH_STACK.md says: "Zustand 5.0+ (Locked)"
+- docs/ARCHITECTURE.md says: "Zustand (UI State - Read Only)"
+- **Actual code**: Uses Pinia 3.0.4 (package.json, gameStore.ts)
+- Zustand is NOT even installed!
+
+**This MUST Be Resolved**:
+- Update docs/ to say Pinia (recommended - code works great)
+- OR install Zustand and migrate code (lots of work)
+
+---
+
+## References
+
+- **AUTHORITATIVE DOCS**: `docs/` folder (VISION.md, ARCHITECTURE.md, TECH_STACK.md, ROADMAP.md)
+- **Memory Bank**: Reflection of authoritative docs for AI context
+- **Current Phase**: Stage 2 development per ROADMAP.md
 
 ---
 
 **Last Updated**: 2025-11-06  
-**Version**: 4.0.0 (100% Documentation Alignment Complete)  
-**Status**: Ready for Stage 2 Development  
-**Confidence**: Very High - All misalignments identified and remediated
+**Version**: 4.0.0 (Corrected to Reflect Authoritative Docs)  
+**Status**: Memory-bank now properly reflects docs/ folder  
+**Critical Issue**: Zustand vs Pinia mismatch must be resolved
