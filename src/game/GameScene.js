@@ -55,8 +55,14 @@ export class GameScene extends Phaser.Scene {
     this.cameras.main.setBounds(0, 0, bounds.width, bounds.height);
     this.cameras.main.startFollow({ x: this.player.x, y: this.player.y }, true, 0.1, 0.1);
     
-    // Render world tiles
-    this.tileSprites = [];
+    // Sprite pooling for better performance
+    this.tileSprites = new Map(); // Store sprites by tile key
+    this.spritePool = {
+      water: [],
+      grass: [],
+      flower: [],
+      ore: []
+    };
     this.renderWorld();
     
     // Create player sprite
@@ -71,6 +77,10 @@ export class GameScene extends Phaser.Scene {
       this.game.canvas
     );
     
+    // Resource collection timer
+    this.resourceCollectionTimer = 0;
+    this.resourceCollectionDelay = 500; // 500ms = 0.5 seconds
+    
     // UI elements
     this.createUI();
     
@@ -81,7 +91,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   renderWorld() {
-    // Get visible tiles around player (optimized viewport culling)
+    // Get visible tiles around player (optimized viewport culling with sprite pooling)
     const playerTilePos = this.player.getTilePosition(8);
     const viewRadius = 60; // Tiles to render around player
     
@@ -91,20 +101,42 @@ export class GameScene extends Phaser.Scene {
       viewRadius
     );
     
-    // Clear existing sprites (reuse sprite pool in future optimization)
-    this.tileSprites.forEach(sprite => sprite.destroy());
-    this.tileSprites = [];
+    // Mark all current sprites as inactive
+    const activeKeys = new Set();
     
-    // Render visible tiles
+    // Update or create sprites for visible tiles
     visibleTiles.forEach(tile => {
-      const sprite = this.add.sprite(
-        tile.worldX * 8 + 4,
-        tile.worldY * 8 + 4,
-        tile.type
-      );
-      sprite.setOrigin(0.5, 0.5);
-      this.tileSprites.push(sprite);
+      const key = `${tile.worldX},${tile.worldY}`;
+      activeKeys.add(key);
+      
+      let sprite = this.tileSprites.get(key);
+      if (!sprite) {
+        // Try to reuse from pool or create new
+        if (this.spritePool[tile.type].length > 0) {
+          sprite = this.spritePool[tile.type].pop();
+          sprite.setActive(true);
+          sprite.setVisible(true);
+        } else {
+          sprite = this.add.sprite(0, 0, tile.type);
+          sprite.setOrigin(0.5, 0.5);
+        }
+        this.tileSprites.set(key, sprite);
+      }
+      
+      // Update position (sprite might be reused from different location)
+      sprite.setPosition(tile.worldX * 8 + 4, tile.worldY * 8 + 4);
     });
+    
+    // Return unused sprites to pool
+    for (const [key, sprite] of this.tileSprites.entries()) {
+      if (!activeKeys.has(key)) {
+        sprite.setActive(false);
+        sprite.setVisible(false);
+        const type = sprite.texture.key;
+        this.spritePool[type].push(sprite);
+        this.tileSprites.delete(key);
+      }
+    }
   }
 
   createUI() {
@@ -205,11 +237,17 @@ export class GameScene extends Phaser.Scene {
     const tile = this.worldCore.getTile(tilePos.x, tilePos.y);
     
     if (tile && (tile.type === 'ore' || tile.type === 'water')) {
-      // Auto-collect resources with better probability
-      // 5% chance per frame = ~3 times per second at 60FPS
-      if (Phaser.Math.Between(0, 20) === 0) {
+      // Timer-based collection for predictable, responsive gameplay
+      // Collect after standing on tile for 500ms
+      this.resourceCollectionTimer += this.game.loop.delta;
+      
+      if (this.resourceCollectionTimer >= this.resourceCollectionDelay) {
         this.player.collectResource(tile.type);
+        this.resourceCollectionTimer = 0; // Reset timer after collection
       }
+    } else {
+      // Reset timer when not on resource tile
+      this.resourceCollectionTimer = 0;
     }
   }
 

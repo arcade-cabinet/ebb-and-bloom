@@ -15,10 +15,12 @@ class PerlinNoise {
       p[i] = i;
     }
     
-    // Shuffle using seed-based random
+    // Shuffle using LCG (Linear Congruential Generator) for better distribution
+    // LCG parameters: a=1664525, c=1013904223, m=2^32 (Numerical Recipes)
+    let rng = seed;
     for (let i = 255; i > 0; i--) {
-      const random = Math.abs(Math.sin(seed * (i + 1)) * 10000);
-      const j = Math.floor(random % (i + 1));
+      rng = (rng * 1664525 + 1013904223) | 0; // | 0 for 32-bit integer
+      const j = ((rng >>> 0) % (i + 1)); // unsigned right shift for positive modulo
       [p[i], p[j]] = [p[j], p[i]];
     }
     

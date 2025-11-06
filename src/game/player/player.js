@@ -95,19 +95,6 @@ export class Player {
     return false;
   }
 
-  craft(recipe) {
-    // Basic crafting: ore + water = alloy
-    if (recipe === 'alloy') {
-      if (this.inventory.ore > 0 && this.inventory.water > 0) {
-        this.inventory.ore--;
-        this.inventory.water--;
-        this.inventory.alloy++;
-        return true;
-      }
-    }
-    return false;
-  }
-
   getPosition() {
     return { x: this.x, y: this.y };
   }
