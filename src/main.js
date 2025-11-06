@@ -1,11 +1,12 @@
 /**
  * Main entry point for Ebb & Bloom
- * Initializes Vue, Ionic, and Capacitor
+ * Initializes Vue, Ionic, Vue Router, and Capacitor
  */
 
 import { createApp } from 'vue';
 import { IonicVue } from '@ionic/vue';
 import App from './App.vue';
+import router from './router';
 
 // Ionic CSS
 import '@ionic/vue/css/core.css';
@@ -13,14 +14,27 @@ import '@ionic/vue/css/normalize.css';
 import '@ionic/vue/css/structure.css';
 import '@ionic/vue/css/typography.css';
 
+// Optional Ionic theme
+import '@ionic/vue/css/padding.css';
+import '@ionic/vue/css/float-elements.css';
+import '@ionic/vue/css/text-alignment.css';
+import '@ionic/vue/css/text-transformation.css';
+import '@ionic/vue/css/flex-utils.css';
+import '@ionic/vue/css/display.css';
+
 // Create Vue app
 const app = createApp(App);
 
-// Use Ionic
+// Use Ionic with Material Design for Android
 app.use(IonicVue, {
   mode: 'md', // Material Design for Android
   animated: true
 });
 
-// Mount when ready
-app.mount('#app');
+// Use Vue Router
+app.use(router);
+
+// Mount when router is ready
+router.isReady().then(() => {
+  app.mount('#app');
+});

@@ -1,75 +1,116 @@
-/**
- * Zustand Game Store - Centralized reactive state
- * Integrates with ECS for game state management
- */
-
 import { create } from 'zustand';
 import type { IWorld } from 'bitecs';
 
-interface GameState {
-  // ECS World
-  world: IWorld | null;
-  
-  // Game state
-  pollution: number;
-  fps: number;
-  
-  // Player stats (synced from ECS)
-  playerPosition: { x: number; y: number };
-  playerInventory: { ore: number; water: number; alloy: number };
-  
-  // Actions
-  setWorld: (world: IWorld) => void;
-  setPollution: (pollution: number) => void;
-  addPollution: (amount: number) => void;
-  setFPS: (fps: number) => void;
-  updatePlayerPosition: (x: number, y: number) => void;
-  updatePlayerInventory: (ore: number, water: number, alloy: number) => void;
-  
-  // Game lifecycle
-  initialize: () => void;
-  reset: () => void;
+interface GameEvent {
+  type: string;
+  title: string;
+  description: string;
+  timestamp: number;
+  haiku?: string;
 }
 
-export const useGameStore = create<GameState>((set) => ({
+interface GameState {
+  // Core state
+  pollution: number;
+  fps: number;
+  playerPosition: { x: number; y: number };
+  playerInventory: Record<string, number>;
+  playerTraits: any[];
+  dominantPlaystyle: 'Harmony' | 'Conquest' | 'Frolick' | 'Neutral';
+  
+  // Event logging
+  eventLog: GameEvent[];
+  actionHistory: string[];
+  playTime: number;
+  
+  // Game lifecycle
+  isPlaying: boolean;
+  world: IWorld | null;
+  
+  // Actions
+  updatePollution: (value: number) => void;
+  updateFPS: (value: number) => void;
+  updatePlayerPosition: (x: number, y: number) => void;
+  updatePlayerInventory: (inventory: Record<string, number>) => void;
+  setPlayerTraits: (traits: any[]) => void;
+  updatePlaystyle: (style: 'Harmony' | 'Conquest' | 'Frolick' | 'Neutral') => void;
+  
+  // Event logging
+  addEvent: (event: Omit<GameEvent, 'timestamp'>) => void;
+  recordAction: (action: string) => void;
+  clearEventLog: () => void;
+  
+  // Lifecycle
+  startGame: () => void;
+  stopGame: () => void;
+  setWorld: (world: IWorld) => void;
+}
+
+let gameLoopInterval: NodeJS.Timeout | null = null;
+
+export const useGameStore = create<GameState>((set, get) => ({
   // Initial state
-  world: null,
   pollution: 0,
   fps: 60,
   playerPosition: { x: 0, y: 0 },
-  playerInventory: { ore: 0, water: 0, alloy: 0 },
+  playerInventory: {},
+  playerTraits: [],
+  dominantPlaystyle: 'Neutral',
+  eventLog: [],
+  actionHistory: [],
+  playTime: 0,
+  isPlaying: false,
+  world: null,
   
-  // Actions
-  setWorld: (world) => set({ world }),
+  // State updates
+  updatePollution: (value: number) => set({ pollution: value }),
+  updateFPS: (value: number) => set({ fps: value }),
+  updatePlayerPosition: (x: number, y: number) => set({ playerPosition: { x, y } }),
+  updatePlayerInventory: (inventory: Record<string, number>) => set({ playerInventory: inventory }),
+  setPlayerTraits: (traits: any[]) => set({ playerTraits: traits }),
+  updatePlaystyle: (style: 'Harmony' | 'Conquest' | 'Frolick' | 'Neutral') => set({ dominantPlaystyle: style }),
   
-  setPollution: (pollution) => set({ pollution }),
+  // Event logging
+  addEvent: (event) => {
+    const newEvent: GameEvent = {
+      ...event,
+      timestamp: Date.now()
+    };
+    set((state) => ({
+      eventLog: [newEvent, ...state.eventLog].slice(0, 100) // Keep last 100 events
+    }));
+  },
   
-  addPollution: (amount) => set((state) => ({ 
-    pollution: Math.min(100, state.pollution + amount) 
-  })),
+  recordAction: (action: string) => {
+    set((state) => ({
+      actionHistory: [...state.actionHistory, action].slice(-100) // Rolling window of 100
+    }));
+  },
   
-  setFPS: (fps) => set({ fps }),
+  clearEventLog: () => set({ eventLog: [], actionHistory: [] }),
   
-  updatePlayerPosition: (x, y) => set({ 
-    playerPosition: { x, y } 
-  }),
+  // Lifecycle
+  startGame: () => {
+    set({ isPlaying: true });
+    
+    // Start play time counter
+    if (gameLoopInterval) {
+      clearInterval(gameLoopInterval);
+    }
+    
+    gameLoopInterval = setInterval(() => {
+      set((state) => ({ playTime: state.playTime + 1 }));
+    }, 1000);
+  },
   
-  updatePlayerInventory: (ore, water, alloy) => set({ 
-    playerInventory: { ore, water, alloy } 
-  }),
+  stopGame: () => {
+    set({ isPlaying: false });
+    
+    if (gameLoopInterval) {
+      clearInterval(gameLoopInterval);
+      gameLoopInterval = null;
+    }
+  },
   
-  initialize: () => set({ 
-    pollution: 0, 
-    fps: 60,
-    playerPosition: { x: 0, y: 0 },
-    playerInventory: { ore: 0, water: 0, alloy: 0 }
-  }),
-  
-  reset: () => set({ 
-    world: null,
-    pollution: 0, 
-    fps: 60,
-    playerPosition: { x: 0, y: 0 },
-    playerInventory: { ore: 0, water: 0, alloy: 0 }
-  })
+  setWorld: (world: IWorld) => set({ world })
 }));
