@@ -13,11 +13,11 @@
 - **Vue 3.5.13**: Composition API, reactive state
 
 ### Game Engine & Architecture
-- **Phaser 3.87.0**: 2D rendering engine (WebGL) - INTERIM, will migrate to raycast 3D
+- **Phaser 3.87.0**: 2D rendering engine (WebGL) - Production for Stage 2, raycast migration Stage 3
 - **BitECS 0.3.40**: High-performance Entity-Component-System
 - **Yuka 0.7.8**: AI steering behaviors (prepared for Stage 2)
-- **Zustand 5.0.2**: Lightweight state management
-- **Raycast Engine**: Target vision (custom or raycast.js ~5KB) - Stage 3+
+- **Pinia 3.0.4**: State management (Vue-integrated, NOT Zustand as originally planned)
+- **Raycast Engine**: Target vision (custom or raycast.js ~5KB) - Stage 3+ (conditional)
 
 ### Build & Dev Tools
 - **Vite 6.0.3**: Fast dev server with HMR
@@ -220,7 +220,12 @@ else if (noise > 0.7) -> ore
 
 ### State Management (`src/stores/gameStore.ts`)
 
+**Implementation**: Pinia (NOT Zustand as originally documented)
+
 ```typescript
+// Actual implementation uses Pinia
+import { defineStore } from 'pinia';
+
 interface GameState {
   // ECS World reference
   world: IWorld | null
@@ -228,19 +233,25 @@ interface GameState {
   // Synced FROM ECS (read-only)
   pollution: number
   playerInventory: Record<string, number>
+  playerPosition: { x: number, y: number }
+  dominantPlaystyle: 'Harmony' | 'Conquest' | 'Frolick' | 'Neutral'
   
   // UI-only state
   playTime: number
-  intimacyLevel: number
-  evolutionStage: number
+  fps: number
+  isPlaying: boolean
+  eventLog: GameEvent[]
   
   // Actions (update store, never write to ECS directly)
   updatePollution(value: number): void
-  updateInventory(inventory: Record<string, number>): void
+  updatePlayerInventory(inventory: Record<string, number>): void
+  addEvent(event: GameEvent): void
 }
 ```
 
-**Critical Rule**: Zustand NEVER writes to ECS. ECS systems write to components, then sync to Zustand for UI display.
+**Critical Rule**: Pinia NEVER writes to ECS. ECS systems write to components, then sync to Pinia for UI display.
+
+**Note**: Original architecture documents specified Zustand, but actual implementation uses Pinia (better Vue integration).
 
 ### Rendering Integration (`src/game/GameScene.ts`)
 **Current**: Phaser 3 (2D tile-based) - interim foundation  
@@ -500,11 +511,12 @@ Java 17 (Zulu)      # For Gradle builds
 - DOS-era aesthetic (matches vision)
 - Procedural (seed ties to evo history)
 
-### Why Zustand over Redux/Vuex?
-- Lightweight (< 1KB)
-- No boilerplate
-- Framework agnostic
-- Perfect for ECS → UI sync
+### Why Pinia over Zustand/Vuex?
+- **Original Plan**: Zustand (framework-agnostic)
+- **Actual Implementation**: Pinia (Vue-native state management)
+- **Rationale**: Better Vue 3 Composition API integration
+- **Benefits**: Type-safe, devtools support, modular stores
+- **Perfect for**: ECS → UI sync with Vue components
 
 ### Why pnpm over npm?
 - 3x faster installs
