@@ -118,7 +118,6 @@ ENV CHROME_BIN=/usr/bin/chromium CHROMEDRIVER_PATH=/usr/bin/chromedriver
 
 # Game development specific environment variables
 ENV NODE_ENV=development
-ENV VITE_DEV_SERVER_PORT=3000
 ENV CAPACITOR_ANDROID_STUDIO_PATH=""
 
 # Background agent optimization - reduce memory footprint
