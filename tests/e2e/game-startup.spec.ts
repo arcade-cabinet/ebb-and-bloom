@@ -1,5 +1,12 @@
 import { test, expect } from '@playwright/test';
 
+// Helper function to wait for ECS initialization
+async function waitForECSInitialization(page: any, timeout = 10000) {
+  await page.waitForFunction(() => {
+    return typeof (window as any).ecsInitialized !== 'undefined' && (window as any).ecsInitialized === true;
+  }, { timeout });
+}
+
 test.describe('Ebb & Bloom Game Startup', () => {
   test('should load the game without errors', async ({ page }) => {
     // Collect console errors from the start
@@ -27,9 +34,7 @@ test.describe('Ebb & Bloom Game Startup', () => {
     expect(phaserGame).toBeTruthy();
     
     // Wait for ECS initialization to complete
-    await page.waitForFunction(() => {
-      return typeof (window as any).ecsInitialized !== 'undefined' && (window as any).ecsInitialized === true;
-    }, { timeout: 10000 });
+    await waitForECSInitialization(page);
     
     // Filter out acceptable errors (like dev server warnings)
     const criticalErrors = errors.filter(error => 
@@ -62,9 +67,7 @@ test.describe('Ebb & Bloom Game Startup', () => {
     await page.goto('/');
     
     // Wait for ECS world to be initialized (exposed in dev mode)
-    await page.waitForFunction(() => {
-      return typeof (window as any).ecsInitialized !== 'undefined' && (window as any).ecsInitialized === true;
-    }, { timeout: 10000 });
+    await waitForECSInitialization(page);
     
     // Check that BitECS world exists
     const ecsWorldExists = await page.evaluate(() => {
@@ -84,9 +87,7 @@ test.describe('Ebb & Bloom Game Startup', () => {
     await expect(canvas).toBeVisible();
     
     // Wait for ECS initialization to complete
-    await page.waitForFunction(() => {
-      return typeof (window as any).ecsInitialized !== 'undefined' && (window as any).ecsInitialized === true;
-    }, { timeout: 10000 });
+    await waitForECSInitialization(page);
     
     // Simulate touch interaction
     await canvas.tap();
