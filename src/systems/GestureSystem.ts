@@ -41,6 +41,9 @@ export class EnhancedGestureController {
   private lastTap: number;
   private tapCount: number;
   private holdTimer: NodeJS.Timeout | null;
+  private boundHandleTouchStart: (event: TouchEvent) => void;
+  private boundHandleTouchMove: (event: TouchEvent) => void;
+  private boundHandleTouchEnd: (event: TouchEvent) => void;
   
   constructor(
     private element: HTMLElement,
@@ -62,13 +65,18 @@ export class EnhancedGestureController {
     this.tapCount = 0;
     this.holdTimer = null;
     
+    // Store bound function references for proper cleanup
+    this.boundHandleTouchStart = this.handleTouchStart.bind(this);
+    this.boundHandleTouchMove = this.handleTouchMove.bind(this);
+    this.boundHandleTouchEnd = this.handleTouchEnd.bind(this);
+    
     this.setupListeners();
   }
   
   private setupListeners(): void {
-    this.element.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false });
-    this.element.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
-    this.element.addEventListener('touchend', this.handleTouchEnd.bind(this), { passive: false });
+    this.element.addEventListener('touchstart', this.boundHandleTouchStart, { passive: false });
+    this.element.addEventListener('touchmove', this.boundHandleTouchMove, { passive: false });
+    this.element.addEventListener('touchend', this.boundHandleTouchEnd, { passive: false });
   }
   
   private handleTouchStart(event: TouchEvent): void {
