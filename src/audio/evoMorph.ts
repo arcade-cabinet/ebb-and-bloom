@@ -58,7 +58,7 @@ class EvoMorphAudio {
       const envelope = (t: number) => 0.6 + 0.4 * Math.sin(t * 0.3 + Math.random() * Math.PI);
       const env = envelope(this.ctx.currentTime) * 0.5 * intensity; // 0-0.5g
       if (env > 0.3) {
-        Haptics.impact({ style: 'medium' }); // Zap fork
+        Haptics.impact({ style: ImpactStyle.Medium }); // Zap fork
       } else {
         Haptics.vibrate({ duration: 150 * env }); // Rumble build
       }

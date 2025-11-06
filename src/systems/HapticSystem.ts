@@ -11,31 +11,31 @@ import { Haptics, ImpactStyle } from '@capacitor/haptics';
 // Haptic patterns for different game events
 export const HAPTIC_PATTERNS = {
   // Resource snapping
-  SNAP_HARMONY: { style: 'light' as ImpactStyle, duration: 50 },
-  SNAP_CONQUEST: { style: 'medium' as ImpactStyle, duration: 100 },
-  SNAP_FROLICK: { style: 'light' as ImpactStyle, duration: 30 },
+  SNAP_HARMONY: { style: ImpactStyle.Light as ImpactStyle, duration: 50 },
+  SNAP_CONQUEST: { style: ImpactStyle.Medium as ImpactStyle, duration: 100 },
+  SNAP_FROLICK: { style: ImpactStyle.Light as ImpactStyle, duration: 30 },
   
   // World shocks
-  SHOCK_WHISPER: { style: 'medium' as ImpactStyle, duration: 150 },
-  SHOCK_TEMPEST: { style: 'heavy' as ImpactStyle, duration: 300 },
-  SHOCK_COLLAPSE: { style: 'heavy' as ImpactStyle, duration: 500 },
+  SHOCK_WHISPER: { style: ImpactStyle.Medium as ImpactStyle, duration: 150 },
+  SHOCK_TEMPEST: { style: ImpactStyle.Heavy as ImpactStyle, duration: 300 },
+  SHOCK_COLLAPSE: { style: ImpactStyle.Heavy as ImpactStyle, duration: 500 },
   
   // Pack events
-  PACK_FORM: { style: 'light' as ImpactStyle, duration: 80 },
-  PACK_ALLY: { style: 'light' as ImpactStyle, duration: 100 },
-  PACK_RIVAL: { style: 'medium' as ImpactStyle, duration: 120 },
-  PACK_RETURN: { style: 'light' as ImpactStyle, duration: 60 },
+  PACK_FORM: { style: ImpactStyle.Light as ImpactStyle, duration: 80 },
+  PACK_ALLY: { style: ImpactStyle.Light as ImpactStyle, duration: 100 },
+  PACK_RIVAL: { style: ImpactStyle.Medium as ImpactStyle, duration: 120 },
+  PACK_RETURN: { style: ImpactStyle.Light as ImpactStyle, duration: 60 },
   
   // Combat
-  COMBAT_HIT: { style: 'medium' as ImpactStyle, duration: 70 },
-  COMBAT_SURGE: { style: 'heavy' as ImpactStyle, duration: 200 },
-  COMBAT_VICTORY: { style: 'light' as ImpactStyle, duration: 150 },
+  COMBAT_HIT: { style: ImpactStyle.Medium as ImpactStyle, duration: 70 },
+  COMBAT_SURGE: { style: ImpactStyle.Heavy as ImpactStyle, duration: 200 },
+  COMBAT_VICTORY: { style: ImpactStyle.Light as ImpactStyle, duration: 150 },
   
   // Trait inheritance
-  TRAIT_INHERIT: { style: 'light' as ImpactStyle, duration: 90 },
+  TRAIT_INHERIT: { style: ImpactStyle.Light as ImpactStyle, duration: 90 },
   
   // Resource collection
-  RESOURCE_COLLECT: { style: 'light' as ImpactStyle, duration: 40 }
+  RESOURCE_COLLECT: { style: ImpactStyle.Light as ImpactStyle, duration: 40 }
 };
 
 /**
@@ -55,10 +55,10 @@ export async function playHaptic(
     if (playstyle) {
       if (playstyle.conquest > 0.6) {
         // Conquest players get stronger haptics
-        style = pattern.style === 'light' ? 'medium' : 'heavy';
+        style = pattern.style === ImpactStyle.Light ? ImpactStyle.Medium : ImpactStyle.Heavy;
       } else if (playstyle.harmony > 0.6) {
         // Harmony players get gentler haptics
-        style = pattern.style === 'heavy' ? 'medium' : 'light';
+        style = pattern.style === ImpactStyle.Heavy ? ImpactStyle.Medium : ImpactStyle.Light;
       }
     }
     
@@ -93,8 +93,8 @@ export async function playHapticSequence(
 export async function playTensionRumble(progress: number): Promise<void> {
   // Increasing intensity as progress grows
   const style: ImpactStyle = 
-    progress < 0.3 ? 'light' : 
-    progress < 0.7 ? 'medium' : 'heavy';
+    progress < 0.3 ? ImpactStyle.Light : 
+    progress < 0.7 ? ImpactStyle.Medium : ImpactStyle.Heavy;
   
   await playHaptic('SHOCK_WHISPER'); // Use a base pattern
 }
@@ -109,14 +109,14 @@ export async function playHeartbeat(
   if (type === 'bounty') {
     // Short pulses
     await playHapticSequence([
-      { delay: 0, style: 'light' },
-      { delay: 100, style: 'light' }
+      { delay: 0, style: ImpactStyle.Light },
+      { delay: 100, style: ImpactStyle.Light }
     ]);
   } else {
     // Long warning pulse
     await playHapticSequence([
-      { delay: 0, style: 'medium' },
-      { delay: 200, style: 'medium' }
+      { delay: 0, style: ImpactStyle.Medium },
+      { delay: 200, style: ImpactStyle.Medium }
     ]);
   }
 }
@@ -126,11 +126,11 @@ export async function playHeartbeat(
  */
 export async function playCrescendo(): Promise<void> {
   await playHapticSequence([
-    { delay: 0, style: 'light' },
-    { delay: 300, style: 'light' },
-    { delay: 600, style: 'medium' },
-    { delay: 900, style: 'medium' },
-    { delay: 1200, style: 'heavy' }
+    { delay: 0, style: ImpactStyle.Light },
+    { delay: 300, style: ImpactStyle.Light },
+    { delay: 600, style: ImpactStyle.Medium },
+    { delay: 900, style: ImpactStyle.Medium },
+    { delay: 1200, style: ImpactStyle.Heavy }
   ]);
 }
 
@@ -144,27 +144,27 @@ export async function playShockRumble(
   switch (type) {
     case 'whisper':
       await playHapticSequence([
-        { delay: 0, style: 'light' },
-        { delay: 150, style: 'medium' }
+        { delay: 0, style: ImpactStyle.Light },
+        { delay: 150, style: ImpactStyle.Medium }
       ]);
       break;
       
     case 'tempest':
       await playHapticSequence([
-        { delay: 0, style: 'medium' },
-        { delay: 100, style: 'medium' },
-        { delay: 200, style: 'heavy' },
-        { delay: 400, style: 'heavy' }
+        { delay: 0, style: ImpactStyle.Medium },
+        { delay: 100, style: ImpactStyle.Medium },
+        { delay: 200, style: ImpactStyle.Heavy },
+        { delay: 400, style: ImpactStyle.Heavy }
       ]);
       break;
       
     case 'collapse':
       await playHapticSequence([
-        { delay: 0, style: 'heavy' },
-        { delay: 100, style: 'heavy' },
-        { delay: 200, style: 'heavy' },
-        { delay: 300, style: 'medium' },
-        { delay: 500, style: 'light' }
+        { delay: 0, style: ImpactStyle.Heavy },
+        { delay: 100, style: ImpactStyle.Heavy },
+        { delay: 200, style: ImpactStyle.Heavy },
+        { delay: 300, style: ImpactStyle.Medium },
+        { delay: 500, style: ImpactStyle.Light }
       ]);
       break;
   }
