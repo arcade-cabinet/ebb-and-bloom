@@ -10,7 +10,7 @@ export const FlipperFeet = defineComponent({
   level: Types.ui8  // 0-3: Water speed, flow affinity
 });
 
-export const ChainshawHands = defineComponent({
+export const ChainsawHands = defineComponent({
   level: Types.ui8  // 0-3: Wood harvest speed, scares critters
 });
 
@@ -50,16 +50,16 @@ export const ToxinSpines = defineComponent({
 });
 
 // Trait Synergies (calculated, not stored)
-// Example: Flipper + Chainshaw = "Burr-tide" (amphibious logger)
+// Example: Flipper + Chainsaw = "Burr-tide" (amphibious logger)
 export const calculateSynergies = (eid, world) => {
   const synergies = [];
   
-  // FlipperFeet + ChainshawHands = Burr-tide
-  if (FlipperFeet.level[eid] > 0 && ChainshawHands.level[eid] > 0) {
+  // FlipperFeet + ChainsawHands = Burr-tide
+  if (FlipperFeet.level[eid] > 0 && ChainsawHands.level[eid] > 0) {
     synergies.push({
       name: 'Burr-tide',
       effect: 'Amphibious logging: Harvest wood from water tiles',
-      bonus: Math.min(FlipperFeet.level[eid], ChainshawHands.level[eid])
+      bonus: Math.min(FlipperFeet.level[eid], ChainsawHands.level[eid])
     });
   }
   
@@ -87,7 +87,7 @@ export const calculateSynergies = (eid, world) => {
 // Trait costs (Evo Points)
 export const TRAIT_COSTS = {
   flipperFeet: [0, 2, 4, 6],    // Level 0-3
-  chainshawHands: [0, 2, 4, 6],
+  chainsawHands: [0, 2, 4, 6],
   drillArms: [0, 3, 6, 9],
   wingGliders: [0, 4, 8, 12],
   echoSonar: [0, 2, 4, 6],

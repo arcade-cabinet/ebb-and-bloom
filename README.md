@@ -1,159 +1,234 @@
 # Ebb & Bloom
 
-Stage 1 POC: A mobile-first game featuring procedurally generated meadow biomes, touch-based controls, and crafting mechanics.
+**A mobile-first procedural evolution game where one world's ache becomes endless.**
 
-## 🌸 Features
+[![Build Android APK](https://github.com/jbcom/ebb-and-bloom/actions/workflows/build-android.yml/badge.svg)](https://github.com/jbcom/ebb-and-bloom/actions/workflows/build-android.yml)
+[![Tests](https://github.com/jbcom/ebb-and-bloom/actions/workflows/build-android.yml/badge.svg)](https://github.com/jbcom/ebb-and-bloom/actions/workflows/build-android.yml)
 
-### World Generation
-- **5x5 Chunk System**: Each chunk is 100x100 tiles
-- **Perlin Noise**: Organic terrain generation with meadow biomes
-- **Biome Types**: Water, Grass, Flowers, Ore deposits
-- **Raycast Stride View**: Efficient rendering for mobile
+> *"One-World Ache, Tidal Evo Ripples"*
 
-### Player & Controls
-- **Modular 8x8 Sprite**: Catalyst character with directional animations
-- **Touch Gestures**:
-  - **Swipe**: Quick dash movement
-  - **Joystick**: Hold and drag for continuous movement
-  - **Trail Effect**: Visual feedback with flipper trail warp
-- **Mobile-First**: Optimized for touch screens
+## What is this?
 
-### Crafting System
-- **Basic Snap**: Ore + Water = Alloy
-- **Haptic Feedback**: Vibration on successful crafting
-- **Pollution Mechanic**: Each craft increases pollution by +1
-- **Visual Feedback**: Camera shake and UI updates
+Ebb & Bloom is a mobile game about witnessing one world's evolution through your touch. Your catalyst creature evolves traits, snaps resources magnetically, and influences an ecosystem of critter packs—all in a procedurally-generated world that breathes with your actions.
 
-### Performance
-- **Target**: 60FPS on Android devices
-- **Optimizations**: 
-  - Pixel art rendering
-  - Efficient tile culling
-  - WebGL acceleration
-  - Minimal garbage collection
+**Stage 1 Complete**: Core architecture implemented, 57/57 tests passing, 4MB APK (very lean!)
 
-## 🚀 Tech Stack
-
-- **Capacitor**: Native mobile wrapper
-- **Ionic Vue**: Mobile UI framework
-- **Phaser 3**: Game engine for 2D rendering
-- **BitECS**: Entity Component System (prepared for future expansion)
-- **Yuka**: AI/pathfinding library (prepared for future expansion)
-- **Zustand**: State management for game state and intimacy tracking
-
-## 📦 Installation
+## Quick Start
 
 ```bash
 # Install dependencies
-npm install
+pnpm install
 
-# Run development server
-npm run dev
+# Start development server
+pnpm dev
 
-# Build for production
-npm run build
-```
+# Run tests
+pnpm test
 
-## 📱 Android Build
-
-```bash
-# Quick build
-./build-android.sh
-
-# Or manually:
-npm run build
+# Build Android APK
+pnpm build
 npx cap sync android
-cd android && ./gradlew assembleDebug
 ```
 
-The APK will be at: `android/app/build/outputs/apk/debug/app-debug.apk`
+## Documentation
 
-## 🎮 How to Play
+### For Developers 👨‍💻
 
-1. **Move**: Touch and drag to move the catalyst character
-   - Short swipe for quick dash
-   - Hold and drag for joystick control
-2. **Collect**: Walk over ore and water tiles to collect resources
-3. **Craft**: Tap the CRAFT button when you have ore + water
-4. **Watch**: Monitor pollution levels as you craft
+Start here to understand the codebase:
 
-## 🧪 Testing
+1. **[DEVELOPMENT.md](docs/DEVELOPMENT.md)** - Quick start, workflow, code standards
+2. **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** - System architecture, ECS patterns, data flow
+3. **[VISION.md](docs/VISION.md)** - Game design philosophy and pillars
+4. **[CODE_QUALITY_STANDARDS.md](docs/CODE_QUALITY_STANDARDS.md)** - "Leave it better" principle
 
-**10-Minute Frolic Test**: 
-- Play for 10 minutes continuously
-- Test touch responsiveness
-- Verify 60FPS performance
-- Check resource collection
-- Validate crafting mechanics
+### Memory Bank 🧠
 
-**Evolution Intimacy**:
-- Intimacy system tracked in Zustand store
-- Evolution stages unlock at 20% intervals
-- Future expansion point for deeper mechanics
+The source of truth for AI and human developers:
 
-## 📁 Project Structure
+- **[productContext.md](memory-bank/productContext.md)** - What we're building
+- **[techContext.md](memory-bank/techContext.md)** - How it's built
+- **[progress.md](memory-bank/progress.md)** - Where we are
+- **[activeContext.md](memory-bank/activeContext.md)** - What's happening now
+- **[systemPatterns.md](memory-bank/systemPatterns.md)** - How we work (PR process, patterns)
+
+### Package Documentation 📦
+
+Each package has its own README explaining purpose and usage:
+
+- [src/ecs/](src/ecs/README.md) - Entity-Component-System (game logic)
+- [src/systems/](src/systems/README.md) - Cross-cutting systems (Haiku, Haptics, Gestures)
+- [src/game/](src/game/README.md) - Phaser rendering layer
+- [src/stores/](src/stores/README.md) - Zustand state management
+- [src/test/](src/test/README.md) - Testing infrastructure
+
+## Core Features (Stage 1)
+
+### ✅ Implemented
+
+- **ECS Architecture** - BitECS with clean separation of concerns
+- **10 Trait System** - FlipperFeet, ChainsawHands, DrillArms, etc. with synergies
+- **Resource Snapping** - Affinity-based magnetic combining (8-bit flags)
+- **Crafting System** - 5 recipes with resource validation
+- **Pack System** - Critter social dynamics with loyalty and roles
+- **Pollution & Shocks** - Global tracking with threshold events
+- **Behavior Profiling** - Harmony/Conquest/Frolick playstyle tracking
+- **Haiku Scorer** - Jaro-Winkler similarity for narrative journal
+- **Haptic System** - 20+ patterns, playstyle-aware
+- **Enhanced Gestures** - 7 types for mobile-first interaction
+- **World Generation** - Perlin noise, chunk-based (5x5 chunks)
+- **57 Passing Tests** - Comprehensive coverage
+
+### 🔜 Coming in Stage 2
+
+- UI/UX Polish (splash screens, onboarding)
+- Catalyst Creator (trait selection UI)
+- Combat System (wisp clashes)
+- Ritual Mechanics (abyss reclamation)
+- Nova Cycles (45-90min world resets)
+- Stardust Hops (sibling worlds)
+
+## Technology Stack
+
+- **Mobile**: Capacitor 6.1+ (native bridge), Ionic Vue 8.7+ (UI)
+- **Game Engine**: Phaser 3.87+ (rendering), BitECS 0.3.19 (game logic)
+- **State**: Zustand 5.0+ (UI sync, read-only from ECS)
+- **Frontend**: Vue 3.5+ (composition API), TypeScript 5.7+
+- **Build**: Vite 6.0+, pnpm 9.x
+- **Testing**: Vitest 2.1+, happy-dom
+- **CI/CD**: GitHub Actions, Renovate Bot
+
+## Architecture Principles
+
+### ECS as Single Source of Truth
 
 ```
-ebb-and-bloom/
+┌─────────────────────────────────────┐
+│  BitECS (Source of Truth)          │
+│  - Components: Position, Traits    │
+│  - Systems: Movement, Crafting     │
+└──────────────┬──────────────────────┘
+               │ (one-way, read-only)
+               ▼
+    ┌──────────────────────┐
+    │  Zustand UI Store    │
+    │  Never writes to ECS │
+    └──────┬────────┬───────┘
+           │        │
+           ▼        ▼
+      ┌────┐    ┌───────┐
+      │Vue │    │Phaser │
+      └────┘    └───────┘
+```
+
+### Mobile-First Always
+
+- Touch gestures as primary input
+- Haptic feedback for all interactions
+- Portrait orientation optimized
+- 60 FPS non-negotiable
+- Battery-conscious rendering
+
+### Test-First Development
+
+- Write tests before implementation
+- 57/57 tests passing
+- Coverage tracked in CI
+- Fast test runs (< 5s)
+
+## Project Structure
+
+```
+/
+├── docs/                  # Architecture bible
+│   ├── VISION.md         # Design philosophy
+│   ├── ARCHITECTURE.md   # System architecture
+│   └── DEVELOPMENT.md    # Developer guide
+├── memory-bank/          # Source of truth
+│   ├── productContext.md # What we're building
+│   ├── techContext.md    # How it's built
+│   └── progress.md       # Where we are
 ├── src/
-│   ├── game/
-│   │   ├── core/
-│   │   │   ├── perlin.js      # Perlin noise generator
-│   │   │   └── core.js         # World generation & raycast
-│   │   ├── player/
-│   │   │   └── player.js       # Player & gesture controls
-│   │   ├── systems/
-│   │   │   └── crafting.js     # Crafting & pollution
-│   │   ├── GameScene.js        # Main Phaser scene
-│   │   └── config.js           # Phaser configuration
-│   ├── store/
-│   │   └── gameStore.js        # Zustand state management
-│   ├── App.vue                 # Main Vue component
-│   └── main.js                 # Entry point
-├── public/                     # Static assets
-├── android/                    # Capacitor Android project
-├── vite.config.js             # Vite configuration
-├── capacitor.config.json      # Capacitor configuration
-├── build-android.sh           # Android build script
-└── package.json               # Dependencies & scripts
+│   ├── ecs/             # Game logic (BitECS)
+│   ├── game/            # Phaser rendering
+│   ├── systems/         # Cross-cutting concerns
+│   ├── stores/          # UI state (Zustand)
+│   ├── views/           # Vue components
+│   └── test/            # Test suites
+└── public/              # Static assets
 ```
 
-## 🎯 Vision
+## Development Workflow
 
-**One-world ache, tidal evo ripples**
+1. **Start with Memory Bank** - Read productContext, techContext, progress
+2. **Find the Right Package** - Check package READMEs
+3. **Write Tests First** - TDD always
+4. **Implement in ECS** - Components + Systems
+5. **Update Documentation** - Memory bank + READMEs
+6. **Commit & Push** - Follow conventional commits
+7. **Handle PR Reviews** - Address ALL feedback immediately
 
-This POC establishes the foundation for a living, breathing world where:
-- Player actions ripple through the ecosystem
-- Evolution mechanics respond to intimacy levels
-- Pollution creates environmental consequences
-- The world persists and evolves over time
+See [systemPatterns.md](memory-bank/systemPatterns.md) for complete PR review process.
 
-## 📊 Performance Targets
-
-- **FPS**: 60 on Android devices
-- **Load Time**: < 3 seconds
-- **Memory**: < 150MB RAM usage
-- **Battery**: Optimized rendering pipeline
-
-## 🔧 Development
+## Commands
 
 ```bash
-# Development mode with hot reload
-npm run dev
+# Development
+pnpm dev                # Start Vite dev server
+pnpm build              # Build for production
+pnpm preview            # Preview production build
 
-# Build for production
-npm run build
+# Testing
+pnpm test               # Run all tests
+pnpm test:watch         # Watch mode
+pnpm test:ui            # Open Vitest UI
+pnpm test:coverage      # Generate coverage
 
-# Preview production build
-npm run preview
-
-# Sync with Capacitor
-npm run cap:sync
-
-# Open in Android Studio
-npm run cap:open:android
+# Mobile
+npx cap sync android    # Sync web assets to Android
+npx cap open android    # Open in Android Studio
+./build-android.sh      # Build APK
 ```
 
-## 📝 License
+## Contributing
 
-See LICENSE file for details.
+This project follows the **"Leave It Better Than You Found It"** principle:
+
+- ✅ Fix ALL TODOs and placeholders immediately
+- ✅ Address ALL PR review feedback before merge
+- ✅ Update memory bank with changes
+- ✅ Write tests for new features
+- ✅ Document in package READMEs
+
+See [CODE_QUALITY_STANDARDS.md](docs/CODE_QUALITY_STANDARDS.md) for details.
+
+## Current Status
+
+**Stage 1**: Complete ✅  
+**Documentation**: Organized ✅  
+**PR #3**: Ready for merge ✅  
+**Next**: Stage 2 UX Polish (splash screens, catalyst creator, onboarding)
+
+See [progress.md](memory-bank/progress.md) for detailed status.
+
+## Design Philosophy
+
+> **One-World Ache**: 80% of gameplay happens in a single persistent world. No galaxy-hopping menus—just intimate, procedural evolution in one breathing ecosystem.
+
+> **Touch as Language**: Mobile gestures aren't just controls—they're how you speak to the world. Swipe to stride, pinch to terraform, long-press to commune.
+
+> **Tidal Rhythm**: 45-minute nova cycles with haiku persistence. The world resets, but your journal remembers. Impermanence becomes the game loop.
+
+## Inspiration
+
+- **Elite (1984)** - Procedural scale with deterministic seeds
+- **Outer Wilds** - One solar system, endless discovery
+- **Subnautica** - Intimate world-building and exploration
+- **No Man's Sky** - Procedural variety with meaningful choices
+
+## License
+
+MIT © 2025
+
+---
+
+**Built for mobile. Powered by ECS. Driven by evolution.**

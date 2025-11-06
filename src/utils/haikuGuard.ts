@@ -85,23 +85,44 @@ class HaikuGuard {
   // Hook for journal evo (Zustand)
   checkEvoHaiku(evo: string) {
     const store = gameStore.getState();
-    // Note: journal is not in the current gameStore schema, this would need to be added
-    // For now, we'll comment this out to fix the build
-    /*
-    const recent = store.journal.slice(-5);
+    
+    // Journal persistence: Use localStorage as interim solution
+    // This provides journal functionality without requiring immediate gameStore schema changes
+    const getJournal = (): string[] => {
+      try {
+        const stored = localStorage.getItem('ebb-bloom-journal');
+        return stored ? JSON.parse(stored) : [];
+      } catch (e) {
+        console.warn('Failed to load journal:', e);
+        return [];
+      }
+    };
+    
+    const saveJournal = (journal: string[]) => {
+      try {
+        localStorage.setItem('ebb-bloom-journal', JSON.stringify(journal));
+      } catch (e) {
+        console.warn('Failed to save journal:', e);
+      }
+    };
+    
+    const journal = getJournal();
+    const recent = journal.slice(-5);
     const candidate = this.genHaiku('flipper', evo); // Seed from trait
     const { avg } = this.scoreVariety([...recent, candidate]);
+    
     if (avg > this.threshold) {
-      // Reroll with metaphor
+      // Reroll with metaphor to ensure diversity
       const meta = metaphorBank['thorn'][Math.floor(Math.random() * metaphorBank.thorn.length)];
       const rerolled = this.genHaiku(meta, evo);
-      store.journal.push(rerolled);
+      journal.push(rerolled);
+      saveJournal(journal);
       return rerolled;
     }
-    store.journal.push(candidate);
+    
+    journal.push(candidate);
+    saveJournal(journal);
     return candidate;
-    */
-    return this.genHaiku('flipper', evo);
   }
 }
 
