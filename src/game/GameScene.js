@@ -160,9 +160,15 @@ export class GameScene extends Phaser.Scene {
       this.lastTime = currentTime;
     }
     
-    // Re-render world occasionally (optimization)
-    if (Phaser.Math.Between(0, 100) === 0) {
+    // Re-render world when player moves significantly (optimization)
+    if (!this.lastRenderPos) {
+      this.lastRenderPos = { x: this.player.x, y: this.player.y };
+    }
+    const dx = Math.abs(this.player.x - this.lastRenderPos.x);
+    const dy = Math.abs(this.player.y - this.lastRenderPos.y);
+    if (dx > 200 || dy > 200) {
       this.renderWorld();
+      this.lastRenderPos = { x: this.player.x, y: this.player.y };
     }
   }
 

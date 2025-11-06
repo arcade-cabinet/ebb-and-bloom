@@ -146,15 +146,23 @@ export class GestureController {
   }
 
   setupListeners() {
+    // Bind methods once and store references for proper cleanup
+    this.boundHandleTouchStart = this.handleTouchStart.bind(this);
+    this.boundHandleTouchMove = this.handleTouchMove.bind(this);
+    this.boundHandleTouchEnd = this.handleTouchEnd.bind(this);
+    this.boundHandleMouseDown = this.handleMouseDown.bind(this);
+    this.boundHandleMouseMove = this.handleMouseMove.bind(this);
+    this.boundHandleMouseUp = this.handleMouseUp.bind(this);
+    
     // Touch events
-    this.element.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false });
-    this.element.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
-    this.element.addEventListener('touchend', this.handleTouchEnd.bind(this), { passive: false });
+    this.element.addEventListener('touchstart', this.boundHandleTouchStart, { passive: false });
+    this.element.addEventListener('touchmove', this.boundHandleTouchMove, { passive: false });
+    this.element.addEventListener('touchend', this.boundHandleTouchEnd, { passive: false });
     
     // Mouse events for testing
-    this.element.addEventListener('mousedown', this.handleMouseDown.bind(this));
-    this.element.addEventListener('mousemove', this.handleMouseMove.bind(this));
-    this.element.addEventListener('mouseup', this.handleMouseUp.bind(this));
+    this.element.addEventListener('mousedown', this.boundHandleMouseDown);
+    this.element.addEventListener('mousemove', this.boundHandleMouseMove);
+    this.element.addEventListener('mouseup', this.boundHandleMouseUp);
   }
 
   handleTouchStart(e) {
@@ -277,13 +285,13 @@ export class GestureController {
   }
 
   destroy() {
-    // Cleanup listeners
-    this.element.removeEventListener('touchstart', this.handleTouchStart);
-    this.element.removeEventListener('touchmove', this.handleTouchMove);
-    this.element.removeEventListener('touchend', this.handleTouchEnd);
-    this.element.removeEventListener('mousedown', this.handleMouseDown);
-    this.element.removeEventListener('mousemove', this.handleMouseMove);
-    this.element.removeEventListener('mouseup', this.handleMouseUp);
+    // Cleanup listeners using stored bound references
+    this.element.removeEventListener('touchstart', this.boundHandleTouchStart);
+    this.element.removeEventListener('touchmove', this.boundHandleTouchMove);
+    this.element.removeEventListener('touchend', this.boundHandleTouchEnd);
+    this.element.removeEventListener('mousedown', this.boundHandleMouseDown);
+    this.element.removeEventListener('mousemove', this.boundHandleMouseMove);
+    this.element.removeEventListener('mouseup', this.boundHandleMouseUp);
   }
 }
 
