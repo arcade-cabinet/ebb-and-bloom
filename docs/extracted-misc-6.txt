@@ -1,0 +1,8 @@
+// Getter
+const genePool = () => useGame((state) => state.critterGenePool);
+
+// Action
+const evolvePack = (packId: string) => {
+  // Average genes, spawn hybrids
+  set((state) => ({ /* new critters */ }));
+};

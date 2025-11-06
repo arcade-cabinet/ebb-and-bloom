@@ -1,0 +1,47 @@
+precision mediump float;
+uniform sampler2D baseTex; // Flipper sprite
+uniform sampler2D hybridTex; // Tidal scar overlay
+uniform float morphProg; // 0-1 tween from evo event
+uniform float audioEnvelope; // 0-1 from Web Audio gain (sync swell)
+uniform vec2 resolution;
+varying vec2 vUv;
+uniform float time; // For Perlin warp
+
+// Simple Perlin noise (tidal twist)
+float noise(vec2 p) {
+    return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+}
+float fbm(vec2 p) { // Fractal for ebb flow
+    float n = 0.0;
+    for (int i = 0; i < 3; i++) {
+        n += noise(p * (1.0 + float(i))) / pow(2.0, float(i+1));
+        p *= 2.0;
+    }
+    return n;
+}
+
+void main() {
+    vec2 uv = vUv;
+    // Warp UV with audio-sync Perlin (tidal distort)
+    vec2 warp = vec2(fbm(uv * 3.0 + time * 0.5 + audioEnvelope * 2.0), fbm(uv * 3.0 * 0.5 + time * 0.3));
+    uv += warp * 0.05 * morphProg; // Subtle ebb on prog
+
+    // Lerp textures with haze bloom
+    vec4 base = texture2D(baseTex, uv);
+    vec4 hybrid = texture2D(hybridTex, uv + vec2(0.01 * morphProg, 0.0)); // Offset for scar fin
+    vec4 morphColor = mix(base, hybrid, smoothstep(0.0, 1.0, morphProg));
+
+    // Audio-driven glow (envelope amps emerald rift)
+    float glow = audioEnvelope * (1.0 - morphProg) * fbm(uv * 10.0); // Inverse for fade-in
+    morphColor.rgb += vec3(0.0, glow * 0.8, glow * 0.6); // Emerald haze
+
+    // FXAA tease: Simple edge soften
+    vec2 invRes = 1.0 / resolution;
+    vec3 n = texture2D(baseTex, uv + vec2(0.0, -invRes.y)).rgb;
+    vec3 s = texture2D(baseTex, uv + vec2(0.0, invRes.y)).rgb;
+    vec3 w = texture2D(baseTex, uv + vec2(-invRes.x, 0.0)).rgb;
+    vec3 e = texture2D(baseTex, uv + vec2(invRes.x, 0.0)).rgb;
+    morphColor.rgb = mix(morphColor.rgb, (n + s + w + e) / 4.0, 0.2 * morphProg); // Smooth on twist
+
+    gl_FragColor = morphColor;
+}

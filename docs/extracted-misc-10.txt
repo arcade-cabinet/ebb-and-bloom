@@ -1,0 +1,11 @@
+// State add
+packRegistry: [{ id: string, size: number, genes: number, loyalty: number, status: 'idle' | 'questing' | 'defected' }[]],
+
+// Action
+dispatchQuest: (packId: string, goal: string, whisper?: string) => {
+  // Call ecosystem.js, set status
+  set((state) => ({ packRegistry: state.packRegistry.map(p => p.id === packId ? { ...p, status: 'questing' } : p) }));
+},
+
+// Getter
+activeQuests = () => useGame((state) => state.packRegistry.filter(p => p.status === 'questing'));

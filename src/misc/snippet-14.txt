@@ -1,0 +1,20 @@
+// Snippet 1 - Context: Add ECS: `Shard` component (`{genes: 'u32', grudge: 'u8', ritualType: 'u8' }`). `Ritual` archetype (`{siteId: 'u32', progress: 'f32', offerings: 'u32' }`). In `ecosystem.js` (ritual tick): In Zustand `useGame`:
+
+// State add
+activeRituals: [{ id: string, type: string, progress: number, shards: number }[]],
+essencePool: number, // For costs
+
+// Action
+startRitual: (type: string, site: string, shards: Shard[]) => {
+  const cost = type === 'cleanse' ? 10 : (type === 'forge' ? 15 : 0);
+  if (get().essencePool >= cost) {
+    set((state) => ({ 
+      activeRituals: [...state.activeRituals, { id: genId(), type, progress: 0, shards: shards.length }],
+      essencePool: state.essencePool - cost 
+    }));
+    // ECS spawn Ritual entity
+  }
+},
+
+// Getter
+redeemableGrudges = () => useGame((state) => state.grudges.filter(g => g.shards > 0));

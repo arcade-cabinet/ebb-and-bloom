@@ -1,0 +1,11 @@
+// Snippet 1 - Context: Add ECS: `Shard` component (`{ aff: 'u32', taint: 'u8', fused: 'u8' }`). Query: `shardQuery = defineQuery([Position, Shard])`. In `ecosystem.js` (loot tick, post-purge/fail): In Zustand `useGame`:
+
+// State add
+shardVault: [{ id: string, aff: number, taint: number }[]],
+
+// Actions
+harvestShard: (shardId: string) => ecosystem.harvestShard(parseInt(shardId)),
+fuseShards: (shardIds: string[]) => ecosystem.fuseShards(shardIds.map(id => parseInt(id))),
+
+// Getter
+unfurledPotential = () => useGame((state) => state.shardVault.filter(s => s.taint < 50)); // Low-risk ready
