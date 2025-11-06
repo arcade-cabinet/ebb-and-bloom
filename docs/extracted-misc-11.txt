@@ -1,0 +1,25 @@
+function resolveQuest(packId, outcome = 'fail') {
+  const pack = getPack(packId);
+  if (outcome === 'fail') {
+    pack.size /= 2; // Scatter
+    pack.loyalty = Math.max(0, pack.loyalty - 0.2);
+    if (pack.loyalty < 0.3) {
+      const rivalId = spawnRivalPack(pack); // New ECS entity, genes | void
+      rival.yukaBehavior = new Yuka.AttackBehavior(playerPos); // Raid steer
+      useGame.setState({ packRegistry: [...get().packRegistry, rivalPackState(rivalId)] });
+    }
+    // Backlash: Twist whisper
+    if (pack.whisperTrait) {
+      playerAura.debuff = 'haunt'; // ECS on player
+      pollution += pack.size * 0.5; // Pulse
+    }
+    // World scar: Mutate target tile
+    const scarId = getTargetTile(pack.goal);
+    Biome.type[scarId] |= voidMask; // Affinity taint
+    snapCheck(scarId); // Corrupt chains
+  }
+  // Redemption stub: Spawn 1-3 shard entities
+  for (let i = 0; i < Math.min(3, pack.size / 4); i++) {
+    addEntity(Shard, randomNear(pack.pos));
+  }
+}

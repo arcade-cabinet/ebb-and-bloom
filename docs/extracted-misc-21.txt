@@ -1,0 +1,46 @@
+function dispatchShardHunt(packId, prodAff, goalType) {
+  const pack = getPack(packId);
+  pack.huntProd = prodAff;
+  pack.status = 'hunting';
+  // Yuka tune
+  const resonanceTarget = findNearestShard(prodAff); // Query shards
+  pack.yukaGroup.steering.add(new Yuka.SeekBehavior(resonanceTarget));
+  // Event sim loop
+  let eventCount = 0;
+  const interval = setInterval(() => {
+    if (eventCount++ > Math.random() * 4 + 2) { // Duration
+      clearInterval(interval);
+      resolveHunt(packId);
+    } else {
+      simHuntEvent(pack, goalType); // Ping/ambush etc.
+    }
+  }, cycleTime / 4);
+}
+
+function resolveHunt(packId) {
+  const pack = getPack(packId);
+  const roll = noise.noise2D(packId + 'hunt', behavior.conquest);
+  const haulSize = Math.floor(pack.size / 5 + roll * 3);
+  if (roll > 0.4) {
+    // Bounty
+    for (let i = 0; i < haulSize; i++) {
+      const shardAff = pack.huntProd | (noise.noise2D(i, packId) > 0.95 ? nexusBit : 0);
+      spawnVengeanceShard(randomScarNear(pack.pos), shardAff);
+    }
+    pack.loyalty += 0.1;
+    if (roll > 0.95) autoFuseNexus(haulSize > 3 ? haulSize : 3); // Relic
+  } else if (roll > 0.1) {
+    // Stir: Partial + fracture
+    spawnVengeanceShard(pack.pos, pack.huntProd);
+    fractureNearbyShards(pack.pos, 2); // Bleed
+    pollution += 8;
+    spawnWispSwarm(pack.pos);
+  } else {
+    // Lash
+    pack.size *= 0.8;
+    stirGlobalShards(3); // Risk rivals
+    if (pollution > 70) mutateWorld();
+  }
+  pack.status = 'idle';
+  useGame.setState({ packRegistry: updateRegistry(), shardVault: get().shardVault }); // Refresh
+}

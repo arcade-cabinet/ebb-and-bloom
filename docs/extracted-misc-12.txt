@@ -1,0 +1,15 @@
+// State add
+grudges: Record<string, { packId: string, debt: number, raids: number }>,
+
+// Action extension
+resolveFailure: (packId: string) => {
+  set((state) => {
+    const pack = state.packRegistry.find(p => p.id === packId);
+    const newGrudges = { ...state.grudges, [packId]: { packId, debt: pack.maturity * 2, raids: 0 } };
+    return { packRegistry: state.packRegistry.map(p => p.id === packId ? { ...p, status: 'scattered' } : p), grudges: newGrudges };
+  });
+  // Evo debt: state.evoPoints -= calcDebt();
+},
+
+// Getter
+unresolvedGrudges = () => useGame((state) => Object.values(state.grudges).filter(g => g.debt > 0));

@@ -1,0 +1,11 @@
+// Snippet 1 - Context: Add ECS: `Guardian` component (`{ phase: 'u8', momentum: 'f32', echoAff: 'u32' }`). Query: `guardianQuery = defineQuery([Position, Guardian])`. In `ecosystem.js` (on rift attune): In Zustand `useGame`:
+
+// State add
+riftGuardians: [{ id: string, phase: number, momentum: number }[]],
+hopBonus: string | null,
+
+// Action
+gestureFold: (type: string, guardianId: string) => ecosystem.gestureFold(type, guardianId),
+
+// Getter
+activeGuardians = () => useGame((state) => state.riftGuardians.filter(g => g.momentum > 0));
