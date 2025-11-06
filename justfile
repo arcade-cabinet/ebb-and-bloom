@@ -54,7 +54,7 @@ playwright-install:
 
 # Run all E2E tests (with managed dev server)
 test-e2e:
-    process-compose up test
+    process-compose up test-e2e
 
 # Run E2E tests (direct - requires dev server running)
 test-e2e-direct:
