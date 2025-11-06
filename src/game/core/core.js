@@ -70,14 +70,14 @@ export class WorldCore {
         
         if (noiseValue < this.BIOME_THRESHOLDS.water) {
           type = 'water';
-        } else if (noiseValue >= this.BIOME_THRESHOLDS.water && noiseValue < this.BIOME_THRESHOLDS.grass) {
+        } else if (noiseValue < this.BIOME_THRESHOLDS.grass) {
           type = 'grass';
-        } else if (noiseValue >= this.BIOME_THRESHOLDS.grass && noiseValue < this.BIOME_THRESHOLDS.flower) {
+        } else if (noiseValue < this.BIOME_THRESHOLDS.flower) {
           type = 'flower';
         } else if (noiseValue >= this.BIOME_THRESHOLDS.ore) {
           type = 'ore';
         } else {
-          // Fallback for edge cases
+          // Values between 0.7 and 0.85 - default to grass
           type = 'grass';
         }
         
