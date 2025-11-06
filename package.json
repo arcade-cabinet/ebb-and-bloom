@@ -1,0 +1,42 @@
+{
+  "name": "ebb-and-bloom",
+  "version": "1.0.0",
+  "description": "Ebb & Bloom - Mobile game with Capacitor, Ionic Vue, Phaser, BitECS, Yuka, and Zustand",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "cap:init": "npx cap init",
+    "cap:add:android": "npx cap add android",
+    "cap:sync": "npx cap sync",
+    "cap:sync:android": "npx cap sync android",
+    "cap:open:android": "npx cap open android",
+    "build:android": "npm run build && npm run cap:sync:android",
+    "test": "echo \"10min frolic test - manual testing required\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@capacitor/android": "^5.7.8",
+    "@capacitor/cli": "^5.7.8",
+    "@capacitor/core": "^5.7.8",
+    "@capacitor/haptics": "^5.0.8",
+    "@ionic/vue": "^7.8.6",
+    "@ionic/vue-router": "^7.8.6",
+    "bitecs": "^0.3.40",
+    "phaser": "^3.90.0",
+    "vue": "^3.5.23",
+    "vue-router": "^4.6.3",
+    "yuka": "^0.7.8",
+    "zustand": "^4.5.7"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.24",
+    "@vitejs/plugin-vue": "^5.2.4",
+    "terser": "^5.44.1",
+    "vite": "^5.4.21"
+  }
+}

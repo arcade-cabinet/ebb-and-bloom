@@ -1,0 +1,13 @@
+{
+  "appId": "com.jbcom.ebbandbloom",
+  "appName": "Ebb and Bloom",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false
+  }
+}
