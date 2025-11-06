@@ -1,7 +1,7 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 
 // Helper function to wait for ECS initialization
-async function waitForECSInitialization(page: any, timeout = 10000) {
+async function waitForECSInitialization(page: Page, timeout = 10000) {
   await page.waitForFunction(() => {
     return typeof (window as any).ecsInitialized !== 'undefined' && (window as any).ecsInitialized === true;
   }, { timeout });
