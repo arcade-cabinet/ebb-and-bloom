@@ -1,151 +1,224 @@
-# Active Context - CI/CD Complete + Developer Experience Setup
+# Active Context - Ebb & Bloom
 
-## Current State ✅
-**Production-Ready with Modern DevX**
-
-All CI/CD issues resolved. Workflows passing. Developer experience optimized for AI-powered development.
-
-## What Just Happened (Nov 6, 2025 - Latest)
-
-### CI/CD Pipeline Fixed
-**GitHub Actions now fully operational:**
-
-1. **Package Manager Migration (pnpm)**
-   - Migrated from npm to pnpm (3x faster installs)
-   - All workflows updated to use pnpm
-   - Removed conflicting `packageManager` field from package.json
-   - All 57 tests passing
-
-2. **GitHub Actions Version Updates**
-   - Updated all actions to latest versions (was causing failures)
-   - actions/setup-java: v4 → v5
-   - Removed gradle cache (android/ doesn't exist until build)
-   - Fixed pnpm version conflicts
-
-3. **Automated Dependency Management (Renovate)**
-   - Created `renovate.json` for automatic dependency updates
-   - Bundles non-major updates → single auto-merge PR
-   - Separates major updates → manual review PRs
-   - Nightly schedule (10pm-5am + weekends)
-   - Dependency dashboard disabled (automation-first)
-   - Security updates applied immediately
-
-4. **Developer Experience Setup**
-   - Created `.github/.copilot-instructions.md` (GitHub Copilot Workspace)
-   - Created `.cursor/rules/default.md` (Cursor AI rules)
-   - Both aligned with `.clinerules` Memory Bank structure
-   - Provides AI agents with full project context
-
-### Workflows Status
-
-**✅ Code Quality** - Passing
-- TypeScript validation
-- Test coverage (57/57 tests)
-- Documentation checks
-- ECS architecture validation
-
-**🔄 Build Android APK** - In Progress
-- Was failing on setup-java gradle cache
-- Fixed by removing cache (android/ doesn't exist yet)
-- Should pass on next run
-
-**✅ Release APK** - Ready
-- Triggered by version tags (v*)
-- Builds both debug and release APKs
-- Creates GitHub Release automatically
-- Professional APK naming (ebb-and-bloom-v0.1.0.apk)
-
-## Next Actions
-
-### Immediate (Wait for CI)
-1. ⏳ Wait for Build Android APK workflow to complete
-2. ✅ Validate all green checks
-3. 📱 Download APK from artifacts
-4. 🧪 Test on physical device
-
-### If Build Passes
-1. Create first release: `git tag v0.1.0-alpha && git push origin v0.1.0-alpha`
-2. Download APK from GitHub Releases
-3. Device testing (60 FPS, touch controls, haptics)
-4. 10-minute frolic test
-
-### Renovate Setup (Once Merged)
-1. Install Renovate GitHub App on repository
-2. First run will create onboarding PR
-3. Merge onboarding PR to activate
-4. Dependency updates will be automatic
-
-## Important Context
-
-### CI/CD Architecture
-```
-Push → Test Suite (57 tests)
-     → Build Web Assets
-     → Sync Capacitor Android
-     → Build Debug/Release APKs
-     → Upload Artifacts
-     → Comment on PR
-```
-
-### Developer Experience Files
-
-**`.github/.copilot-instructions.md`**
-- Comprehensive project context for GitHub Copilot Workspace
-- Architecture principles (ECS, Zustand, Phaser separation)
-- Code standards and patterns
-- Testing requirements
-- Common pitfalls to avoid
-
-**`.cursor/rules/default.md`**
-- Quick reference for Cursor AI
-- Critical rules (Memory Bank first, ECS constraints)
-- Testing requirements
-- Performance targets
-
-**`renovate.json`**
-- Automatic dependency management
-- Non-major: Bundled, auto-merge
-- Major: Separate PRs, manual review
-- Game engine packages: Always manual review
-- Security: Immediate auto-merge
-
-### Key Technologies
-- **pnpm 9.x**: Package manager (3x faster than npm)
-- **Renovate Bot**: Automated dependency updates
-- **GitHub Actions**: CI/CD (2,000 free minutes/month)
-- **BitECS 0.3.40**: ECS framework
-- **Phaser 3.87+**: Rendering
-- **Zustand 5.0+**: State management
-- **Vitest 2.1+**: Testing
-
-## Important Learnings
-
-### ❌ Don't Use packageManager Field
-- pnpm/action-setup@v4 auto-detects from workflows
-- ANY packageManager value (even ranges) causes conflicts
-- Let workflows manage pnpm version explicitly
-
-### ✅ GitHub Actions Best Practices
-- Always use latest action versions
-- Don't cache Gradle before android/ directory exists
-- Use pnpm for faster CI builds
-- Bundle non-major updates with Renovate
-
-### ✅ Developer Experience
-- AI agents need comprehensive context upfront
-- Align all rule files (.clinerules, .copilot-instructions, .cursor/rules)
-- Memory Bank is source of truth
-- Update all three when architecture changes
-
-## Current Branch Context
-- **Branch**: `copilot/add-perlin-chunk-world`
-- **Status**: CI/CD complete, awaiting build validation
-- **Tests**: 57/57 passing
-- **Systems**: 8 major game systems implemented
-- **Dependencies**: All updated to latest stable
+**Version**: 3.0.0  
+**Date**: 2025-01-XX  
+**Status**: Master Documents Complete → Stage 2 Implementation Ready
 
 ---
 
-**Ready for**: Device testing once CI passes  
-**Code Quality**: Production standard with modern DevX  
-**Next Phase**: First alpha release (v0.1.0-alpha)
+## Current State ✅
+
+**Sprint Goal**: Create frozen, versioned master documents with zero ambiguity ✅ **COMPLETE**
+
+**What Just Happened**:
+- ✅ Created comprehensive vision documentation from Grok archive (10 chronological stages)
+- ✅ Created master architecture documents (VISION.md, ARCHITECTURE.md, TECH_STACK.md, ROADMAP.md)
+- ✅ Committed to raycast 3D vision (current 2D is interim foundation)
+- ✅ Committed to hybrid brand identity (Option D: gameplay clarity + poetic resonance)
+- ✅ Updated memory bank to reflect raycast 3D commitment
+- ✅ Created DIFFERENTIATORS.md identifying codebase areas for FUN, BALANCED, REPLAYABLE
+
+**Status**: All master documents frozen and versioned. Zero ambiguity achieved.
+
+---
+
+## CLEAR NEXT STEPS
+
+### Priority 1: UX Polish 🎯 HIGHEST PRIORITY
+**Goal**: Address "very clunky" feedback, create smooth onboarding
+
+**Dependencies**: None - can start immediately
+
+**Tasks** (in order):
+1. **Onboarding Flow**
+   - First-time player experience
+   - Interactive tutorials for gestures
+   - Catalyst creator UI (trait selection, Evo point allocation)
+   - Visual feedback for all actions
+
+2. **Gesture Polish**
+   - Refine touch interactions
+   - Add haptic sync to all gestures
+   - Improve visual feedback (particles, animations)
+   - Test on real devices
+
+3. **UI/UX Polish**
+   - Polish existing UI components
+   - Add status indicators
+   - Improve information hierarchy
+   - Mobile-first refinements
+
+**Deliverable**: Smooth 10-minute onboarding experience
+
+---
+
+### Priority 2: Combat System
+**Goal**: Implement wisp clashes with momentum-based combat
+
+**Dependencies**: None - can start in parallel with UX Polish
+
+**Tasks** (in order):
+1. **Combat ECS Components**
+   - Health component
+   - Combat component
+   - Momentum component
+
+2. **CombatSystem**
+   - Gesture-based attacks (swipe clashes, pinch siphons)
+   - Affinity resonance mechanics
+   - Loot and rewards
+
+3. **Integration**
+   - Connect to existing systems
+   - Add visual effects
+   - Test balance
+
+**Deliverable**: Working combat system with gesture controls
+
+---
+
+### Priority 3: Content Expansion
+**Goal**: Expand core fun mechanics with more content
+
+**Dependencies**: None (can work in parallel)
+
+**Tasks**:
+1. **Recipe Expansion**
+   - Add 5+ new recipes
+   - Test balance and difficulty scaling
+   - Add visual/haptic feedback
+
+2. **Trait Expansion**
+   - Add 5+ new traits
+   - Test synergies and balance
+   - Add visual evolution effects
+
+3. **Biome Expansion**
+   - Add 2+ new biomes
+   - Test generation variety
+   - Add unique resources
+
+**Deliverable**: Expanded content variety
+
+---
+
+### Priority 4: Raycast 3D Migration
+**Goal**: Migrate from 2D tiles to raycasted 3D
+
+**Dependencies**: After Priority 1-3 complete (or can validate performance in parallel)
+
+**Tasks** (in order):
+1. **Performance Validation**
+   - Implement basic raycast POC
+   - Test on mid-range Android device
+   - Benchmark performance (target: 60 FPS)
+   - **Decision Point**: If performance sufficient → proceed, if insufficient → stay 2D
+
+2. **Raycast Engine Integration** (if performance validated)
+   - Replace Phaser 2D with raycast engine
+   - Heightmap generation
+   - Gesture controls (swipe-turn, pinch-zoom)
+
+3. **Visual Polish** (if performance validated)
+   - Pseudo-3D slice rendering
+   - Color gradients (indigo ebb → emerald bloom)
+   - Particle effects
+
+4. **Testing & Optimization** (if performance validated)
+   - Performance optimization
+   - Device testing
+   - Fallback plan if needed
+
+**Deliverable**: Raycasted 3D rendering (or enhanced 2D if performance insufficient)
+
+---
+
+## Implementation Priorities
+
+### Must Have (Next Implementation)
+1. **UX Polish** - Address "very clunky" feedback (Priority 1)
+2. **Combat System** - Core gameplay expansion (Priority 2)
+3. **Content Expansion** - More recipes, traits, biomes (Priority 3)
+
+### Should Have (After Must Have)
+4. **Raycast 3D Migration** - After performance validation (Priority 4)
+5. **Device Testing** - Real hardware validation (can do in parallel)
+
+### Nice to Have (Future)
+6. **Audio System** - Procedural soundscapes
+7. **Visual Effects** - Shaders, particles
+8. **Villages & Quests** - Emergent content systems
+9. **Community Features** - Seed sharing, haiku export
+
+---
+
+## Key Decisions Made
+
+### Rendering: Raycast 3D ✅ COMMITTED
+- **Vision**: Raycasted 3D (Wolfenstein-style) - committed
+- **Current**: 2D tile-based (Phaser 3) - interim foundation
+- **Timeline**: Stage 3+ (after performance validation)
+
+### Brand Identity: Option D (Hybrid) ✅ COMMITTED
+- **Tagline**: "Shape Worlds. Traits Echo. Legacy Endures."
+- **Brand Voice**: Hybrid - Poetic for world/atmosphere, technical for systems, playful for onboarding
+
+### Technology Stack: Locked ✅
+- **Platform**: Ionic/Vue/Capacitor
+- **ECS**: BitECS
+- **AI**: YukaJS
+- **State**: Zustand
+- **Rendering**: Phaser (interim) → Raycast 3D (target)
+
+---
+
+## Current Implementation Status
+
+### ✅ Complete (Stage 1)
+- ECS Architecture (BitECS)
+- 6 Game Systems (Movement, Crafting, Snapping, Pack, Pollution, Behavior)
+- 3 Cross-Cutting Systems (Haiku, Haptic, Gesture)
+- 57/57 Tests Passing
+- CI/CD Operational
+- Mobile Framework (Vue/Capacitor/Ionic)
+
+### 🎯 Next (Stage 2)
+- UX Polish (onboarding, tutorials, catalyst creator)
+- Combat System (wisp clashes, gesture attacks)
+- Content Expansion (recipes, traits, biomes)
+
+### ⏳ Future (Stage 3+)
+- Raycast 3D Migration (after performance validation)
+- Audio System
+- Visual Effects
+- Content Expansion
+
+---
+
+## Blockers: NONE
+
+All prerequisites complete. Ready to begin Stage 2 implementation.
+
+---
+
+## Success Criteria
+
+### Next Implementation Complete When:
+- [ ] Smooth onboarding flow (10-minute demo)
+- [ ] Combat system working
+- [ ] Content expansion (10+ recipes, 15+ traits, 5+ biomes)
+- [ ] 60 FPS maintained on mobile
+- [ ] All tests passing
+
+### Ready for Raycast Migration When:
+- [ ] Priorities 1-3 complete
+- [ ] Performance validation complete
+- [ ] Raycast POC tested (60 FPS achieved)
+- [ ] Decision made: proceed or stay 2D
+
+---
+
+**Last Updated**: 2025-01-XX  
+**Version**: 3.0.0 (Master Documents Complete)  
+**Status**: Ready for Stage 2 Implementation  
+**Confidence**: Very High - Clear roadmap, zero ambiguity
