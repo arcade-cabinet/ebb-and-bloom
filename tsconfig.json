@@ -57,10 +57,5 @@
     "dist",
     "android",
     "ios"
-  ],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    }
   ]
 }
