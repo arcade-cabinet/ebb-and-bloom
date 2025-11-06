@@ -1,0 +1,35 @@
+# Trait Atlas
+
+10 core prototypes + hybrids (aff seeds: heat=cleave, flow=tide, etc.). Cost 1-3 Evo, dilute 50% on inheritance. Synergies ripple (flow + life = tidal nurture).
+
+## Core Traits
+1. **Flipper Feet (Flow, 1)**: +Swim, floods to life|flow snaps. Inheritance: Webbed pads (Yuka school tighter). Synergy: +Life = Bloom Tide (regrow floods).
+
+2. **Chainsaw Hands (Heat, 2)**: +Chop radius, metal snaps. Inheritance: Burr Claw (+raid yield, -loyalty). Synergy: +Metal = Scorch Forge (2x drill, 15% corrupt).
+
+3. **Whimsy Vine (Wild, 1)**: Cosmetic warps, +serenity. Inheritance: Giggle Sprout (pranks for loot). Synergy: +Void = Chaos Haunt (prank hauls).
+
+4. **Root Bind (Bind, 1)**: +Rig hold in abyss. Inheritance: Thorn Net (traps wisps). Synergy: +Life = Everroot (self-regrow).
+
+5. **Surge Coil (Power, 2)**: +Surge drain in clash. Inheritance: Spark Fur (stun flank). Synergy: +Heat = Thunder Cleave (AOE purge).
+
+6. **Nurture Bloom (Life, 1)**: +Loyalty imprint. Inheritance: Symbiote Petal (Evo gifts). Synergy: +Flow = Verdant Tide (heal pollution).
+
+7. **Forge Plate (Metal, 2)**: +Snap durability. Inheritance: Iron Hide (tank raids). Synergy: +Bind = Bulwark Weave (unbreakable rigs).
+
+8. **Haunt Whisper (Void, 3)**: +Taint siphon. Inheritance: Echo Shade (stealth quest). Synergy: +Wild = Abyss Prank (random haunts).
+
+9. **Twist Echo (Wild Echo, 2)**: Random aff twist on snaps. Inheritance: Fickle Kin (whimsy evos). Synergy: +Power = Chaos Surge (unpredictable boosts).
+
+10. **Tidal Scar (Flow Void, 3)**: +Abyss prog. Inheritance: Ink Fin (dive nexus). Synergy: +Life = Shadow Reef (hybrid blooms).
+
+## Hybrids (Noise-Rolled)
+11. **Burr Surge (Heat Power, 2)**: +AOE drain. Inheritance: Spark Burr (chain-stun). Synergy: +Void = Thunder Haunt (stun wisps).
+
+12. **Vine Haunt (Bind Void, 3)**: +Rig hold with bleed. Inheritance: Echo Thorn (stealth traps). Synergy: +Life = Wraith Grove (shadow regrow).
+
+13. **Forge Bloom (Metal Life, 2)**: +Self-regrow snaps. Inheritance: Iron Petal (tank gifts). Synergy: +Flow = Verdant Bulwark (tidal forges).
+
+14. **Twist Haunt (Wild Void, 3)**: Random warp siphon. Inheritance: Fickle Shade (prank hauls). Synergy: +Power = Abyss Whirl (unpredictable surges).
+
+15. **Tidal Forge (Flow Metal, 2)**: +Yield prog. Inheritance: Ink Plate (dive forges). Synergy: +Heat = Scorch Current (ink alloys).

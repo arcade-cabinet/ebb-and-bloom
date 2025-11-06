@@ -1,0 +1,21 @@
+# Ebb & Bloom Vision
+
+## Overview
+Mobile-only procedural odysody: Modular catalyst strides scar one world's intimate sprawl. 80% grounded in evo-heart (Subnautica tidal memory, Outer Wilds looping ache, NMS emergent discovery). Rare stardust hops (5-10 siblings) as poetic exiles. Touch as pulse: Gestures weave ache, haptics thrum grudge.
+
+## Core Loop
+1. Stride & Probe: Swipe/gyro roam chunks (Perlin unfolds: Meadows to abyss strata).
+2. Snap & Imprint: Gesture terraform (swipe carve, pinch infuse trait—flipper floods = flow|life hybrid).
+3. Inherit & Quest: Proximity sparks evo (20% roll: Chainsaw dilutes to "burr claw"). Long-press dispatch pack (Yuka seek scar: Return shard or lash).
+4. Clash & Reclaim: Resonance momentum (swipe drain aff-match; pinch siphon taint). Stitch abyss (rig + surge + bloom roll: Hybrid or tide backlash).
+5. Nova Reset: 45min cycle resets chunk (persist journal haikus); rift for hop breath (nexus rite, carry 1 scar).
+
+## Balance Pillars
+- Style Skew: Harmony (symbiotes, slow serenity), Conquest (yield spikes, snowball grudges), Frolick (whimsy detours, low-risk warps).
+- Risk Ache: Tidal debt (mend blooms vs. abyss creeps); haptics thrum (buzz bloom, rumble lash).
+- Touch Flow: Momentum combos; 60FPS, FXAA smooth (purity slider).
+
+## Guardrails
+- Modular Sparks: Traits seed hybrids (70% new combos, no monoculture—noise-roll 50% wild affs).
+- Diversity Dial: Skew prevents ruts (harmony +reverb warmth, conquest +distortion grit).
+- Vibe Probes: Playtest "Does it surprise or echo?"

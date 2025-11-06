@@ -1,0 +1,17 @@
+# Dev Stages (8 Weeks MVP)
+
+1. **Core Seed (W1-2)**: 5x5 Perlin chunk world, touch stride (swipe/joystick catalyst). Basic snap (ore+water=alloy, haptic/pollution). POC: 10min meadow frolic, 60FPS APK.
+
+2. **Catalyst Touch (W2-3)**: Evo creator (drag pixel parts, 10 points). Terraform gestures (swipe carve, pinch infuse trait). Aura proximity inheritance. POC: Build & scar chunk.
+
+3. **Ecosystem Kin (W3-4)**: Spawn 3 packs (Yuka flocks). Inheritance tick (20% roll). Simple quest (dispatch scar probe). Nova tease (10min reset). POC: 15min loop with ripple.
+
+4. **Grudge Ache (W4-6)**: Resonance clash (swipe drain, pinch siphon). Abyss rite (stitch/surge/bloom). Grudge rivals (purge/tame). Haptic/gyro polish. POC: 20min siege & reclaim.
+
+5. **Stardust Breath (W6-7)**: Scar gate rite (nexus pinch-fold). Hop bop (chunk unload/load, carry scar). Constellation map. POC: 30min arc with 2 siblings.
+
+6. **Nova Elegy (W7-8)**: Full cycle (45min reset, journal persist). Shader suite (FXAA haze). Mobile bloom (haptic gestures, expo tests). POC: 1hr loop, APK ship.
+
+## Guardrails
+- Diversity: 50% noise-roll new affs/cycle; similarity <0.2 (Jaro-Winkler for haikus).
+- Vibe Probes: Weekly betas (linger rate 70%).

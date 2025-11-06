@@ -1,0 +1,8 @@
+// Action
+attuneNexusFusion: (clutchIds: string[], catalyst: number) => {
+  set((state) => ({ shardVault: state.shardVault.filter(s => !clutchIds.includes(s.id)) })); // Prep clear
+  ecosystem.attuneNexusFusion(clutchIds.map(id => parseInt(id)), catalyst);
+},
+
+// Getter
+nexusReadyClutches = () => useGame((state) => findAttunedGroups(state.shardVault, 3)); // Groups of 3+

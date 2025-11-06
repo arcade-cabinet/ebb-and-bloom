@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ebb & Bloom Raycast POC</title>
+    <style>body { margin: 0; background: #000; } canvas { display: block; }</style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const gl = canvas.getContext('webgl');
+        if (!gl) { alert('WebGL not supported'); }
+
+        // Resize
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            gl.viewport(0, 0, canvas.width, canvas.height);
+        }
+        resize(); window.addEventListener('resize', resize);
+
+        // Perlin noise (simple 2D)
+        function perlin(x, y) {
+            const n = x + y * 57;
+            return (Math.sin(n * 12.9898) * 43758.5453 % 1) * 2 - 1; // -1 to 1
+        }
+
+        // Grid: 32x32 chunks, height 0-1 (0=meadow, 1=void)
+        const GRID_SIZE = 32;
+        let grid = new Float32Array(GRID_SIZE * GRID_SIZE);
+        for (let i = 0; i < grid.length; i++) {
+            const x = i % GRID_SIZE, y = Math.floor(i / GRID_SIZE);
+            grid[i] = (perlin(x * 0.1, y * 0.1) + 1) * 0.5; // 0-1 height
+        }
+
+        // Snap carve (flood example)
+        function snapCarve(px, py) {
+            const ix = Math.floor(px), iy = Math.floor(py);
+            if (ix >= 0 && ix < GRID_SIZE && iy >= 0 && iy < GRID_SIZE) {
+                grid[iy * GRID_SIZE + ix] = 0.2; // Tidal scar low
+                console.log(`Snapped tidal scar at (${ix}, ${iy})`);
+            }
+        }
+
+        // Player
+        let player = { x: 16, y: 16, angle: 0, fov: Math.PI / 3 };
+
+        // Raycast render
+        function render() {
+            gl.clearColor(0.1, 0.1, 0.2, 1); // Indigo ebb
+            gl.clear(gl.COLOR_BUFFER_BIT);
+
+            const rays = Math.floor(canvas.width / 2); // Resolution
+            const rayAngle = player.fov / rays;
+            const cosA = Math.cos(player.angle);
+            const sinA = Math.sin(player.angle);
+
+            for (let i = 0; i < rays; i++) {
+                const rayAngleFull = player.angle - player.fov / 2 + i * rayAngle;
+                const rayCos = Math.cos(rayAngleFull) * cosA - Math.sin(rayAngleFull) * sinA;
+                const raySin = Math.sin(rayAngleFull) * cosA + Math.cos(rayAngleFull) * sinA;
+                let dist = 0;
+                let hit = 0;
+                let step = 0.02;
+
+                while (dist < 20 && hit === 0) {
+                    const x = Math.floor(player.x + rayCos * dist);
+                    const y = Math.floor(player.y + raySin * dist);
+                    if (x < 0 || x >= GRID_SIZE || y < 0 || y >= GRID_SIZE) break;
+                    const h = grid[y * GRID_SIZE + x];
+                    if (Math.random() < h * step) { // "Wall" hit prob
+                        hit = 1;
+                        dist *= Math.cos(rayAngleFull - player.angle); // Fish-eye fix
+                    }
+                    dist += step;
+                }
+
+                // Color by height (emerald bloom low, indigo void high)
+                const shade = 1 - (hit ? dist / 20 : 1);
+                const color = hit ? `rgb(${Math.floor(0 + shade * 100)}, ${Math.floor(100 + shade * 100)}, ${Math.floor(50 + shade * 100)})` : 'rgb(20, 20, 50)';
+                const bar = gl.createBuffer();
+                gl.bindBuffer(gl.ARRAY_BUFFER, bar);
+                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+                    i / rays * 2 - 1, -1, 0, 1,  // Bottom left
+                    (i+1) / rays * 2 - 1, -1, 0, 1,  // Bottom right
+                    i / rays * 2 - 1, 1, 0, 1  // Top left
+                ]), gl.STATIC_DRAW);
+                gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 0, 0);
+                gl.enableVertexAttribArray(0);
+                gl.useProgram(gl.createProgram(/* simple shader for color strips */)); // Omit for brevity
+                gl.drawArrays(gl.TRIANGLES, 0, 3); // Pseudo—full shader in full POC
+            }
+            requestAnimationFrame(render);
+        }
+        render();
+
+        // Touch controls
+        let touchStart = { x: 0, y: 0 };
+        canvas.addEventListener('touchstart', e => {
+            touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        });
+        canvas.addEventListener('touchmove', e => {
+            const deltaX = e.touches[0].clientX - touchStart.x;
+            player.angle += deltaX * 0.01; // Turn
+            player.x += Math.cos(player.angle) * (e.touches[0].clientY - touchStart.y) * 0.01; // Stride forward/back
+            player.y += Math.sin(player.angle) * (e.touches[0].clientY - touchStart.y) * 0.01;
+            touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            snapCarve(player.x, player.y); // Probe snap
+        });
+
+        // Haptic on hit (Capacitor stub)
+        if (navigator.vibrate) navigator.vibrate(50); // Buzz on stride
+    </script>
+</body>
+</html>
