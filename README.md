@@ -1,157 +1,234 @@
 # Ebb & Bloom
 
-**A mobile-first procedural evolution game** where your actions ripple through a living, breathing world.
+**A mobile-first procedural evolution game where one world's ache becomes endless.**
 
-## 🌸 One-World Ache, Tidal Evo Ripples
+[![Build Android APK](https://github.com/jbcom/ebb-and-bloom/actions/workflows/build-android.yml/badge.svg)](https://github.com/jbcom/ebb-and-bloom/actions/workflows/build-android.yml)
+[![Tests](https://github.com/jbcom/ebb-and-bloom/actions/workflows/build-android.yml/badge.svg)](https://github.com/jbcom/ebb-and-bloom/actions/workflows/build-android.yml)
 
-80% deep immersion in ONE procedurally generated world that remembers every action. 20% poetic exiles to sibling worlds. Touch-first design with haptic feedback. ECS architecture with 57/57 tests passing.
+> *"One-World Ache, Tidal Evo Ripples"*
 
-## 🚀 Quick Start
+## What is this?
 
-\`\`\`bash
-# Install
+Ebb & Bloom is a mobile game about witnessing one world's evolution through your touch. Your catalyst creature evolves traits, snaps resources magnetically, and influences an ecosystem of critter packs—all in a procedurally-generated world that breathes with your actions.
+
+**Stage 1 Complete**: Core architecture implemented, 57/57 tests passing, 4MB APK (very lean!)
+
+## Quick Start
+
+```bash
+# Install dependencies
 pnpm install
 
-# Develop
+# Start development server
 pnpm dev
 
-# Test
+# Run tests
 pnpm test
 
 # Build Android APK
-./build-android.sh
-\`\`\`
+pnpm build
+npx cap sync android
+```
 
-## 📚 Documentation
+## Documentation
 
-**Start Here**:
-- [VISION.md](docs/VISION.md) - Core philosophy and design pillars
-- [ARCHITECTURE.md](docs/ARCHITECTURE.md) - System architecture and ECS patterns
-- [DEVELOPMENT.md](docs/DEVELOPMENT.md) - Developer guide and workflow
+### For Developers 👨‍💻
 
-**Memory Bank** (AI & Human Reference):
-- [productContext.md](memory-bank/productContext.md) - What we're building
-- [techContext.md](memory-bank/techContext.md) - How it's built
-- [progress.md](memory-bank/progress.md) - Implementation status
-- [PROGRESS_ASSESSMENT.md](memory-bank/PROGRESS_ASSESSMENT.md) - Comprehensive assessment
+Start here to understand the codebase:
 
-**Package READMEs**:
-- [src/ecs/](src/ecs/README.md) - Entity-Component-System core
-- [src/systems/](src/systems/README.md) - Cross-cutting systems
+1. **[DEVELOPMENT.md](docs/DEVELOPMENT.md)** - Quick start, workflow, code standards
+2. **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** - System architecture, ECS patterns, data flow
+3. **[VISION.md](docs/VISION.md)** - Game design philosophy and pillars
+4. **[CODE_QUALITY_STANDARDS.md](docs/CODE_QUALITY_STANDARDS.md)** - "Leave it better" principle
+
+### Memory Bank 🧠
+
+The source of truth for AI and human developers:
+
+- **[productContext.md](memory-bank/productContext.md)** - What we're building
+- **[techContext.md](memory-bank/techContext.md)** - How it's built
+- **[progress.md](memory-bank/progress.md)** - Where we are
+- **[activeContext.md](memory-bank/activeContext.md)** - What's happening now
+- **[systemPatterns.md](memory-bank/systemPatterns.md)** - How we work (PR process, patterns)
+
+### Package Documentation 📦
+
+Each package has its own README explaining purpose and usage:
+
+- [src/ecs/](src/ecs/README.md) - Entity-Component-System (game logic)
+- [src/systems/](src/systems/README.md) - Cross-cutting systems (Haiku, Haptics, Gestures)
 - [src/game/](src/game/README.md) - Phaser rendering layer
 - [src/stores/](src/stores/README.md) - Zustand state management
-- [src/test/](src/test/README.md) - Test suites
+- [src/test/](src/test/README.md) - Testing infrastructure
 
-## ✅ Current Status
+## Core Features (Stage 1)
 
-**Stage 1 Complete** - Architecture solid, 8 systems implemented, 57/57 tests passing
+### ✅ Implemented
 
-**Implemented**:
-- ✅ ECS architecture (BitECS)
-- ✅ 10 trait components with synergies
-- ✅ Resource snapping (affinity-based)
-- ✅ Critter packs (formation, loyalty, roles)
-- ✅ Pollution system (3 shock types)
-- ✅ Behavior profiling (Harmony/Conquest/Frolick)
-- ✅ Haptic feedback (20+ patterns)
-- ✅ Gesture system (7 types)
-- ✅ Haiku journaling (Jaro-Winkler diversity guard)
-- ✅ World generation (Perlin noise, 5x5 chunks)
-- ✅ CI/CD pipeline (automated builds, tests, releases)
+- **ECS Architecture** - BitECS with clean separation of concerns
+- **10 Trait System** - FlipperFeet, ChainsawHands, DrillArms, etc. with synergies
+- **Resource Snapping** - Affinity-based magnetic combining (8-bit flags)
+- **Crafting System** - 5 recipes with resource validation
+- **Pack System** - Critter social dynamics with loyalty and roles
+- **Pollution & Shocks** - Global tracking with threshold events
+- **Behavior Profiling** - Harmony/Conquest/Frolick playstyle tracking
+- **Haiku Scorer** - Jaro-Winkler similarity for narrative journal
+- **Haptic System** - 20+ patterns, playstyle-aware
+- **Enhanced Gestures** - 7 types for mobile-first interaction
+- **World Generation** - Perlin noise, chunk-based (5x5 chunks)
+- **57 Passing Tests** - Comprehensive coverage
 
-**Next (Stage 2)**:
-- Combat system (wisp clashes)
-- Ritual mechanics (abyss reclamation)
-- Nova cycles (45-90min resets)
-- Stardust hops (sibling worlds)
-- UX polish (onboarding, tutorials)
+### 🔜 Coming in Stage 2
 
-## 🎮 What Makes This Special
+- UI/UX Polish (splash screens, onboarding)
+- Catalyst Creator (trait selection UI)
+- Combat System (wisp clashes)
+- Ritual Mechanics (abyss reclamation)
+- Nova Cycles (45-90min world resets)
+- Stardust Hops (sibling worlds)
 
-1. **Magnetic Resource Snapping**: No menus - resources fuse when adjacent
-2. **Trait Inheritance**: Your traits ripple through the ecosystem
-3. **Procedural Haiku**: Every action generates poetic narrative
-4. **Touch as Language**: Gestures ARE the game, not shortcuts
+## Technology Stack
 
-## 🏗️ Tech Stack
-
-- **Mobile**: Capacitor 6.1, Ionic Vue 8.7
-- **Game**: Phaser 3.87 (rendering), BitECS 0.3.40 (logic)
-- **State**: Zustand 5.0 (UI sync)
-- **Dev**: pnpm, TypeScript 5.7, Vitest 2.1
+- **Mobile**: Capacitor 6.1+ (native bridge), Ionic Vue 8.7+ (UI)
+- **Game Engine**: Phaser 3.87+ (rendering), BitECS 0.3.19 (game logic)
+- **State**: Zustand 5.0+ (UI sync, read-only from ECS)
+- **Frontend**: Vue 3.5+ (composition API), TypeScript 5.7+
+- **Build**: Vite 6.0+, pnpm 9.x
+- **Testing**: Vitest 2.1+, happy-dom
 - **CI/CD**: GitHub Actions, Renovate Bot
 
-## 📊 Stats
+## Architecture Principles
 
-- **APK Size**: 4MB (very lean!)
-- **Tests**: 57/57 passing
-- **Target**: 60 FPS on mid-range Android
-- **Systems**: 11 total (8 core + 3 supporting)
-- **Components**: 14 ECS components
+### ECS as Single Source of Truth
 
-## 🎯 Design Pillars
+```
+┌─────────────────────────────────────┐
+│  BitECS (Source of Truth)          │
+│  - Components: Position, Traits    │
+│  - Systems: Movement, Crafting     │
+└──────────────┬──────────────────────┘
+               │ (one-way, read-only)
+               ▼
+    ┌──────────────────────┐
+    │  Zustand UI Store    │
+    │  Never writes to ECS │
+    └──────┬────────┬───────┘
+           │        │
+           ▼        ▼
+      ┌────┐    ┌───────┐
+      │Vue │    │Phaser │
+      └────┘    └───────┘
+```
 
-1. **Intimate Scale** - One world that evolves WITH you
-2. **Tidal Rhythm** - Growth and decay are both beautiful
-3. **Touch as Poetry** - Gestures feel like conducting symphony
-4. **Evolutionary Memory** - Your legacy outlives you
-5. **Mobile-First Forever** - Touch-first from day one
+### Mobile-First Always
 
-## 📱 Mobile Optimization
-
-- Portrait orientation (one-handed play)
-- Touch gestures (7 types)
-- Haptic feedback (20+ patterns)
-- 60 FPS target
+- Touch gestures as primary input
+- Haptic feedback for all interactions
+- Portrait orientation optimized
+- 60 FPS non-negotiable
 - Battery-conscious rendering
-- Lean APK (currently 4MB)
 
-## 🧪 Testing
+### Test-First Development
 
-\`\`\`bash
-pnpm test              # Run all 57 tests
-pnpm test:watch        # Watch mode
-pnpm test:ui           # Vitest UI
-pnpm test:coverage     # Coverage report
-\`\`\`
+- Write tests before implementation
+- 57/57 tests passing
+- Coverage tracked in CI
+- Fast test runs (< 5s)
 
-**Test Suites**:
-- Components (4 tests)
-- Movement (3 tests)  
-- Crafting (3 tests)
-- Haiku Scorer (8 tests)
-- Snapping (6 tests)
-- Pollution & Behavior (15 tests)
-- Pack System (18 tests)
+## Project Structure
 
-## 🚢 Building
+```
+/
+├── docs/                  # Architecture bible
+│   ├── VISION.md         # Design philosophy
+│   ├── ARCHITECTURE.md   # System architecture
+│   └── DEVELOPMENT.md    # Developer guide
+├── memory-bank/          # Source of truth
+│   ├── productContext.md # What we're building
+│   ├── techContext.md    # How it's built
+│   └── progress.md       # Where we are
+├── src/
+│   ├── ecs/             # Game logic (BitECS)
+│   ├── game/            # Phaser rendering
+│   ├── systems/         # Cross-cutting concerns
+│   ├── stores/          # UI state (Zustand)
+│   ├── views/           # Vue components
+│   └── test/            # Test suites
+└── public/              # Static assets
+```
 
-**Web**:
-\`\`\`bash
-pnpm build
-pnpm preview
-\`\`\`
+## Development Workflow
 
-**Android**:
-\`\`\`bash
-./build-android.sh
-# or
-pnpm build && npx cap sync android && npx cap open android
-\`\`\`
+1. **Start with Memory Bank** - Read productContext, techContext, progress
+2. **Find the Right Package** - Check package READMEs
+3. **Write Tests First** - TDD always
+4. **Implement in ECS** - Components + Systems
+5. **Update Documentation** - Memory bank + READMEs
+6. **Commit & Push** - Follow conventional commits
+7. **Handle PR Reviews** - Address ALL feedback immediately
 
-## 📖 Learn More
+See [systemPatterns.md](memory-bank/systemPatterns.md) for complete PR review process.
 
-- [Vision & Philosophy](docs/VISION.md)
-- [Architecture Guide](docs/ARCHITECTURE.md)
-- [Development Guide](docs/DEVELOPMENT.md)
-- [Progress Assessment](memory-bank/PROGRESS_ASSESSMENT.md)
+## Commands
 
-## 📜 License
+```bash
+# Development
+pnpm dev                # Start Vite dev server
+pnpm build              # Build for production
+pnpm preview            # Preview production build
 
-See [LICENSE](LICENSE) file.
+# Testing
+pnpm test               # Run all tests
+pnpm test:watch         # Watch mode
+pnpm test:ui            # Open Vitest UI
+pnpm test:coverage      # Generate coverage
+
+# Mobile
+npx cap sync android    # Sync web assets to Android
+npx cap open android    # Open in Android Studio
+./build-android.sh      # Build APK
+```
+
+## Contributing
+
+This project follows the **"Leave It Better Than You Found It"** principle:
+
+- ✅ Fix ALL TODOs and placeholders immediately
+- ✅ Address ALL PR review feedback before merge
+- ✅ Update memory bank with changes
+- ✅ Write tests for new features
+- ✅ Document in package READMEs
+
+See [CODE_QUALITY_STANDARDS.md](docs/CODE_QUALITY_STANDARDS.md) for details.
+
+## Current Status
+
+**Stage 1**: Complete ✅  
+**Documentation**: Organized ✅  
+**PR #3**: Ready for merge ✅  
+**Next**: Stage 2 UX Polish (splash screens, catalyst creator, onboarding)
+
+See [progress.md](memory-bank/progress.md) for detailed status.
+
+## Design Philosophy
+
+> **One-World Ache**: 80% of gameplay happens in a single persistent world. No galaxy-hopping menus—just intimate, procedural evolution in one breathing ecosystem.
+
+> **Touch as Language**: Mobile gestures aren't just controls—they're how you speak to the world. Swipe to stride, pinch to terraform, long-press to commune.
+
+> **Tidal Rhythm**: 45-minute nova cycles with haiku persistence. The world resets, but your journal remembers. Impermanence becomes the game loop.
+
+## Inspiration
+
+- **Elite (1984)** - Procedural scale with deterministic seeds
+- **Outer Wilds** - One solar system, endless discovery
+- **Subnautica** - Intimate world-building and exploration
+- **No Man's Sky** - Procedural variety with meaningful choices
+
+## License
+
+MIT © 2025
 
 ---
 
-**Built with ❤️ for mobile-first gaming**
-
-🌸 Explore • 🎨 Evolve • 🌍 Remember 🌸
+**Built for mobile. Powered by ECS. Driven by evolution.**
