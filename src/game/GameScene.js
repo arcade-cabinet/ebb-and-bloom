@@ -12,7 +12,7 @@ import { createMovementSystem } from '../ecs/systems/MovementSystem';
 import { createCraftingSystem } from '../ecs/systems/CraftingSystem';
 import { WorldCore } from './core/core.js';
 import { GestureController } from './player/player.js';
-import { gameStore } from '../stores/gameStore';
+import { useGameStore } from '../stores/gameStore';
 
 export class GameScene extends Phaser.Scene {
   constructor() {
@@ -51,8 +51,8 @@ export class GameScene extends Phaser.Scene {
   create() {
     // Initialize ECS World
     this.world = resetWorld();
-    gameStore.getState().setWorld(this.world);
-    gameStore.getState().initialize();
+    useGameStore().setWorld(this.world);
+    useGameStore().initialize();
     
     // Initialize systems
     this.movementSystem = createMovementSystem();
@@ -211,7 +211,7 @@ export class GameScene extends Phaser.Scene {
     this.movementSystem(this.world, deltaSeconds);
     
     // Sync player position to Zustand store
-    gameStore.getState().updatePlayerPosition(
+    useGameStore().updatePlayerPosition(
       Position.x[this.playerEid],
       Position.y[this.playerEid]
     );
@@ -235,7 +235,7 @@ export class GameScene extends Phaser.Scene {
     const currentTime = Date.now();
     if (currentTime - this.lastTime >= 1000) {
       this.fps = this.frameCount;
-      gameStore.getState().setFPS(this.fps);
+      useGameStore().setFPS(this.fps);
       this.frameCount = 0;
       this.lastTime = currentTime;
     }
@@ -316,7 +316,7 @@ export class GameScene extends Phaser.Scene {
         }
         
         // Sync to Zustand
-        gameStore.getState().updatePlayerInventory(
+        useGameStore().updatePlayerInventory(
           Inventory.ore[this.playerEid],
           Inventory.water[this.playerEid],
           Inventory.alloy[this.playerEid]
@@ -334,12 +334,12 @@ export class GameScene extends Phaser.Scene {
     
     if (result.success) {
       // Sync to Zustand
-      gameStore.getState().updatePlayerInventory(
+      useGameStore().updatePlayerInventory(
         Inventory.ore[this.playerEid],
         Inventory.water[this.playerEid],
         Inventory.alloy[this.playerEid]
       );
-      gameStore.getState().addPollution(result.pollution);
+      useGameStore().addPollution(result.pollution);
       
       // Visual feedback
       this.cameras.main.shake(100, 0.002);
@@ -353,7 +353,7 @@ export class GameScene extends Phaser.Scene {
     );
     
     // Update pollution (from Zustand)
-    const pollution = gameStore.getState().pollution;
+    const pollution = useGameStore().pollution;
     this.pollutionText.setText(`Pollution: ${pollution}%`);
     
     // Update FPS
