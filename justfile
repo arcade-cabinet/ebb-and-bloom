@@ -124,9 +124,6 @@ android-studio:
     pnpm exec cap open android
 
 # Run on Android with live reload (managed)
-android-dev:
-    process-compose up dev-mobile
-
 # Build APK (debug)
 android-build-debug: android-sync
     #!/usr/bin/env bash
