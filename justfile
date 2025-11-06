@@ -283,7 +283,9 @@ push:
 # ======================
 
 # Complete development check - run before committing
-pre-commit: typecheck test test-e2e lint
+# Note: E2E tests are excluded from pre-commit for speed and reliability.
+# Run `just test-all` before pushing or merging for full coverage.
+pre-commit: typecheck test lint
     echo "✅ All checks passed - ready to commit!"
 
 # Quick development cycle - test and run
