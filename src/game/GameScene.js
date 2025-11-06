@@ -1,13 +1,18 @@
 /**
- * Main Game Scene
- * Integrates Phaser with WorldCore, Player, and Crafting systems
- * Renders 5x5 chunk world with 60FPS target
+ * Main Game Scene - ECS Architecture
+ * Integrates BitECS, Zustand, Phaser rendering
+ * Pure Phaser as rendering layer, ECS for game logic
  */
 
 import Phaser from 'phaser';
+import { getWorld, resetWorld } from '../ecs/world';
+import { createPlayer } from '../ecs/entities';
+import { Position, Velocity, Inventory, Sprite as SpriteComponent } from '../ecs/components';
+import { createMovementSystem } from '../ecs/systems/MovementSystem';
+import { createCraftingSystem } from '../ecs/systems/CraftingSystem';
 import { WorldCore } from './core/core.js';
-import { Player, GestureController } from './player/player.js';
-import { CraftingSystem } from './systems/crafting.js';
+import { GestureController } from './player/player.js';
+import { useGameStore } from '../stores/gameStore';
 
 export class GameScene extends Phaser.Scene {
   constructor() {
@@ -15,7 +20,6 @@ export class GameScene extends Phaser.Scene {
   }
 
   preload() {
-    // Generate simple sprite textures
     this.generateSprites();
   }
 
@@ -45,15 +49,24 @@ export class GameScene extends Phaser.Scene {
   }
 
   create() {
-    // Initialize game systems
+    // Initialize ECS World
+    this.world = resetWorld();
+    useGameStore.getState().setWorld(this.world);
+    useGameStore.getState().initialize();
+    
+    // Initialize systems
+    this.movementSystem = createMovementSystem();
+    this.craftingSystem = createCraftingSystem();
+    
+    // Initialize world generation
     this.worldCore = new WorldCore(Date.now());
-    this.player = new Player(250 * 8, 250 * 8); // Center of 5x5 world
-    this.crafting = new CraftingSystem();
+    
+    // Create player entity (ECS)
+    this.playerEid = createPlayer(this.world, 250 * 8, 250 * 8);
     
     // Camera setup
     const bounds = this.worldCore.getWorldBounds();
     this.cameras.main.setBounds(0, 0, bounds.width, bounds.height);
-    this.cameras.main.startFollow({ x: this.player.x, y: this.player.y }, true, 0.1, 0.1);
     
     // Sprite pooling for better performance
     this.tileSprites = new Map(); // Store sprites by tile key
@@ -65,15 +78,32 @@ export class GameScene extends Phaser.Scene {
     };
     this.renderWorld();
     
-    // Create player sprite
-    this.playerSprite = this.add.sprite(this.player.x, this.player.y, 'player');
+    // Create player sprite (Phaser rendering)
+    this.playerSprite = this.add.sprite(
+      Position.x[this.playerEid], 
+      Position.y[this.playerEid], 
+      'player'
+    );
+    
+    // Follow player
+    this.cameras.main.startFollow(this.playerSprite, true, 0.1, 0.1);
     
     // Trail graphics
     this.trailGraphics = this.add.graphics();
+    this.trailPoints = [];
+    this.maxTrailLength = 10;
     
-    // Setup gesture controls
+    // Setup gesture controls (operates on ECS Velocity component)
     this.gestureController = new GestureController(
-      this.player,
+      {
+        applyForce: (fx, fy) => {
+          const maxSpeed = 200;
+          Velocity.x[this.playerEid] = Math.max(-maxSpeed, Math.min(maxSpeed, Velocity.x[this.playerEid] + fx));
+          Velocity.y[this.playerEid] = Math.max(-maxSpeed, Math.min(maxSpeed, Velocity.y[this.playerEid] + fy));
+        },
+        speed: 100,
+        maxSpeed: 200
+      },
       this.game.canvas
     );
     
@@ -88,11 +118,17 @@ export class GameScene extends Phaser.Scene {
     this.lastTime = Date.now();
     this.frameCount = 0;
     this.fps = 60;
+    
+    // Last render position for optimization
+    this.lastRenderPos = { x: Position.x[this.playerEid], y: Position.y[this.playerEid] };
   }
 
   renderWorld() {
     // Get visible tiles around player (optimized viewport culling with sprite pooling)
-    const playerTilePos = this.player.getTilePosition(8);
+    const playerTilePos = {
+      x: Math.floor(Position.x[this.playerEid] / 8),
+      y: Math.floor(Position.y[this.playerEid] / 8)
+    };
     const viewRadius = 60; // Tiles to render around player
     
     const visibleTiles = this.worldCore.getVisibleTiles(
@@ -169,14 +205,23 @@ export class GameScene extends Phaser.Scene {
   }
 
   update(time, delta) {
-    // Update player
-    this.player.update(delta / 1000);
+    const deltaSeconds = delta / 1000;
     
-    // Update player sprite
-    this.playerSprite.setPosition(this.player.x, this.player.y);
-    this.playerSprite.setFlipX(this.player.flipX);
+    // Run ECS systems
+    this.movementSystem(this.world, deltaSeconds);
+    
+    // Sync player position to Zustand store
+    useGameStore.getState().updatePlayerPosition(
+      Position.x[this.playerEid],
+      Position.y[this.playerEid]
+    );
+    
+    // Update player sprite (Phaser rendering layer)
+    this.playerSprite.setPosition(Position.x[this.playerEid], Position.y[this.playerEid]);
+    this.playerSprite.setFlipX(Velocity.x[this.playerEid] < 0);
     
     // Draw trail
+    this.updateTrail();
     this.drawTrail();
     
     // Check for resource collection
@@ -190,34 +235,53 @@ export class GameScene extends Phaser.Scene {
     const currentTime = Date.now();
     if (currentTime - this.lastTime >= 1000) {
       this.fps = this.frameCount;
+      useGameStore.getState().setFPS(this.fps);
       this.frameCount = 0;
       this.lastTime = currentTime;
     }
     
     // Re-render world when player moves significantly (optimization)
-    // Only re-render when moved 25+ tiles to reduce draw calls
-    if (!this.lastRenderPos) {
-      this.lastRenderPos = { x: this.player.x, y: this.player.y };
-    }
-    const dx = Math.abs(this.player.x - this.lastRenderPos.x);
-    const dy = Math.abs(this.player.y - this.lastRenderPos.y);
+    const dx = Math.abs(Position.x[this.playerEid] - this.lastRenderPos.x);
+    const dy = Math.abs(Position.y[this.playerEid] - this.lastRenderPos.y);
     const renderThreshold = 25 * 8; // 25 tiles * 8 pixels
     
     if (dx > renderThreshold || dy > renderThreshold) {
       this.renderWorld();
-      this.lastRenderPos = { x: this.player.x, y: this.player.y };
+      this.lastRenderPos = { 
+        x: Position.x[this.playerEid], 
+        y: Position.y[this.playerEid] 
+      };
     }
+  }
+
+  updateTrail() {
+    // Add current position to trail
+    this.trailPoints.push({ 
+      x: Position.x[this.playerEid], 
+      y: Position.y[this.playerEid], 
+      alpha: 1.0 
+    });
+    
+    // Remove old trail points
+    if (this.trailPoints.length > this.maxTrailLength) {
+      this.trailPoints.shift();
+    }
+    
+    // Fade trail
+    this.trailPoints.forEach((point, i) => {
+      point.alpha = i / this.maxTrailLength;
+    });
   }
 
   drawTrail() {
     this.trailGraphics.clear();
     
-    if (this.player.trail.length > 1) {
+    if (this.trailPoints.length > 1) {
       this.trailGraphics.lineStyle(2, 0xff6b9d);
       
-      for (let i = 0; i < this.player.trail.length - 1; i++) {
-        const point = this.player.trail[i];
-        const nextPoint = this.player.trail[i + 1];
+      for (let i = 0; i < this.trailPoints.length - 1; i++) {
+        const point = this.trailPoints[i];
+        const nextPoint = this.trailPoints[i + 1];
         
         this.trailGraphics.setAlpha(point.alpha);
         this.trailGraphics.lineBetween(
@@ -233,42 +297,63 @@ export class GameScene extends Phaser.Scene {
   }
 
   checkResourceCollection() {
-    const tilePos = this.player.getTilePosition(8);
+    const tilePos = {
+      x: Math.floor(Position.x[this.playerEid] / 8),
+      y: Math.floor(Position.y[this.playerEid] / 8)
+    };
     const tile = this.worldCore.getTile(tilePos.x, tilePos.y);
     
     if (tile && (tile.type === 'ore' || tile.type === 'water')) {
       // Timer-based collection for predictable, responsive gameplay
-      // Collect after standing on tile for 500ms
       this.resourceCollectionTimer += this.game.loop.delta;
       
       if (this.resourceCollectionTimer >= this.resourceCollectionDelay) {
-        this.player.collectResource(tile.type);
-        this.resourceCollectionTimer = 0; // Reset timer after collection
+        // Update ECS Inventory component
+        if (tile.type === 'ore') {
+          Inventory.ore[this.playerEid]++;
+        } else if (tile.type === 'water') {
+          Inventory.water[this.playerEid]++;
+        }
+        
+        // Sync to Zustand
+        useGameStore.getState().updatePlayerInventory(
+          Inventory.ore[this.playerEid],
+          Inventory.water[this.playerEid],
+          Inventory.alloy[this.playerEid]
+        );
+        
+        this.resourceCollectionTimer = 0;
       }
     } else {
-      // Reset timer when not on resource tile
       this.resourceCollectionTimer = 0;
     }
   }
 
-  async attemptCraft() {
-    const result = await this.crafting.craft('alloy', this.player.inventory);
+  attemptCraft() {
+    const result = this.craftingSystem.craft(this.world, 'alloy');
     
     if (result.success) {
+      // Sync to Zustand
+      useGameStore.getState().updatePlayerInventory(
+        Inventory.ore[this.playerEid],
+        Inventory.water[this.playerEid],
+        Inventory.alloy[this.playerEid]
+      );
+      useGameStore.getState().addPollution(result.pollution);
+      
       // Visual feedback
       this.cameras.main.shake(100, 0.002);
     }
   }
 
   updateUI() {
-    // Update inventory
-    const inv = this.player.inventory;
+    // Update inventory (from ECS)
     this.inventoryText.setText(
-      `Ore: ${inv.ore} | Water: ${inv.water} | Alloy: ${inv.alloy}`
+      `Ore: ${Inventory.ore[this.playerEid]} | Water: ${Inventory.water[this.playerEid]} | Alloy: ${Inventory.alloy[this.playerEid]}`
     );
     
-    // Update pollution
-    const pollution = this.crafting.getPollutionPercentage().toFixed(0);
+    // Update pollution (from Zustand)
+    const pollution = useGameStore.getState().pollution;
     this.pollutionText.setText(`Pollution: ${pollution}%`);
     
     // Update FPS
