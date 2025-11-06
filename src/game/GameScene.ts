@@ -52,11 +52,16 @@ export class GameScene extends Phaser.Scene {
     // Initialize ECS World
     this.world = resetWorld();
     useGameStore().setWorld(this.world);
-    useGameStore().initialize();
     
     // Initialize systems
     this.movementSystem = createMovementSystem();
     this.craftingSystem = createCraftingSystem();
+    
+    // Expose ECS world to window in development mode for testing
+    if (import.meta.env.DEV) {
+      (window as any).ecsWorld = this.world;
+      (window as any).ecsInitialized = true;
+    }
     
     // Initialize world generation
     this.worldCore = new WorldCore(Date.now());

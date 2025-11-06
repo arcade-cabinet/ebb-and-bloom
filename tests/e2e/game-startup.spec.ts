@@ -2,6 +2,14 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Ebb & Bloom Game Startup', () => {
   test('should load the game without errors', async ({ page }) => {
+    // Collect console errors from the start
+    const errors: string[] = [];
+    page.on('console', msg => {
+      if (msg.type() === 'error') {
+        errors.push(msg.text());
+      }
+    });
+    
     // Navigate to the game
     await page.goto('/');
     
@@ -14,20 +22,14 @@ test.describe('Ebb & Bloom Game Startup', () => {
     
     // Check that Phaser has initialized
     const phaserGame = await page.evaluate(() => {
-      return typeof window.Phaser !== 'undefined';
+      return typeof (window as any).Phaser !== 'undefined';
     });
     expect(phaserGame).toBeTruthy();
     
-    // Verify no critical console errors
-    const errors: string[] = [];
-    page.on('console', msg => {
-      if (msg.type() === 'error') {
-        errors.push(msg.text());
-      }
-    });
-    
-    // Wait a bit to collect any errors
-    await page.waitForTimeout(3000);
+    // Wait for ECS initialization to complete
+    await page.waitForFunction(() => {
+      return typeof (window as any).ecsInitialized !== 'undefined' && (window as any).ecsInitialized === true;
+    }, { timeout: 10000 });
     
     // Filter out acceptable errors (like dev server warnings)
     const criticalErrors = errors.filter(error => 
@@ -59,18 +61,17 @@ test.describe('Ebb & Bloom Game Startup', () => {
   test('should initialize ECS world', async ({ page }) => {
     await page.goto('/');
     
-    // Wait for the game to initialize
-    await page.waitForTimeout(5000);
+    // Wait for ECS world to be initialized (exposed in dev mode)
+    await page.waitForFunction(() => {
+      return typeof (window as any).ecsInitialized !== 'undefined' && (window as any).ecsInitialized === true;
+    }, { timeout: 10000 });
     
     // Check that BitECS world exists
     const ecsWorldExists = await page.evaluate(() => {
-      // This would check for your actual ECS world instance
-      return typeof window.ecsWorld !== 'undefined';
+      return typeof (window as any).ecsWorld !== 'undefined';
     });
     
-    // Note: You'll need to expose your ECS world to window in dev mode
-    // Or use a different method to verify ECS initialization
-    console.log('ECS World check:', ecsWorldExists);
+    expect(ecsWorldExists).toBeTruthy();
   });
 
   test('should handle touch input on mobile', async ({ page, isMobile }) => {
@@ -82,11 +83,15 @@ test.describe('Ebb & Bloom Game Startup', () => {
     const canvas = page.locator('canvas');
     await expect(canvas).toBeVisible();
     
+    // Wait for ECS initialization to complete
+    await page.waitForFunction(() => {
+      return typeof (window as any).ecsInitialized !== 'undefined' && (window as any).ecsInitialized === true;
+    }, { timeout: 10000 });
+    
     // Simulate touch interaction
     await canvas.tap();
     
-    // Verify touch was handled (you'll need to implement touch feedback)
-    // This is a placeholder - implement based on your touch handling
-    await page.waitForTimeout(1000);
+    // Verify canvas is still visible after touch (basic interaction test)
+    await expect(canvas).toBeVisible();
   });
 });
