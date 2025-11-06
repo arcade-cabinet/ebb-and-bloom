@@ -1,159 +1,157 @@
 # Ebb & Bloom
 
-Stage 1 POC: A mobile-first game featuring procedurally generated meadow biomes, touch-based controls, and crafting mechanics.
+**A mobile-first procedural evolution game** where your actions ripple through a living, breathing world.
 
-## 🌸 Features
+## 🌸 One-World Ache, Tidal Evo Ripples
 
-### World Generation
-- **5x5 Chunk System**: Each chunk is 100x100 tiles
-- **Perlin Noise**: Organic terrain generation with meadow biomes
-- **Biome Types**: Water, Grass, Flowers, Ore deposits
-- **Raycast Stride View**: Efficient rendering for mobile
+80% deep immersion in ONE procedurally generated world that remembers every action. 20% poetic exiles to sibling worlds. Touch-first design with haptic feedback. ECS architecture with 57/57 tests passing.
 
-### Player & Controls
-- **Modular 8x8 Sprite**: Catalyst character with directional animations
-- **Touch Gestures**:
-  - **Swipe**: Quick dash movement
-  - **Joystick**: Hold and drag for continuous movement
-  - **Trail Effect**: Visual feedback with flipper trail warp
-- **Mobile-First**: Optimized for touch screens
+## 🚀 Quick Start
 
-### Crafting System
-- **Basic Snap**: Ore + Water = Alloy
-- **Haptic Feedback**: Vibration on successful crafting
-- **Pollution Mechanic**: Each craft increases pollution by +1
-- **Visual Feedback**: Camera shake and UI updates
+\`\`\`bash
+# Install
+pnpm install
 
-### Performance
-- **Target**: 60FPS on Android devices
-- **Optimizations**: 
-  - Pixel art rendering
-  - Efficient tile culling
-  - WebGL acceleration
-  - Minimal garbage collection
+# Develop
+pnpm dev
 
-## 🚀 Tech Stack
+# Test
+pnpm test
 
-- **Capacitor**: Native mobile wrapper
-- **Ionic Vue**: Mobile UI framework
-- **Phaser 3**: Game engine for 2D rendering
-- **BitECS**: Entity Component System (prepared for future expansion)
-- **Yuka**: AI/pathfinding library (prepared for future expansion)
-- **Zustand**: State management for game state and intimacy tracking
-
-## 📦 Installation
-
-```bash
-# Install dependencies
-npm install
-
-# Run development server
-npm run dev
-
-# Build for production
-npm run build
-```
-
-## 📱 Android Build
-
-```bash
-# Quick build
+# Build Android APK
 ./build-android.sh
+\`\`\`
 
-# Or manually:
-npm run build
-npx cap sync android
-cd android && ./gradlew assembleDebug
-```
+## 📚 Documentation
 
-The APK will be at: `android/app/build/outputs/apk/debug/app-debug.apk`
+**Start Here**:
+- [VISION.md](docs/VISION.md) - Core philosophy and design pillars
+- [ARCHITECTURE.md](docs/ARCHITECTURE.md) - System architecture and ECS patterns
+- [DEVELOPMENT.md](docs/DEVELOPMENT.md) - Developer guide and workflow
 
-## 🎮 How to Play
+**Memory Bank** (AI & Human Reference):
+- [productContext.md](memory-bank/productContext.md) - What we're building
+- [techContext.md](memory-bank/techContext.md) - How it's built
+- [progress.md](memory-bank/progress.md) - Implementation status
+- [PROGRESS_ASSESSMENT.md](memory-bank/PROGRESS_ASSESSMENT.md) - Comprehensive assessment
 
-1. **Move**: Touch and drag to move the catalyst character
-   - Short swipe for quick dash
-   - Hold and drag for joystick control
-2. **Collect**: Walk over ore and water tiles to collect resources
-3. **Craft**: Tap the CRAFT button when you have ore + water
-4. **Watch**: Monitor pollution levels as you craft
+**Package READMEs**:
+- [src/ecs/](src/ecs/README.md) - Entity-Component-System core
+- [src/systems/](src/systems/README.md) - Cross-cutting systems
+- [src/game/](src/game/README.md) - Phaser rendering layer
+- [src/stores/](src/stores/README.md) - Zustand state management
+- [src/test/](src/test/README.md) - Test suites
+
+## ✅ Current Status
+
+**Stage 1 Complete** - Architecture solid, 8 systems implemented, 57/57 tests passing
+
+**Implemented**:
+- ✅ ECS architecture (BitECS)
+- ✅ 10 trait components with synergies
+- ✅ Resource snapping (affinity-based)
+- ✅ Critter packs (formation, loyalty, roles)
+- ✅ Pollution system (3 shock types)
+- ✅ Behavior profiling (Harmony/Conquest/Frolick)
+- ✅ Haptic feedback (20+ patterns)
+- ✅ Gesture system (7 types)
+- ✅ Haiku journaling (Jaro-Winkler diversity guard)
+- ✅ World generation (Perlin noise, 5x5 chunks)
+- ✅ CI/CD pipeline (automated builds, tests, releases)
+
+**Next (Stage 2)**:
+- Combat system (wisp clashes)
+- Ritual mechanics (abyss reclamation)
+- Nova cycles (45-90min resets)
+- Stardust hops (sibling worlds)
+- UX polish (onboarding, tutorials)
+
+## 🎮 What Makes This Special
+
+1. **Magnetic Resource Snapping**: No menus - resources fuse when adjacent
+2. **Trait Inheritance**: Your traits ripple through the ecosystem
+3. **Procedural Haiku**: Every action generates poetic narrative
+4. **Touch as Language**: Gestures ARE the game, not shortcuts
+
+## 🏗️ Tech Stack
+
+- **Mobile**: Capacitor 6.1, Ionic Vue 8.7
+- **Game**: Phaser 3.87 (rendering), BitECS 0.3.40 (logic)
+- **State**: Zustand 5.0 (UI sync)
+- **Dev**: pnpm, TypeScript 5.7, Vitest 2.1
+- **CI/CD**: GitHub Actions, Renovate Bot
+
+## 📊 Stats
+
+- **APK Size**: 4MB (very lean!)
+- **Tests**: 57/57 passing
+- **Target**: 60 FPS on mid-range Android
+- **Systems**: 11 total (8 core + 3 supporting)
+- **Components**: 14 ECS components
+
+## 🎯 Design Pillars
+
+1. **Intimate Scale** - One world that evolves WITH you
+2. **Tidal Rhythm** - Growth and decay are both beautiful
+3. **Touch as Poetry** - Gestures feel like conducting symphony
+4. **Evolutionary Memory** - Your legacy outlives you
+5. **Mobile-First Forever** - Touch-first from day one
+
+## 📱 Mobile Optimization
+
+- Portrait orientation (one-handed play)
+- Touch gestures (7 types)
+- Haptic feedback (20+ patterns)
+- 60 FPS target
+- Battery-conscious rendering
+- Lean APK (currently 4MB)
 
 ## 🧪 Testing
 
-**10-Minute Frolic Test**: 
-- Play for 10 minutes continuously
-- Test touch responsiveness
-- Verify 60FPS performance
-- Check resource collection
-- Validate crafting mechanics
+\`\`\`bash
+pnpm test              # Run all 57 tests
+pnpm test:watch        # Watch mode
+pnpm test:ui           # Vitest UI
+pnpm test:coverage     # Coverage report
+\`\`\`
 
-**Evolution Intimacy**:
-- Intimacy system tracked in Zustand store
-- Evolution stages unlock at 20% intervals
-- Future expansion point for deeper mechanics
+**Test Suites**:
+- Components (4 tests)
+- Movement (3 tests)  
+- Crafting (3 tests)
+- Haiku Scorer (8 tests)
+- Snapping (6 tests)
+- Pollution & Behavior (15 tests)
+- Pack System (18 tests)
 
-## 📁 Project Structure
+## 🚢 Building
 
-```
-ebb-and-bloom/
-├── src/
-│   ├── game/
-│   │   ├── core/
-│   │   │   ├── perlin.js      # Perlin noise generator
-│   │   │   └── core.js         # World generation & raycast
-│   │   ├── player/
-│   │   │   └── player.js       # Player & gesture controls
-│   │   ├── systems/
-│   │   │   └── crafting.js     # Crafting & pollution
-│   │   ├── GameScene.js        # Main Phaser scene
-│   │   └── config.js           # Phaser configuration
-│   ├── store/
-│   │   └── gameStore.js        # Zustand state management
-│   ├── App.vue                 # Main Vue component
-│   └── main.js                 # Entry point
-├── public/                     # Static assets
-├── android/                    # Capacitor Android project
-├── vite.config.js             # Vite configuration
-├── capacitor.config.json      # Capacitor configuration
-├── build-android.sh           # Android build script
-└── package.json               # Dependencies & scripts
-```
+**Web**:
+\`\`\`bash
+pnpm build
+pnpm preview
+\`\`\`
 
-## 🎯 Vision
+**Android**:
+\`\`\`bash
+./build-android.sh
+# or
+pnpm build && npx cap sync android && npx cap open android
+\`\`\`
 
-**One-world ache, tidal evo ripples**
+## 📖 Learn More
 
-This POC establishes the foundation for a living, breathing world where:
-- Player actions ripple through the ecosystem
-- Evolution mechanics respond to intimacy levels
-- Pollution creates environmental consequences
-- The world persists and evolves over time
+- [Vision & Philosophy](docs/VISION.md)
+- [Architecture Guide](docs/ARCHITECTURE.md)
+- [Development Guide](docs/DEVELOPMENT.md)
+- [Progress Assessment](memory-bank/PROGRESS_ASSESSMENT.md)
 
-## 📊 Performance Targets
+## 📜 License
 
-- **FPS**: 60 on Android devices
-- **Load Time**: < 3 seconds
-- **Memory**: < 150MB RAM usage
-- **Battery**: Optimized rendering pipeline
+See [LICENSE](LICENSE) file.
 
-## 🔧 Development
+---
 
-```bash
-# Development mode with hot reload
-npm run dev
+**Built with ❤️ for mobile-first gaming**
 
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
-
-# Sync with Capacitor
-npm run cap:sync
-
-# Open in Android Studio
-npm run cap:open:android
-```
-
-## 📝 License
-
-See LICENSE file for details.
+🌸 Explore • 🎨 Evolve • 🌍 Remember 🌸
