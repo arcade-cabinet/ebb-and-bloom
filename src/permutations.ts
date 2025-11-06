@@ -28,7 +28,15 @@ function combineResources(aff1, aff2, demands = { ore: 0, power: 0 }) {
     return newAff;
 }
 
-function bitCount(n) { return n.toString(2).split('1').length - 1; } // Popcount stub
+// Count set bits in a number (Brian Kernighan's algorithm)
+function bitCount(n: number): number {
+  let count = 0;
+  while (n) {
+    n &= n - 1; // Clear lowest set bit
+    count++;
+  }
+  return count;
+}
 
 // In snapCheck() - world.js diff
 function snapCheck() {

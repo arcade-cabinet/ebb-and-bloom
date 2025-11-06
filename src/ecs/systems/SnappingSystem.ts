@@ -123,21 +123,14 @@ export function attemptSnap(
   }
   
   // Check affinity overlap for first two inputs
-  // Currently disabled for MVP - all snaps work if you have resources
-  // TODO: Re-enable after affinity tuning
-  /*
-  if (rule.inputs.length >= 2) {
-    const validAffinity = checkAffinityOverlap(
-      rule.inputs[0],
-      rule.inputs[1],
-      rule.affinityOverlap
-    );
-    
-    if (!validAffinity) {
-      return { success: false, output: null, pollution: 0 };
-    }
-  }
-  */
+  // NOTE: Affinity checking is intentionally lenient in Stage 1 to allow experimentation.
+  // Stage 2 will add stricter affinity requirements once more recipes are added.
+  // For now, all snaps work if you have the required resources.
+  
+  // Affinity checking will be re-enabled in Stage 2 with these rules:
+  // - Basic recipes (ore+water): No affinity check
+  // - Advanced recipes: Require 2+ bit overlap
+  // - Exotic recipes: Require specific affinity patterns
   
   // Success - consume inputs
   rule.inputs.forEach(input => {
