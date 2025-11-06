@@ -182,10 +182,18 @@ export function plantPurityGrove(
   let reduced = 0;
   
   // Simple radius check - reduce pollution for nearby tiles
+  // Assuming centerTile is an entity ID with a Position component
+  const centerX = Position.x[centerTile];
+  const centerY = Position.y[centerTile];
+
   for (const tileEid of tiles) {
-    // In real impl, would check distance from centerTile
-    // For now, just reduce first N tiles
-    if (reduced < radius * radius) {
+    const tileX = Position.x[tileEid];
+    const tileY = Position.y[tileEid];
+    const dx = tileX - centerX;
+    const dy = tileY - centerY;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance <= radius) {
       const current = Pollution.echo[tileEid] || 0;
       const reduction = Math.min(current, 15); // -15 pollution per tile
       Pollution.echo[tileEid] = current - reduction;
