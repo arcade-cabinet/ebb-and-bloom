@@ -4,13 +4,16 @@
  */
 
 class PerlinNoise {
-  constructor(seed = Math.random()) {
+  private seed: number;
+  private permutation: number[];
+
+  constructor(seed: number = Math.random()) {
     this.seed = seed;
     this.permutation = this.generatePermutation(seed);
   }
 
-  generatePermutation(seed) {
-    const p = [];
+  generatePermutation(seed: number): number[] {
+    const p: number[] = [];
     for (let i = 0; i < 256; i++) {
       p[i] = i;
     }
@@ -28,22 +31,22 @@ class PerlinNoise {
     return [...p, ...p];
   }
 
-  fade(t) {
+  fade(t: number): number {
     return t * t * t * (t * (t * 6 - 15) + 10);
   }
 
-  lerp(t, a, b) {
+  lerp(t: number, a: number, b: number): number {
     return a + t * (b - a);
   }
 
-  grad(hash, x, y) {
+  grad(hash: number, x: number, y: number): number {
     const h = hash & 15;
     const u = h < 8 ? x : y;
     const v = h < 4 ? y : h === 12 || h === 14 ? x : 0;
     return ((h & 1) === 0 ? u : -u) + ((h & 2) === 0 ? v : -v);
   }
 
-  noise(x, y) {
+  noise(x: number, y: number): number {
     const X = Math.floor(x) & 255;
     const Y = Math.floor(y) & 255;
     
@@ -67,7 +70,7 @@ class PerlinNoise {
     );
   }
 
-  octaveNoise(x, y, octaves = 4, persistence = 0.5) {
+  octaveNoise(x: number, y: number, octaves: number = 4, persistence: number = 0.5): number {
     let total = 0;
     let frequency = 1;
     let amplitude = 1;

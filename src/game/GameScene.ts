@@ -10,8 +10,8 @@ import { createPlayer } from '../ecs/entities';
 import { Position, Velocity, Inventory, Sprite as SpriteComponent } from '../ecs/components';
 import { createMovementSystem } from '../ecs/systems/MovementSystem';
 import { createCraftingSystem } from '../ecs/systems/CraftingSystem';
-import { WorldCore } from './core/core.js';
-import { GestureController } from './player/player.js';
+import { WorldCore } from './core/core';
+import { GestureController } from './player/player';
 import { useGameStore } from '../stores/gameStore';
 
 export class GameScene extends Phaser.Scene {

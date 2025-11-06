@@ -3,10 +3,47 @@
  * Handles world generation with Perlin noise, raycasting, and chunk management
  */
 
-import PerlinNoise from './perlin.js';
+import PerlinNoise from './perlin';
+
+interface Tile {
+  type: string;
+  value: number;
+  worldX: number;
+  worldY: number;
+}
+
+interface Chunk {
+  x: number;
+  y: number;
+  tiles: Tile[][];
+  entities: any[];
+}
+
+interface BiomeThresholds {
+  water: number;
+  grass: number;
+  flower: number;
+  ore: number;
+}
+
+interface RaycastResult {
+  x: number;
+  y: number;
+  tile: Tile;
+  distance: number;
+}
 
 export class WorldCore {
-  constructor(seed = Date.now()) {
+  seed: number;
+  perlin: PerlinNoise;
+  CHUNK_SIZE: number;
+  CHUNKS_X: number;
+  CHUNKS_Y: number;
+  TILE_SIZE: number;
+  BIOME_THRESHOLDS: BiomeThresholds;
+  chunks: Map<string, Chunk>;
+
+  constructor(seed: number = Date.now()) {
     this.seed = seed;
     this.perlin = new PerlinNoise(seed);
     
@@ -30,7 +67,7 @@ export class WorldCore {
     this.generateWorld();
   }
 
-  generateWorld() {
+  generateWorld(): void {
     // Generate 5x5 chunks
     for (let cy = 0; cy < this.CHUNKS_Y; cy++) {
       for (let cx = 0; cx < this.CHUNKS_X; cx++) {
@@ -39,9 +76,9 @@ export class WorldCore {
     }
   }
 
-  generateChunk(cx, cy) {
+  generateChunk(cx: number, cy: number): Chunk {
     const chunkKey = `${cx},${cy}`;
-    const chunk = {
+    const chunk: Chunk = {
       x: cx,
       y: cy,
       tiles: [],
@@ -94,7 +131,7 @@ export class WorldCore {
     return chunk;
   }
 
-  getTile(worldX, worldY) {
+  getTile(worldX: number, worldY: number): Tile | null {
     const cx = Math.floor(worldX / this.CHUNK_SIZE);
     const cy = Math.floor(worldY / this.CHUNK_SIZE);
     // Fix negative coordinate modulo - JS modulo returns negative for negative inputs
@@ -106,9 +143,9 @@ export class WorldCore {
     return chunk.tiles[ty][tx];
   }
 
-  raycast(startX, startY, dirX, dirY, maxDistance = 100) {
+  raycast(startX: number, startY: number, dirX: number, dirY: number, maxDistance: number = 100): RaycastResult[] {
     // Simple DDA raycast for stride view
-    const results = [];
+    const results: RaycastResult[] = [];
     let distance = 0;
     const stepSize = 0.5;
     
@@ -132,9 +169,9 @@ export class WorldCore {
     return results;
   }
 
-  getVisibleTiles(centerX, centerY, viewRadius = 50) {
+  getVisibleTiles(centerX: number, centerY: number, viewRadius: number = 50): Tile[] {
     // Get tiles within view radius for stride view rendering
-    const tiles = [];
+    const tiles: Tile[] = [];
     const startX = Math.max(0, Math.floor(centerX - viewRadius));
     const startY = Math.max(0, Math.floor(centerY - viewRadius));
     const endX = Math.min(this.CHUNKS_X * this.CHUNK_SIZE, Math.ceil(centerX + viewRadius));
@@ -152,7 +189,7 @@ export class WorldCore {
     return tiles;
   }
 
-  getWorldBounds() {
+  getWorldBounds(): { width: number; height: number } {
     return {
       width: this.CHUNKS_X * this.CHUNK_SIZE * this.TILE_SIZE,
       height: this.CHUNKS_Y * this.CHUNK_SIZE * this.TILE_SIZE

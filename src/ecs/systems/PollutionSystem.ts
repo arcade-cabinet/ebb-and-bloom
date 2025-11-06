@@ -9,6 +9,7 @@
 import { defineQuery } from 'bitecs';
 import type { IWorld } from 'bitecs';
 import { defineComponent, Types } from 'bitecs';
+import { Position } from '../components';
 
 // Pollution component for tiles
 export const Pollution = defineComponent({

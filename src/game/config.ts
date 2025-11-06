@@ -4,7 +4,7 @@
  */
 
 import Phaser from 'phaser';
-import { GameScene } from './GameScene.js';
+import { GameScene } from './GameScene';
 
 export const gameConfig = {
   type: Phaser.WEBGL,

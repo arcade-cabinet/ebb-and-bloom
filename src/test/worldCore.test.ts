@@ -4,8 +4,8 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import PerlinNoise from '../game/core/perlin.js';
-import { WorldCore } from '../game/core/core.js';
+import PerlinNoise from '../game/core/perlin';
+import { WorldCore } from '../game/core/core';
 
 describe('PerlinNoise', () => {
   it('should generate consistent noise with same seed', () => {
