@@ -3,9 +3,9 @@
  * Manages global game state, player progress, and intimacy mechanics
  */
 
-import { create } from 'zustand';
+import { createStore } from 'zustand/vanilla';
 
-export const useGameStore = create((set, get) => ({
+export const gameStore = createStore((set, get) => ({
   // Game state
   isPlaying: false,
   isPaused: false,
@@ -63,4 +63,5 @@ export const useGameStore = create((set, get) => ({
   }
 }));
 
-export default useGameStore;
+export const useGameStore = () => gameStore.getState();
+export default gameStore;

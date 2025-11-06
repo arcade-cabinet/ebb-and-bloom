@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { createStore } from 'zustand/vanilla';
 import type { IWorld } from 'bitecs';
 
 interface GameEvent {
@@ -48,7 +48,7 @@ interface GameState {
 
 let gameLoopInterval: NodeJS.Timeout | null = null;
 
-export const useGameStore = create<GameState>((set, get) => ({
+export const gameStore = createStore<GameState>()((set, get) => ({
   // Initial state
   pollution: 0,
   fps: 60,
@@ -114,3 +114,9 @@ export const useGameStore = create<GameState>((set, get) => ({
   
   setWorld: (world: IWorld) => set({ world })
 }));
+
+// Export a hook for Vue components
+import { useStore } from '@/composables/useStore';
+export function useGameStore() {
+  return useStore(gameStore);
+}
