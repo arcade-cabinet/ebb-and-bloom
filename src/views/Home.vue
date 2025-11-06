@@ -69,18 +69,18 @@ import {
 } from 'ionicons/icons';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import Phaser from 'phaser';
-import { gameConfig } from '@/game/config.js';
-import { useGameStore, gameStore } from '@/stores/gameStore';
+import { gameConfig } from '@/game/config';
+import { useGameStore } from '@/stores/gameStore';
 
-const state = useGameStore();
+const store = useGameStore();
 const gameContainer = ref<HTMLElement>();
 let game: Phaser.Game | null = null;
 
 // Reactive state from store
-const pollution = computed(() => state.value.pollution);
-const playstyle = computed(() => state.value.dominantPlaystyle);
+const pollution = computed(() => store.pollution);
+const playstyle = computed(() => store.dominantPlaystyle);
 const totalResources = computed(() => {
-  const inv = state.value.playerInventory;
+  const inv = store.playerInventory;
   return Object.values(inv).reduce((sum: number, val) => sum + (val as number), 0);
 });
 
@@ -107,7 +107,7 @@ onMounted(() => {
       parent: gameContainer.value
     });
     
-    gameStore.getState().startGame();
+    store.startGame();
   }
   
   // Watch for high pollution and trigger haptics
@@ -122,12 +122,12 @@ onUnmounted(() => {
   if (game) {
     game.destroy(true);
   }
-  gameStore.getState().stopGame();
+  store.stopGame();
 });
 
 const terraform = async () => {
   await Haptics.impact({ style: ImpactStyle.Light });
-  gameStore.getState().addEvent({
+  store.addEvent({
     type: 'terraform',
     title: 'Terraform Mode',
     description: 'Long-press tiles to change biomes'
@@ -136,7 +136,7 @@ const terraform = async () => {
 
 const collectResource = async () => {
   await Haptics.impact({ style: ImpactStyle.Medium });
-  gameStore.getState().addEvent({
+  store.addEvent({
     type: 'harvest',
     title: 'Harvest Mode',
     description: 'Tap tiles to collect resources'
@@ -146,24 +146,24 @@ const collectResource = async () => {
 const snapResources = async () => {
   await Haptics.impact({ style: ImpactStyle.Heavy });
   
-  const inv = state.value.playerInventory;
+  const inv = store.playerInventory;
   // Check for snap combinations
   if (inv.ore >= 1 && inv.water >= 1) {
-    gameStore.getState().updatePlayerInventory({
+    store.updatePlayerInventory({
       ...inv,
       ore: inv.ore - 1,
       water: inv.water - 1,
       alloy: (inv.alloy || 0) + 1
     });
     
-    gameStore.getState().addEvent({
+    store.addEvent({
       type: 'snap',
       title: 'Snap: Alloy Created!',
       description: 'Ore + Water → Alloy',
       haiku: 'Metal meets the flow\nForge whispers ancient secrets\nAlloy springs to life'
     });
   } else {
-    gameStore.getState().addEvent({
+    store.addEvent({
       type: 'info',
       title: 'Cannot Snap',
       description: 'Need Ore + Water for Alloy'
