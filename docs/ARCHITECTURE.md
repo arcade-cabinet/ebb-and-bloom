@@ -40,18 +40,22 @@ Ebb & Bloom uses a clean Entity-Component-System (ECS) architecture with BitECS,
 
 ---
 
-## Rendering Architecture: Raycasted 3D
+## Rendering Architecture: 2D → Raycasted 3D
 
-### Vision: Raycast Engine
+### Current State (Stage 2 - Production)
+- **Implementation**: 2D tile-based (Phaser 3)
+- **Status**: Production-ready for Stage 2 complete playable mobile game
+- **Performance**: 60 FPS achieved on mid-range Android
+- **Timeline**: Stage 2 (8-12 weeks) completes 2D implementation
+
+### Vision: Raycast Engine (Stage 3 - Conditional)
 - **Approach**: Wolfenstein-style raycasting with modern smoothing
 - **Why**: Efficient, seed-driven, feels vast without VRAM suck
 - **Mobile-Friendly**: ~100 rays per frame (60FPS target)
 - **Aesthetic**: DOS-era inspired, modern-smoothed
-
-### Current State (Interim)
-- **Implementation**: 2D tile-based (Phaser 3)
-- **Status**: Foundation for raycast migration
-- **Timeline**: Stage 2+ (after performance validation)
+- **Timeline**: Stage 3 (10 weeks) AFTER performance validation
+- **Decision Gate**: Phase 1 performance validation is MANDATORY before commitment
+- **Fallback**: Enhanced 2D with shaders (2 weeks if raycast fails)
 
 ### Target Implementation
 - **Engine**: Custom raycast or raycast.js library (~5KB)
@@ -241,8 +245,9 @@ Critter: {
 ### Game Engine & Architecture
 - **BitECS 0.3+**: High-performance ECS
 - **Yuka 0.7+**: AI steering behaviors
-- **Zustand 5.0+**: Lightweight state management
-- **Raycast Engine**: Custom or raycast.js (target)
+- **Pinia 3.0+**: State management (Vue-integrated, NOT Zustand as originally planned)
+- **Phaser 3.87+**: 2D rendering (production for Stage 2)
+- **Raycast Engine**: Custom or raycast.js (Stage 3 target, conditional)
 
 ### Build & Dev Tools
 - **Vite 6.0+**: Fast dev server
@@ -266,11 +271,12 @@ Critter: {
 - Mobile-friendly (~100 rays per frame)
 - DOS-era aesthetic (matches vision)
 
-### Why Zustand over Redux/Vuex?
-- Lightweight (< 1KB)
-- No boilerplate
-- Framework agnostic
-- Perfect for ECS → UI sync
+### Why Pinia over Zustand/Vuex?
+- **Original Plan**: Zustand (framework-agnostic)
+- **Actual Implementation**: Pinia (Vue-native state management)
+- **Rationale**: Better Vue 3 Composition API integration
+- **Benefits**: Type-safe, devtools support, modular stores
+- **Perfect for**: ECS → UI sync with Vue components
 
 ### Why Vue/Capacitor?
 - Mobile-first framework
