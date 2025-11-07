@@ -139,12 +139,12 @@ export class PackMemberVehicle extends Vehicle {
  */
 export class Gen2System {
   private planet: Planet;
-  private evaluator: PackFormationEvaluator;
+  private fuzzy: PackFormationFuzzy;
   private vehicles: Map<string, PackMemberVehicle> = new Map();
 
   constructor(planet: Planet) {
     this.planet = planet;
-    this.evaluator = new PackFormationEvaluator();
+    this.fuzzy = new PackFormationFuzzy();
   }
 
   /**
@@ -168,7 +168,7 @@ export class Gen2System {
       const nearby = this.findNearbyCreatures(creature, availableNearby, 100);
 
       // Evaluate pack formation desirability
-      const desirability = this.evaluator.evaluate(scarcity, nearby.length, 10);
+      const desirability = this.fuzzy.evaluate(scarcity, nearby.length, 10);
 
       if (desirability > 0.45 && nearby.length >= 2) {
         // Form pack!
