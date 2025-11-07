@@ -20,7 +20,8 @@
     "dev:ui": "tsx src/dev/GameDevCLI.ts ui",
     "evolution:pipeline": "tsx src/dev/MasterEvolutionPipeline.ts",
     "evolution:archetypes": "tsx src/dev/EvolutionaryAgentWorkflows.ts",
-    "evolution:validate": "pnpm test && pnpm build"
+    "evolution:validate": "pnpm test && pnpm build",
+    "gen0:test": "tsx src/dev/test-gen0.ts"
   },
   "dependencies": {
     "@ai-sdk/openai": "^2.0.64",

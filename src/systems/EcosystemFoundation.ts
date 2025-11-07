@@ -20,6 +20,7 @@ import GestureActionMapper from './GestureActionMapper';
 import HaikuNarrativeSystem from './HaikuNarrativeSystem';
 import HapticGestureSystem from './HapticGestureSystem';
 import PackSocialSystem from './PackSocialSystem';
+import PlanetaryPhysicsSystem from './PlanetaryPhysicsSystem';
 import PopulationDynamicsSystem from './PopulationDynamicsSystem';
 import RawMaterialsSystem from './RawMaterialsSystem';
 import TerrainSystem from './TerrainSystem';
@@ -42,6 +43,7 @@ class EcosystemFoundation {
   private world: World<WorldSchema>;
 
   // All major systems
+  private planetarySystem: PlanetaryPhysicsSystem;
   private terrainSystem: TerrainSystem;
   private materialsSystem: RawMaterialsSystem;
   private creatureSystem: CreatureArchetypeSystem;
@@ -67,6 +69,9 @@ class EcosystemFoundation {
   constructor(world: World<WorldSchema>, textureSystem: TextureSystem) {
     this.world = world;
     this.textureSystem = textureSystem;
+
+    // Initialize Generation 0 system FIRST (foundation for all other systems)
+    this.planetarySystem = new PlanetaryPhysicsSystem(world);
 
     // Initialize all systems
     this.terrainSystem = new TerrainSystem(world);
@@ -138,6 +143,17 @@ class EcosystemFoundation {
     }
 
     log.info('Texture system verified - proceeding with ecosystem initialization');
+
+    // GENERATION 0: Initialize planetary physics from seed phrase
+    log.info('=== GENERATION 0: Planetary Genesis ===');
+    const seedPhrase = 'ebb-and-bloom-default'; // TODO: Get from user input
+    try {
+      await this.planetarySystem.initialize(seedPhrase);
+      log.info('Generation 0 complete - planetary data ready');
+    } catch (error) {
+      log.error('Generation 0 failed, using fallback planet', { error });
+      // System has internal fallback, continue with that
+    }
 
     // Generate initial terrain chunk
     log.info('Generating Eden baseline terrain...');
