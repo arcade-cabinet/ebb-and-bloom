@@ -1080,96 +1080,72 @@ ${options?.fullScreen ? 'IMPORTANT: Full-screen image, optimized for mobile disp
 
   /**
    * Generate all required PNG assets for the game
+   * Uses asset-manifest.ts as source of truth for all asset definitions
    */
   async generateAllRequiredAssets(): Promise<void> {
-    log.info('Generating all required PNG assets - IDEMPOTENT MODE');
+    log.info('Generating all required PNG assets - IDEMPOTENT MODE (using asset-manifest.ts)');
+
+    // Import asset manifest
+    const { ASSET_MANIFEST, getGeneratableAssets } = await import('./asset-manifest');
+    const generatableAssets = getGeneratableAssets();
 
     let generated = 0;
     let skipped = 0;
 
     try {
-      // 1. Generate 4 splash screen variants (IDEMPOTENT)
-      log.info('Checking/generating splash screens (4 variants)...');
-      for (let i = 1; i <= 4; i++) {
-        const playstyle = i === 1 ? 'harmony' : i === 2 ? 'conquest' : i === 3 ? 'frolick' : 'neutral';
-        const result = await this.generateSplashScreen(i, playstyle);
-        if (result) {
-          generated++;
-        } else {
-          skipped++;
+      // Generate all assets from manifest, sorted by priority
+      const priorityOrder = ['critical', 'high', 'medium', 'low'];
+      const sortedAssets = generatableAssets.sort((a, b) => {
+        return priorityOrder.indexOf(a.priority) - priorityOrder.indexOf(b.priority);
+      });
+
+      log.info('Found generatable assets in manifest', { count: sortedAssets.length });
+
+      for (const assetDef of sortedAssets) {
+        log.info('Processing asset from manifest', { 
+          id: assetDef.id, 
+          category: assetDef.category,
+          priority: assetDef.priority 
+        });
+
+        try {
+          // Use asset manifest definition for generation
+          const result = await this.generateUIAsset(
+            assetDef.category === 'splash' ? 'splash' :
+            assetDef.category === 'panel' ? 'panel' :
+            assetDef.category === 'icon' ? 'transparent' :
+            assetDef.category === 'button' ? 'transparent' :
+            'transparent',
+            assetDef.aiPrompt || assetDef.description,
+            'hybrid', // Default style, can be enhanced
+            {
+              dimensions: [assetDef.expectedSize.width, assetDef.expectedSize.height],
+              transparent: assetDef.requiresTransparency
+            }
+          );
+
+          if (result) {
+            generated++;
+            log.info('Asset generated successfully', { id: assetDef.id });
+          } else {
+            skipped++;
+            log.info('Asset skipped (already exists)', { id: assetDef.id });
+          }
+
+          await this.delay(2000); // Rate limiting
+
+        } catch (error) {
+          log.error('Failed to generate asset from manifest', error, { assetId: assetDef.id });
+          // Continue with next asset
         }
-        await this.delay(2000); // Rate limiting
       }
 
-      // 2. Generate transparent PNG elements (IDEMPOTENT)
-      log.info('Checking/generating transparent PNG elements...');
-      const transparentElements = [
-        'Evolution tree icon',
-        'Trait evolution indicator',
-        'Generation counter icon',
-        'Pollution indicator',
-        'Pack formation icon',
-        'Environmental status icon',
-        'Narrative haiku icon',
-        'Camera control icon',
-        'Evolution event marker',
-        'Material resource icon'
-      ];
-
-      for (const desc of transparentElements) {
-        const result = await this.generateTransparentElement(desc, 512);
-        if (result) {
-          generated++;
-        } else {
-          skipped++;
-        }
-        await this.delay(2000);
-      }
-
-      // 3. Generate panel images (IDEMPOTENT)
-      log.info('Checking/generating UI panel images...');
-      const panels = [
-        'Evolution event card background',
-        'Creature display panel',
-        'Generation progress panel',
-        'Environmental status panel',
-        'Pack dynamics panel',
-        'Narrative display panel'
-      ];
-
-      for (const desc of panels) {
-        const result = await this.generatePanelImage(desc, [1024, 768]);
-        if (result) {
-          generated++;
-        } else {
-          skipped++;
-        }
-        await this.delay(2000);
-      }
-
-      // 4. Generate background images (IDEMPOTENT)
-      log.info('Checking/generating background images...');
-      const backgrounds = [
-        'Ecosystem overview background',
-        'Evolution visualization background',
-        'Narrative journal background'
-      ];
-
-      for (const desc of backgrounds) {
-        const result = await this.generateBackgroundImage(desc, [1920, 1080]);
-        if (result) {
-          generated++;
-        } else {
-          skipped++;
-        }
-        await this.delay(2000);
-      }
-
-      log.info('Asset generation complete', { generated, skipped });
+      log.info('Asset generation complete', { generated, skipped, total: sortedAssets.length });
       log.info('Complete asset generation finished - IDEMPOTENT', {
         generated,
         skipped,
-        total: generated + skipped
+        total: generated + skipped,
+        manifestAssets: sortedAssets.length
       });
 
     } catch (error) {
