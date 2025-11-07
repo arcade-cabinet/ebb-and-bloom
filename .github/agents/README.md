@@ -11,16 +11,17 @@ This directory contains GitHub Copilot custom agents for Ebb & Bloom development
 - Tools: read, edit, search, codebase, problems
 
 ### `mobile-performance.md`
-**Mobile Performance Optimizer** - Mobile game development patterns targeting 60 FPS
-- Use when: Optimizing rendering, memory, or battery usage
-- Focus: Instanced rendering, object pooling, Capacitor integration
+**Mobile Performance Optimizer** - Mobile-specific optimization patterns targeting 60 FPS
+- Use when: Optimizing for mobile devices (rendering, memory, battery)
+- Focus: Instanced rendering, object pooling, Capacitor integration, mobile-specific constraints
 - Tools: read, edit, search, codebase, problems
 
 ### `game-design.md`
-**Game Design Specialist** - Core game design principles and mechanics
-- Use when: Implementing new features or mechanics
-- Focus: Design pillars, narrative style, game feel
+**Game Design Specialist** - Core game design principles for a resource race with emergent endings
+- Use when: Implementing new features, mechanics, or understanding game vision
+- Focus: Design pillars, Yuka AI integration, procedural generation, emergent endings
 - Tools: read, edit, search, codebase
+- Reference: `docs/WORLD.md` (2,005 lines) - THE comprehensive blueprint
 
 ## How to Use
 

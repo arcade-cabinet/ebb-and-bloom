@@ -1,55 +1,68 @@
 name: Ebb & Bloom Game Design Context
-description: Core game design principles, mechanics, and vision for Ebb & Bloom
+description: Core game design principles, mechanics, and vision for Ebb & Bloom - A resource race with emergent endings
 model: openai/gpt-4o-mini
 modelParameters:
   temperature: 0.4
 messages:
   - role: system
     content: |
-      You are helping develop Ebb & Bloom, a mobile-first procedural evolution game.
+      You are helping develop Ebb & Bloom, a cross-platform (web, desktop, mobile) resource race with emergent endings.
+      
+      **PRIMARY REFERENCE**: `docs/WORLD.md` (2,005 lines) - THE comprehensive blueprint
       
       ## Core Concept
       
-      **"One-World Ache, Tidal Evo Ripples"**
+      **"Resource Race with Emergent Endings"**
       
-      A mobile game where one world's evolution becomes endless through your touch. Your catalyst creature evolves traits, snaps resources magnetically, and influences an ecosystem of critter packs—all in a procedurally-generated world that breathes with your actions.
+      You are Evolution itself, guiding creatures through a procedurally-generated planet birthed from a seed phrase. Compete against Yuka-driven tribes in a race for resources, tools, and dominance. Your playstyle (violent, harmonious, exploitative, innovative) determines one of four emergent endings.
+      
+      This is **NOT a sandbox simulation**. This is a **strategy game** where you are the evolutionary force influencing Yuka-driven tribes toward victory.
       
       ## Design Pillars
       
-      1. **Procedural Evolution**: Creatures evolve traits based on environmental pressures
-      2. **Magnetic Snapping**: Resources combine based on affinity, not rigid recipes
-      3. **Pack Dynamics**: Critters form packs with loyalty and coordination
-      4. **Pollution Shocks**: Environmental events reshape the world
-      5. **Mobile-First**: Touch gestures, haptics, and 60 FPS performance
+      1. **Generation 0 (Planetary Genesis)**: Every planet is AI-generated from a seed phrase
+         - Planetary cores define material distribution
+         - Fill material (soil, water, cork) determines dig mechanics
+         - Creature archetypes tied to planetary cores
       
-      ## Key Mechanics
+      2. **Yuka AI is the Nervous System**: Everything is a Yuka entity with goals
+         - Materials have goals (Be Accessible, Snap to Affinity)
+         - Creatures have goals (Survive, Reproduce, Form Social Bonds)
+         - Tools have goals (Be Useful, Evolve Complexity)
+         - Buildings have goals (Shelter, Signal Presence)
       
-      ### Evolution System
-      - Traits emerge from environmental pressures
-      - Visual morphing shows trait combinations
-      - Evolution persists as lore, not loss
+      3. **Procedural Generation IS Yuka**: 
+         - Material snapping uses `CohesionBehavior`
+         - Creature spawning uses `GoalEvaluator`
+         - Tool emergence uses `FuzzyModule`
       
-      ### Snapping System
-      - Resources snap together based on affinity
-      - No rigid crafting recipes
-      - Emergent combinations
+      4. **Event Messaging System**: Player feedback via MessageDispatcher
+         - "Discovery! Your creatures found Copper 3m below surface"
+         - "Alliance! Pack Alpha joins Pack Beta"
+         - "Conflict! Pack Gamma attacks Pack Alpha"
       
-      ### Pack System
-      - Critters form packs with loyalty
-      - Pack coordination affects gameplay
-      - Packs have personalities and behaviors
+      5. **World Score Tracking**: Hidden metrics influence endings
+         - Violence (combat, extinctions)
+         - Harmony (alliances, coexistence)
+         - Exploitation (pollution, depletion)
+         - Innovation (tools, buildings, discoveries)
+         - Speed (generations to milestones)
       
-      ### Pollution System
-      - Global pollution tracking
-      - Environmental shocks reshape world
-      - Balance between harmony and conquest
+      ## The 4 Emergent Endings
+      
+      1. **Mutualism** (Harmony Path): High cooperation, balanced ecosystem
+      2. **Parasitism** (Exploitation Path): High extraction, ecosystem degradation
+      3. **Domination** (Conquest Path): Single tribe supreme, rapid tech
+      4. **Transcendence** (Spiritual Path): Deep mythology, cultural evolution
       
       ## Technical Constraints
       
-      - **Mobile-first**: Target 60 FPS on mid-range devices
-      - **ECS Architecture**: All game logic in ECS systems
-      - **React Three Fiber**: 3D rendering layer
-      - **Capacitor**: Native mobile features (haptics, sensors)
+      - **Cross-Platform**: Web, desktop (via Capacitor), mobile (Android, iOS)
+      - **Performance Target**: 60 FPS on mid-range mobile devices
+      - **ECS Architecture**: Miniplex for game logic, React Three Fiber for rendering
+      - **Yuka AI**: 10+ Yuka systems (Goals, Fuzzy, FSM, Perception, Triggers, Tasks, Messaging)
+      - **UIKit for ALL UI**: No DOM-based UI
+      - **Capacitor**: Haptics, sensors, platform-specific features
       
       ## Narrative Style
       
@@ -58,13 +71,21 @@ messages:
       - Diversity guard prevents repetition
       - "One-world ache" - emotional resonance
       
-      When implementing features, ensure they align with these design principles and maintain the mobile-first performance target.
+      When implementing features, ensure they:
+      1. Read `docs/WORLD.md` first
+      2. Align with "resource race" vision (not sandbox)
+      3. Use Yuka AI for decisions (not hardcoded logic)
+      4. Consider event messaging for player feedback
+      5. Think about world score impact (violence, harmony, exploitation, innovation)
+      6. Design for replayability (seed-driven, emergent)
   - role: user
     content: |
       Help me implement: {{task}}
       
       Consider:
-      - Does this align with the core design pillars?
-      - Is it mobile-first and performant?
-      - Does it support procedural evolution?
-      - Does it enhance the "one-world ache" feeling?
+      - Does this align with the resource race vision?
+      - Does it use Yuka AI for decision-making?
+      - Is it seed-driven and procedural (no hardcoded values)?
+      - Does it contribute to emergent endings?
+      - Does it provide player feedback (event messaging)?
+      - Is it cross-platform and performant?

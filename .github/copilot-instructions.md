@@ -103,12 +103,16 @@ const Renderer: React.FC = () => {
 
 ## Current Focus
 
-**Generation 0: Planetary Genesis System**
+**Phase 0-1: Generation 0 (Planetary Genesis) Implementation**
+
+**See**: GitHub Issue #13 and `docs/WORLD.md` lines 1932-1984
 
 When suggesting code, prioritize:
-- Seed-driven calculations (no hardcoded values)
-- Planetary physics (gravity, rotation, layers)
-- Material distribution (depths from planet, not magic numbers)
+- **Seed-driven**: seedrandom for all procedural generation
+- **AI Workflows**: Vercel AI SDK parent-child workflows
+- **Planetary Physics**: No hardcoded values (Copper at 10m is WRONG)
+- **Yuka Integration**: Everything is a Yuka entity with goals
+- **Event Messaging**: MessageDispatcher for player feedback
 
 ---
 
