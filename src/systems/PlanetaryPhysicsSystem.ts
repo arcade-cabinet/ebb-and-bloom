@@ -3,22 +3,22 @@
  * 
  * This system manages planetary generation at runtime:
  * 1. Takes seed phrase from game initialization
- * 2. Executes Gen 0 AI workflows (or loads cached manifest)
- * 3. Provides planetary data to other systems (materials, creatures, etc.)
- * 4. Acts as the planetary "entity" with Yuka goals
+ * 2. Executes Gen 0 (AI or mock)
+ * 3. Initializes PlanetaryStructureStore (Zustand)
+ * 4. Provides simple interface for other systems
  * 
- * This is THE FOUNDATION - all other systems depend on this.
+ * THE PLANET IS JUST ZUSTAND STATE.
+ * All queries go through the store.
  */
 
-import { World } from 'miniplex';
 import { log } from '../utils/Logger';
-import type { WorldSchema } from '../world/ECSWorld';
 import type { GenerationZeroOutput } from '../core/generation-zero-types';
 import { 
   executeGenerationZero, 
   loadGenerationZero 
 } from '../dev/GenerationZeroOrchestrator';
 import { generateMockGen0 } from '../dev/MockGen0Data';
+import { usePlanetaryStructure } from '../stores/PlanetaryStructureStore';
 
 /**
  * Planetary physics state
@@ -33,14 +33,12 @@ interface PlanetaryState {
 
 /**
  * Planetary Physics System
- * Manages Gen 0 planetary generation and provides data to other systems
+ * Manages Gen 0 planetary generation and initializes store
  */
 class PlanetaryPhysicsSystem {
-  private world: World<WorldSchema>;
   private state: PlanetaryState;
 
-  constructor(world: World<WorldSchema>) {
-    this.world = world;
+  constructor() {
     this.state = {
       initialized: false,
       seedPhrase: '',
@@ -102,6 +100,9 @@ class PlanetaryPhysicsSystem {
       this.state.manifest = manifest;
       this.state.generationComplete = true;
       this.state.initialized = true;
+
+      // Initialize Zustand store (THE PLANET IS NOW JUST STATE)
+      usePlanetaryStructure.getState().initialize(manifest.planetary);
 
       // Log planetary summary
       this.logPlanetarySummary();
