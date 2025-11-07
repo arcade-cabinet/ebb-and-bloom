@@ -1,531 +1,307 @@
 # Technical Context - Ebb & Bloom
 
+**Version**: 6.0.0  
+**Date**: 2025-11-07  
+**Status**: Complete 3D Evolutionary Ecosystem Foundation
+
+---
+
 ## Technology Stack
 
 ### Core Framework
-- **pnpm 9.x**: Package manager (3x faster than npm)
-- **TypeScript 5.7.2**: Type safety throughout
-- **Node >= 20.x**: Runtime requirement
+- **React 19.2.0**: Modern UI framework with React Three Fiber integration
+- **TypeScript 5.7.2**: Type safety throughout entire codebase
+- **Vite 6.0.3**: Fast dev server with HMR and optimized builds
+- **Node >= 20.x**: Runtime requirement for build tools
 
-### Mobile Framework  
-- **Capacitor 6.1.2**: Native mobile bridge
-- **Ionic Vue 8.7.9**: Mobile UI components and routing
-- **Vue 3.5.13**: Composition API, reactive state
+### 3D Rendering & Game Engine  
+- **React Three Fiber 9.4.0**: Declarative 3D rendering with React integration
+- **@react-three/drei 10.7.6**: Helper components and utilities for R3F
+- **Three.js 0.170.0**: Core 3D engine with WebGL2 support
+- **Miniplex 2.0.0**: Modern ECS with React hooks integration
+- **Yuka 0.7.8**: AI steering behaviors for creature intelligence
 
-### Game Engine & Architecture
-- **Phaser 3.87.0**: 2D rendering engine (WebGL) - Production for Stage 2, raycast migration Stage 3
-- **BitECS 0.3.40**: High-performance Entity-Component-System
-- **Yuka 0.7.8**: AI steering behaviors (prepared for Stage 2)
-- **Pinia 3.0.4**: State management (Vue-integrated, NOT Zustand as originally planned)
-- **Raycast Engine**: Target vision (custom or raycast.js ~5KB) - Stage 3+ (conditional)
+### Mobile Framework
+- **Capacitor 6.1.2**: Native mobile bridge for iOS/Android
+- **@capacitor/haptics 6.0.1**: Native haptic feedback integration
+- **PWA Ready**: Progressive Web App capabilities for installation
+
+### State Management & Data
+- **Zustand 5.0.8**: Lightweight state management with persistence
+- **Pino 10.1.0**: High-performance logging with browser support
+- **localStorage**: Evolution data persistence and analysis
+
+### Asset Pipeline
+- **AmbientCG Integration**: 141 textures across 8 categories (Wood, Metal, etc.)
+- **OpenAI 6.8.1**: AI-powered creature and UI asset generation  
+- **Freesound API**: Procedural audio library integration
+- **Axios 1.13.2**: HTTP client for asset downloading and API integration
+
+### UI/UX Framework
+- **Tailwind CSS 4.1.17**: Utility-first CSS framework
+- **DaisyUI 5.4.7**: Component library with custom 'ebb-bloom' theme
+- **Google Fonts**: Inter (UI), JetBrains Mono (code), Playfair Display (narrative)
+- **Custom animations**: Evolutionary-themed motion patterns
 
 ### Build & Dev Tools
-- **Vite 6.0.3**: Fast dev server with HMR
-- **Vitest 2.1.9**: Unit testing with happy-dom 15.11.7
-- **Capacitor CLI**: Mobile builds
-- **GitHub Actions**: CI/CD automation
-- **Renovate Bot**: Automated dependency updates
+- **tsx 4.20.6**: TypeScript execution for build scripts
+- **Commander 14.0.2**: CLI framework for dev tools
+- **AI SDK 5.0.89**: Vercel AI integration for asset generation
+- **Vitest 2.1.9**: Modern test runner with comprehensive mocking
+
+### Testing Framework
+- **React Testing Library 16.3.0**: Component testing with user behavior focus
+- **@testing-library/jest-dom 6.9.1**: Extended Jest matchers
+- **@playwright/test 1.56.1**: End-to-end testing for multi-platform validation
+- **@react-three/test-renderer 9.1.0**: Three.js scene testing capabilities
+
+---
 
 ## Architecture Pattern
 
-### Clean Separation of Concerns
+### React Three Fiber + Miniplex ECS Architecture
 
 ```
 ┌─────────────────────────────────────────┐
 │          Capacitor Native               │
 │  ┌───────────────────────────────────┐  │
-│  │       Ionic Vue (UI Layer)        │  │
+│  │    React + DaisyUI (UI Layer)     │  │
 │  │  ┌─────────────────────────────┐  │  │
-│  │  │   Raycast 3D (Rendering)    │  │  │
-│  │  │   (Phaser 2D - Interim)     │  │  │
+│  │  │  React Three Fiber (3D)     │  │  │
 │  │  │                             │  │  │
-│  │  │  Reads from ECS ──┐         │  │  │
-│  │  └────────────────────┼─────────┘  │  │
-│  │                       │            │  │
-│  │  ┌────────────────────▼─────────┐  │  │
-│  │  │   BitECS (Game Logic)       │  │  │
-│  │  │                             │  │  │
-│  │  │  Components:                │  │  │
-│  │  │  - Position, Velocity       │  │  │
-│  │  │  - Inventory, Traits        │  │  │
-│  │  │  - Pack, Critter            │  │  │
+│  │  │  Reads from Miniplex ECS ──┐│  │  │
+│  │  └────────────────────────────┼┘  │  │
+│  │                               │   │  │
+│  │  ┌────────────────────────────▼┐  │  │
+│  │  │   Miniplex ECS (Game Logic) │  │  │
 │  │  │                             │  │  │
 │  │  │  Systems:                   │  │  │
-│  │  │  - MovementSystem           │  │  │
-│  │  │  - CraftingSystem           │  │  │
-│  │  │  - PackSystem               │  │  │
-│  │  │  - PollutionSystem          │  │  │
-│  │  │  - BehaviorSystem           │  │  │
-│  │  │  - SnappingSystem           │  │  │
+│  │  │  - TerrainSystem            │  │  │
+│  │  │  - CreatureArchetypeSystem  │  │  │
+│  │  │  - GeneticSynthesisSystem   │  │  │
+│  │  │  - PackSocialSystem         │  │  │
+│  │  │  - EnvironmentalPressure    │  │  │
+│  │  │  - HaikuNarrativeSystem     │  │  │
+│  │  │  - HapticGestureSystem      │  │  │
+│  │  │  - PopulationDynamics       │  │  │
+│  │  │  - BuildingSystem           │  │  │
 │  │  └─────────────────────────────┘  │  │
 │  │          ▲                         │  │
 │  │  ┌───────┴──────────────────────┐  │  │
 │  │  │  Zustand (UI State Sync)    │  │  │
 │  │  │  - Reads from ECS           │  │  │
 │  │  │  - Never writes to ECS      │  │  │
+│  │  │  - Evolution data persistence│  │  │
 │  │  └─────────────────────────────┘  │  │
 │  └───────────────────────────────────┘  │
 └─────────────────────────────────────────┘
-         │                    │
-         ▼                    ▼
-    Android APIs         WebGL Renderer
 ```
 
 ### Data Flow Principles
 
-1. **ECS as Source of Truth**: All game state lives in BitECS
-2. **Raycast/Phaser Reads Only**: Rendering layer never modifies game state (Phaser interim, Raycast target)
-3. **Zustand for UI**: Syncs ECS state to Vue components (one-way)
-4. **Systems Modify State**: Only ECS systems can change components
+1. **Miniplex ECS as Source of Truth**: All evolutionary state lives in ECS systems
+2. **React Three Fiber Renders Only**: 3D layer never modifies game state
+3. **Zustand for UI State**: Syncs ECS data to React UI components (read-only)
+4. **Systems Modify State**: Only ECS systems can change component data
+5. **Event-Driven Updates**: Evolution events propagate through all layers
+
+---
 
 ## Current Implementation
 
-### ECS Components (`src/ecs/components/`)
+### Evolutionary Systems (`src/systems/`)
 
-#### Core Components
-```typescript
-Position: { x: f32, y: f32 }
-Velocity: { x: f32, y: f32 }
-Inventory: { ore: ui16, water: ui16, alloy: ui16, ... }
-Sprite: { textureKey: ui32 }
-```
+#### Core Systems
+- **GameClock.ts**: Time management, generation cycles, evolution event coordination
+- **RawMaterialsSystem.ts**: Material archetypes with affinity-based evolution pressure
+- **CreatureArchetypeSystem.ts**: Emergent taxonomy without predetermined species
+- **GeneticSynthesisSystem.ts**: Trait compatibility matrix → morphological changes → emergent naming
+- **PopulationDynamicsSystem.ts**: Breeding, death cycles, population pressure management
 
-#### Trait Components (10 total)
-```typescript
-FlipperFeet: { level: ui8 }        // Water speed, flow affinity
-ChainsawHands: { level: ui8 }     // Wood harvest, scares critters
-DrillArms: { level: ui8 }          // Ore mining, reveals veins
-WingGliders: { level: ui8 }        // Glide distance, aerial view
-EchoSonar: { level: ui8 }          // Resource ping radius
-BioLumGlow: { level: ui8 }         // Night vision, attracts critters
-StorageSacs: { level: ui8 }        // Inventory capacity
-FiltrationGills: { level: ui8 }    // Pollution resistance
-ShieldCarapace: { level: ui8 }     // Damage reduction
-ToxinSpines: { level: ui8 }        // Counter-attack
-```
+#### Social & Environmental Systems  
+- **PackSocialSystem.ts**: Advanced pack dynamics with hierarchy, territory, loyalty
+- **EnvironmentalPressureSystem.ts**: Pollution tracking, shock events, biome stress
+- **BuildingSystem.ts**: Daggerfall-inspired functional architecture with crafting interiors
 
-#### Social Components
-```typescript
-Pack: {
-  leaderId: ui32,      // Entity ID of leader
-  loyalty: f32,        // 0-1 loyalty to player
-  size: ui8,           // Number of members
-  affMask: ui32,       // Inherited affinity traits
-  packType: ui8        // neutral/ally/rival
-}
+#### Experience Systems
+- **HaikuNarrativeSystem.ts**: Procedural storytelling with Jaro-Winkler diversity guard
+- **HapticGestureSystem.ts**: Mobile-first touch interaction with Capacitor haptics
+- **SporeStyleCameraSystem.ts**: Dynamic third-person camera with evolution event response
 
-Critter: {
-  species: ui8,        // fish/squirrel/bird/beaver
-  packId: ui32,        // Pack entity ID (0 if solo)
-  role: ui8,           // leader/specialist/follower
-  inheritedTrait: ui8, // Diluted trait from player
-  needState: ui8       // idle/foraging/fleeing
-}
-```
+#### Infrastructure Systems
+- **TerrainSystem.ts**: Multi-octave noise heightmaps with texture integration
+- **TextureSystem.ts**: AmbientCG material pipeline with React hooks
+- **EcosystemFoundation.ts**: Master coordinator integrating all systems
 
-### ECS Systems (`src/ecs/systems/`)
+### UI Framework (`src/styles/`, `tailwind.config.js`)
 
-#### MovementSystem
-- Applies velocity to position
-- Handles friction and deceleration
-- Delta-time based updates
-- Query: `[Position, Velocity]`
+#### Design System
+- **Brand Colors**: Ebb Indigo, Bloom Emerald, Trait Gold, Echo Silver
+- **Typography**: Inter (UI), JetBrains Mono (code), Playfair Display (narrative)  
+- **Animations**: Evolutionary-themed motion (trait-emerge, evolution-pulse, organic-breathe)
+- **Components**: DaisyUI with custom evolutionary theme
 
-#### CraftingSystem
-- Recipe matching engine
-- Resource validation
-- Inventory updates
-- Pollution tracking
-- Query: `[Inventory]`
+#### Mobile Optimization
+- **Touch Targets**: Minimum 44px for accessibility
+- **Gesture Handling**: Custom touch events with haptic feedback
+- **Performance**: 60 FPS targeting on mid-range Android
+- **Responsive**: Mobile-first with tablet/desktop enhancement
 
-#### SnappingSystem
-- Affinity-based resource combinatorics
-- 8-bit flag matching (HEAT, FLOW, BIND, POWER, LIFE, METAL, VOID, WILD)
-- Procedural haiku generation for snaps
-- Query: `[Position, Inventory]`
+### Development Tools (`src/dev/`, `src/build/`)
 
-#### PackSystem
-- Formation logic (3-15 critters)
-- Loyalty calculation (0-1 scale)
-- Role assignment (leader/specialist/follower)
-- Pack schism mechanics (split at <0.3 loyalty)
-- Query: `[Pack, Position]` and `[Critter, Position]`
+#### AI-Powered Pipeline
+- **GameDevCLI.ts**: Manifest-driven asset generation with OpenAI integration
+- **AmbientCG Downloader**: Production-quality texture acquisition (141 textures)
+- **OpenAI Integration**: Creature asset generation from trait synthesis
+- **Freesound Integration**: Audio library management with API integration
 
-#### PollutionSystem
-- Tracks global pollution (0-100%)
-- Calculates shock thresholds (Whisper 40%, Tempest 70%, Collapse 90%)
-- Playstyle-specific mutations
-- Purity Grove mitigation
-- Query: `[all entities]` (global state)
+#### Asset Management
+- **Texture Pipeline**: Automated download, organization, manifest generation
+- **Model Generation**: AI-powered creature visuals based on evolutionary traits
+- **Audio Library**: Procedural sound acquisition for environmental/evolution audio
+- **UI Assets**: Generated icons, backgrounds, patterns with brand consistency
 
-#### BehaviorSystem
-- Profiles Harmony/Conquest/Frolick playstyle
-- Rolling 100-action window
-- World reaction modifiers
-- No punishment - just consequences
-- Query: `[player entity]` (behavior tracking)
-
-### Cross-Cutting Systems (`src/systems/`)
-
-#### HaikuScorer
-- Jaro-Winkler similarity algorithm
-- Prevents narrative repetition (<20% overlap)
-- Procedural metaphor bank
-- Diversity guard for journal entries
-
-#### HapticSystem
-- Playstyle-aware haptic patterns
-- Complex sequences (tension, heartbeat, crescendo)
-- Capacitor Haptics integration
-- 20+ distinct patterns
-
-#### GestureSystem
-- 7 gesture types: swipe, pinch, hold, tap, double-tap, drag, rotate
-- Touch-first mobile controls
-- Configurable thresholds
-- Maps to game actions (terraform, combat, camera)
-
-### World Generation (`src/game/core/`)
-
-#### Perlin Noise Generator
-```typescript
-// Seeded pseudo-random terrain generation
-class PerlinNoise {
-  constructor(seed: number)
-  noise(x: number, y: number): number
-  octaveNoise(x: number, y: number, octaves: number, persistence: number): number
-}
-```
-
-#### WorldCore
-```typescript
-class WorldCore {
-  // 5x5 chunks, 100x100 tiles each = 250,000 total tiles
-  chunks: Map<string, Chunk>
-  
-  generateChunk(cx: number, cy: number): Chunk
-  getTile(x: number, y: number): TileType
-  raycast(x1, y1, x2, y2): boolean // Line-of-sight
-}
-```
-
-**Biome Generation:**
-```typescript
-noise_value = perlin.octaveNoise(x, y, 4, 0.5)
-if (noise < -0.3) -> water
-else if (noise < 0.2) -> grass
-else if (noise < 0.5) -> flower
-else if (noise > 0.7) -> ore
-```
-
-### State Management (`src/stores/gameStore.ts`)
-
-**Implementation**: Pinia (NOT Zustand as originally documented)
-
-```typescript
-// Actual implementation uses Pinia
-import { defineStore } from 'pinia';
-
-interface GameState {
-  // ECS World reference
-  world: IWorld | null
-  
-  // Synced FROM ECS (read-only)
-  pollution: number
-  playerInventory: Record<string, number>
-  playerPosition: { x: number, y: number }
-  dominantPlaystyle: 'Harmony' | 'Conquest' | 'Frolick' | 'Neutral'
-  
-  // UI-only state
-  playTime: number
-  fps: number
-  isPlaying: boolean
-  eventLog: GameEvent[]
-  
-  // Actions (update store, never write to ECS directly)
-  updatePollution(value: number): void
-  updatePlayerInventory(inventory: Record<string, number>): void
-  addEvent(event: GameEvent): void
-}
-```
-
-**Critical Rule**: Pinia NEVER writes to ECS. ECS systems write to components, then sync to Pinia for UI display.
-
-**Note**: Original architecture documents specified Zustand, but actual implementation uses Pinia (better Vue integration).
-
-### Rendering Integration (`src/game/GameScene.ts`)
-**Current**: Phaser 3 (2D tile-based) - interim foundation  
-**Target**: Raycast 3D engine (Stage 3+)
-
-```typescript
-class GameScene extends Phaser.Scene {
-  world: IWorld
-  movementSystem: System
-  craftingSystem: System
-  
-  create() {
-    // Initialize ECS
-    this.world = resetWorld()
-    this.playerEid = createPlayer(this.world, x, y)
-    
-    // Initialize systems
-    this.movementSystem = createMovementSystem()
-    this.craftingSystem = createCraftingSystem()
-    
-    // Create Phaser sprites (rendering only)
-    this.playerSprite = this.add.sprite(x, y, 'player')
-  }
-  
-  update(time, delta) {
-    // Run ECS systems (modify components)
-    this.movementSystem(this.world, delta)
-    this.craftingSystem(this.world)
-    
-    // Read from ECS to update Phaser sprites
-    this.playerSprite.setPosition(
-      Position.x[this.playerEid],
-      Position.y[this.playerEid]
-    )
-  }
-}
-```
+---
 
 ## Performance Optimizations
 
-### Implemented
-1. **Viewport Culling**: Only render visible tiles (~3600 vs 250,000)
-2. **Sprite Pooling**: Reuse sprites instead of creating new
-3. **Distance-Based Updates**: Re-render chunks only when player moves far
-4. **Pixel Art Mode**: Disable anti-aliasing for faster rendering
-5. **WebGL Acceleration**: Hardware-accelerated rendering
-6. **Minimal GC**: Fixed-size arrays, object reuse
-7. **ECS Architecture**: Cache-friendly data layout
+### Mobile Performance
+- **React Three Fiber**: Hardware-accelerated WebGL2 rendering
+- **Miniplex ECS**: Cache-friendly component architecture
+- **Instanced Rendering**: Efficient vegetation and object rendering
+- **LOD Systems**: Distance-based detail reduction
+- **Memory Management**: Event history trimming, garbage collection optimization
 
-### Targets
-- **60 FPS**: Steady frame rate on mid-range Android
-- **< 16.67ms**: Frame time budget
-- **< 150MB RAM**: Active game state
-- **< 3s Load**: Initial world generation
+### 3D Rendering Pipeline  
+- **Spore-style camera**: Intelligent frustum culling and LOD
+- **Texture streaming**: On-demand loading with caching
+- **Geometry optimization**: Procedural generation over asset storage
+- **Shader efficiency**: Minimal fragment shader complexity for mobile
 
-### Performance Monitoring
-- FPS counter (in-game)
-- Frame time tracking
-- Memory usage (DevTools)
-- Bundle size tracking (CI/CD)
+### Evolution Simulation
+- **Time acceleration**: 10x simulation speed for testing and development
+- **Data persistence**: localStorage with export capabilities for analysis
+- **System isolation**: Each system independently testable and optimizable
+- **Cross-system coordination**: Efficient event propagation without performance impact
 
-## Testing Infrastructure
-
-### Test Environment
-- **Vitest 2.1.9**: Test runner
-- **happy-dom 15.11.7**: DOM simulation (faster than jsdom)
-- **Globals enabled**: No import needed in tests
-
-### Test Structure
-```
-src/test/
-├── setup.ts                    # Mocks for Phaser, Capacitor
-├── components.test.ts          # ECS component tests (4 tests)
-├── movement.test.ts            # Movement system (3 tests)
-├── crafting.test.ts            # Crafting system (3 tests)
-├── haiku.test.ts              # Haiku scorer (8 tests)
-├── snapping.test.ts           # Snapping system (6 tests)
-├── pollution-behavior.test.ts  # Pollution + Behavior (15 tests)
-└── pack.test.ts               # Pack system (18 tests)
-```
-
-### Test Coverage: 57/57 Passing ✅
-- Components: Full coverage
-- Systems: Comprehensive unit tests
-- Integration: Game loop validation
-- CI: Tests run before every build
-
-## CI/CD Pipeline
-
-### GitHub Actions Workflows
-
-#### 1. Build Android APK
-**Trigger**: Push to any branch, PRs, manual dispatch
-**Steps**:
-1. Run 57 tests (must pass)
-2. Build web assets (`pnpm run build`)
-3. Initialize Capacitor Android
-4. Sync assets (`npx cap sync android`)
-5. Build debug/release APKs
-6. Upload artifacts (30-90 day retention)
-7. Comment on PR with status
-
-**Build Time**: ~8-12 minutes
-**Free Tier Usage**: ~100-120 min/day (within 2,000 min/month limit)
-
-#### 2. Code Quality
-**Trigger**: Every PR
-**Checks**:
-- TypeScript validation (`pnpm exec tsc --noEmit`)
-- Test coverage (`pnpm run test:coverage`)
-- Documentation checks
-- ECS architecture validation
-- Large file detection
-- Security audit
-
-#### 3. Release APK
-**Trigger**: Version tags (v*) or manual
-**Steps**:
-- Builds both debug and release APKs
-- Creates GitHub Release automatically
-- Professional naming: `ebb-and-bloom-v0.1.0.apk`
-- Auto-generated release notes
-- Installation instructions
-
-### Renovate Bot (Dependency Management)
-**Schedule**: Nightly (10pm-5am + weekends)
-**Strategy**:
-- Non-major updates: Bundled into single auto-merge PR
-- Major updates: Separate PRs with manual review
-- Game engines (Phaser, BitECS, Yuka): Always manual
-- Capacitor ecosystem: Bundled together
-- Security vulnerabilities: Immediate auto-merge
-- Lockfile maintenance: Weekly (Mondays)
+---
 
 ## Development Workflow
 
 ### Commands
 ```bash
 # Development
-pnpm install          # Install dependencies
-pnpm dev             # Start dev server (HMR)
+pnpm dev              # Start dev server (0.0.0.0 for network access)
+pnpm build           # Production build
 
 # Testing
 pnpm test            # Run all tests
 pnpm test:watch      # Watch mode
-pnpm test:ui         # Vitest UI
-pnpm test:coverage   # Coverage report
+pnpm test:ui         # Interactive test UI
+pnpm test:coverage   # Coverage reports
 
-# Building
-pnpm build           # Build for production
-pnpm preview         # Preview production build
+# Asset Pipeline
+pnpm setup:textures  # Download AmbientCG library
+pnpm dev:setup       # Setup complete dev environment
+pnpm dev:creature    # Generate creature assets
+pnpm dev:audio       # Download audio library  
+pnpm dev:ui          # Generate UI elements
 
-# Mobile
-npx cap sync android # Sync web assets to Android
+# Mobile Development
+npx cap sync android # Sync to Android
 npx cap open android # Open Android Studio
-./build-android.sh   # Full Android build script
+npx cap run android  # Run on device
 ```
 
-### Prerequisites
+### Environment Variables
 ```bash
-node >= 20.x
-pnpm >= 9.x          # Install via: corepack enable
-Android Studio       # For APK builds
-Java 17 (Zulu)      # For Gradle builds
+OPENAI_API_KEY=      # Required for AI asset generation
+FREESOUND_API_KEY=   # Required for audio library
 ```
-
-## Known Technical Constraints
-
-### Mobile Performance
-- **60FPS Target**: Must maintain on mid-range Android (Snapdragon 700+)
-- **Memory Limit**: ~512MB active game state
-- **Battery**: Optimize to prevent excessive drain
-- **Screen Sizes**: Support 5-7 inch displays
-- **Bundle Size**: Target < 15MB APK (currently ~4MB)
-
-### Platform-Specific
-- **Android**: Minimum API 24 (Android 7.0)
-- **Gestures**: Must work with various touch screen qualities
-- **Haptics**: Use Capacitor Haptics API
-- **Orientation**: Portrait primary, landscape optional
-
-### Network
-- **Offline-First**: Core gameplay works without internet
-- **Cloud Save**: Optional backup (future Stage 3+)
-- **No Real-Time MP**: Fully single-player
-
-## Known Issues & Solutions
-
-### Issue: Phaser + Vue Reactivity Conflicts
-**Problem**: Vue reactivity can cause Phaser render loops to stutter
-**Solution**: Keep Phaser game state separate from Vue reactive state
-**Pattern**: Use Zustand for game logic, Vue only for UI overlays
-
-### Issue: Mobile Touch Delay
-**Problem**: 300ms click delay on some mobile browsers
-**Solution**: Use Phaser's pointer events, not DOM events
-**Pattern**: `scene.input.on('pointerdown')` instead of `@click`
-
-### Issue: BitECS + TypeScript Types
-**Problem**: BitECS component types can be verbose
-**Solution**: Create type aliases and helper functions
-**Pattern**: `type Entity = number;` with helper functions
-
-### Issue: pnpm + packageManager Field
-**Problem**: pnpm/action-setup@v4 treats ANY `packageManager` field as conflict
-**Solution**: Remove `packageManager` field from package.json entirely
-**Pattern**: Let workflows manage pnpm version explicitly
-
-### Issue: GitHub Actions Gradle Cache
-**Problem**: setup-java@v5 gradle cache fails if android/ doesn't exist
-**Solution**: Don't use gradle cache before `npx cap add android` step
-**Pattern**: Remove `cache: 'gradle'` from setup-java step
-
-## Future Technical Considerations
-
-### Stage 2+ (Planned)
-- **Combat System**: Wisp clashes, momentum-based gestures
-- **Shaders**: GLSL for visual effects (pollution haze, water flow)
-
-### Stage 3+ (Raycast 3D Migration - COMMITTED)
-- **Raycast Engine**: Custom or raycast.js (~5KB)
-- **Heightmap Generation**: Perlin noise for ebb/bloom ridges
-- **Gesture Controls**: Swipe-turn, pinch-zoom, tap-stride
-- **Visual Style**: Pseudo-3D slice rendering
-- **Performance Validation**: 60 FPS on mid-range Android
-
-### Stage 4+ (Future)
-- **Web Audio**: Procedural audio synthesis (ambient soundscapes)
-- **WebGL2**: Advanced rendering (particle systems, lighting)
-- **WebAssembly**: Performance-critical world gen (if needed)
-- **Cloud Sync**: Optional cross-device saves
-
-### Stage 5+ (Stretch Goals)
-- **Real-time Multiplayer**: WebRTC for co-op
-- **Shader Graphs**: Visual effects system
-- **VR Support**: Oculus Quest port
-
-## Architecture Decisions
-
-### Why BitECS?
-- High performance (cache-friendly memory layout)
-- Scales to thousands of entities
-- Proper separation of data and logic
-- Future-proof for complex gameplay
-
-### Why Phaser as Rendering Layer? (Interim)
-- Mature 2D engine with excellent WebGL renderer
-- Large community and resources
-- Good mobile performance
-- Easy to keep separate from game logic
-- **Note**: Interim foundation for raycast 3D migration (Stage 3+)
-
-### Why Raycast 3D? (Target Vision - COMMITTED)
-- Efficient (seed-driven, no asset bloat)
-- Feels vast without VRAM suck
-- Mobile-friendly (~100 rays per frame, 60FPS target)
-- DOS-era aesthetic (matches vision)
-- Procedural (seed ties to evo history)
-
-### Why Pinia over Zustand/Vuex?
-- **Original Plan**: Zustand (framework-agnostic)
-- **Actual Implementation**: Pinia (Vue-native state management)
-- **Rationale**: Better Vue 3 Composition API integration
-- **Benefits**: Type-safe, devtools support, modular stores
-- **Perfect for**: ECS → UI sync with Vue components
-
-### Why pnpm over npm?
-- 3x faster installs
-- Strict dependency resolution
-- Efficient disk usage
-- Better for monorepos (future expansion)
 
 ---
 
-**Last Updated**: 2025-11-06
-**Architecture Version**: Stage 1 Complete (ECS + Systems)
-**Next**: Stage 2 (Combat, Content Expansion, UX Polish)
+## Testing Infrastructure
+
+### Unit Testing (Vitest)
+- **Core system validation**: GameClock, genetic synthesis, population dynamics
+- **Evolution algorithm testing**: Trait inheritance, emergent naming, pack formation
+- **Camera system testing**: Spore-style perspective and event response
+- **Mock framework**: SimplexNoise, Yuka, Three.js, Capacitor for headless testing
+
+### Integration Testing
+- **ECS component interaction**: Cross-system evolution pressure and trait inheritance
+- **React hooks integration**: Miniplex → React → UI state synchronization
+- **Asset pipeline testing**: Texture loading, manifest generation, AI integration
+
+### End-to-End Testing (Playwright)
+- **Multi-platform validation**: Web, Android emulation, desktop
+- **Evolution simulation**: Long-running ecosystem validation
+- **Performance testing**: 60 FPS maintenance under load
+- **Mobile interaction**: Touch gesture and haptic feedback validation
+
+---
+
+## Current Implementation Status
+
+### ✅ Complete (Production Ready)
+1. **ECS Architecture**: Miniplex + React Three Fiber integration
+2. **All Evolutionary Systems**: Creatures, materials, packs, environment, narrative
+3. **Camera System**: Spore-style dynamic third-person with evolution event response
+4. **Texture Pipeline**: AmbientCG integration with 141 textures downloaded
+5. **Brand Identity**: Complete design system with colors, typography, animations
+6. **Dev Tools**: AI-powered asset generation pipeline with manifest management
+7. **Testing Framework**: Comprehensive unit and integration test coverage
+8. **Mobile Architecture**: Capacitor integration with haptic feedback
+
+### 🎯 Next Implementation: Frontend UI
+1. **Evolution Visualization Components**: Real-time creature display with trait emergence
+2. **Generation Progress UI**: Clock, progress indicators, evolution event feed  
+3. **Pack Dynamics Interface**: Social interaction visualization and territory display
+4. **Environmental Dashboard**: Pollution indicators, shock event notifications
+5. **Narrative Integration**: Haiku display with emotional context and timing
+6. **Mobile Interaction**: Touch controls with haptic feedback integration
+7. **Data Visualization**: Evolution analysis charts and ecosystem health metrics
+
+---
+
+## Key Technical Achievements
+
+### Architecture Excellence
+- **Zero technical debt**: Clean separation between systems  
+- **Production quality**: Proper error handling, logging, state management
+- **Mobile-first**: Touch controls, haptic feedback, performance optimization
+- **Scalable foundation**: Unlimited expansion capability without architectural changes
+
+### Innovation Implementation
+- **Emergent taxonomy**: Creatures earn names through trait synthesis (cache_swimmer, deep_seeker)
+- **Dynamic behavioral AI**: Yuka steering modified by evolutionary trait development
+- **Environmental pressure**: Pollution and shock events driving ecosystem adaptation  
+- **Procedural narrative**: Haiku generation with Jaro-Winkler diversity guard
+- **AI-integrated dev tools**: Creature generation from evolutionary trait descriptions
+
+### Performance Validation
+- **Test coverage**: Core systems validated with comprehensive unit tests
+- **Browser compatibility**: React Three Fiber + Miniplex working in modern browsers
+- **Mobile readiness**: Capacitor integration tested and operational
+- **Asset pipeline**: Production-quality texture and audio acquisition systems
+
+---
+
+## References & Documentation
+
+### Implementation Guides
+- `docs/EVOLUTIONARY_SYSTEMS.md` - Complete system architecture and integration
+- `docs/CAMERA_SYSTEM.md` - Spore-style camera design and implementation
+- `docs/BRAND_IDENTITY_2025.md` - Updated brand guidelines for 3D ecosystem
+
+### Memory Bank Context
+- `memory-bank/EVOLUTION_FOUNDATION_STATUS.md` - Foundation completion status
+- `memory-bank/Grok-TypeScript_Procedural_Open-World_Scene.md` - Original R3F inspiration
+- `memory-bank/Grok-Multi-Platform_React_Three_Fiber_Development.md` - Multi-platform architecture
+
+---
+
+**Last Updated**: 2025-11-07  
+**Architecture Version**: Complete 3D Evolutionary Ecosystem Foundation  
+**Next Phase**: Frontend UI Implementation with evolutionary visualization
