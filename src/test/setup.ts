@@ -9,6 +9,9 @@ import { vi } from 'vitest';
 globalThis.Capacitor = {
   isNativePlatform: vi.fn(() => false),
   getPlatform: vi.fn(() => 'web'),
+  Platform: {
+    getPlatform: vi.fn(() => 'web'),
+  },
   Plugins: {}
 } as any;
 
@@ -61,19 +64,21 @@ globalThis.cancelAnimationFrame = vi.fn();
 
 // Mock SimplexNoise for deterministic testing
 vi.mock('simplex-noise', () => {
-  const MockSimplexNoise = class {
-    noise2D(x: number, y: number): number {
-      return Math.sin(x * 0.1) * Math.cos(y * 0.1) * 0.5;
-    }
-    
-    noise3D(x: number, y: number, z: number): number {
-      return Math.sin(x * 0.1) * Math.cos(y * 0.1) * Math.sin(z * 0.1) * 0.5;
-    }
+  const mockNoise2D = (x: number, y: number): number => {
+    return Math.sin(x * 0.1) * Math.cos(y * 0.1) * 0.5;
   };
   
+  const mockNoise3D = (x: number, y: number, z: number): number => {
+    return Math.sin(x * 0.1) * Math.cos(y * 0.1) * Math.sin(z * 0.1) * 0.5;
+  };
+  
+  const createNoise2D = () => mockNoise2D;
+  const createNoise3D = () => mockNoise3D;
+  
   return {
-    SimplexNoise: MockSimplexNoise,
-    default: MockSimplexNoise
+    createNoise2D,
+    createNoise3D,
+    default: { createNoise2D, createNoise3D }
   };
 });
 
@@ -83,6 +88,27 @@ vi.mock('three-terrain', () => ({
   Erosion: vi.fn(),
   HeightTexture: vi.fn()
 }));
+
+// Mock THREE.TextureLoader for testing
+vi.mock('three', async () => {
+  const actual = await vi.importActual('three');
+  return {
+    ...actual,
+    TextureLoader: class MockTextureLoader {
+      loadAsync = vi.fn((path: string) => {
+        // Return a mock texture
+        const texture = {
+          wrapS: 0,
+          wrapT: 0,
+          repeat: { set: vi.fn() },
+          image: new Image(),
+          needsUpdate: true
+        };
+        return Promise.resolve(texture as any);
+      });
+    }
+  };
+});
 
 // Mock Yuka for testing
 vi.mock('yuka', () => ({

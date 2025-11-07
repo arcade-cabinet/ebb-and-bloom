@@ -374,6 +374,49 @@ class HapticGestureSystem {
       distance: gesture.deltaPosition.length()
     });
     
+    // Dispatch to unified event store
+    const store = useEvolutionDataStore.getState();
+    
+    // Map internal GestureType to store GestureEvent type
+    const mapType = (type: GestureType): import('../stores/EvolutionDataStore').GestureEvent['type'] => {
+      switch (type) {
+        case GestureType.TAP: return 'tap';
+        case GestureType.DOUBLE_TAP: return 'double_tap';
+        case GestureType.LONG_PRESS: return 'long_press';
+        case GestureType.SWIPE: return 'swipe';
+        case GestureType.PINCH: return 'pinch';
+        case GestureType.ROTATE: return 'rotate';
+        case GestureType.DRAG: return 'drag';
+        default: return 'tap';
+      }
+    };
+    
+    // Get direction from velocity
+    const getDirection = (): 'up' | 'down' | 'left' | 'right' | undefined => {
+      const vel = gesture.velocity;
+      if (Math.abs(vel.x) > Math.abs(vel.y)) {
+        return vel.x > 0 ? 'right' : 'left';
+      } else {
+        return vel.y > 0 ? 'down' : 'up';
+      }
+    };
+    
+    const gestureEvent: import('../stores/EvolutionDataStore').GestureEvent = {
+      type: mapType(gesture.type),
+      position: { x: gesture.position.x, y: gesture.position.y },
+      direction: getDirection(),
+      distance: gesture.deltaPosition.length(),
+      duration: gesture.duration,
+      fingers: gesture.fingers,
+      timestamp: Date.now(),
+    };
+    store.dispatchGestureEvent(gestureEvent);
+    
+    // Update input mode
+    if (gesture.fingers > 0) {
+      store.setInputMode('touch');
+    }
+    
     // Raycast to find world interaction target
     const worldInteraction = this.raycastFromScreen(gesture.position);
     

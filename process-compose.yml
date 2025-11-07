@@ -117,9 +117,41 @@ processes:
       backoff_seconds: 5
     disabled: true  # Enable manually when debugging
 
+  # AI Asset Generation - UI Assets (splash, panels, transparent elements)
+  asset-generation:
+    command: "mise exec -- pnpm dev:cli generate-all"
+    working_dir: "."
+    description: "Generate all UI assets (splash screens, panels, transparent elements) using GPT-image-1"
+    log_location: "./logs/asset-generation.log"
+    restart_policy:
+      restart: "on_failure"
+      backoff_seconds: 30
+      max_restarts: 3
+    environment:
+      - "OPENAI_API_KEY=${OPENAI_API_KEY}"
+      - "FREESOUND_API_KEY=${FREESOUND_API_KEY}"
+    disabled: false  # Enable to generate assets
+
+  # Master Evolution Pipeline - Complete ecosystem generation
+  evolution-pipeline:
+    command: "mise exec -- pnpm evolution:pipeline"
+    working_dir: "."
+    description: "Master evolution pipeline: archetypes → creature specs → building assemblies → visual assets → audio"
+    log_location: "./logs/evolution-pipeline.log"
+    restart_policy:
+      restart: "on_failure"
+      backoff_seconds: 60
+      max_restarts: 2
+    environment:
+      - "OPENAI_API_KEY=${OPENAI_API_KEY}"
+      - "FREESOUND_API_KEY=${FREESOUND_API_KEY}"
+    disabled: false  # Enable to run full pipeline
+
 # Global settings
 global:
   environment:
     - "NODE_ENV=development"
     - "PNPM_HOME=${HOME}/.local/share/pnpm"
+    - "OPENAI_API_KEY=${OPENAI_API_KEY}"
+    - "FREESOUND_API_KEY=${FREESOUND_API_KEY}"
   

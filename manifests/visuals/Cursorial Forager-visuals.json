@@ -1,0 +1,10 @@
+{
+  "creature_id": "Cursorial Forager",
+  "base_visual": "Small-to-medium plains quadruped with moderate endurance, opportunistic omnivore, minimal manipulative digits evolutionary creature",
+  "evolution_stages": [
+    "base",
+    "intermediate",
+    "advanced"
+  ],
+  "generated": "2025-11-07T05:18:54.464Z"
+}

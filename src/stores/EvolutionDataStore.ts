@@ -23,6 +23,24 @@ export interface GenerationSnapshot {
   significantChanges: string[];
 }
 
+// Unified event system - platform, input, and gesture events
+export interface PlatformEvent {
+  type: 'platform' | 'resize' | 'orientation' | 'input';
+  data: any;
+  timestamp: number;
+}
+
+export interface GestureEvent {
+  type: 'swipe' | 'pinch' | 'hold' | 'tap' | 'drag' | 'rotate' | 'double_tap' | 'long_press';
+  position?: { x: number; y: number };
+  direction?: 'up' | 'down' | 'left' | 'right';
+  distance?: number;
+  duration?: number;
+  fingers?: number;
+  angle?: number;
+  timestamp: number;
+}
+
 interface CreatureSnapshot {
   id: string;
   archetype: string;
@@ -67,6 +85,23 @@ interface EvolutionDataState {
     dominantTraits: number[];
   } | null;
   
+  // Unified event system - platform, input, and gestures
+  platform: {
+    platform: 'web' | 'ios' | 'android' | 'electron';
+    isMobile: boolean;
+    isDesktop: boolean;
+    isNative: boolean;
+    screen: {
+      width: number;
+      height: number;
+      orientation: 'portrait' | 'landscape';
+      aspectRatio: number;
+    };
+    inputMode: 'touch' | 'mouse' | 'keyboard' | 'gamepad';
+  };
+  
+  eventHistory: Array<PlatformEvent | GestureEvent>;
+  
   // Configuration
   config: {
     maxHistorySize: number;
@@ -78,6 +113,12 @@ interface EvolutionDataState {
   // Actions
   recordGenerationSnapshot: (snapshot: GenerationSnapshot) => void;
   recordEvolutionEvent: (event: EvolutionEvent) => void;
+  
+  // Unified event actions
+  dispatchPlatformEvent: (event: PlatformEvent) => void;
+  dispatchGestureEvent: (event: GestureEvent) => void;
+  setInputMode: (mode: EvolutionDataState['platform']['inputMode']) => void;
+  updateScreen: (width: number, height: number) => void;
   analyzeEvolutionTrends: () => void;
   exportToFile: () => void;
   clearHistory: () => void;
@@ -85,23 +126,60 @@ interface EvolutionDataState {
 }
 
 export const useEvolutionDataStore = create<EvolutionDataState>()(
-  persist(
-    (set, get) => ({
-      // Initial state
-      currentGeneration: 0,
-      simulationStartTime: new Date().toISOString(),
-      totalEvolutionEvents: 0,
-      generationHistory: [],
-      significantEvents: [],
-      emergentSpecies: {},
-      lastAnalysis: null,
-      
-      config: {
-        maxHistorySize: 100,        // Keep last 100 generations
-        analysisInterval: 10,       // Analyze every 10 generations  
-        autoSaveInterval: 5,        // Auto-save every 5 generations
-        fileLoggingEnabled: true
-      },
+  subscribeWithSelector(
+    persist(
+      (set, get) => {
+        // Initialize platform state
+        const getPlatform = (): EvolutionDataState['platform']['platform'] => {
+          if (typeof window === 'undefined') return 'web';
+          const plat = Platform.getPlatform();
+          if (plat === 'ios' || plat === 'android') return plat;
+          if (plat === 'electron') return 'electron';
+          return 'web';
+        };
+
+        const platform = getPlatform();
+        const isNative = Capacitor.isNativePlatform();
+        const isMobile = ['ios', 'android'].includes(platform);
+        const isDesktop = platform === 'electron';
+
+        const initialWidth = typeof window !== 'undefined' ? window.innerWidth : 1280;
+        const initialHeight = typeof window !== 'undefined' ? window.innerHeight : 720;
+        const initialOrientation = initialWidth > initialHeight ? 'landscape' : 'portrait';
+
+        return {
+        // Initial state
+        currentGeneration: 0,
+        simulationStartTime: new Date().toISOString(),
+        totalEvolutionEvents: 0,
+        generationHistory: [],
+        significantEvents: [],
+        emergentSpecies: {},
+        lastAnalysis: null,
+        
+        // Unified platform state
+        platform: {
+          platform,
+          isMobile,
+          isDesktop,
+          isNative,
+          screen: {
+            width: initialWidth,
+            height: initialHeight,
+            orientation: initialOrientation,
+            aspectRatio: initialWidth / initialHeight,
+          },
+          inputMode: isMobile ? 'touch' : 'mouse',
+        },
+        
+        eventHistory: [],
+        
+        config: {
+          maxHistorySize: 100,        // Keep last 100 generations
+          analysisInterval: 10,       // Analyze every 10 generations  
+          autoSaveInterval: 5,        // Auto-save every 5 generations
+          fileLoggingEnabled: true
+        },
       
       // Actions
       recordGenerationSnapshot: (snapshot: GenerationSnapshot) => {
@@ -254,8 +332,110 @@ export const useEvolutionDataStore = create<EvolutionDataState>()(
           config: { ...state.config, ...newConfig }
         }));
         log.info('Evolution data store config updated', newConfig);
+      },
+      
+      // Unified event actions
+      dispatchPlatformEvent: (event: PlatformEvent) => {
+        set((state) => {
+          const newHistory = [...state.eventHistory.slice(-49), event]; // Keep last 50 events
+          
+          log.debug('Platform event dispatched', { type: event.type, data: event.data });
+          
+          // Handle specific event types
+          if (event.type === 'platform') {
+            const getPlatformValue = (): EvolutionDataState['platform']['platform'] => {
+              if (typeof window === 'undefined') return 'web';
+              const plat = Platform.getPlatform();
+              if (plat === 'ios' || plat === 'android') return plat;
+              if (plat === 'electron') return 'electron';
+              return 'web';
+            };
+            const plat = getPlatformValue();
+            return {
+              platform: {
+                ...state.platform,
+                platform: plat,
+                isMobile: ['ios', 'android'].includes(plat),
+                isDesktop: plat === 'electron',
+                isNative: Capacitor.isNativePlatform(),
+              },
+              eventHistory: newHistory,
+            };
+          } else if (event.type === 'resize') {
+            const { width, height } = event.data;
+            return {
+              platform: {
+                ...state.platform,
+                screen: {
+                  width,
+                  height,
+                  orientation: width > height ? 'landscape' : 'portrait',
+                  aspectRatio: width / height,
+                },
+              },
+              eventHistory: newHistory,
+            };
+          } else if (event.type === 'orientation') {
+            const { orientation } = event.data;
+            return {
+              platform: {
+                ...state.platform,
+                screen: {
+                  ...state.platform.screen,
+                  orientation: orientation === 'landscape' ? 'landscape' : 'portrait',
+                },
+              },
+              eventHistory: newHistory,
+            };
+          } else if (event.type === 'input') {
+            return {
+              platform: {
+                ...state.platform,
+                inputMode: event.data,
+              },
+              eventHistory: newHistory,
+            };
+          }
+          
+          return { eventHistory: newHistory };
+        });
+      },
+      
+      dispatchGestureEvent: (event: GestureEvent) => {
+        set((state) => {
+          const newHistory = [...state.eventHistory.slice(-49), event]; // Keep last 50 events
+          log.debug('Gesture event dispatched', { type: event.type, position: event.position });
+          return { eventHistory: newHistory };
+        });
+      },
+      
+      setInputMode: (mode) => {
+        set((state) => ({
+          platform: {
+            ...state.platform,
+            inputMode: mode,
+          },
+        }));
+        log.debug('Input mode set', { mode });
+      },
+      
+      updateScreen: (width, height) => {
+        set((state) => ({
+          platform: {
+            ...state.platform,
+            screen: {
+              width,
+              height,
+              orientation: width > height ? 'landscape' : 'portrait',
+              aspectRatio: width / height,
+            },
+          },
+        }));
+        log.debug('Screen updated', { width, height });
+      },
+        };
       }
-    }),
+    ),
     {
       name: 'ebb-bloom-evolution-data',
       storage: createJSONStorage(() => localStorage),

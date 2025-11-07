@@ -328,6 +328,7 @@ export const useMaterial = (query: MaterialQuery) => {
   useEffect(() => {
     if (!textureSystem) {
       log.error('TextureSystem not found in context');
+      setLoading(false); // Set loading to false when context is missing
       return;
     }
     

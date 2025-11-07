@@ -188,6 +188,7 @@ class GameDevCLI {
         size: "1024x1024",
         providerOptions: {
           openai: { quality: 'high' }
+        }
       });
       
       // Result structure: { image: { url: string } }
