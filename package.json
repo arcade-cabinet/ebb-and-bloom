@@ -18,9 +18,9 @@
     "dev:creature": "tsx src/dev/GameDevCLI.ts creature",
     "dev:audio": "tsx src/dev/GameDevCLI.ts audio", 
     "dev:ui": "tsx src/dev/GameDevCLI.ts ui",
-    "generate:assets": "tsx src/dev/ProductionAssetGenerator.ts",
-    "generate:creatures": "tsx -e 'import PAG from \"./src/dev/ProductionAssetGenerator.ts\"; const gen = new PAG.default(); gen.generateCompleteAssetLibrary()'",
-    "generate:buildings": "tsx -e 'import PAG from \"./src/dev/ProductionAssetGenerator.ts\"; const gen = new PAG.default(); console.log(\"Building generation ready\")'"
+    "evolution:pipeline": "tsx src/dev/MasterEvolutionPipeline.ts",
+    "evolution:archetypes": "tsx src/dev/EvolutionaryAgentWorkflows.ts",
+    "evolution:validate": "pnpm test && pnpm build"
   },
   "dependencies": {
     "@ai-sdk/openai": "^2.0.64",
