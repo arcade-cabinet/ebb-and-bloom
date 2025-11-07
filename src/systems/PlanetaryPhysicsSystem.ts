@@ -18,6 +18,7 @@ import {
   executeGenerationZero, 
   loadGenerationZero 
 } from '../dev/GenerationZeroOrchestrator';
+import { generateMockGen0 } from '../dev/MockGen0Data';
 
 /**
  * Planetary physics state
@@ -76,14 +77,24 @@ class PlanetaryPhysicsSystem {
           planet: manifest.planetary.planetaryName 
         });
       } else {
-        // Generate new manifest via AI workflows
-        log.info('No cached manifest found, generating new planet via AI workflows...');
-        log.warn('This will make API calls to OpenAI and may take 30-60 seconds');
-        
-        manifest = await executeGenerationZero(seedPhrase);
+        // Check if we have OPENAI_API_KEY
+        const hasApiKey = !!process.env.OPENAI_API_KEY;
+
+        if (hasApiKey) {
+          // Generate via AI workflows (requires API key)
+          log.info('No cached manifest found, generating new planet via AI workflows...');
+          log.warn('This will make API calls to OpenAI and may take 30-60 seconds');
+          
+          manifest = await executeGenerationZero(seedPhrase);
+        } else {
+          // Use mock generation (no API needed, instant)
+          log.info('No OPENAI_API_KEY found, using mock procedural generation (instant)');
+          manifest = generateMockGen0(seedPhrase);
+        }
         
         log.info('Gen 0 planetary generation complete', {
           planet: manifest.planetary.planetaryName,
+          method: hasApiKey ? 'AI' : 'mock',
           elapsedMs: Date.now() - this.state.generationStartTime,
         });
       }

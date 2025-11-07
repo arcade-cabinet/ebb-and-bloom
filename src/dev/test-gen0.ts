@@ -13,6 +13,7 @@
  */
 
 import { executeGenerationZero } from './GenerationZeroOrchestrator';
+import { generateMockGen0 } from './MockGen0Data';
 import { log } from '../utils/Logger';
 
 async function main() {
@@ -21,14 +22,26 @@ async function main() {
   console.log('========================================\n');
 
   const seedPhrase = process.argv[2] || 'test-planet-alpha';
+  const useMock = !process.env.OPENAI_API_KEY;
   
-  console.log(`Seed Phrase: "${seedPhrase}"\n`);
-  console.log('⏳ Executing Gen 0 workflows (this will take 30-60 seconds)...\n');
+  console.log(`Seed Phrase: "${seedPhrase}"`);
+  console.log(`Mode: ${useMock ? '🤖 MOCK (no API key)' : '🌐 AI (OpenAI)'}\n`);
 
   try {
-    const startTime = Date.now();
-    const result = await executeGenerationZero(seedPhrase);
-    const elapsed = Date.now() - startTime;
+    let result;
+    let elapsed = 0;
+
+    if (useMock) {
+      console.log('⚡ Generating mock planetary data (instant)...\n');
+      const startTime = Date.now();
+      result = generateMockGen0(seedPhrase);
+      elapsed = Date.now() - startTime;
+    } else {
+      console.log('⏳ Executing Gen 0 AI workflows (this will take 30-60 seconds)...\n');
+      const startTime = Date.now();
+      result = await executeGenerationZero(seedPhrase);
+      elapsed = Date.now() - startTime;
+    }
 
     console.log('\n✅ GENERATION 0 COMPLETE!\n');
     console.log(`⏱️  Time: ${(elapsed / 1000).toFixed(1)}s\n`);
@@ -127,21 +140,34 @@ async function main() {
 
     console.log(`\n📊 Validation: ${passed}/${validations.length} passed\n`);
 
-    console.log('========================================');
+    console.log('\n========================================');
     console.log('MANIFEST SAVED');
     console.log('========================================\n');
-    console.log(`📁 ./manifests/gen0/${seedPhrase}.json`);
-    console.log('\nYou can now use this manifest in the game!\n');
+    
+    if (!useMock) {
+      console.log(`📁 ./manifests/gen0/${seedPhrase}.json`);
+      console.log('\nYou can now use this manifest in the game!\n');
+    } else {
+      console.log(`🤖 Mock data generated (not saved to disk)`);
+      console.log('\nTo use real AI generation:');
+      console.log('  export OPENAI_API_KEY=your_key_here');
+      console.log('  pnpm gen0:test\n');
+    }
 
     if (failed > 0) {
-      console.log('⚠️  Some validations failed. Check AI responses.\n');
+      console.log('⚠️  Some validations failed. Check generation.\n');
       process.exit(1);
     }
 
   } catch (error) {
     console.error('\n❌ GENERATION 0 FAILED\n');
     console.error(error);
-    console.error('\nCheck your OPENAI_API_KEY environment variable.');
+    
+    if (!useMock) {
+      console.error('\nCheck your OPENAI_API_KEY environment variable.');
+      console.error('Or run without API key to use mock data.\n');
+    }
+    
     process.exit(1);
   }
 }
