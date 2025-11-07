@@ -10,9 +10,13 @@ import type { WorldSchema } from '../world/ECSWorld';
 import { gameClock } from './GameClock';
 
 import BuildingSystem from './BuildingSystem';
+import CombatSystem from './CombatSystem';
+import ConsciousnessSystem from './ConsciousnessSystem';
 import CreatureArchetypeSystem, { CreatureCategory } from './CreatureArchetypeSystem';
+import DeconstructionSystem from './DeconstructionSystem';
 import EnvironmentalPressureSystem from './EnvironmentalPressureSystem';
 import GeneticSynthesisSystem from './GeneticSynthesisSystem';
+import GestureActionMapper from './GestureActionMapper';
 import HaikuNarrativeSystem from './HaikuNarrativeSystem';
 import HapticGestureSystem from './HapticGestureSystem';
 import PackSocialSystem from './PackSocialSystem';
@@ -20,12 +24,8 @@ import PopulationDynamicsSystem from './PopulationDynamicsSystem';
 import RawMaterialsSystem from './RawMaterialsSystem';
 import TerrainSystem from './TerrainSystem';
 import TextureSystem from './TextureSystem';
-import YukaSphereCoordinator from './YukaSphereCoordinator';
-import DeconstructionSystem from './DeconstructionSystem';
 import ToolArchetypeSystem from './ToolArchetypeSystem';
-import CombatSystem from './CombatSystem';
-import GestureActionMapper from './GestureActionMapper';
-import ConsciousnessSystem from './ConsciousnessSystem';
+import YukaSphereCoordinator from './YukaSphereCoordinator';
 
 export interface EcosystemState {
   totalCreatures: number;
@@ -91,19 +91,19 @@ class EcosystemFoundation {
       this.packSocialSystem,
       this.populationSystem
     );
-    
+
     // Deconstruction System - Reverse Synthesis
     this.deconstructionSystem = new DeconstructionSystem(world);
-    
+
     // Tool Archetype System - 8 fundamental tool categories
     this.toolSystem = new ToolArchetypeSystem(world);
-    
+
     // Combat System - Conquest playstyle
     this.combatSystem = new CombatSystem(world, this.deconstructionSystem);
-    
+
     // Gesture Action Mapper - Wires gestures to game actions with haptic feedback
     this.gestureMapper = new GestureActionMapper(world, this.gestureSystem, this.deconstructionSystem);
-    
+
     // Consciousness System - Player as transferable awareness
     this.consciousnessSystem = new ConsciousnessSystem(world);
 
@@ -154,7 +154,7 @@ class EcosystemFoundation {
 
     // Initialize haptic feedback for evolution events
     this.gestureSystem.initializeEvolutionListening();
-    
+
     this.initialized = true;
     log.info('Ecosystem foundation initialization complete - PRODUCTION MODE + HAPTICS');
   }
@@ -322,19 +322,19 @@ class EcosystemFoundation {
   getPackSocialSystem(): PackSocialSystem {
     return this.packSocialSystem;
   }
-  
+
   getDeconstructionSystem(): DeconstructionSystem {
     return this.deconstructionSystem;
   }
-  
+
   getConsciousnessSystem(): ConsciousnessSystem {
     return this.consciousnessSystem;
   }
-  
+
   getToolSystem(): ToolArchetypeSystem {
     return this.toolSystem;
   }
-  
+
   getCombatSystem(): CombatSystem {
     return this.combatSystem;
   }
