@@ -13,36 +13,20 @@ const NarrativeDisplay = () => {
   const [recentHaikus, setRecentHaikus] = useState<HaikuEntry[]>([]);
   const [showJournal, setShowJournal] = useState(false);
   
-  // Connect to real HaikuNarrativeSystem
+  // Connect to real HaikuNarrativeSystem - ONE TIME
   useEffect(() => {
     if (!ecosystem) return;
     
     const narrativeSystem = ecosystem.getNarrativeSystem();
-    
-    // Load recent haikus
     const haikus = narrativeSystem.getRecentHaikus(10);
     setRecentHaikus(haikus);
     
-    // Set up listener for new haikus (would need to add event system)
-    // For now, poll every 5 seconds
-    const updateInterval = setInterval(() => {
-      const latestHaikus = narrativeSystem.getRecentHaikus(10);
-      if (latestHaikus.length > 0) {
-        const latest = latestHaikus[0];
-        if (!recentHaikus.find(h => h.timestamp === latest.timestamp)) {
-          setRecentHaikus(latestHaikus);
-          
-          // Show new haiku if significant
-          if (latest.significance > 0.6) {
-            setCurrentHaiku(latest);
-            setTimeout(() => setCurrentHaiku(null), 8000);
-          }
-        }
-      }
-    }, 5000);
-    
-    return () => clearInterval(updateInterval);
-  }, [ecosystem, recentHaikus]);
+    // Show most recent haiku if significant
+    if (haikus.length > 0 && haikus[0].significance > 0.6) {
+      setCurrentHaiku(haikus[0]);
+      setTimeout(() => setCurrentHaiku(null), 8000);
+    }
+  }, []); // Run once on mount
   
   return (
     <>
