@@ -60,6 +60,9 @@ export const log = {
   
   // Export logs for file analysis
   exportLogs: () => {
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+      return [];
+    }
     try {
       const logs = localStorage.getItem('ebb-bloom-evolution-logs');
       return logs ? JSON.parse(logs) : [];
@@ -69,12 +72,19 @@ export const log = {
   },
   
   clearLogs: () => {
-    localStorage.removeItem('ebb-bloom-evolution-logs');
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      localStorage.removeItem('ebb-bloom-evolution-logs');
+    }
   }
 };
 
-// Persist evolution data to localStorage
+// Persist evolution data to localStorage (browser only)
 function persistEvolutionLog(level: string, message: string, context?: any) {
+  // Only persist in browser environment (localStorage not available in Node.js)
+  if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+    return; // Silently skip in Node.js/CLI environment
+  }
+  
   try {
     const entry = {
       timestamp: new Date().toISOString(),
@@ -94,7 +104,10 @@ function persistEvolutionLog(level: string, message: string, context?: any) {
     
     localStorage.setItem('ebb-bloom-evolution-logs', JSON.stringify(logs));
   } catch (e) {
-    console.warn('Failed to persist evolution log');
+    // Only warn in browser (shouldn't happen, but handle gracefully)
+    if (typeof console !== 'undefined' && console.warn) {
+      console.warn('Failed to persist evolution log', e);
+    }
   }
 }
 
