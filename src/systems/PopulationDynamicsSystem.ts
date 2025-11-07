@@ -1,6 +1,6 @@
 /**
  * Population Dynamics System - Breeding, death, carrying capacity
- * Based on Daggerfall's spawn management + ecological realism
+ * Manages population growth, death, and ecological carrying capacity
  */
 
 import { World, Entity } from 'miniplex';

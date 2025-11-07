@@ -1,12 +1,12 @@
 /**
- * Creature Archetype System - Complete behavioral foundation  
- * Based on Daggerfall's MobileTypes/Behavior approach + evolutionary enhancement
+ * Creature Archetype System - Complete behavioral foundation
+ * Defines creature archetypes and behavior patterns for evolutionary systems
  */
 
 import { World, Entity } from 'miniplex';
 import * as THREE from 'three';
 import * as YUKA from 'yuka';
-import { SimplexNoise } from 'simplex-noise';
+import { createNoise2D } from 'simplex-noise';
 import { log, measurePerformance } from '../utils/Logger';
 import { gameClock, type EvolutionEvent } from './GameClock';
 import { AffinityType } from './RawMaterialsSystem';
@@ -32,11 +32,11 @@ export enum ArchetypeFamily {
   CONSTRUCTION_PIONEER = 'construction_pioneer', // Develops building behaviors
 }
 
-// Daggerfall's behavior patterns enhanced for evolution
+// Behavior patterns for creature AI
 export enum BehaviorPattern {
-  WANDER = 'wander',           // Random exploration (Daggerfall General)
-  TERRITORIAL = 'territorial',  // Defends area (Daggerfall Guard-like)
-  SOCIAL = 'social',           // Pack coordination (Daggerfall team-based)
+  WANDER = 'wander',           // Random exploration
+  TERRITORIAL = 'territorial',  // Defends area
+  SOCIAL = 'social',           // Pack coordination
   FLEE = 'flee',              // Avoidance behaviors
   STALK = 'stalk',            // Hunting/tracking
   FORAGE = 'forage',          // Resource seeking
@@ -73,7 +73,7 @@ export interface CreatureArchetype {
   category: CreatureCategory;
   baseSpecies: string;              // "proto_squirrel", "base_deer", etc.
   
-  // Daggerfall-style classification
+  // Archetype classification system
   behaviorPattern: BehaviorPattern;
   affinityMask: number;            // What resources/conditions they seek
   reactionType: 'passive' | 'curious' | 'territorial' | 'aggressive' | 'cooperative';
@@ -143,7 +143,7 @@ class CreatureArchetypeSystem {
   private world: World<WorldSchema>;
   private archetypes = new Map<CreatureCategory, CreatureArchetype>();
   private creatures: Entity<WorldSchema>[] = [];
-  private populationNoise = new SimplexNoise();
+  private populationNoise = createNoise2D();
   
   constructor(world: World<WorldSchema>) {
     this.world = world;
@@ -152,7 +152,7 @@ class CreatureArchetypeSystem {
   }
   
   private initializeArchetypes(): void {
-    log.info('Initializing creature archetypes based on Daggerfall + evolution...');
+    log.info('Initializing creature archetypes...');
     
     // Small forager archetype (squirrel-like)
     this.archetypes.set(CreatureCategory.SMALL_FORAGER, {
@@ -439,7 +439,7 @@ class CreatureArchetypeSystem {
           sum + (parent[i] || 0), 0) / parentTraits.length;
         
         // Apply mutation
-        const mutation = (this.populationNoise.noise2D(i, Date.now() * 0.001) * 0.1) * archetype.mutationRate;
+        const mutation = (this.populationNoise(i, Date.now() * 0.001) * 0.1) * archetype.mutationRate;
         
         traits[i] = Math.max(0, Math.min(1, parentAvg + mutation));
       }

@@ -1,17 +1,16 @@
 /**
  * Raw Materials System - Complete ecology foundation
- * Based on Daggerfall's material classification approach
- * Proper production system for evolutionary trait inheritance
+ * Material classification and resource generation for evolutionary systems
  */
 
 import { World, Entity } from 'miniplex';
 import * as THREE from 'three';
-import { SimplexNoise } from 'simplex-noise';
+import { createNoise2D } from 'simplex-noise';
 import { log, measurePerformance } from '../utils/Logger';
 import { gameClock, type EvolutionEvent } from './GameClock';
 import type { WorldSchema, Transform, ResourceNode } from '../world/ECSWorld';
 
-// Daggerfall-inspired material classification
+// Material classification system
 export enum MaterialCategory {
   // Organic materials
   WOOD = 'wood',
@@ -91,7 +90,7 @@ export interface MaterialInstance {
 
 class RawMaterialsSystem {
   private world: World<WorldSchema>;
-  private materialNoise = new SimplexNoise();
+  private materialNoise = createNoise2D();
   private archetypes = new Map<MaterialCategory, MaterialArchetype>();
   private instances: Entity<WorldSchema>[] = [];
   
@@ -102,9 +101,9 @@ class RawMaterialsSystem {
   }
   
   private initializeArchetypes(): void {
-    log.info('Initializing material archetypes based on Daggerfall classification...');
+    log.info('Initializing material archetypes...');
     
-    // Organic materials (Daggerfall's nature-based resources)
+    // Organic materials (nature-based resources)
     this.archetypes.set(MaterialCategory.WOOD, {
       category: MaterialCategory.WOOD,
       affinityMask: AffinityType.LIFE | AffinityType.BIND,
@@ -173,7 +172,7 @@ class RawMaterialsSystem {
   }
   
   /**
-   * Generate materials across terrain using Daggerfall-inspired placement
+   * Generate materials across terrain using environmental placement rules
    */
   generateMaterialsForChunk(
     chunkX: number,
@@ -188,7 +187,7 @@ class RawMaterialsSystem {
     log.info('Generating materials for terrain chunk', { chunkX, chunkZ, chunkSize });
     
     // Sample terrain characteristics for material placement
-    for (let localX = 0; localX < chunkSize; localX += 16) { // Daggerfall-style 16-unit grid
+    for (let localX = 0; localX < chunkSize; localX += 16) { // 16-unit grid for material placement
       for (let localZ = 0; localZ < chunkSize; localZ += 16) {
         
         const worldX = (chunkX * chunkSize) + localX;
@@ -196,9 +195,9 @@ class RawMaterialsSystem {
         
         // Determine material spawn based on terrain characteristics
         const terrainHeight = this.sampleTerrainHeight(worldX, worldZ, terrainHeightData, chunkSize);
-        const moisture = this.materialNoise.noise2D(worldX * 0.003, worldZ * 0.003);
-        const temperature = this.materialNoise.noise2D(worldX * 0.004, worldZ * 0.004);
-        const mineralization = this.materialNoise.noise2D(worldX * 0.002, worldZ * 0.002);
+        const moisture = this.materialNoise(worldX * 0.003, worldZ * 0.003);
+        const temperature = this.materialNoise(worldX * 0.004, worldZ * 0.004);
+        const mineralization = this.materialNoise(worldX * 0.002, worldZ * 0.002);
         
         // Placement rules based on environmental factors
         if (terrainHeight < 0.3 && moisture > 0.2) {
@@ -213,7 +212,7 @@ class RawMaterialsSystem {
         
         if (terrainHeight > 0.2 && terrainHeight < 0.8 && moisture > 0.0) {
           // Mid-range, moderate moisture = wood sources
-          if (this.materialNoise.noise2D(worldX * 0.01, worldZ * 0.01) > 0.3) {
+          if (this.materialNoise(worldX * 0.01, worldZ * 0.01) > 0.3) {
             materials.push(this.spawnMaterial(MaterialCategory.WOOD, worldX, terrainHeight, worldZ));
           }
         }
@@ -247,7 +246,7 @@ class RawMaterialsSystem {
     const materialInstance: MaterialInstance = {
       archetype,
       position: new THREE.Vector3(worldX, terrainHeight + 1, worldZ),
-      currentPurity: archetype.purity + (this.materialNoise.noise2D(worldX * 0.05, worldZ * 0.05) * 0.2),
+      currentPurity: archetype.purity + (this.materialNoise(worldX * 0.05, worldZ * 0.05) * 0.2),
       age: 0,
       influenceRadius: 10 + (archetype.magnetism * 15),
       harvestCount: 0,

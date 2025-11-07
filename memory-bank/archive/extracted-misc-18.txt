@@ -1,8 +1,0 @@
-// Action
-initiatePurge: (rivalId: string, riteSnap: number) => {
-  set((state) => ({ rivalTames: state.rivalTames.filter(t => t.id !== rivalId) })); // Clear tame
-  ecosystem.initiatePurge(rivalId, riteSnap);
-},
-
-// Getter
-purgeTargets = () => useGame((state) => state.packRegistry.filter(p => p.status === 'rival' && p.grudgeDebt > 10));

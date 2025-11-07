@@ -1,9 +1,0 @@
-// In journal evo
-const scoreHaiku = (newHaiku) => {
-  const recent = state.journal.slice(-5).concat(newHaiku);
-  // Port Jaccard to JS or call Python via worker
-  const avg = calculateOverlap(recent); // <0.2 = add, else reroll with prompt
-  if (avg > 0.2) {
-    state.journal.push(rerollHaiku("Unlikely metaphor: Thorn as lover"));
-  }
-};

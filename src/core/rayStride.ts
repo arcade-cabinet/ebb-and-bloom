@@ -1,6 +1,6 @@
 // src/engine/rayStride.ts
 import Phaser from 'phaser';
-import * as SimplexNoise from 'simplex-noise'; // npm i simplex-noise
+import { createNoise2D } from 'simplex-noise';
 
 interface Chunk {
   grid: number[][];
@@ -8,7 +8,7 @@ interface Chunk {
 }
 
 class RayStride {
-  private noise = new SimplexNoise();
+  private noise = createNoise2D();
   private resolution = 100; // Rays for FOV
   private fov = 60;
   private maxDist = 20;
@@ -25,7 +25,7 @@ class RayStride {
         // Simple Perlin (seed deterministic)
         const nx = x / scale + seed * 0.01;
         const ny = y / scale + seed * 0.01;
-        grid[y][x] = (this.noise2D(nx, ny) + 1) / 2; // 0-1 height
+        grid[y][x] = (this.noise(nx, ny) + 1) / 2; // 0-1 height
       }
     }
     return { grid, seed };

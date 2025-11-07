@@ -1,6 +1,6 @@
 /**
  * Production Asset Generator - GPT-4 + GPT-image-1 workflow for complete asset creation
- * Implements Daggerfall-style prefab archetype assemblies with AI enhancement
+ * Implements prefab archetype assemblies with AI enhancement
  */
 
 import { OpenAI } from 'openai';
@@ -533,7 +533,7 @@ Brand Integration: Subtle earth tones with hints of Ebb & Bloom color palette (d
       const manifest = JSON.parse(await readFile(this.manifestPath, 'utf-8'));
       
       // Generate creature archetypes
-      console.log('🧬 Generating creature archetypes...');
+      log.info('Generating creature archetypes...');
       for (const archetype of manifest.creature_archetypes.assets) {
         const creatureSpec = await this.generateCreatureArchetype(
           archetype.id,
@@ -551,7 +551,7 @@ Brand Integration: Subtle earth tones with hints of Ebb & Bloom color palette (d
       }
       
       // Generate building assemblies  
-      console.log('🏗️ Generating building assemblies...');
+      log.info('Generating building assemblies...');
       for (const building of manifest.building_archetypes.assets) {
         const buildingSpec = await this.generateBuildingAssembly(
           building.id,
@@ -564,7 +564,7 @@ Brand Integration: Subtle earth tones with hints of Ebb & Bloom color palette (d
         await new Promise(resolve => setTimeout(resolve, 2000));
       }
       
-      console.log('✅ Complete production asset library generated!');
+      log.info('Complete production asset library generated');
       
     } catch (error) {
       log.error('Failed to generate complete asset library', error);

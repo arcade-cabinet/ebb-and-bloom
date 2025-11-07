@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { ECS } from 'miniplex-react';
+// ECS is accessed via getWorld() - no need to import ECS component
 import { Html } from '@react-three/drei';
 import { getWorld, initializeYuka } from './world/ECSWorld';
 import TextureSystem, { TextureContext } from './systems/TextureSystem';
@@ -33,12 +33,25 @@ const Scene: React.FC = () => {
     
     const initializeWorld = async () => {
       try {
-        log.info('Initializing complete Ebb & Bloom ecosystem...');
+        log.info('Initializing complete Ebb & Bloom ecosystem - PRODUCTION MODE');
         
-        // Initialize Yuka first
+        // PRODUCTION GATE: Initialize texture system first (required)
+        try {
+          await textureSystem.initialize();
+        } catch (error) {
+          // Show user-friendly error in UI
+          const errorMessage = error instanceof Error ? error.message : 'Texture system initialization failed';
+          log.error('PRODUCTION BLOCKER: Texture system failed', error);
+          
+          // Display error to user (would show in UI)
+          alert(`Game cannot start:\n\n${errorMessage}\n\nPlease run: pnpm setup:textures`);
+          throw error; // Stop initialization
+        }
+        
+        // Initialize Yuka
         initializeYuka();
         
-        // Initialize complete ecosystem foundation
+        // Initialize complete ecosystem foundation (requires textures)
         await ecosystem.initialize();
         
         // Start evolution simulation
@@ -176,8 +189,7 @@ const App: React.FC = () => {
   return (
     <div style={{ width: '100vw', height: '100vh', background: '#000' }}>
       <TextureContext.Provider value={textureSystem}>
-        <ECS world={world}>
-          <Canvas
+        <Canvas
             shadows
             camera={{ fov: 75, near: 0.1, far: 2000, position: [0, 5, 0] }}
             gl={{ 
@@ -198,9 +210,8 @@ const App: React.FC = () => {
             <EcosystemUpdater />
           </Canvas>
           
-          {/* Evolution UI overlay with Daggerfall/Spore-inspired information display */}
+          {/* Evolution UI overlay with clean information display */}
           <EvolutionUI />
-        </ECS>
       </TextureContext.Provider>
     </div>
   );

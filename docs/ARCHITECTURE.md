@@ -69,10 +69,36 @@ Ebb & Bloom uses a clean Entity-Component-System (ECS) architecture with BitECS,
 ### Data Flow
 ```
 User Input → Systems (modify ECS) → Zustand (read) → UI Display
-                                   → Raycast (read) → Rendering
+                                   → React Three Fiber (read) → 3D Rendering
 ```
 
-**NEVER**: UI or Raycast modifying ECS directly
+**NEVER**: UI or React Three Fiber modifying ECS directly
+
+### Performance Optimizations (From Grok Documents)
+**Implemented**:
+- ✅ Terrain generation with FBM noise (multi-octave SimplexNoise)
+- ✅ ECS architecture (cache-friendly Miniplex)
+- ✅ Procedural building generation
+
+**NOT Implemented** (from Grok-TypeScript_Procedural_Open-World_Scene.md):
+- ❌ Instanced rendering (InstancedMesh for rocks/shrubs/grass)
+- ❌ Sky dome with gradient and procedural clouds
+- ❌ Billboard grass rendering
+- ❌ Poisson disk sampling for vegetation placement
+- ❌ LOD (Level of Detail) system
+- ❌ Viewport/frustum culling
+
+**Partially Implemented**:
+- ✅ Fog system (basic fog in `src/App.tsx`, but not full exponential fog with procedural variation)
+
+**NOT Implemented** (from Grok-Multi-Platform_React_Three_Fiber_Development.md):
+- ❌ Platform detection (PlatformContext for mobile/web/desktop)
+- ❌ Responsive design patterns (screen size adaptation)
+- ❌ Unified input system (touch/keyboard/gamepad switching)
+- ❌ Screen orientation handling
+- ❌ Zustand event tracking store
+
+**Documented**: Performance targets in `docs/vision/09_mobile_perf_constraints.md`
 
 ---
 

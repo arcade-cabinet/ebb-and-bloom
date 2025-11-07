@@ -172,3 +172,4 @@ Create a playable vertical slice that demonstrates core mechanics: Explore → h
 
 **Status**: MVP in progress. Current implementation has core systems (ECS, snapping, pollution, behavior profiling) but missing Stage 2 features (combat, rituals, world-hopping, raycast 3D).
 
+

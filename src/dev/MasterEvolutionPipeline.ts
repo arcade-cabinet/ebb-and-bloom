@@ -10,6 +10,7 @@ import { openai } from '@ai-sdk/openai';
 import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { AI_MODELS } from '../config/ai-models';
+import { log } from '../utils/Logger';
 
 interface PipelineResult {
   step: string;
@@ -23,13 +24,16 @@ class MasterEvolutionPipeline {
   private results: PipelineResult[] = [];
   
   async run() {
-    console.log('🧬 MASTER EVOLUTION PIPELINE STARTING\n');
-    console.log('This will generate COMPLETE evolutionary ecosystem:\n');
-    console.log('1. Evolutionary system archetypes (GPT-5)');
-    console.log('2. Creature/building/tool specifications');  
-    console.log('3. Visual assets via GPT-image-1');
-    console.log('4. Audio library via Freesound');
-    console.log('5. Complete integration and validation\n');
+    log.info('MASTER EVOLUTION PIPELINE STARTING');
+    log.info('This will generate COMPLETE evolutionary ecosystem', {
+      steps: [
+        'Evolutionary system archetypes (GPT-5)',
+        'Creature/building/tool specifications',
+        'Visual assets via GPT-image-1',
+        'Audio library via Freesound',
+        'Complete integration and validation'
+      ]
+    });
     
     await this.step1_GenerateEvolutionaryArchetypes();
     await this.step2_GenerateCreatureSpecs();
@@ -42,7 +46,19 @@ class MasterEvolutionPipeline {
   }
   
   async step1_GenerateEvolutionaryArchetypes() {
-    console.log('🦎 STEP 1: Evolutionary System Archetypes (GPT-5)\n');
+    log.info('STEP 1: Evolutionary System Archetypes (GPT-5)');
+    
+    // IDEMPOTENCY: Check if archetypes already exist
+    const archetypesPath = './manifests/evolutionary-archetypes.json';
+    if (existsSync(archetypesPath)) {
+      log.info('Evolutionary archetypes already exist, skipping generation', { path: archetypesPath });
+      this.results.push({ 
+        step: 'Evolutionary Archetype Generation', 
+        status: 'skipped',
+        output: 'Archetypes file already exists'
+      });
+      return;
+    }
     
     try {
       const systemPrompt = `You are the lead evolutionary systems architect for Ebb & Bloom, a revolutionary game where EVERYTHING evolves based on pressure instead of arbitrary level gates. Generate base archetypes for each evolutionary system that will adapt and communicate through Yuka AI coordination.`;
@@ -86,8 +102,14 @@ Focus on: Realistic evolutionary pressure, Yuka AI coordination between systems,
         }
       });
       
-      // Save archetypes for next steps
-      writeFileSync('./manifests/evolutionary-archetypes.json', JSON.stringify(result.object, null, 2));
+      // IDEMPOTENCY: Only write if doesn't exist (already checked above, but double-check)
+      if (!existsSync('./manifests/evolutionary-archetypes.json')) {
+        // Ensure directory exists
+        if (!existsSync('./manifests')) {
+          mkdirSync('./manifests', { recursive: true });
+        }
+        writeFileSync('./manifests/evolutionary-archetypes.json', JSON.stringify(result.object, null, 2));
+      }
       
       this.results.push({ 
         step: 'Evolutionary Archetype Generation', 
@@ -96,7 +118,7 @@ Focus on: Realistic evolutionary pressure, Yuka AI coordination between systems,
         generatedAssets: ['evolutionary-archetypes.json']
       });
       
-      console.log('✅ Evolutionary archetypes generated successfully\n');
+      log.info('Evolutionary archetypes generated successfully');
       
     } catch (error: any) {
       this.results.push({ step: 'Evolutionary Archetypes', status: 'failed', error: error.message });
@@ -105,14 +127,38 @@ Focus on: Realistic evolutionary pressure, Yuka AI coordination between systems,
   }
   
   async step2_GenerateCreatureSpecs() {
-    console.log('🧬 STEP 2: Detailed Creature Specifications (GPT-5)\n');
+    log.info('STEP 2: Detailed Creature Specifications (GPT-5)');
+    
+    // IDEMPOTENCY: Check if archetypes exist
+    if (!existsSync('./manifests/evolutionary-archetypes.json')) {
+      log.warn('Archetypes not found, skipping creature specs');
+      this.results.push({ step: 'Creature Specifications', status: 'skipped', error: 'Archetypes not generated' });
+      return;
+    }
     
     try {
       // Load archetypes from step 1
       const archetypes = JSON.parse(readFileSync('./manifests/evolutionary-archetypes.json', 'utf-8'));
       
+      // Ensure creatures directory exists
+      if (!existsSync('./manifests/creatures')) {
+        mkdirSync('./manifests/creatures', { recursive: true });
+      }
+      
+      let generated = 0;
+      let skipped = 0;
+      
       for (const creature of archetypes.creature_archetypes) {
-        console.log(`Generating detailed spec for: ${creature.name}`);
+        const specPath = `./manifests/creatures/${creature.name}-spec.json`;
+        
+        // IDEMPOTENCY: Skip if already exists
+        if (existsSync(specPath)) {
+          log.info('Spec already exists, skipping', { creature: creature.name });
+          skipped++;
+          continue;
+        }
+        
+        log.info('Generating detailed spec', { creature: creature.name });
         
         const result = await generateObject({
           model: openai(AI_MODELS.CREATURE_DESIGN),
@@ -138,14 +184,15 @@ Generate: morphology details, trait distribution, behavioral patterns, texture m
           }
         });
         
-        // Save detailed spec
-        writeFileSync(`./manifests/creatures/${creature.name}-spec.json`, JSON.stringify(result.object, null, 2));
+        // Save detailed spec (IDEMPOTENT: already checked above)
+        writeFileSync(specPath, JSON.stringify(result.object, null, 2));
+        generated++;
       }
       
       this.results.push({ 
         step: 'Creature Specifications', 
         status: 'success',
-        output: `Generated ${archetypes.creature_archetypes.length} detailed creature specs`
+        output: `Generated: ${generated}, Skipped: ${skipped}`
       });
       
     } catch (error: any) {
@@ -154,13 +201,37 @@ Generate: morphology details, trait distribution, behavioral patterns, texture m
   }
   
   async step3_GenerateBuildingAssemblies() {
-    console.log('🏗️ STEP 3: Structural Engineering AI (GPT-5)\n');
+    log.info('STEP 3: Structural Engineering AI (GPT-5)');
+    
+    // IDEMPOTENCY: Check if archetypes exist
+    if (!existsSync('./manifests/evolutionary-archetypes.json')) {
+      log.warn('Archetypes not found, skipping building assemblies');
+      this.results.push({ step: 'Building Assemblies', status: 'skipped', error: 'Archetypes not generated' });
+      return;
+    }
     
     try {
       const archetypes = JSON.parse(readFileSync('./manifests/evolutionary-archetypes.json', 'utf-8'));
       
+      // Ensure buildings directory exists
+      if (!existsSync('./manifests/buildings')) {
+        mkdirSync('./manifests/buildings', { recursive: true });
+      }
+      
+      let generated = 0;
+      let skipped = 0;
+      
       for (const building of archetypes.building_archetypes) {
-        console.log(`Engineering building: ${building.name}`);
+        const assemblyPath = `./manifests/buildings/${building.name}-assembly.md`;
+        
+        // IDEMPOTENCY: Skip if already exists
+        if (existsSync(assemblyPath)) {
+          log.info('Assembly already exists, skipping', { building: building.name });
+          skipped++;
+          continue;
+        }
+        
+        log.info('Engineering building', { building: building.name });
         
         const result = await generateText({
           model: openai(AI_MODELS.BUILDING_ENGINEERING),
@@ -175,7 +246,9 @@ Create: structural specifications, material requirements, interior layout with c
 Output detailed architectural plans with dimensions, materials (mapped to AmbientCG textures), and functional areas.`
         });
         
-        writeFileSync(`./manifests/buildings/${building.name}-assembly.md`, result.text);
+        // Save assembly (IDEMPOTENT: already checked above)
+        writeFileSync(assemblyPath, result.text);
+        generated++;
       }
       
       this.results.push({ 
@@ -190,14 +263,38 @@ Output detailed architectural plans with dimensions, materials (mapped to Ambien
   }
   
   async step4_GenerateVisualAssets() {
-    console.log('🎨 STEP 4: Visual Asset Generation (GPT-image-1)\n');
+    log.info('STEP 4: Visual Asset Generation (GPT-image-1)');
+    
+    // IDEMPOTENCY: Check if archetypes exist
+    if (!existsSync('./manifests/evolutionary-archetypes.json')) {
+      log.warn('Archetypes not found, skipping visual assets');
+      this.results.push({ step: 'Visual Assets', status: 'skipped', error: 'Archetypes not generated' });
+      return;
+    }
     
     try {
       // Generate creature visuals
       const creatures = JSON.parse(readFileSync('./manifests/evolutionary-archetypes.json', 'utf-8')).creature_archetypes;
       
+      // Ensure visuals directory exists
+      if (!existsSync('./manifests/visuals')) {
+        mkdirSync('./manifests/visuals', { recursive: true });
+      }
+      
+      let generated = 0;
+      let skipped = 0;
+      
       for (const creature of creatures) {
-        console.log(`Generating visuals for: ${creature.name}`);
+        const visualPath = `./manifests/visuals/${creature.name}-visuals.json`;
+        
+        // IDEMPOTENCY: Skip if already exists
+        if (existsSync(visualPath)) {
+          log.info('Visual spec already exists, skipping', { creature: creature.name });
+          skipped++;
+          continue;
+        }
+        
+        log.info('Generating visuals', { creature: creature.name });
         
         // Would use GPT-image-1 here when available
         const visualSpec = {
@@ -207,13 +304,14 @@ Output detailed architectural plans with dimensions, materials (mapped to Ambien
           generated: new Date().toISOString()
         };
         
-        writeFileSync(`./manifests/visuals/${creature.name}-visuals.json`, JSON.stringify(visualSpec, null, 2));
+        writeFileSync(visualPath, JSON.stringify(visualSpec, null, 2));
+        generated++;
       }
       
       this.results.push({ 
         step: 'Visual Asset Generation', 
         status: 'success',
-        output: `Generated visual specs for ${creatures.length} creatures`
+        output: `Generated: ${generated}, Skipped: ${skipped}`
       });
       
     } catch (error: any) {
@@ -222,13 +320,13 @@ Output detailed architectural plans with dimensions, materials (mapped to Ambien
   }
   
   async step5_IntegrateAudioLibrary() {
-    console.log('🔊 STEP 5: Audio Library Integration (Freesound)\n');
+    log.info('STEP 5: Audio Library Integration (Freesound)');
     
     try {
       const audioCategories = ['evolution', 'environment', 'creature', 'ui'];
       
       for (const category of audioCategories) {
-        console.log(`Downloading ${category} audio library...`);
+        log.info('Downloading audio library', { category });
         // Would integrate with Freesound API here
       }
       
@@ -244,10 +342,10 @@ Output detailed architectural plans with dimensions, materials (mapped to Ambien
   }
   
   async step6_ValidateEcosystem() {
-    console.log('🔍 STEP 6: Ecosystem Validation\n');
+    log.info('STEP 6: Ecosystem Validation');
     
     try {
-      console.log('Running ecosystem tests...');
+      log.info('Running ecosystem tests...');
       const { execSync } = await import('child_process');
       
       // Run our existing tests
@@ -265,26 +363,33 @@ Output detailed architectural plans with dimensions, materials (mapped to Ambien
   }
   
   printReport() {
-    console.log('\n' + '='.repeat(60));
-    console.log('🧬 EVOLUTION PIPELINE REPORT');
-    console.log('='.repeat(60));
+    log.info('EVOLUTION PIPELINE REPORT');
     
     for (const result of this.results) {
-      const icon = result.status === 'success' ? '✅' : result.status === 'failed' ? '❌' : '⏭️';
-      console.log(`${icon} ${result.step}: ${result.status.toUpperCase()}`);
-      if (result.output) console.log(`   ${result.output}`);
-      if (result.error) console.log(`   Error: ${result.error}`);
-      if (result.generatedAssets) console.log(`   Generated: ${result.generatedAssets.join(', ')}`);
+      log.info('Pipeline step result', {
+        step: result.step,
+        status: result.status,
+        output: result.output,
+        error: result.error,
+        generatedAssets: result.generatedAssets
+      });
     }
     
-    console.log('\n🎮 EVOLUTIONARY ECOSYSTEM STATUS:');
     const successful = this.results.filter(r => r.status === 'success').length;
-    console.log(`${successful}/${this.results.length} pipeline steps completed successfully`);
+    const skipped = this.results.filter(r => r.status === 'skipped').length;
+    const failed = this.results.filter(r => r.status === 'failed').length;
     
-    if (successful === this.results.length) {
-      console.log('\n🚀 COMPLETE SUCCESS: Evolutionary ecosystem ready for expansion!');
+    log.info('Evolutionary ecosystem status', {
+      successful,
+      skipped,
+      failed,
+      total: this.results.length
+    });
+    
+    if (successful + skipped === this.results.length) {
+      log.info('COMPLETE SUCCESS: Evolutionary ecosystem ready for expansion');
     } else {
-      console.log('\n⚠️  Some steps failed - review errors above');
+      log.warn('Some steps failed - review errors above');
     }
   }
 }
@@ -298,7 +403,10 @@ if (!existsSync('./manifests/visuals')) mkdirSync('./manifests/visuals', { recur
 // Run pipeline if executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   const pipeline = new MasterEvolutionPipeline();
-  pipeline.run().catch(console.error);
+  pipeline.run().catch((error) => {
+  log.error('Pipeline execution failed', error);
+  process.exit(1);
+});
 }
 
 export default MasterEvolutionPipeline;

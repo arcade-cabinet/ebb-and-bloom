@@ -1,11 +1,12 @@
 /**
  * Pack Social System - Complete social dynamics and territory management
- * Based on Daggerfall team mechanics + advanced AI coordination
+ * Handles pack formation, territory management, and coordinated behaviors
  */
 
 import { World, Entity } from 'miniplex';
 import * as THREE from 'three';
 import * as YUKA from 'yuka';
+import { createNoise2D } from 'simplex-noise';
 import { log } from '../utils/Logger';
 import { gameClock, type EvolutionEvent } from './GameClock';
 import type { WorldSchema, CreatureData } from '../world/ECSWorld';
@@ -90,7 +91,7 @@ interface PackFormation {
 class PackSocialSystem {
   private world: World<WorldSchema>;
   private packs = new Map<string, PackStructure>();
-  private socialNoise = new SimplexNoise();
+  private socialNoise = createNoise2D();
   private nextPackId = 0;
   
   constructor(world: World<WorldSchema>) {
@@ -438,7 +439,7 @@ class PackSocialSystem {
     
     for (let i = 1; i < waypointCount; i++) {
       const angle = (i / waypointCount) * Math.PI * 2;
-      const jitter = (this.socialNoise.noise2D(i * 10, startPosition.x * 0.01) * 50);
+      const jitter = (this.socialNoise(i * 10, startPosition.x * 0.01) * 50);
       
       const waypoint = new THREE.Vector3(
         startPosition.x + Math.cos(angle) * (routeRadius + jitter),
