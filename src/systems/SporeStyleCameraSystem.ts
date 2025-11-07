@@ -405,10 +405,12 @@ class SporeStyleCameraSystem {
 
 // React component for camera system
 export function SporeStyleCamera() {
-  const world = useRef(new World<WorldSchema>());
-  const cameraSystem = useRef(new SporeStyleCameraSystem(world.current));
+  const { world } = useWorld();
+  const cameraSystem = useRef<SporeStyleCameraSystem | null>(null);
   
-  const { handleGesture, getCurrentMode, setTarget } = cameraSystem.current.useCameraSystem();
+  if (!cameraSystem.current) {
+    cameraSystem.current = new SporeStyleCameraSystem(world);
+  }
   
   useEffect(() => {
     log.info('Spore-style camera component mounted');
