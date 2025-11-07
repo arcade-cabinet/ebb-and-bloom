@@ -1255,6 +1255,735 @@ export interface YukaAgent {
 
 ---
 
+## Dev Tools & AI Infrastructure
+
+### Vercel AI SDK Integration
+
+**Current State** (`ai` package v5.0.89):
+- ✅ **Installed**: `@ai-sdk/openai`, `ai` package
+- ✅ **Configured**: `src/config/ai-models.ts` - Single source of truth for model constants
+- ✅ **Workflows Exist**: `src/dev/MasterEvolutionPipeline.ts`, `src/dev/EvolutionaryAgentWorkflows.ts`
+- ❌ **NOT USED IN GAME**: AI workflows only for asset generation, NOT runtime gameplay
+
+**What Exists**:
+
+1. **AI Models Config** (`src/config/ai-models.ts`):
+```typescript
+export const AI_MODELS = {
+  TEXT_GENERATION: 'gpt-5',
+  IMAGE_GENERATION: 'gpt-image-1',
+  CREATURE_DESIGN: 'gpt-5',
+  BUILDING_ENGINEERING: 'gpt-5',
+  MATERIAL_SCIENCE: 'gpt-5',
+  NARRATIVE_GENERATION: 'gpt-5',
+  SYSTEM_ARCHITECTURE: 'gpt-5'
+};
+```
+
+2. **Master Evolution Pipeline** (`src/dev/MasterEvolutionPipeline.ts`):
+   - Cascading AI workflow for asset generation
+   - Uses `generateText` and `generateObject` from Vercel AI SDK
+   - Generates evolutionary archetypes, creature specs, building assemblies
+   - Outputs JSON manifests to `manifests/` directory
+   - **Idempotent**: Checks if files exist before regenerating
+   - **Run via**: `pnpm evolution:pipeline`
+
+3. **Evolutionary Agent Workflows** (`src/dev/EvolutionaryAgentWorkflows.ts`):
+   - Universal evolutionary framework design
+   - Defines `EvolutionarySystem` interface (creature, tool, building, social, material, environment)
+   - Uses Vercel AI SDK for agent-based generation
+   - **NOT INTEGRATED**: Exists but not wired to game runtime
+
+**What's MISSING (Critical for Gen 0)**:
+
+1. **Parent-Child AI Workflow Orchestrator**:
+   - NO implementation of Creative Director (parent workflow)
+   - NO implementation of Core Specialists (child workflows)
+   - NO parallel execution of child workflows (8 cores simultaneously)
+   - NO manifest communication protocol
+
+2. **Runtime AI Integration**:
+   - AI workflows are DEV-TIME only (asset generation)
+   - NO runtime AI calls during gameplay
+   - NO dynamic content generation based on seed phrase
+   - Gen 0 requires RUNTIME AI to generate planetary cores from seed
+
+**Fix Required**:
+
+**Create `src/ai/workflows/` directory**:
+- `creative-director.ts` - Parent workflow (cores + shared materials + fill material)
+- `core-specialist.ts` - Child workflow (unique materials + creatures per core)
+- `workflow-orchestrator.ts` - Manages parent → 8 parallel children
+
+**Use Vercel AI SDK streaming**:
+```typescript
+import { streamText } from 'ai';
+import { openai } from '@ai-sdk/openai';
+
+// Parent workflow
+export async function generatePlanetaryCores(seedPhrase: string) {
+  const { textStream } = await streamText({
+    model: openai('gpt-4'),
+    prompt: `Generate 8 planetary cores from seed: "${seedPhrase}"...`,
+  });
+  
+  for await (const chunk of textStream) {
+    // Stream cores as they're generated
+  }
+}
+
+// Child workflows (parallel)
+export async function generateCoreContent(coreManifest: CoreManifest) {
+  const results = await Promise.all([
+    generateUniqueMaterials(coreManifest),
+    generateCreatureArchetypes(coreManifest)
+  ]);
+  return results;
+}
+```
+
+**Integrate with `PlanetaryPhysicsSystem`**:
+- System calls `workflow-orchestrator.ts` on Gen 0 init
+- Streams results into ECS entities
+- Caches manifests for deterministic replay (seedrandom)
+
+---
+
+### Meshy Integration (3D Model Generation)
+
+**Current State**:
+- ✅ **Ported from otter-river-rush**: Complete Meshy client library in `src/dev/meshy/`
+- ✅ **Modules Exist**:
+  - `base-client.ts` - HTTP client for Meshy API
+  - `text_to_3d.ts` - Text → 3D model generation
+  - `retexture.ts` - Texture generation/replacement
+  - `rigging.ts` - Automatic rigging for animation
+  - `animations.ts` - Animation generation
+  - `index.ts` - Unified exports
+- ❌ **NOT INTEGRATED**: Exists but not used in game
+
+**What's MISSING**:
+
+1. **Meshy Model Config** (analogous to `ai-models.ts`):
+   - Create `src/config/meshy-models.ts`
+   - Define Meshy API endpoints, model types, style presets
+
+2. **Integration with AI Workflows**:
+   - Parent workflow generates Meshy prompts for cores
+   - Child workflows generate Meshy prompts for creatures/materials
+   - Meshy client generates 3D models asynchronously
+   - Models cached in `public/generated/models/`
+
+3. **Runtime Model Loading**:
+   - `CreatureRenderer` loads Meshy-generated models
+   - `MaterialRenderer` uses Meshy textures
+   - `BuildingRenderer` uses Meshy architectural models
+
+**Fix Required**:
+
+**Create `src/config/meshy-models.ts`**:
+```typescript
+export const MESHY_CONFIG = {
+  API_KEY: import.meta.env.VITE_MESHY_API_KEY,
+  STYLE_PRESETS: {
+    CREATURE: 'organic-detailed',
+    MATERIAL: 'pbr-realistic',
+    BUILDING: 'low-poly-stylized'
+  },
+  CACHE_DIR: 'public/generated/models/'
+};
+```
+
+**Update `creative-director.ts`**:
+```typescript
+import { MeshyClient } from '../dev/meshy';
+
+export async function generateCoreVisuals(coreManifest: CoreManifest) {
+  const meshy = new MeshyClient();
+  
+  const meshyPrompt = `Planetary core: ${coreManifest.description}`;
+  const modelId = await meshy.generateModel(meshyPrompt);
+  
+  return { ...coreManifest, meshyModelId: modelId };
+}
+```
+
+**Integrate with `CreatureArchetypeSystem`**:
+- Load Meshy models instead of procedural meshes (optional fallback)
+- Cache models for performance
+
+---
+
+### GameDevCLI (Asset Management)
+
+**Current State** (`src/dev/GameDevCLI.ts`):
+- ✅ **CLI Tool**: Uses `commander` for command-line interface
+- ✅ **Commands**:
+  - `pnpm dev:setup` - Initial setup
+  - `pnpm dev:creature` - Creature asset generation
+  - `pnpm dev:audio` - Audio library management
+  - `pnpm dev:ui` - UI element generation
+- ✅ **Asset Manifest Management**: Reads/writes `manifests/` JSON files
+- ❌ **INCOMPLETE**: Some commands stubbed out
+
+**What Works**:
+- Manifest parsing (`GameAssetManifest` interface)
+- Texture asset management (`TextureAsset`)
+- Audio manifest integration
+
+**What's MISSING**:
+- Integration with Meshy workflows
+- Automatic asset validation
+- Asset dependency resolution (e.g., creature needs texture + mesh + audio)
+
+**Fix Required**:
+- Expand `GameDevCLI` to orchestrate FULL asset pipeline:
+  1. Generate manifests (AI workflows)
+  2. Generate 3D models (Meshy)
+  3. Generate textures (AmbientCG downloader)
+  4. Generate audio (Freesound API)
+  5. Validate all assets exist
+  6. Build game-ready asset bundles
+
+---
+
+### Process Compose Integration
+
+**Current State**:
+- ✅ **File Exists**: `process-compose.yml`
+- ✅ **Documented**: `memory-bank/agent-collaboration.md`
+- ❌ **NOT ACTIVELY USED**: No evidence of parallel process execution
+
+**Available Processes** (from `process-compose.yml`):
+- `dev-server` - Vite dev server
+- `test-watch` - Vitest in watch mode
+- `type-check` - TypeScript validation
+
+**What's MISSING**:
+- AI workflow processes (parent/child orchestration)
+- Background asset generation
+- Parallel test execution
+
+**Fix Required**:
+- Add processes for Gen 0 workflows:
+  ```yaml
+  processes:
+    gen0-parent:
+      command: tsx src/ai/workflows/creative-director.ts
+    gen0-child-1:
+      command: tsx src/ai/workflows/core-specialist.ts --core-id 1
+      depends_on: gen0-parent
+    # ... repeat for cores 2-8
+  ```
+
+---
+
+## Custom Hooks & React Integration
+
+### Existing Hooks
+
+**1. `usePlatformEvents` (`src/hooks/usePlatformEvents.ts`)**:
+- **Purpose**: Initializes platform event listeners (resize, orientation, input mode changes)
+- **Integration**: Dispatches to `EvolutionDataStore` via Zustand
+- **Status**: ✅ Working
+- **Usage**: Called once in `App.tsx`
+
+**Key Features**:
+- Detects platform (web/iOS/Android/desktop) via Capacitor
+- Listens to window resize, orientation change
+- Updates Zustand store with platform state
+- Determines input mode (touch/mouse/keyboard/gamepad)
+
+**2. `useResponsiveScene` (`src/hooks/useResponsiveScene.ts`)**:
+- **Purpose**: Adapts R3F scene (camera, viewport, object scales) based on platform/screen
+- **Integration**: Reads from `EvolutionDataStore`, modifies Three.js camera
+- **Status**: ✅ Working
+- **Usage**: Called in 3D scene components
+
+**Key Features**:
+- Adjusts camera FOV (wider on mobile, narrower on desktop)
+- Scales 3D objects for small screens
+- Responsive viewport adaptation
+
+**3. Texture Hooks** (`src/systems/TextureSystem.ts`):
+- `useMaterial(query)` - Generic material query
+- `useWoodMaterial(variant)` - Wood materials
+- `useStoneMaterial(variant)` - Stone materials
+- `useFabricMaterial(variant)` - Fabric materials
+- `useMetalMaterial(variant)` - Metal materials
+
+**Status**: ✅ Working, used in renderers
+
+**What's MISSING**:
+
+1. **`useYukaEntity` Hook**:
+   - Purpose: Bind React component to Yuka entity lifecycle
+   - Usage: `const { vehicle, goals, fsm } = useYukaEntity(entityId);`
+   - Benefit: Reactive updates when Yuka entity changes
+
+2. **`useECSQuery` Hook**:
+   - Purpose: Reactive ECS queries in React components
+   - Usage: `const creatures = useECSQuery(world.with('creature', 'transform'));`
+   - Benefit: Replace polling with reactive subscriptions
+
+3. **`useWorldScore` Hook**:
+   - Purpose: Subscribe to world score metrics
+   - Usage: `const { violence, harmony, speed } = useWorldScore();`
+   - Benefit: Real-time ending detection UI
+
+**Fix Required**:
+- Create these hooks for cleaner React ↔ ECS/Yuka integration
+
+---
+
+## Zustand Stores (State Management)
+
+### Current Store: `EvolutionDataStore`
+
+**Purpose**: UI-only state synchronized FROM ECS, never writes TO it.
+
+**What It Stores**:
+1. **Platform State**:
+   - Platform type (web/iOS/Android/desktop)
+   - Screen dimensions, orientation, aspect ratio
+   - Input mode (touch/mouse/keyboard/gamepad)
+
+2. **Evolution Snapshots**:
+   - `GenerationSnapshot[]` - Historical generation data
+   - `EvolutionEvent[]` - Significant evolution events
+   - `CreatureSnapshot[]` - Per-generation creature states
+   - `MaterialSnapshot[]` - Per-generation material states
+
+3. **Event History**:
+   - Unified event system (`PlatformEvent | GestureEvent`)
+   - Last 1000 events stored
+   - Used for gesture recognition, analytics
+
+4. **Analysis Cache**:
+   - Evolution rate, diversity index, population trend
+   - Dominant traits, emergent species
+   - Computed metrics for UI display
+
+**Actions**:
+- `recordGenerationSnapshot()` - Called by ECS at end of generation
+- `recordEvolutionEvent()` - Called when significant events occur
+- `dispatchPlatformEvent()` - Platform changes
+- `dispatchGestureEvent()` - Touch/mouse/keyboard input
+- `setInputMode()` - Input mode switching
+- `updateScreen()` - Screen resize/orientation
+- `analyzeEvolutionTrends()` - Compute metrics
+- `exportToFile()` - Export logs for analysis
+- `clearHistory()` - Reset state
+
+**Persistence**:
+- Uses Zustand's `persist` middleware
+- Storage: `localStorage` (browser) or Capacitor Storage (native)
+- Key: `ebb-bloom-evolution-data`
+
+**What's GOOD**:
+- ✅ Clean separation: ECS → Store → UI (read-only)
+- ✅ Platform-aware state management
+- ✅ Persistence for evolution history
+- ✅ Gesture event tracking
+
+**What's MISSING**:
+
+1. **World Score Store**:
+   - Track violence, harmony, exploitation, innovation, speed scores
+   - Detect ending thresholds (Mutualism, Parasitism, Domination, Transcendence)
+   - Subscribe to MessageDispatcher for score updates
+
+2. **UI State Store** (separate from ECS data):
+   - Modal state (pause menu, settings, discoveries)
+   - Camera state (position, target, zoom)
+   - Selection state (selected creature, building, material)
+   - Tutorial state (onboarding progress)
+
+3. **Save/Load Store**:
+   - Save game state to file
+   - Load game state from file
+   - Auto-save intervals
+   - Multiple save slots
+
+**Fix Required**:
+
+**Create `src/stores/WorldScoreStore.ts`**:
+```typescript
+interface WorldScoreState {
+  scores: {
+    violence: number;      // Combat events, extinctions
+    harmony: number;       // Alliances, coexistence
+    exploitation: number;  // Resource depletion, pollution
+    innovation: number;    // Tools, buildings, discoveries
+    speed: number;         // Generations to milestones
+  };
+  endingThreshold: EndingType | null;
+  detectEnding: () => EndingType | null;
+}
+```
+
+**Create `src/stores/UIStateStore.ts`**:
+```typescript
+interface UIStateState {
+  modals: {
+    pauseMenu: boolean;
+    settings: boolean;
+    discoveries: boolean;
+    worldMap: boolean;
+  };
+  camera: {
+    position: Vector3;
+    target: Vector3;
+    zoom: number;
+  };
+  selection: {
+    type: 'creature' | 'building' | 'material' | null;
+    id: string | null;
+  };
+}
+```
+
+---
+
+## Utilities & Supporting Systems
+
+### Logger (`src/utils/Logger.ts`)
+
+**Current State**:
+- ✅ **Browser-compatible**: Uses `pino` with browser support
+- ✅ **Persistent**: Logs stored in `localStorage`
+- ✅ **Game-specific methods**: `terrain()`, `creature()`, `yuka()`, `r3f()`, `performance()`
+- ✅ **Export functionality**: `exportLogs()` for analysis
+
+**What Works**:
+- Structured logging with context
+- Log levels (debug, info, warn, error)
+- Evolution data persistence
+- Performance metrics tracking
+
+**What's MISSING**:
+- Integration with Yuka `MessageDispatcher` (log all messages)
+- Log filtering by system/entity type
+- Remote logging (send to analytics service)
+
+**Fix Required**:
+- Add `log.message()` for Yuka MessageDispatcher events
+- Add log filtering: `log.filter('creature')` → only creature logs
+
+---
+
+### Freesound Client (`src/utils/FreesoundClient.ts`)
+
+**Current State**:
+- ✅ **Complete API Client**: Search, download, tag-based queries
+- ✅ **Procedural Audio Generator**: Generate soundscapes from tags
+- ✅ **Audio Manifest Manager**: Manage audio asset metadata
+- ❌ **NOT INTEGRATED**: Exists but not used in game
+
+**Classes**:
+1. `FreesoundClient` - API wrapper
+2. `ProceduralAudioGenerator` - Generate audio from evolutionary events
+3. `AudioManifestManager` - Manage audio manifests
+
+**What's MISSING**:
+- Integration with `HaikuNarrativeSystem` (audio for haikus)
+- Integration with event messaging (audio cues for discoveries)
+- Integration with creature archetypes (creature sounds)
+- Integration with environmental system (ambient soundscapes)
+
+**Fix Required**:
+- Wire to event system: Discovery → Sound effect
+- Add audio to haikus (narrator voice)
+- Add creature vocalizations (procedural animal sounds)
+
+---
+
+### Audio System (`src/audio/evoMorph.ts`)
+
+**Current State**:
+- ✅ **Audio morphing**: Smooth transitions between audio states
+- ❌ **INCOMPLETE**: Basic implementation, not integrated
+
+**What's MISSING**:
+- Integration with evolution events
+- Creature sound morphing (as traits evolve)
+- Environmental ambience based on biome
+
+---
+
+### Combat Components (`src/world/CombatComponents.ts`)
+
+**Current State**:
+- ✅ **Defined**: Component interfaces for combat
+- ❌ **NOT USED**: `CombatSystem` exists but never triggers
+
+**Components**:
+- `CombatStats` - Health, attack, defense
+- `CombatBehavior` - Aggression, tactics
+- `CombatTarget` - Current target entity
+
+**Fix Required**:
+- Integrate with Yuka FSM (IDLE → FIGHTING state)
+- Integrate with pack coordination (group combat)
+- Integrate with world score (violence metric)
+
+---
+
+## Scripts & Build Tools
+
+### Texture Downloader (`src/build/ambientcg-downloader.ts`)
+
+**Current State**:
+- ✅ **Working**: Downloads PBR textures from AmbientCG
+- ✅ **Used**: `pnpm setup:textures` command
+- ✅ **Output**: `public/textures/` directory
+
+**What It Does**:
+- Downloads wood, stone, fabric, metal textures
+- Organizes by category
+- Caches to avoid re-downloads
+
+**What's MISSING**:
+- Integration with Meshy retexturing
+- Automatic texture assignment to materials
+- Texture quality presets (mobile vs. desktop)
+
+---
+
+### Grok Extractor (`scripts/extract-grok-chat.js`)
+
+**Current State**:
+- ✅ **Utility**: Extracts memory bank context from Grok conversations
+- ✅ **Used**: Generated `memory-bank/` files from conversation history
+
+**Purpose**: Convert AI chat logs into structured documentation
+
+**Not needed for game runtime**, but useful for documentation maintenance.
+
+---
+
+## Testing Infrastructure
+
+### Test Setup (`src/test/setup.ts`)
+
+**Current State**:
+- ✅ **Vitest Configuration**: Happy-dom for DOM simulation
+- ✅ **Test Utilities**: Mock ECS world, mock Three.js
+- ✅ **Coverage**: 57/57 tests passing (as of last run)
+
+**Test Files**:
+- `CreatureArchetypeSystem.test.ts` - Creature spawning
+- `EcosystemIntegration.test.ts` - Full system integration
+- `EvolutionUI.integration.test.tsx` - UI components
+- `GameClock.test.ts` - Time management
+- `GeneticSynthesis.test.ts` - Trait blending
+- `RawMaterialsSystem.test.ts` - Material distribution
+- `SporeStyleCamera.test.ts` - Camera system
+- `TextureSystem.test.tsx` - Texture loading
+- `WorldContext.test.tsx` - React context
+
+**What's GOOD**:
+- ✅ System-level tests (not just unit tests)
+- ✅ Integration tests for React components
+- ✅ ECS system mocking for isolation
+
+**What's MISSING**:
+
+1. **Yuka Integration Tests**:
+   - Test goal trees, fuzzy modules, FSMs
+   - Test MessageDispatcher communication
+   - Test steering behaviors (Cohesion, Alignment, Separation)
+
+2. **Gen 0 Tests**:
+   - Test planetary physics generation
+   - Test AI workflow orchestration
+   - Test parent-child manifest communication
+
+3. **Ending Detection Tests**:
+   - Test world score tracking
+   - Test ending threshold detection
+   - Test each ending type (Mutualism, Parasitism, Domination, Transcendence)
+
+**Fix Required**:
+- Add test suites for missing systems
+- Add E2E tests (full gameplay loop Gen 1 → Gen 10)
+
+---
+
+## Package.json Scripts
+
+**Current Scripts**:
+```json
+{
+  "dev": "vite --host 0.0.0.0",
+  "build": "vite build",
+  "preview": "vite preview",
+  "test": "vitest run",
+  "test:watch": "vitest",
+  "test:ui": "vitest --ui",
+  "test:coverage": "vitest --coverage",
+  "setup:textures": "tsx src/build/ambientcg-downloader.ts",
+  "dev:cli": "tsx src/dev/GameDevCLI.ts",
+  "evolution:pipeline": "tsx src/dev/MasterEvolutionPipeline.ts",
+  "evolution:archetypes": "tsx src/dev/EvolutionaryAgentWorkflows.ts",
+  "evolution:validate": "pnpm test && pnpm build"
+}
+```
+
+**What's MISSING**:
+- `gen0:generate` - Run Gen 0 AI workflows (parent + children)
+- `gen0:validate` - Validate Gen 0 manifests
+- `assets:sync` - Sync all assets (textures, models, audio)
+- `deploy:mobile` - Build for Capacitor (iOS/Android)
+
+**Fix Required**:
+- Add Gen 0 workflow scripts
+- Add asset validation scripts
+- Add mobile deployment scripts
+
+---
+
+## Dependencies Audit
+
+### Core Dependencies (Game Runtime)
+
+**ECS & Rendering**:
+- ✅ `miniplex@2.0.0` - ECS
+- ✅ `miniplex-react@2.0.1` - React integration
+- ✅ `@react-three/fiber@9.4.0` - React Three.js
+- ✅ `@react-three/drei@10.7.6` - R3F helpers
+- ✅ `three@0.170.0` - 3D rendering
+
+**UI & Platform**:
+- ✅ `@react-three/uikit@1.0.57` - 3D UI
+- ✅ `@capacitor/core@6.1.2` - Cross-platform
+- ✅ `@capacitor/haptics@6.0.1` - Haptic feedback
+- ✅ `@capacitor/device@7.0.2` - Device info
+
+**AI & Game Logic**:
+- ✅ `yuka@0.7.8` - AI behaviors
+- ✅ `ai@5.0.89` - Vercel AI SDK
+- ✅ `@ai-sdk/openai@2.0.64` - OpenAI integration
+- ✅ `openai@6.8.1` - OpenAI API client
+
+**State & Utils**:
+- ✅ `zustand@5.0.8` - State management
+- ✅ `seedrandom` - MISSING (not in package.json!)
+- ✅ `simplex-noise@4.0.3` - Noise generation
+- ✅ `fast-simplex-noise@4.0.0` - Fast noise
+
+**CRITICAL MISSING**:
+- ❌ `seedrandom` - Required for deterministic Gen 0
+- ❌ `@vercel/ai` - May be needed for advanced streaming
+
+**Fix Required**:
+```bash
+pnpm add seedrandom @types/seedrandom
+```
+
+---
+
+## File Structure Review
+
+**Current Structure**:
+```
+src/
+├── systems/         # 19 ECS systems ✅
+├── components/      # 8 React renderers ✅
+├── stores/          # 1 Zustand store ✅
+├── hooks/           # 2 custom hooks ✅
+├── utils/           # 3 utility modules ✅
+├── world/           # 2 ECS schema files ✅
+├── contexts/        # 1 React context ✅
+├── config/          # 1 AI models config ✅
+├── dev/             # 4 dev tools + meshy/ ✅
+├── build/           # 1 texture downloader ✅
+├── audio/           # 1 audio morph (incomplete) ⚠️
+├── test/            # 9 test files ✅
+└── generated/       # Empty (for AI-generated assets) ❌
+```
+
+**What's MISSING (Directories to Create)**:
+
+```
+src/
+├── ai/
+│   └── workflows/
+│       ├── creative-director.ts      # Parent workflow
+│       ├── core-specialist.ts        # Child workflow
+│       └── workflow-orchestrator.ts  # Parallel execution
+├── goals/           # Yuka goal implementations
+│   ├── CreatureGoals.ts
+│   ├── MaterialGoals.ts
+│   ├── ToolGoals.ts
+│   └── BuildingGoals.ts
+├── fuzzy/           # Yuka fuzzy logic modules
+│   ├── ToolEmergenceFuzzy.ts
+│   ├── MaterialAffinityFuzzy.ts
+│   └── BuildingNeedFuzzy.ts
+└── messaging/       # MessageDispatcher integration
+    ├── MessageTypes.ts
+    ├── EventLog.ts
+    └── InterSphereMessaging.ts
+```
+
+---
+
+## Critical Path Summary
+
+**To bring the game BACK TO LIFE, this is the order of operations**:
+
+### Phase 0: Foundation (CRITICAL BLOCKER)
+1. ✅ Install missing dependencies (`seedrandom`)
+2. ✅ Create `src/ai/workflows/` directory structure
+3. ✅ Port Meshy integration to `src/config/meshy-models.ts`
+4. ✅ Create `src/goals/`, `src/fuzzy/`, `src/messaging/` directories
+
+### Phase 1: Gen 0 Implementation
+1. Create `creative-director.ts` (parent workflow using Vercel AI SDK)
+2. Create `core-specialist.ts` (child workflow using Vercel AI SDK)
+3. Create `workflow-orchestrator.ts` (parallel execution)
+4. Create `PlanetaryPhysicsSystem.ts` (orchestrates AI workflows)
+5. Refactor `RawMaterialsSystem` to consume Gen 0 data
+
+### Phase 2: Yuka Expansion
+1. Expand `YukaAgent` component (add goals, fsm, fuzzy, vision, memory, triggers, tasks)
+2. Create Yuka goal implementations (`src/goals/`)
+3. Create Yuka fuzzy modules (`src/fuzzy/`)
+4. Refactor `YukaSphereCoordinator` to use `GoalEvaluator` instead of manual loops
+
+### Phase 3: Inter-Sphere Communication
+1. Create `src/messaging/MessageTypes.ts` (define all message types)
+2. Create `src/messaging/InterSphereMessaging.ts` (MessageDispatcher wrapper)
+3. Create `src/messaging/EventLog.ts` (event log entity + UI)
+4. Integrate MessageDispatcher into all spheres
+
+### Phase 4: Tool & Building Integration
+1. Uncomment Tool Sphere in `YukaSphereCoordinator`
+2. Implement `toolSphereDecisions()` using FuzzyModule
+3. Complete Building Sphere implementation
+4. Wire Tool → Material, Building → Tribe messaging
+
+### Phase 5: Player Feedback Systems
+1. Create `WorldScoreStore.ts` (track ending metrics)
+2. Create `EventMessagingSystem.ts` (ECS → UI event log)
+3. Create Event Log UI component (UIKit)
+4. Create `EndingDetectionSystem.ts` (detect victory conditions)
+
+### Phase 6: Endings
+1. Design ending thresholds (Mutualism, Parasitism, Domination, Transcendence)
+2. Implement ending detection logic
+3. Create ending cinematics (camera paths, particle effects)
+4. Integrate haiku generation for ending poems
+
+### Phase 7: Polish
+1. Replace renderer polling with reactive queries
+2. Integrate Freesound audio
+3. Add missing tests (Yuka, Gen 0, Endings)
+4. Mobile deployment scripts
+
+---
+
 ## Summary: The Yuka World
 
 This is not a simulation. It's a **living, breathing world** where every entity has desires, makes decisions, and communicates with others. Yuka isn't just AI for creatures—it's the **nervous system of the entire world**.
