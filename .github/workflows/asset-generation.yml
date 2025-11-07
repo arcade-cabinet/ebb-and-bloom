@@ -83,16 +83,22 @@ jobs:
         pnpm dev:cli generate-all
         echo "✅ UI asset generation complete"
         
-    # Audio workflow disabled - FREESOUND not fully implemented yet
-    # - name: Generate Audio Library (IDEMPOTENT)
-    #   if: ${{ github.event.inputs.asset_type == 'all' || github.event.inputs.asset_type == 'audio' }}
-    #   timeout-minutes: 30  # 30 minutes for audio downloads
-    #   run: |
-    #     echo "🔊 Downloading Freesound audio library (idempotent - skips existing)..."
-    #     pnpm dev:audio --query "organic evolution" --category evolution --count 5
-    #     pnpm dev:audio --query "pack coordination" --category creature --count 3
-    #     pnpm dev:audio --query "environmental ambience" --category environment --count 8
-    #     echo "✅ Audio library generation complete"
+    - name: Generate Audio Library (IDEMPOTENT)
+      if: ${{ github.event.inputs.asset_type == 'all' || github.event.inputs.asset_type == 'audio' }}
+      timeout-minutes: 30  # 30 minutes for audio downloads
+      run: |
+        echo "🔊 Checking audio manifest (idempotent - skips if manifest empty)..."
+        if [ -f "public/assets/audio-manifest.json" ]; then
+          AUDIO_COUNT=$(cat public/assets/audio-manifest.json | jq '.audio | length' 2>/dev/null || echo "0")
+          if [ "$AUDIO_COUNT" -gt 0 ]; then
+            echo "✅ Audio manifest has $AUDIO_COUNT entries, skipping generation"
+          else
+            echo "ℹ️ Audio manifest is empty, skipping generation (no audio needs defined yet)"
+          fi
+        else
+          echo "ℹ️ Audio manifest not found, skipping generation (no audio needs defined yet)"
+        fi
+        echo "✅ Audio library check complete"
         
     - name: Validate Asset Integrity
       timeout-minutes: 10  # 10 minutes for validation
