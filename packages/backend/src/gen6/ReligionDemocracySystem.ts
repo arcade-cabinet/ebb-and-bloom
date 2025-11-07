@@ -1,11 +1,12 @@
 /**
- * Gen 6: Religion and Democracy Systems
- * Abstract belief systems and governance emerge from complex societies
+ * Gen 6: Religion & Democracy with AI-Generated Belief Systems
+ * Uses data pools for cosmology and rituals instead of hardcoding
  */
 
 import { Goal } from 'yuka';
 import seedrandom from 'seedrandom';
 import { Religion, Myth, Ritual, Tribe, Building, Creature, Planet } from '../schemas/index.js';
+import { generateGen6DataPools, selectFromPool, extractSeedComponents } from '../gen-systems/VisualBlueprintGenerator.js';
 
 /**
  * Religious Practice Goal
@@ -26,7 +27,6 @@ export class PerformRitualGoal extends Goal {
   }
 
   execute(): number {
-    // Ritual completes
     this.status = Goal.STATUS_COMPLETED;
     return this.status;
   }
@@ -41,15 +41,44 @@ export class PerformRitualGoal extends Goal {
  */
 export class Gen6System {
   private planet: Planet;
-  private rng: ReturnType<typeof seedrandom>;
+  private rng: seedrandom.PRNG;
+  private useAI: boolean;
+  private cosmologyOptions: any[] = [];
 
-  constructor(planet: Planet, seed: string) {
+  constructor(planet: Planet, seed: string, useAI = true) {
     this.planet = planet;
     this.rng = seedrandom(seed + '-gen6');
+    this.useAI = useAI;
   }
 
   /**
-   * Evaluate religion emergence from tribal complexity
+   * Initialize with AI-generated cosmologies
+   */
+  async initialize(gen5Data: any): Promise<void> {
+    console.log(`[GEN6] Initializing with AI data pools: ${this.useAI}`);
+
+    if (this.useAI && gen5Data) {
+      const dataPools = await generateGen6DataPools(this.planet, gen5Data, this.planet.seed);
+      this.cosmologyOptions = [
+        {
+          cosmology: dataPools.macro.selectedCosmology,
+          ritualType: dataPools.meso.selectedRitualType,
+          belief: dataPools.micro.selectedBelief.name,
+          domain: dataPools.micro.selectedBelief.domain,
+          visualBlueprint: dataPools.macro.visualBlueprint,
+        },
+      ];
+      console.log(`[GEN6] Selected cosmology: ${dataPools.macro.selectedCosmology}`);
+    } else {
+      // Fallback
+      this.cosmologyOptions = [
+        { cosmology: 'Cyclical Time', ritualType: 'Seasonal', belief: 'Nature Spirits', domain: 'environment', visualBlueprint: {} },
+      ];
+    }
+  }
+
+  /**
+   * Evaluate religion emergence
    */
   evaluateReligionEmergence(
     tribes: Tribe[],
@@ -59,17 +88,14 @@ export class Gen6System {
     const religions: Religion[] = [];
 
     for (const tribe of tribes) {
-      // Religion emerges from large, stable tribes with gathering spaces
-      const tribeBuildings = buildings.filter(b => b.tribe === tribe.id);
-      const hasGatheringSpace = tribeBuildings.some(b => b.type === 'gathering');
+      const tribeBuildings = buildings.filter((b) => b.tribe === tribe.id);
+      const hasGatheringSpace = tribeBuildings.some((b) => b.type === 'gathering');
       const isLarge = tribe.population > 100;
       const isStable = tribe.status === 'stable';
 
       if (hasGatheringSpace && isLarge && isStable && this.rng() < 0.3) {
         const religion = this.formReligion(tribe, creatures);
         religions.push(religion);
-
-        console.log(`[GEN6] Religion ${religion.id} emerged in tribe ${tribe.id}`);
       }
     }
 
@@ -77,148 +103,72 @@ export class Gen6System {
   }
 
   /**
-   * Form a religion based on tribal context
+   * Form a religion using AI-generated cosmology
    */
   private formReligion(tribe: Tribe, creatures: Creature[]): Religion {
-    const tribeCreatures = creatures.filter(c => tribe.packs.includes(c.id));
+    const { macro } = extractSeedComponents(this.planet.seed + tribe.id);
+    const cosmology = selectFromPool(this.cosmologyOptions, macro);
 
-    // Generate cosmology based on planetary features
-    const cosmology = this.generateCosmology();
+    // Generate myths from cosmology
+    const myths: Myth[] = [
+      {
+        title: `The ${cosmology.cosmology} Origin`,
+        content: `In the beginning, the world was formed through ${cosmology.cosmology.toLowerCase()}...`,
+        themes: [cosmology.belief],
+      },
+    ];
 
-    // Generate founding myths
-    const myths = this.generateFoundingMyths(tribe, cosmology);
-
-    // Generate initial rituals
-    const rituals = this.generateRituals(cosmology);
+    // Generate rituals from ritual type
+    const rituals: Ritual[] = [
+      {
+        name: `${cosmology.ritualType} Ceremony`,
+        purpose: cosmology.domain,
+        frequency: 'monthly',
+        participants: Math.min(50, tribe.population),
+      },
+    ];
 
     const religion: Religion = {
-      id: `religion-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `religion-${tribe.id}-${Date.now()}`,
+      name: `${cosmology.belief} Faith`,
       tribe: tribe.id,
-      name: `${cosmology.primary_force} Faith`,
-      cosmology,
+      cosmology: cosmology.cosmology,
       myths,
       rituals,
-      adherents: tribeCreatures.map(c => c.id),
-      influence: 0.5,
-      foundedAt: Date.now(),
+      believers: Math.floor(tribe.population * 0.8),
+      visualBlueprint: cosmology.visualBlueprint,
     };
 
+    console.log(`[GEN6] Religion ${religion.name} emerged in tribe ${tribe.id} (${cosmology.cosmology})`);
     return religion;
-  }
-
-  /**
-   * Generate cosmology based on planetary environment
-   */
-  private generateCosmology(): { primary_force: string; creation_story: string; afterlife: string } {
-    const forces = ['Sun', 'Earth', 'Water', 'Stone', 'Stars'];
-    const primary = forces[Math.floor(this.rng() * forces.length)];
-
-    const cosmologies: Record<string, { creation_story: string; afterlife: string }> = {
-      'Sun': {
-        creation_story: 'The Great Fire birthed all life from flame',
-        afterlife: 'Souls ascend to join the eternal light',
-      },
-      'Earth': {
-        creation_story: 'The First Stone split to release the world',
-        afterlife: 'Bodies return to nourish the eternal soil',
-      },
-      'Water': {
-        creation_story: 'The Primordial Ocean birthed all that swims, walks, and flies',
-        afterlife: 'Spirits flow into the great underground sea',
-      },
-      'Stone': {
-        creation_story: 'The Eternal Mountains gave form to chaos',
-        afterlife: 'Bones crystallize into sacred mineral',
-      },
-      'Stars': {
-        creation_story: 'Each star is a world, this world is but one',
-        afterlife: 'Souls travel to distant star-worlds',
-      },
-    };
-
-    return {
-      primary_force: primary,
-      ...cosmologies[primary],
-    };
-  }
-
-  /**
-   * Generate founding myths
-   */
-  private generateFoundingMyths(tribe: Tribe, cosmology: { primary_force: string }): Myth[] {
-    return [
-      {
-        id: `myth-origin-${Date.now()}`,
-        name: `The First ${cosmology.primary_force}`,
-        story: `Long ago, when the world was empty, the First ${cosmology.primary_force} gave life to all creatures`,
-        significance: 'Explains tribal origins',
-        rituals: [],
-      },
-      {
-        id: `myth-tribe-${Date.now()}`,
-        name: 'The Founding',
-        story: `Our ancestors gathered at this place, blessed by ${cosmology.primary_force}`,
-        significance: 'Legitimizes tribal authority',
-        rituals: [],
-      },
-    ];
-  }
-
-  /**
-   * Generate rituals
-   */
-  private generateRituals(cosmology: { primary_force: string }): Ritual[] {
-    return [
-      {
-        id: `ritual-daily-${Date.now()}`,
-        name: `${cosmology.primary_force} Prayer`,
-        purpose: 'Daily devotion',
-        frequency: 'daily',
-        participants_required: 1,
-        location_type: 'gathering',
-        effects: ['morale boost', 'social cohesion'],
-      },
-      {
-        id: `ritual-seasonal-${Date.now()}`,
-        name: `${cosmology.primary_force} Festival`,
-        purpose: 'Seasonal celebration',
-        frequency: 'seasonal',
-        participants_required: 50,
-        location_type: 'gathering',
-        effects: ['tribal unity', 'resource blessing'],
-      },
-    ];
   }
 
   /**
    * Evaluate democracy emergence (alternative to religion)
    */
-  evaluateDemocracyEmergence(
-    tribes: Tribe[],
-    buildings: Building[],
-    creatures: Creature[]
-  ): Tribe[] {
-    const democraticTribes: Tribe[] = [];
+  evaluateDemocracyEmergence(tribes: Tribe[], buildings: Building[]): any[] {
+    const democracies: any[] = [];
 
     for (const tribe of tribes) {
-      if (tribe.governance !== 'elder_council') continue;
+      // Democracy emerges from highly social, large, tool-using tribes
+      const hasGathering = buildings.some((b) => b.tribe === tribe.id && b.type === 'gathering');
+      const isLarge = tribe.population > 150;
+      const hasGovernance = tribe.governance !== 'none';
 
-      const tribeCreatures = creatures.filter(c => tribe.packs.includes(c.id));
-      const avgSocial = tribeCreatures.reduce((sum, c) => sum + c.traits.social, 0) / tribeCreatures.length;
+      if (hasGathering && isLarge && hasGovernance && this.rng() < 0.2) {
+        const democracy = {
+          id: `democracy-${tribe.id}`,
+          tribe: tribe.id,
+          type: 'representative',
+          votingSystem: 'consensus',
+          established: Date.now(),
+        };
 
-      // Democracy emerges from highly social, educated populations
-      const hasGathering = buildings.some(b => b.tribe === tribe.id && b.type === 'gathering');
-      const isHighlySocial = avgSocial > 0.8;
-      const isLarge = tribe.population > 200;
-
-      if (hasGathering && isHighlySocial && isLarge && this.rng() < 0.2) {
-        tribe.governance = 'democratic_assembly';
-        democraticTribes.push(tribe);
-
+        democracies.push(democracy);
         console.log(`[GEN6] Democracy emerged in tribe ${tribe.id}`);
       }
     }
 
-    return democraticTribes;
+    return democracies;
   }
 }
