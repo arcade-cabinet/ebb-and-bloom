@@ -1,0 +1,45 @@
+# Git LFS tracking for texture and image assets
+# These files are too large for regular git tracking
+
+# Texture files (AmbientCG downloads)
+public/textures/**/*.jpg filter=lfs diff=lfs merge=lfs -text
+public/textures/**/*.png filter=lfs diff=lfs merge=lfs -text
+public/textures/**/*.jpeg filter=lfs diff=lfs merge=lfs -text
+public/textures/**/*.webp filter=lfs diff=lfs merge=lfs -text
+public/textures/**/*.ktx2 filter=lfs diff=lfs merge=lfs -text
+public/textures/**/*.dds filter=lfs diff=lfs merge=lfs -text
+# UI assets (AI-generated images)
+public/ui/**/*.png filter=lfs diff=lfs merge=lfs -text
+public/ui/**/*.jpg filter=lfs diff=lfs merge=lfs -text
+public/ui/**/*.jpeg filter=lfs diff=lfs merge=lfs -text
+public/ui/**/*.webp filter=lfs diff=lfs merge=lfs -text
+# Splash screens
+public/splash/**/*.png filter=lfs diff=lfs merge=lfs -text
+public/splash/**/*.jpg filter=lfs diff=lfs merge=lfs -text
+public/splash/**/*.jpeg filter=lfs diff=lfs merge=lfs -text
+public/splash/**/*.webp filter=lfs diff=lfs merge=lfs -text
+# Background images
+public/backgrounds/**/*.png filter=lfs diff=lfs merge=lfs -text
+public/backgrounds/**/*.jpg filter=lfs diff=lfs merge=lfs -text
+public/backgrounds/**/*.jpeg filter=lfs diff=lfs merge=lfs -text
+public/backgrounds/**/*.webp filter=lfs diff=lfs merge=lfs -text
+# Panel images
+public/panels/**/*.png filter=lfs diff=lfs merge=lfs -text
+public/panels/**/*.jpg filter=lfs diff=lfs merge=lfs -text
+public/panels/**/*.jpeg filter=lfs diff=lfs merge=lfs -text
+public/panels/**/*.webp filter=lfs diff=lfs merge=lfs -text
+# Model assets (3D models, if any)
+public/models/**/*.glb filter=lfs diff=lfs merge=lfs -text
+public/models/**/*.gltf filter=lfs diff=lfs merge=lfs -text
+public/models/**/*.obj filter=lfs diff=lfs merge=lfs -text
+public/models/**/*.fbx filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+*.jpeg filter=lfs diff=lfs merge=lfs -text
+*.webp filter=lfs diff=lfs merge=lfs -text
+*.ktx2 filter=lfs diff=lfs merge=lfs -text
+*.dds filter=lfs diff=lfs merge=lfs -text
+*.glb filter=lfs diff=lfs merge=lfs -text
+*.gltf filter=lfs diff=lfs merge=lfs -text
+*.obj filter=lfs diff=lfs merge=lfs -text
+*.fbx filter=lfs diff=lfs merge=lfs -text
