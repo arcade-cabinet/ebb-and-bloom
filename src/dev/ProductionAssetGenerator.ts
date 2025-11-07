@@ -9,6 +9,7 @@ import { openai } from '@ai-sdk/openai';
 import { readFile, writeFile, existsSync, mkdirSync } from 'fs/promises';
 import { join } from 'path';
 import { log } from '../utils/Logger';
+import { AI_MODELS } from '../config/ai-models';
 
 interface AmbientCGCatalog {
   textures: Array<{
@@ -181,7 +182,7 @@ Create detailed creature archetype specifications that will be used to generate 
     
     try {
       const result = await generateObject({
-        model: openai('gpt-4o'),
+        model: openai(AI_MODELS.TEXT_GENERATION),
         system: systemPrompt,
         prompt: `Generate a complete creature archetype specification:
 
@@ -311,7 +312,7 @@ Design buildings that serve specific gameplay functions while being structurally
     
     try {
       const result = await generateObject({
-        model: openai('gpt-4o'),
+        model: openai(AI_MODELS.TEXT_GENERATION),
         system: systemPrompt,
         prompt: `Design a complete building assembly:
 
@@ -457,7 +458,7 @@ Brand Integration: Subtle earth tones with hints of Ebb & Bloom color palette (d
     try {
       // Use OpenAI's newest image generation model
       const response = await this.openai.images.generate({
-        model: "dall-e-3", // Will upgrade to gpt-image-1 when available
+        model: AI_MODELS.IMAGE_GENERATION, // GPT-image-1 as specified
         prompt: visualPrompt,
         size: "1024x1024",
         quality: "hd",
