@@ -497,11 +497,11 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
     
     try {
       // Determine image size based on dimensions
-      let imageSize: "1024x1024" | "1792x1024" | "1024x1792" = "1024x1024";
+      let imageSize: "1024x1024" | "1792x1024" | "1024x1536" = "1024x1024";
       if (dimensions[0] > dimensions[1]) {
         imageSize = "1792x1024"; // Landscape
       } else if (dimensions[1] > dimensions[0]) {
-        imageSize = "1024x1792"; // Portrait
+        imageSize = "1024x1536"; // Portrait (DALL-E only supports 1024x1536, not 1024x1792)
       }
       
       // Generate with GPT-image-1 as specified
