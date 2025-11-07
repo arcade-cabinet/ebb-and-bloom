@@ -252,7 +252,12 @@ class RawMaterialsSystem {
       harvestCount: 0,
       nearbyCreatureTraits: [],
       evolutionPressure: Array(10).fill(0),
-      lastEvolutionEvent: 0
+      lastEvolutionEvent: 0,
+      
+      // CRITICAL: Physical reality determines accessibility
+      depth: archetype.naturalDepth + (Math.random() - 0.5) * 5, // Vary depth slightly
+      hardness: archetype.materialHardness,
+      accessibility: archetype.naturalDepth === 0 ? 1.0 : 0.1  // Surface = easy, deep = hard until tools evolve
     };
     
     // Create ECS entity

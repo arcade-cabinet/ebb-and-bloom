@@ -23,6 +23,7 @@ import TextureSystem from './TextureSystem';
 import YukaSphereCoordinator from './YukaSphereCoordinator';
 import DeconstructionSystem from './DeconstructionSystem';
 import ToolArchetypeSystem from './ToolArchetypeSystem';
+import CombatSystem from './CombatSystem';
 
 export interface EcosystemState {
   totalCreatures: number;
@@ -53,6 +54,7 @@ class EcosystemFoundation {
   private yukaCoordinator: YukaSphereCoordinator;
   private deconstructionSystem: DeconstructionSystem;
   private toolSystem: ToolArchetypeSystem;
+  private combatSystem: CombatSystem;
 
   // System state
   private initialized = false;
@@ -91,8 +93,11 @@ class EcosystemFoundation {
     
     // Tool Archetype System - 8 fundamental tool categories
     this.toolSystem = new ToolArchetypeSystem(world);
+    
+    // Combat System - Conquest playstyle
+    this.combatSystem = new CombatSystem(world, this.deconstructionSystem);
 
-    log.info('EcosystemFoundation created with ALL SYSTEMS - COMPLETE YUKA ARCHITECTURE');
+    log.info('EcosystemFoundation created with ALL SYSTEMS - COMPLETE YUKA ARCHITECTURE + COMBAT');
   }
 
   async initialize(): Promise<void> {
@@ -207,6 +212,7 @@ class EcosystemFoundation {
       this.packSocialSystem.update(deltaTime);
       this.buildingSystem.update(deltaTime);
       this.toolSystem.update(deltaTime);
+      this.combatSystem.update(deltaTime);
 
       // Cross-system interactions
       this.processEcosystemInteractions();
