@@ -14,23 +14,11 @@ const TerrainRenderer: React.FC = () => {
   const [terrainEntities, setTerrainEntities] = useState<any[]>([]);
   const { material: grassMaterial, loading: grassLoading } = useGroundMaterial('grass');
 
-  // Query terrain from ECS world (terrain is static after generation)
+  // Query terrain from ECS world - ONE TIME (terrain is static)
   useEffect(() => {
-    const updateTerrain = () => {
-      const terrain = Array.from(world.with('terrain', 'render').entities);
-      setTerrainEntities(prev => {
-        if (terrain.length !== prev.length) {
-          return terrain;
-        }
-        return prev;
-      });
-    };
-    
-    updateTerrain();
-    // Terrain rarely changes, check less frequently
-    const interval = setInterval(updateTerrain, 5000);
-    return () => clearInterval(interval);
-  }, []); // Empty deps - world is stable
+    const terrain = Array.from(world.with('terrain', 'render').entities);
+    setTerrainEntities(terrain);
+  }, []); // Run once on mount
 
   useEffect(() => {
     log.info('TerrainRenderer mounted', {

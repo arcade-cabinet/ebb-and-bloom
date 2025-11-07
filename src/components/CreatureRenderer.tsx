@@ -16,22 +16,11 @@ const CreatureRenderer: React.FC = () => {
   const [creatureEntities, setCreatureEntities] = useState<any[]>([]);
   const { material: furMaterial, loading: furLoading } = useFabricMaterial('fur');
   
-  // Query creatures from ECS world
+  // Query creatures from ECS world - ONE TIME
   useEffect(() => {
-    const updateCreatures = () => {
-      const creatures = Array.from(world.with('creature', 'render', 'yukaAgent', 'transform').entities);
-      setCreatureEntities(prev => {
-        if (creatures.length !== prev.length) {
-          return creatures;
-        }
-        return prev;
-      });
-    };
-    
-    updateCreatures();
-    const interval = setInterval(updateCreatures, 500); // Update 2x per second - less aggressive
-    return () => clearInterval(interval);
-  }, []); // Empty deps - world is stable
+    const creatures = Array.from(world.with('creature', 'render', 'yukaAgent', 'transform').entities);
+    setCreatureEntities(creatures);
+  }, []); // Run once on mount
   
   useEffect(() => {
     log.creature('CreatureRenderer mounted', undefined, { 

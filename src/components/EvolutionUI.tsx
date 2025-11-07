@@ -54,24 +54,11 @@ const CreatureEvolutionDisplay = () => {
   const [creatures, setCreatures] = useState<any[]>([]);
   const [selectedCreature, setSelectedCreature] = useState<any>(null);
 
-  // Query creatures from ECS world
+  // Query creatures from ECS world - ONE TIME on mount
   useEffect(() => {
-    const updateCreatures = () => {
-      const creatureQuery = world.with('creature', 'transform');
-      const newCreatures = Array.from(creatureQuery.entities);
-      setCreatures(prev => {
-        // Only update if actually changed to prevent infinite loops
-        if (newCreatures.length !== prev.length) {
-          return newCreatures;
-        }
-        return prev;
-      });
-    };
-    
-    updateCreatures();
-    const interval = setInterval(updateCreatures, 2000); // Slower polling
-    return () => clearInterval(interval);
-  }, []); // Empty deps - world is stable
+    const creatureQuery = world.with('creature', 'transform');
+    setCreatures(Array.from(creatureQuery.entities));
+  }, []); // Run once on mount
 
   return (
     <>
@@ -166,8 +153,8 @@ const EvolutionEventFeed = () => {
             <div
               key={index}
               className={`p-2 rounded-lg border transition-all duration-500 animate-trait-emerge ${event.significance > 0.7
-                  ? 'evolution-card--significant'
-                  : 'bg-base-200/50 border-echo-silver-300'
+                ? 'evolution-card--significant'
+                : 'bg-base-200/50 border-echo-silver-300'
                 }`}
             >
               <div className="flex justify-between items-start">
@@ -207,30 +194,15 @@ const EnvironmentalStatus = () => {
   useEffect(() => {
     if (!ecosystem) return;
     
-    const updateEnv = () => {
-      const envSystem = ecosystem.getEnvironmentalSystem();
-      const report = envSystem.getEnvironmentalReport();
-      
-      setEcosystemState(prev => {
-        const newState = {
-          globalPollution: report.globalPollution,
-          activeSources: report.activeSources,
-          refugeAreas: report.refugeAreas
-        };
-        
-        // Only update if changed
-        if (!prev || prev.globalPollution !== newState.globalPollution || 
-            prev.activeSources !== newState.activeSources) {
-          return newState;
-        }
-        return prev;
-      });
-    };
+    const envSystem = ecosystem.getEnvironmentalSystem();
+    const report = envSystem.getEnvironmentalReport();
     
-    updateEnv();
-    const interval = setInterval(updateEnv, 3000);
-    return () => clearInterval(interval);
-  }, []); // Empty deps - ecosystem is stable
+    setEcosystemState({
+      globalPollution: report.globalPollution,
+      activeSources: report.activeSources,
+      refugeAreas: report.refugeAreas
+    });
+  }, []); // Run once on mount
 
   if (!ecosystemState) return null;
 
@@ -277,31 +249,17 @@ const PackDynamicsDisplay = () => {
   useEffect(() => {
     if (!ecosystem) return;
     
-    const updatePacks = () => {
-      const packSystem = ecosystem.getPackSocialSystem();
-      const analysis = packSystem.getPackAnalysis();
-      
-      setPackData(prev => {
-        const newData = [{
-          id: 'pack_summary',
-          type: 'summary',
-          members: Math.round(analysis.averagePackSize),
-          cohesion: 0.8,
-          territory: Math.sqrt(analysis.totalTerritorialCoverage / Math.PI)
-        }];
-        
-        // Only update if changed
-        if (prev.length === 0 || prev[0].members !== newData[0].members) {
-          return newData;
-        }
-        return prev;
-      });
-    };
+    const packSystem = ecosystem.getPackSocialSystem();
+    const analysis = packSystem.getPackAnalysis();
     
-    updatePacks();
-    const interval = setInterval(updatePacks, 3000);
-    return () => clearInterval(interval);
-  }, []); // Empty deps - ecosystem is stable
+    setPackData([{
+      id: 'pack_summary',
+      type: 'summary',
+      members: Math.round(analysis.averagePackSize),
+      cohesion: 0.8,
+      territory: Math.sqrt(analysis.totalTerritorialCoverage / Math.PI)
+    }]);
+  }, []); // Run once on mount
 
   return (
     <div className="fixed top-20 right-4 z-40 max-w-xs">
