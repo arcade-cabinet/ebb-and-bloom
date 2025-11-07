@@ -5,11 +5,12 @@
 
 ---
 
-## Core Principle: Fully Procedural + Textures
+## Core Principle: Procedural Where Possible, Meshy for Props
 
-**Ebb & Bloom generates EVERYTHING procedurally using textures and shapes.**
-
-NO 3D MODEL AI GENERATION (NO MESHY).
+**Ebb & Bloom uses:**
+- **Procedural**: Creatures, buildings (geometry + textures)
+- **Meshy 3D Models**: Props, collectibles, environmental detail
+- **gpt-image-1**: UI elements
 
 ---
 
@@ -63,7 +64,43 @@ NO 3D MODEL AI GENERATION (NO MESHY).
 
 ---
 
-### 3. UI Elements - AI GENERATED (gpt-image-1)
+### 3. Props & Collectibles - MESHY 3D MODELS
+**Method**: Meshy text-to-3D → GLB models
+
+**Generation Process**:
+1. Define prop in manifest with prompt
+2. Meshy generates base model (preview → refine)
+3. Optional: Generate texture variants via retexturing
+4. Download GLB to `public/models/`
+5. Result: Game-ready low-poly 3D models
+
+**What Needs Meshy** (too hard to procedurally generate):
+- **Raw materials**: Ore clumps, river rocks, crystal clusters
+- **Environmental detail**: Shrubs, bushes, debris piles, fallen logs
+- **Sign posts**: Directional markers, territory markers
+- **Indoor props**: Furniture, tools, containers, decorative items
+- **Held items**: Tools, weapons, gathered resources
+- **Collectibles**: Unique pickups, artifacts
+
+**Meshy Specs**:
+- Art style: `sculpture` (cartoon/stylized)
+- Target polycount: 500-2000 (mobile-friendly)
+- Enable PBR textures
+- No rigging needed (static props)
+
+**Examples**:
+```typescript
+{
+  id: 'rock-ore-copper',
+  prompt: 'copper ore rock, greenish mineral veins, rough stone, low-poly game asset',
+  artStyle: 'realistic',
+  polycount: 800,
+}
+```
+
+---
+
+### 4. UI Elements - AI GENERATED (gpt-image-1)
 **Method**: gpt-image-1 → sharp post-processing
 
 **Generation Process**:
@@ -144,16 +181,26 @@ pnpm dev:cli generate-all  # Reads asset-manifest.ts, generates all UI
 
 ---
 
-## Why No 3D Model AI?
+## Why Hybrid Strategy?
 
-**Reasons**:
-1. **Procedural is infinite** - Can generate unlimited variations from traits
-2. **Mobile performance** - Simpler geometry, texture-driven
-3. **Evolution fidelity** - Traits directly map to visual features
-4. **Cost** - No per-model AI generation costs
-5. **Iteration speed** - Change traits, creature updates instantly
+**Procedural (Creatures/Buildings)**:
+- Infinite variations from trait combinations
+- Direct evolution → visual mapping
+- Instant iteration (change traits, update visuals)
+- Zero per-model costs
 
-**Trade-off**: Less photorealistic, more stylized/geometric aesthetic (which fits the game's design pillars)
+**Meshy (Props/Collectibles)**:
+- Realistic detail impossible procedurally
+- Environmental richness and depth
+- Held items and pickups need proper 3D forms
+- One-time generation cost, unlimited reuse
+
+**gpt-image-1 (UI)**:
+- High-quality 2D assets
+- Perfect for splash screens, icons, buttons
+- Post-processing ensures proper dimensions/transparency
+
+**Trade-off**: Hybrid approach balances visual quality, performance, and cost
 
 ---
 
