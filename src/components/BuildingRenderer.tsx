@@ -2,18 +2,31 @@
  * Building Renderer - Displays procedural buildings with proper collision
  */
 
-import React, { useEffect } from 'react';
-import { useEntities } from 'miniplex-react';
+import React, { useEffect, useState } from 'react';
 import { useThree } from '@react-three/fiber';
+import { useWorld } from '../contexts/WorldContext';
 import { log } from '../utils/Logger';
 import { useWoodMaterial, useStoneMaterial } from '../systems/TextureSystem';
 import * as THREE from 'three';
 
 const BuildingRenderer: React.FC = () => {
   const { scene } = useThree();
-  const buildingEntities = useEntities('building', 'render', 'transform');
+  const { world } = useWorld();
+  const [buildingEntities, setBuildingEntities] = useState<any[]>([]);
   const { material: woodMaterial, loading: woodLoading } = useWoodMaterial('planks');
   const { material: stoneMaterial, loading: stoneLoading } = useStoneMaterial('brick');
+  
+  // Query buildings from ECS world
+  useEffect(() => {
+    const updateBuildings = () => {
+      const buildings = Array.from(world.with('building', 'render', 'transform').entities);
+      setBuildingEntities(buildings);
+    };
+    
+    updateBuildings();
+    const interval = setInterval(updateBuildings, 500); // Update 2x per second
+    return () => clearInterval(interval);
+  }, [world]);
   
   useEffect(() => {
     log.info('BuildingRenderer mounted', { 

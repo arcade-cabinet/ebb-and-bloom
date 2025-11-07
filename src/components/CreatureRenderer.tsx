@@ -2,17 +2,31 @@
  * Creature Renderer - Displays ECS creature entities with Yuka AI
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { useEntities } from 'miniplex-react';
 import { useThree } from '@react-three/fiber';
+import { useWorld } from '../contexts/WorldContext';
 import { log } from '../utils/Logger';
 import { useFabricMaterial } from '../systems/TextureSystem';
+import * as THREE from 'three';
 
 const CreatureRenderer: React.FC = () => {
   const { scene } = useThree();
-  const creatureEntities = useEntities('creature', 'render', 'yukaAgent', 'transform');
+  const { world } = useWorld();
+  const [creatureEntities, setCreatureEntities] = useState<any[]>([]);
   const { material: furMaterial, loading: furLoading } = useFabricMaterial('fur');
+  
+  // Query creatures from ECS world
+  useEffect(() => {
+    const updateCreatures = () => {
+      const creatures = Array.from(world.with('creature', 'render', 'yukaAgent', 'transform').entities);
+      setCreatureEntities(creatures);
+    };
+    
+    updateCreatures();
+    const interval = setInterval(updateCreatures, 100); // Update 10x per second
+    return () => clearInterval(interval);
+  }, [world]);
   
   useEffect(() => {
     log.creature('CreatureRenderer mounted', undefined, { 

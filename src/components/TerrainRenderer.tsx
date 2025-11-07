@@ -2,16 +2,29 @@
  * Terrain Renderer - Displays ECS terrain entities
  */
 
-import React, { useEffect } from 'react';
-import { useEntities } from 'miniplex-react';
+import React, { useEffect, useState } from 'react';
 import { useThree } from '@react-three/fiber';
+import { useWorld } from '../contexts/WorldContext';
 import { log } from '../utils/Logger';
 import { useGroundMaterial } from '../systems/TextureSystem';
 
 const TerrainRenderer: React.FC = () => {
   const { scene } = useThree();
-  const terrainEntities = useEntities('terrain', 'render');
+  const { world } = useWorld();
+  const [terrainEntities, setTerrainEntities] = useState<any[]>([]);
   const { material: grassMaterial, loading: grassLoading } = useGroundMaterial('grass');
+  
+  // Query terrain from ECS world
+  useEffect(() => {
+    const updateTerrain = () => {
+      const terrain = Array.from(world.with('terrain', 'render').entities);
+      setTerrainEntities(terrain);
+    };
+    
+    updateTerrain();
+    const interval = setInterval(updateTerrain, 500); // Update 2x per second
+    return () => clearInterval(interval);
+  }, [world]);
   
   useEffect(() => {
     log.info('TerrainRenderer mounted', { 
