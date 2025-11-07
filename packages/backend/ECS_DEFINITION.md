@@ -1,6 +1,6 @@
-# ECS ARCHITECTURE DEFINITION
+# BACKEND ARCHITECTURE DEFINITION
 
-## What ARE the Entities, Components, and Systems?
+## What ARE the Entities, Components, and RESTful Resources?
 
 ---
 
@@ -114,18 +114,18 @@
 
 ---
 
-## SYSTEMS (Logic that operates on entities)
+## RESTFUL RESOURCES (HTTP endpoints for game operations)
 
-### BACKEND Systems (REST Operations)
+### Backend is a RESTful API
 
-These are **NOT continuous loops**. They're **operations triggered by API calls**.
+These are **NOT continuous loops or ECS systems**. They're **RESTful resources with HTTP operations**.
 
-#### 1. Material System
-**Endpoints**:
+#### 1. Material Resource
+**HTTP Operations**:
 - `GET /api/game/:id/materials` → Query all materials
 - `GET /api/game/:id/materials/:x/:y/:z` → Query material at position
 
-**Operations**:
+**Implementation**:
 ```typescript
 function getMaterialAt(x, y, z, gameState) {
   // Calculate which material exists at position
@@ -139,12 +139,12 @@ function getMaterialAt(x, y, z, gameState) {
 }
 ```
 
-#### 2. Creature System
-**Endpoints**:
+#### 2. Creature Resource
+**HTTP Operations**:
 - `GET /api/game/:id/creatures` → Query all creatures
 - `POST /api/game/:id/creatures/:id/evolve` → Evolve creature
 
-**Operations**:
+**Implementation**:
 ```typescript
 function evolveCreature(creatureId, gameState) {
   const creature = gameState.creatures.get(creatureId);
@@ -169,12 +169,12 @@ function evolveCreature(creatureId, gameState) {
 }
 ```
 
-#### 3. Tool System
-**Endpoints**:
+#### 3. Tool Resource
+**HTTP Operations**:
 - `GET /api/game/:id/tools` → Query available tools
 - `POST /api/game/:id/tools/evaluate` → Check if tool should emerge
 
-**Operations**:
+**Implementation**:
 ```typescript
 function evaluateToolEmergence(gameState) {
   // Calculate pressures
@@ -195,12 +195,12 @@ function evaluateToolEmergence(gameState) {
 }
 ```
 
-#### 4. Pack System
-**Endpoints**:
+#### 4. Pack Resource
+**HTTP Operations**:
 - `GET /api/game/:id/packs` → Query all packs
 - `POST /api/game/:id/packs/form` → Form pack from creatures
 
-**Operations**:
+**Implementation**:
 ```typescript
 function formPack(creatureIds, gameState) {
   const creatures = creatureIds.map(id => gameState.creatures.get(id));
@@ -226,12 +226,12 @@ function formPack(creatureIds, gameState) {
 }
 ```
 
-#### 5. Building System
-**Endpoints**:
+#### 5. Building Resource
+**HTTP Operations**:
 - `GET /api/game/:id/buildings` → Query all buildings
 - `POST /api/game/:id/buildings/construct` → Construct building
 
-**Operations**:
+**Implementation**:
 ```typescript
 function constructBuilding(tribeId, buildingType, gameState) {
   const tribe = gameState.tribes.get(tribeId);
@@ -258,11 +258,11 @@ function constructBuilding(tribeId, buildingType, gameState) {
 }
 ```
 
-#### 6. Generation System
-**Endpoints**:
+#### 6. Generation Resource
+**HTTP Operations**:
 - `POST /api/game/:id/generation` → Advance generation
 
-**Operations**:
+**Implementation**:
 ```typescript
 function advanceGeneration(gameState) {
   gameState.generation++;
@@ -298,11 +298,11 @@ function advanceGeneration(gameState) {
 
 ---
 
-## FRONTEND Systems (Game Loop)
+## FRONTEND ECS Systems (Game Loop)
 
-If/when we add 3D frontend, THESE would have continuous update loops:
+If/when we add 3D frontend, THESE would be actual ECS systems with continuous update loops:
 
-#### Rendering System
+#### Rendering System (ECS System)
 ```typescript
 function RenderingSystem(deltaTime) {
   // Query backend state
@@ -316,7 +316,7 @@ function RenderingSystem(deltaTime) {
 }
 ```
 
-#### Camera System
+#### Camera System (ECS System)
 ```typescript
 function CameraSystem(deltaTime) {
   // Follow player/selected entity
@@ -324,7 +324,7 @@ function CameraSystem(deltaTime) {
 }
 ```
 
-#### Animation System
+#### Animation System (ECS System)
 ```typescript
 function AnimationSystem(deltaTime) {
   // Update creature animations based on state
@@ -339,26 +339,36 @@ function AnimationSystem(deltaTime) {
 
 ## The Architecture Split
 
-### Backend (REST Server)
+### Backend = RESTful API
 ```
-ECS = Data Storage
-- Entities: Stored in memory (Map<id, entity>)
-- Components: Properties on entities
-- Systems: REST endpoints that compute on demand
+RESTful Resources:
+- /materials → Material queries
+- /creatures → Creature queries & evolution
+- /tools → Tool emergence evaluation
+- /packs → Pack formation
+- /buildings → Building construction
+- /generation → Time advancement
+
+Data Storage: ECS (Entities with Components)
+- Stored in memory (Map<id, entity>)
+- Accessed by REST handlers
 
 No Game Loop
-State updates on API calls
+State computed on HTTP request
 ```
 
-### Frontend (React + Three.js)
+### Frontend = ECS Game Loop
 ```
-ECS = Rendering Loop
-- Entities: 3D meshes in scene
-- Components: Position, animation, visibility
-- Systems: Update loops (60 FPS)
+ECS Systems:
+- Rendering System (60 FPS)
+- Animation System (60 FPS)  
+- Camera System (60 FPS)
+
+Entities: 3D meshes in scene
+Components: Position, animation, visibility
 
 Game Loop: requestAnimationFrame
-Queries backend for state
+Queries backend REST API for state
 Renders based on backend data
 ```
 
@@ -401,18 +411,19 @@ response.creatures.forEach(creature => {
 await fetch('/api/game/123/generation', { method: 'POST' });
 ```
 
-### 4. Backend Executes (Systems Run)
+### 4. Backend Executes (REST Handler Runs)
 ```typescript
-// Generation system executes ONCE
+// POST /api/game/123/generation handler
+// Executes ONCE per HTTP request
+
 advanceGeneration(gameState);
 
-// Creature system evolves all creatures
-gameState.creatures.forEach(evolveCreature);
-
-// Tool system checks emergence
+// Calls pure functions
+evolveAllCreatures(gameState);
 evaluateToolEmergence(gameState);
+checkPackFormations(gameState);
 
-// Returns new state
+// Returns new state as JSON
 ```
 
 ### 5. Client Displays Updated State
@@ -434,19 +445,23 @@ updateSceneWithNewCreatures(newCreatures);
 
 **COMPONENTS**: Transform, Traits, Health, MaterialType, BuildingType, etc.
 
-**BACKEND SYSTEMS**: REST endpoints that compute state on demand
-- Material System = `/api/game/:id/materials/*`
-- Creature System = `/api/game/:id/creatures/*`
-- Tool System = `/api/game/:id/tools/*`
-- etc.
+**BACKEND = RESTful API**: HTTP resources that compute state on demand
+- Material Resource = `/api/game/:id/materials/*`
+- Creature Resource = `/api/game/:id/creatures/*`
+- Tool Resource = `/api/game/:id/tools/*`
+- Pack Resource = `/api/game/:id/packs/*`
+- Building Resource = `/api/game/:id/buildings/*`
+- Generation Resource = `/api/game/:id/generation`
 
-**FRONTEND SYSTEMS**: Rendering loops that query backend
+**FRONTEND = ECS Systems**: Rendering loops that query backend
 - Rendering System (60 FPS)
 - Animation System (60 FPS)
 - Camera System (60 FPS)
 
-**Backend = Stateful REST API (no continuous loop)**
+---
 
-**Frontend = Game loop that queries backend**
+**Backend = RESTful API (stateful, no continuous loop, computes on HTTP request)**
+
+**Frontend = ECS Game Loop (stateless, 60 FPS, queries backend for state)**
 
 This is the architecture.
