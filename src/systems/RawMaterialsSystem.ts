@@ -71,6 +71,11 @@ export interface MaterialArchetype {
   traitInfluence: number[];      // How it affects creature traits (10 values for 10 traits)
   generationStability: number;   // Resistance to change over time
   inheritancePattern: 'additive' | 'dominant' | 'recessive' | 'codominant';
+  
+  // CRITICAL: Physical reality properties (drives tool evolution)
+  naturalDepth: number;          // Where this material occurs (0-50m)
+  materialHardness: number;      // How hard to extract (0-10)
+  requiredToolHardness: number;  // Min tool hardness needed
 }
 
 // Procedural material instance
@@ -86,6 +91,11 @@ export interface MaterialInstance {
   nearbyCreatureTraits: number[][]; // Traits of creatures that have been near it
   evolutionPressure: number[];      // Accumulated evolutionary pressure
   lastEvolutionEvent: number;       // When it last caused evolution
+  
+  // CRITICAL: Physical reality (affects accessibility)
+  depth: number;                 // Actual depth of this instance
+  hardness: number;              // Actual hardness
+  accessibility: number;         // Current ease of harvest (0-1)
 }
 
 class RawMaterialsSystem {
@@ -116,7 +126,10 @@ class RawMaterialsSystem {
       purity: 0.8,
       traitInfluence: [0, 0.3, 0, 0, 0.5, 0, 0, 0.2, 0, 0], // Affects ChainsawHands, StorageSacs
       generationStability: 0.7,
-      inheritancePattern: 'additive'
+      inheritancePattern: 'additive',
+      naturalDepth: 0,        // Surface - trees above ground
+      materialHardness: 2.5,  // Medium-soft
+      requiredToolHardness: 1.0  // Basic tools work
     });
     
     this.archetypes.set(MaterialCategory.ORE, {
@@ -131,7 +144,10 @@ class RawMaterialsSystem {
       purity: 0.9,
       traitInfluence: [0, 0, 0.6, 0, 0, 0, 0, 0, 0.4, 0], // Affects DrillArms, ShieldCarapace  
       generationStability: 0.9,
-      inheritancePattern: 'dominant'
+      inheritancePattern: 'dominant',
+      naturalDepth: 15,       // 10-20m - requires digging
+      materialHardness: 6.5,  // Very hard
+      requiredToolHardness: 5.0  // Need evolved EXTRACTOR tools
     });
     
     this.archetypes.set(MaterialCategory.WATER, {
@@ -146,7 +162,10 @@ class RawMaterialsSystem {
       purity: 0.7,
       traitInfluence: [0.8, 0, 0, 0, 0, 0, 0, 0.6, 0, 0], // Affects FlipperFeet, FiltrationGills
       generationStability: 0.4,
-      inheritancePattern: 'additive'
+      inheritancePattern: 'additive',
+      naturalDepth: 0,        // Surface - rivers/ponds
+      materialHardness: 0.1,  // Very soft (liquid)
+      requiredToolHardness: 0.0  // No tool needed
     });
     
     // Debug bait material
@@ -162,7 +181,10 @@ class RawMaterialsSystem {
       purity: 1.0,
       traitInfluence: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5], // Affects all traits equally for testing
       generationStability: 1.0, // Stable for consistent testing
-      inheritancePattern: 'dominant'
+      inheritancePattern: 'dominant',
+      naturalDepth: 0,        // Surface
+      materialHardness: 1.0,  // Easy
+      requiredToolHardness: 0.0  // No tool needed
     });
     
     log.info('Material archetypes initialized', {
