@@ -19,6 +19,7 @@ import BuildingRenderer from './components/BuildingRenderer';
 import EvolutionUI from './components/EvolutionUI';
 import CatalystCreator, { type TraitAllocation } from './components/CatalystCreator';
 import OnboardingFlow from './components/OnboardingFlow';
+import EvolutionParticles from './components/EvolutionParticles';
 import { SporeStyleCamera } from './systems/SporeStyleCameraSystem';
 
 // Initialize complete ecosystem
@@ -158,6 +159,9 @@ const Scene: React.FC = () => {
       <TerrainRenderer />
       <CreatureRenderer />
       <BuildingRenderer />
+      
+      {/* Evolution particle effects */}
+      <EvolutionParticles />
       
       {/* Spore-style dynamic third-person camera */}
       <SporeStyleCamera />

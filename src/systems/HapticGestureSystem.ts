@@ -603,6 +603,8 @@ class HapticGestureSystem {
    * Trigger evolution event haptics
    */
   triggerEvolutionHaptic(eventType: EvolutionEvent['eventType'], significance: number): void {
+    if (!this.hapticsEnabled) return;
+
     let pattern: HapticPattern;
     
     switch (eventType) {
@@ -620,6 +622,23 @@ class HapticGestureSystem {
     }
     
     this.triggerHapticFeedback(pattern, significance);
+  }
+  
+  /**
+   * Initialize auto-listening to GameClock evolution events
+   */
+  initializeEvolutionListening(): void {
+    gameClock.onEvolutionEvent((event) => {
+      this.triggerEvolutionHaptic(event.eventType, event.significance);
+    });
+    
+    log.info('HapticGestureSystem now listening to evolution events');
+  }
+  
+  private hapticsEnabled = true;
+  
+  setHapticsEnabled(enabled: boolean): void {
+    this.hapticsEnabled = enabled;
   }
   
   /**

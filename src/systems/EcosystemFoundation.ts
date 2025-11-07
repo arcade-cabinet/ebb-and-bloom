@@ -153,15 +153,7 @@ class EcosystemFoundation {
     await this.spawnEdenPopulation();
 
     // Initialize haptic feedback for evolution events
-    if (typeof this.gestureSystem.initializeEvolutionListening === 'function') {
-      this.gestureSystem.initializeEvolutionListening();
-    } else {
-      // Manual setup if method doesn't exist
-      gameClock.onEvolutionEvent((event) => {
-        this.gestureSystem.triggerEvolutionHaptic(event.eventType, event.significance);
-      });
-      log.info('HapticGestureSystem manually wired to evolution events');
-    }
+    this.gestureSystem.initializeEvolutionListening();
     
     this.initialized = true;
     log.info('Ecosystem foundation initialization complete - PRODUCTION MODE + HAPTICS');
