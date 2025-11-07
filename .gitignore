@@ -145,3 +145,11 @@ ios/
 
 # Build outputs
 build/
+
+# Texture assets (downloaded via script, too large for git)
+public/textures/
+!public/textures/.gitkeep
+
+# Playwright test results (can be large)
+playwright-results/
+playwright-report/
