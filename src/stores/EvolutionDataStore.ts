@@ -5,6 +5,8 @@
 
 import { create } from 'zustand';
 import { persist, createJSONStorage, subscribeWithSelector } from 'zustand/middleware';
+import { Capacitor } from '@capacitor/core';
+import { Device } from '@capacitor/device';
 import { log } from '../utils/Logger';
 import type { GameTime, EvolutionEvent } from '../systems/GameClock';
 import type { EcosystemState } from '../systems/EcosystemFoundation';
@@ -130,18 +132,26 @@ export const useEvolutionDataStore = create<EvolutionDataState>()(
     persist(
       (set, get) => {
         // Initialize platform state
-        const getPlatform = (): EvolutionDataState['platform']['platform'] => {
+        const getPlatform = async (): Promise<EvolutionDataState['platform']['platform']> => {
           if (typeof window === 'undefined') return 'web';
-          const plat = Platform.getPlatform();
-          if (plat === 'ios' || plat === 'android') return plat;
-          if (plat === 'electron') return 'electron';
+          
+          try {
+            const info = await Device.getInfo();
+            if (info.platform === 'ios' || info.platform === 'android') {
+              return info.platform;
+            }
+            if (info.platform === 'electron') return 'electron';
+          } catch {
+            // Device API not available - assume web
+          }
+          
           return 'web';
         };
 
-        const platform = getPlatform();
+        const platform = 'web'; // Will be updated async
         const isNative = Capacitor.isNativePlatform();
-        const isMobile = ['ios', 'android'].includes(platform);
-        const isDesktop = platform === 'electron';
+        const isMobile = false; // Will be updated async
+        const isDesktop = false;
 
         const initialWidth = typeof window !== 'undefined' ? window.innerWidth : 1280;
         const initialHeight = typeof window !== 'undefined' ? window.innerHeight : 720;
