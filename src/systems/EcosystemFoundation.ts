@@ -22,6 +22,7 @@ import TerrainSystem from './TerrainSystem';
 import TextureSystem from './TextureSystem';
 import YukaSphereCoordinator from './YukaSphereCoordinator';
 import DeconstructionSystem from './DeconstructionSystem';
+import ToolArchetypeSystem from './ToolArchetypeSystem';
 
 export interface EcosystemState {
   totalCreatures: number;
@@ -51,6 +52,7 @@ class EcosystemFoundation {
   private gestureSystem: HapticGestureSystem;
   private yukaCoordinator: YukaSphereCoordinator;
   private deconstructionSystem: DeconstructionSystem;
+  private toolSystem: ToolArchetypeSystem;
 
   // System state
   private initialized = false;
@@ -86,8 +88,11 @@ class EcosystemFoundation {
     
     // Deconstruction System - Reverse Synthesis
     this.deconstructionSystem = new DeconstructionSystem(world);
+    
+    // Tool Archetype System - 8 fundamental tool categories
+    this.toolSystem = new ToolArchetypeSystem(world);
 
-    log.info('EcosystemFoundation created with all systems + YUKA COORDINATOR + DECONSTRUCTION');
+    log.info('EcosystemFoundation created with ALL SYSTEMS - COMPLETE YUKA ARCHITECTURE');
   }
 
   async initialize(): Promise<void> {
@@ -121,7 +126,7 @@ class EcosystemFoundation {
 
     // Generate initial terrain chunk
     log.info('Generating Eden baseline terrain...');
-    this.terrainSystem.generateChunk(0, 0, 1024, 256);
+    this.terrainSystem.generateChunk(0, 0, 1024);
 
     // Generate raw materials across terrain
     log.info('Placing raw materials across terrain...');
@@ -201,6 +206,7 @@ class EcosystemFoundation {
       this.creatureSystem.update(deltaTime);
       this.packSocialSystem.update(deltaTime);
       this.buildingSystem.update(deltaTime);
+      this.toolSystem.update(deltaTime);
 
       // Cross-system interactions
       this.processEcosystemInteractions();

@@ -192,7 +192,6 @@ const EcosystemUpdater: React.FC = () => {
 const App: React.FC = () => {
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [showCatalyst, setShowCatalyst] = useState(false);
-  const [playerTraits, setPlayerTraits] = useState<TraitAllocation | null>(null);
   
   useEffect(() => {
     initializeLogging();
@@ -214,12 +213,12 @@ const App: React.FC = () => {
   };
   
   const handleCatalystComplete = (traits: TraitAllocation) => {
-    setPlayerTraits(traits);
     setShowCatalyst(false);
     log.info('Player catalyst created', { traits });
     
-    // Would use traits to influence initial creature generation
-    // For now, just proceed to game
+    // TODO: Use traits to influence initial creature generation
+    // Store in localStorage for persistence
+    localStorage.setItem('ebb-bloom-player-traits', JSON.stringify(traits));
   };
   
   const handleSkipOnboarding = () => {
