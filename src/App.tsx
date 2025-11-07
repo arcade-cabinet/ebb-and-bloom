@@ -14,6 +14,7 @@ import * as THREE from 'three';
 import TerrainRenderer from './components/TerrainRenderer';
 import CreatureRenderer from './components/CreatureRenderer';
 import BuildingRenderer from './components/BuildingRenderer';
+import EvolutionUI from './components/EvolutionUI';
 import { SporeStyleCamera } from './systems/SporeStyleCameraSystem';
 
 // Initialize complete ecosystem
@@ -197,14 +198,8 @@ const App: React.FC = () => {
             <EcosystemUpdater />
           </Canvas>
           
-          <Html style={{ position: 'absolute', top: 10, left: 10, color: 'white', zIndex: 100 }}>
-            <div>
-              <p><strong>Ebb & Bloom</strong> - Evolution Simulation</p>
-              <p>Watching ecosystem evolve in accelerated time (10x speed)</p>
-              <p>Generation cycles: 20 seconds each</p>
-              <p>Check console for evolution events and state dumps</p>
-            </div>
-          </Html>
+          {/* Evolution UI overlay with Daggerfall/Spore-inspired information display */}
+          <EvolutionUI />
         </ECS>
       </TextureContext.Provider>
     </div>
