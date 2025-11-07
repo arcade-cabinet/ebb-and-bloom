@@ -181,7 +181,7 @@ Create detailed creature archetype specifications that will be used to generate 
     
     try {
       const result = await generateObject({
-        model: openai('gpt-4-1106-preview'),
+        model: openai('gpt-4o'),
         system: systemPrompt,
         prompt: `Generate a complete creature archetype specification:
 
@@ -311,7 +311,7 @@ Design buildings that serve specific gameplay functions while being structurally
     
     try {
       const result = await generateObject({
-        model: openai('gpt-4-1106-preview'),
+        model: openai('gpt-4o'),
         system: systemPrompt,
         prompt: `Design a complete building assembly:
 
