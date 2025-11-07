@@ -1,0 +1,125 @@
+version: "0.5"
+
+# Ebb & Bloom Process Compose Configuration
+# Manages dev server, Capacitor web build, and testing processes
+
+environment:
+  - "NODE_ENV=development"
+  - "VITE_DEV_SERVER_PORT=5173"
+
+log_level: info
+log_configuration:
+  disable_json: true
+  timestamp_format: "15:04:05"
+
+processes:
+  # Core Vite development server
+  vite-dev:
+    command: "mise exec -- pnpm dev"
+    working_dir: "."
+    description: "Vite development server with HMR"
+    log_location: "./logs/vite-dev.log"
+    restart_policy:
+      restart: "on_failure"
+      backoff_seconds: 2
+      max_restarts: 5
+    readiness_probe:
+      http_get:
+        host: "localhost"
+        port: 5173
+        path: "/"
+        scheme: "http"
+      initial_delay_seconds: 5
+      period_seconds: 2
+      timeout_seconds: 5
+      failure_threshold: 10
+    environment:
+      - "NODE_ENV=development"
+      - "HOST=0.0.0.0"
+      - "PORT=5173"
+
+  # Capacitor web build sync (for Android development)
+  capacitor-sync:
+    command: "mise exec -- pnpm build && pnpm exec cap sync"
+    working_dir: "."
+    description: "Build and sync web assets to Capacitor platforms"
+    restart_policy:
+      restart: "no"
+    depends_on:
+      vite-dev:
+        condition: process_healthy
+    disabled: true  # Enable manually when needed
+
+  # Unit tests in watch mode
+  test-watch:
+    command: "mise exec -- pnpm test:watch"
+    working_dir: "."
+    description: "Vitest unit tests in watch mode"
+    restart_policy:
+      restart: "on_failure"
+      backoff_seconds: 1
+      max_restarts: 3
+    disabled: true  # Enable manually when needed
+
+  # E2E tests (requires dev server)
+  test-e2e:
+    command: "mise exec -- pnpm test:e2e"
+    working_dir: "."
+    description: "Playwright E2E tests against dev server"
+    restart_policy:
+      restart: "no"
+    depends_on:
+      vite-dev:
+        condition: process_healthy
+
+  # TypeScript checking in watch mode
+  typecheck-watch:
+    command: "mise exec -- pnpm exec tsc --noEmit --watch"
+    working_dir: "."
+    description: "TypeScript checking in watch mode"
+    restart_policy:
+      restart: "on_failure"
+      backoff_seconds: 2
+      max_restarts: 3
+    disabled: true  # Enable manually when needed
+
+  # Android live reload (when connected device available)
+  android-run:
+    command: "mise exec -- pnpm exec cap run android --livereload --external"
+    working_dir: "."
+    description: "Run on Android device with live reload"
+    restart_policy:
+      restart: "no"
+    depends_on:
+      vite-dev:
+        condition: process_healthy
+    disabled: true  # Enable manually when device connected
+
+  # iOS live reload (macOS only, when device available)
+  ios-run:
+    command: "mise exec -- pnpm exec cap run ios --livereload --external"
+    working_dir: "."
+    description: "Run on iOS device with live reload"
+    restart_policy:
+      restart: "no"  
+    depends_on:
+      vite-dev:
+        condition: process_healthy
+    disabled: true  # Enable manually when device connected
+
+  # Log aggregator for ECS systems (development debugging)
+  ecs-debug:
+    command: "tail -f logs/ecs-*.log 2>/dev/null || echo 'No ECS logs yet'"
+    working_dir: "."
+    description: "Monitor ECS system logs"
+    restart_policy:
+      restart: "always"
+      backoff_seconds: 5
+    disabled: true  # Enable manually when debugging
+
+# Global settings
+global:
+  environment:
+    - "NODE_ENV=development"
+    - "PNPM_HOME=${HOME}/.local/share/pnpm"
+  
