@@ -4,7 +4,7 @@
  */
 
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { persist, createJSONStorage, subscribeWithSelector } from 'zustand/middleware';
 import { log } from '../utils/Logger';
 import type { GameTime, EvolutionEvent } from '../systems/GameClock';
 import type { EcosystemState } from '../systems/EcosystemFoundation';
