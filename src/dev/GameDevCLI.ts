@@ -3,17 +3,16 @@
  * Integrates texture downloader, OpenAI image generation, Freesound audio, and dev workflows
  */
 
-import { Command } from 'commander';
-import { OpenAI } from 'openai';
-import { generateObject, experimental_generateImage as generateImage } from 'ai';
 import { openai } from '@ai-sdk/openai';
+import { experimental_generateImage as generateImage } from 'ai';
 import axios from 'axios';
-import { writeFile, readFile, stat } from 'fs/promises';
-import { existsSync, mkdirSync } from 'fs';
-import { join } from 'path';
+import { Command } from 'commander';
 import { createHash } from 'crypto';
-import { log } from '../utils/Logger';
+import { existsSync, mkdirSync } from 'fs';
+import { readFile, writeFile } from 'fs/promises';
+import { OpenAI } from 'openai';
 import { AI_MODELS } from '../config/ai-models';
+import { log } from '../utils/Logger';
 
 // Asset manifest interfaces
 interface GameAssetManifest {
@@ -115,34 +114,34 @@ class GameDevCLI {
   private openai: OpenAI;
   private freesoundApiKey: string;
   private manifestPath: string;
-  
+
   constructor() {
     this.openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY || ''
     });
     this.freesoundApiKey = process.env.FREESOUND_API_KEY || '';
     this.manifestPath = './public/assets/game-manifest.json';
-    
+
     this.ensureDirectories();
   }
-  
+
   private async ensureDirectories(): Promise<void> {
     const dirs = [
       './public/assets',
-      './public/models', 
+      './public/models',
       './public/audio',
       './public/textures',
       './public/ui',
       './src/generated'
     ];
-    
+
     for (const dir of dirs) {
       if (!existsSync(dir)) {
         await mkdirSync(dir, { recursive: true });
       }
     }
   }
-  
+
   /**
    * Generate creature visual based on evolutionary traits
    */
@@ -151,35 +150,35 @@ class GameDevCLI {
     traits: number[],
     morphologyDescription: string
   ): Promise<ModelAsset | null> {
-    
+
     // IDEMPOTENCY: Check if creature asset already exists
     const creatureId = emergentName.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
     const expectedFileName = `creature-${creatureId}.png`;
     const expectedPath = `./public/models/${expectedFileName}`;
-    
+
     if (existsSync(expectedPath)) {
       log.info('Creature asset already exists, skipping generation', { emergentName, path: expectedPath });
-      
+
       const manifest = await this.loadManifest();
-      const existingAsset = manifest.models?.find((m: ModelAsset) => 
+      const existingAsset = manifest.models?.find((m: ModelAsset) =>
         m.id === `creature-${emergentName}` || m.id.includes(creatureId)
       );
-      
+
       if (existingAsset) {
         return existingAsset;
       }
-      
+
       return null;
     }
-    
+
     log.info('Generating creature asset with OpenAI', {
       emergentName,
       traits: traits.slice(0, 5),
       morphologyDescription
     });
-    
+
     const prompt = this.buildCreaturePrompt(emergentName, traits, morphologyDescription);
-    
+
     try {
       // Generate with GPT-image-1 as specified
       const result = await generateImage({
@@ -190,23 +189,23 @@ class GameDevCLI {
           openai: { quality: 'high' }
         }
       });
-      
+
       // Result structure: { image: { url: string } }
       const imageUrl = typeof result.image === 'string' ? result.image : result.image.url;
       if (!imageUrl) throw new Error('No image generated');
-      
+
       // Download and save (IDEMPOTENT: check exists first)
       const imageBuffer = await this.downloadImage(imageUrl);
       const fileName = `creature-${emergentName}.png`;
       const filePath = `./public/models/${fileName}`;
-      
+
       // IDEMPOTENCY: Only write if doesn't exist
       if (!existsSync(filePath)) {
         await writeFile(filePath, imageBuffer);
       } else {
         log.info('Creature file already exists, skipping write', { filePath });
       }
-      
+
       // Create asset entry
       const asset: ModelAsset = {
         id: `creature-${emergentName}`,
@@ -227,41 +226,41 @@ class GameDevCLI {
           generated: new Date().toISOString()
         }
       };
-      
+
       // IDEMPOTENCY: Only update manifest if not present
       const manifest = await this.loadManifest();
       const existingIndex = manifest.models?.findIndex((m: ModelAsset) => m.id === asset.id);
-      
+
       if (existingIndex === undefined || existingIndex === -1) {
         await this.updateManifest('models', asset);
       } else {
         log.info('Creature asset already in manifest, skipping update', { id: asset.id });
       }
-      
+
       log.info('Creature asset processed successfully', {
         emergentName,
         filePath,
         size: imageBuffer.length,
         id: asset.id
       });
-      
+
       return asset;
-      
+
     } catch (error) {
       log.error('Failed to generate creature asset', error, { emergentName });
       throw error;
     }
   }
-  
+
   private buildCreaturePrompt(
     emergentName: string,
     traits: number[],
     morphologyDescription: string
   ): string {
-    
+
     // Convert trait values to descriptive elements
     const traitDescriptions = this.traitsToDescriptions(traits);
-    
+
     return `Create a unique evolved creature called "${emergentName}".
 
 Morphology: ${morphologyDescription}
@@ -274,13 +273,13 @@ Environment: Natural ecosystem setting, evolved for specific ecological niche.
 
 Render as: High-quality 3D reference for game asset creation, showing full creature in natural pose.`;
   }
-  
+
   private traitsToDescriptions(traits: number[]): string[] {
     const descriptions: string[] = [];
-    
+
     // Map trait indices to descriptive language
     if (traits[0] > 0.6) descriptions.push('enhanced mobility adaptations');
-    if (traits[1] > 0.6) descriptions.push('environmental manipulation features');  
+    if (traits[1] > 0.6) descriptions.push('environmental manipulation features');
     if (traits[2] > 0.6) descriptions.push('drilling or excavation appendages');
     if (traits[3] > 0.6) descriptions.push('social coordination structures');
     if (traits[4] > 0.6) descriptions.push('sensory enhancement organs');
@@ -289,10 +288,10 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
     if (traits[7] > 0.6) descriptions.push('filtering or purification systems');
     if (traits[8] > 0.6) descriptions.push('defensive armoring or shells');
     if (traits[9] > 0.6) descriptions.push('reactive or toxic defense mechanisms');
-    
+
     return descriptions.length > 0 ? descriptions : ['balanced generalist form'];
   }
-  
+
   /**
    * Download audio from Freesound API using modern FreesoundClient
    */
@@ -302,47 +301,47 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
     count: number = 5,
     usage?: { contexts: string[]; volume?: number; loop?: boolean; fadeIn?: number; fadeOut?: number }
   ): Promise<AudioAsset[]> {
-    
+
     log.info('Downloading audio from Freesound', { query, category, count });
-    
+
     if (!this.freesoundApiKey) {
       log.warn('FREESOUND_API_KEY not set, skipping audio download');
       return [];
     }
-    
+
     try {
       // Use modern FreesoundClient
       const { FreesoundClient } = await import('../utils/FreesoundClient.js');
       const client = new FreesoundClient({ apiKey: this.freesoundApiKey });
-      
+
       // Search and get manifest entries
       const manifestEntries = await client.searchForManifest(query, category, count, usage);
-      
+
       const assets: AudioAsset[] = [];
-      
+
       for (const entry of manifestEntries) {
         // Get full sound details to download
         const sound = await client.getSound(entry.source.freesoundId!);
         const audioAsset = await this.downloadSingleSound(sound, category, entry);
         if (audioAsset) assets.push(audioAsset);
       }
-      
+
       log.info('Freesound audio download complete', {
         query,
         downloaded: assets.length,
         category
       });
-      
+
       return assets;
-      
+
     } catch (error) {
       log.error('Failed to download Freesound audio', error, { query });
       return [];
     }
   }
-  
+
   private async downloadSingleSound(
-    soundData: any, 
+    soundData: any,
     category: AudioAsset['category'],
     manifestEntry?: { usage?: { contexts?: string[]; volume?: number; loop?: boolean; fadeIn?: number; fadeOut?: number } }
   ): Promise<AudioAsset | null> {
@@ -350,21 +349,21 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
       // Use FreesoundClient to get preview URL
       const { FreesoundClient } = await import('../utils/FreesoundClient.js');
       const client = new FreesoundClient({ apiKey: this.freesoundApiKey });
-      
-      const audioUrl = client.getPreviewUrl(soundData, 'hq', 'ogg') || 
-                      client.getPreviewUrl(soundData, 'hq', 'mp3') ||
-                      client.getPreviewUrl(soundData, 'lq', 'ogg') ||
-                      client.getPreviewUrl(soundData, 'lq', 'mp3');
-      
+
+      const audioUrl = client.getPreviewUrl(soundData, 'hq', 'ogg') ||
+        client.getPreviewUrl(soundData, 'hq', 'mp3') ||
+        client.getPreviewUrl(soundData, 'lq', 'ogg') ||
+        client.getPreviewUrl(soundData, 'lq', 'mp3');
+
       if (!audioUrl) return null;
-      
+
       const audioBuffer = await this.downloadAudio(audioUrl);
       const fileExtension = audioUrl.split('.').pop()?.split('?')[0] || 'ogg';
       const fileName = `${category}-${soundData.id}.${fileExtension}`;
       const filePath = `./public/audio/${fileName}`;
-      
+
       await writeFile(filePath, audioBuffer);
-      
+
       const asset: AudioAsset = {
         id: `${category}-${soundData.id}`,
         name: soundData.name,
@@ -383,9 +382,9 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
           generated: new Date().toISOString()
         }
       };
-      
+
       await this.updateManifest('audio', asset);
-      
+
       // Also update audio manifest if usage context provided
       if (manifestEntry?.usage) {
         const { AudioManifestManager } = await import('../utils/FreesoundClient.js');
@@ -395,15 +394,15 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
           usage: manifestEntry.usage
         });
       }
-      
+
       return asset;
-      
+
     } catch (error) {
       log.error('Failed to download single sound', error, { soundId: soundData.id });
       return null;
     }
   }
-  
+
   /**
    * Generate UI elements with AI assistance
    */
@@ -421,7 +420,7 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
       ui: []
     };
   }
-  
+
   async generateUIAsset(
     elementType: 'icon' | 'background' | 'pattern' | 'splash' | 'panel' | 'transparent',
     description: string,
@@ -432,16 +431,16 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
       fullScreen?: boolean;
     }
   ): Promise<UIAsset> {
-    
+
     log.info('Generating UI asset', { elementType, description, style, options });
-    
+
     const dimensions = options?.dimensions || (elementType === 'splash' ? [1080, 1920] : [1024, 1024]);
     const prompt = this.buildUIPrompt(elementType, description, style, options);
-    
+
     // IDEMPOTENCY: Generate deterministic file name based on content
     const contentHash = this.generateChecksum(Buffer.from(`${elementType}-${description}-${style}-${dimensions.join('x')}`)).substring(0, 8);
     const fileName = `${elementType}-${contentHash}.png`;
-    
+
     // Determine output directory
     let outputDir = './public/ui';
     if (elementType === 'splash') {
@@ -453,22 +452,22 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
     } else if (elementType === 'background') {
       outputDir = './public/ui/backgrounds';
     }
-    
+
     const filePath = `${outputDir}/${fileName}`;
-    
+
     // IDEMPOTENCY: Check if file already exists
     if (existsSync(filePath)) {
       log.info('UI asset already exists, loading from manifest', { filePath });
-      
+
       const manifest = await this.loadManifest();
-      const existingAsset = manifest.ui?.find((u: UIAsset) => 
+      const existingAsset = manifest.ui?.find((u: UIAsset) =>
         u.files.png?.includes(fileName) || u.files.png?.includes(contentHash)
       );
-      
+
       if (existingAsset) {
         return existingAsset;
       }
-      
+
       // File exists but not in manifest - add it
       const stats = await import('fs/promises').then(fs => fs.stat(filePath));
       const asset: UIAsset = {
@@ -490,11 +489,11 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
           fullScreen: options?.fullScreen || elementType === 'splash'
         }
       };
-      
+
       await this.updateManifest('ui', asset);
       return asset;
     }
-    
+
     try {
       // Determine image size based on dimensions
       let imageSize: "1024x1024" | "1792x1024" | "1024x1536" = "1024x1024";
@@ -503,23 +502,23 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
       } else if (dimensions[1] > dimensions[0]) {
         imageSize = "1024x1536"; // Portrait (DALL-E only supports 1024x1536, not 1024x1792)
       }
-      
+
       // Generate with GPT-image-1 as specified
       // For transparent images, use b64_json format for better transparency support
       const useB64Json = options?.transparent === true;
-      
+
       const result = await generateImage({
         model: openai.image(AI_MODELS.IMAGE_GENERATION), // gpt-image-1
         prompt,
         size: imageSize,
         providerOptions: {
-          openai: { 
+          openai: {
             quality: 'high',
             ...(useB64Json ? { response_format: 'b64_json' } : {})
           }
         }
       });
-      
+
       // Handle both URL and base64 responses
       let rawImageBuffer: Buffer;
       if (useB64Json && result.image && typeof result.image === 'object' && 'b64_json' in result.image) {
@@ -531,27 +530,27 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
         if (!imageUrl) throw new Error('No UI asset generated');
         rawImageBuffer = await this.downloadImage(imageUrl);
       }
-      
+
       // POST-PROCESS: Resize to actual target dimensions and verify transparency
       const sharp = (await import('sharp')).default;
       let processedImage = sharp(rawImageBuffer);
-      
+
       // Resize to actual target dimensions (not the 1024+ size from gpt-image-1)
       const [targetWidth, targetHeight] = dimensions;
       processedImage = processedImage.resize(targetWidth, targetHeight, {
         fit: 'contain',
         background: options?.transparent ? { r: 0, g: 0, b: 0, alpha: 0 } : { r: 255, g: 255, b: 255, alpha: 1 }
       });
-      
+
       // Ensure PNG format with proper transparency
       processedImage = processedImage.png({
         compressionLevel: 9,
         adaptiveFiltering: true,
         force: true
       });
-      
+
       const imageBuffer = await processedImage.toBuffer();
-      
+
       // Verify transparency if requested
       if (options?.transparent) {
         const metadata = await sharp(imageBuffer).metadata();
@@ -559,20 +558,20 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
           log.warn('Transparency verification failed - no alpha channel', { filePath });
         }
       }
-      
+
       // Ensure directory exists
       const dirPath = filePath.substring(0, filePath.lastIndexOf('/'));
       if (!existsSync(dirPath)) {
         await mkdirSync(dirPath, { recursive: true });
       }
-      
+
       // IDEMPOTENCY: Only write if file doesn't exist
       if (!existsSync(filePath)) {
         await writeFile(filePath, imageBuffer);
       } else {
         log.info('File already exists, skipping write', { filePath });
       }
-      
+
       const asset: UIAsset = {
         id: `${elementType}-${contentHash}`,
         name: description,
@@ -592,17 +591,17 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
           fullScreen: options?.fullScreen || elementType === 'splash'
         }
       };
-      
+
       // IDEMPOTENCY: Only update manifest if asset not already present
       const manifest = await this.loadManifest();
       const existingIndex = manifest.ui?.findIndex((u: UIAsset) => u.id === asset.id);
-      
+
       if (existingIndex === undefined || existingIndex === -1) {
         await this.updateManifest('ui', asset);
       } else {
         log.info('Asset already in manifest, skipping update', { id: asset.id });
       }
-      
+
       log.info('UI asset processed successfully', {
         elementType,
         filePath,
@@ -610,15 +609,15 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
         size: imageBuffer.length,
         id: asset.id
       });
-      
+
       return asset;
-      
+
     } catch (error) {
       log.error('Failed to generate UI asset', error, { elementType });
       throw error;
     }
   }
-  
+
   /**
    * Generate splash screen images (full-screen portrait)
    */
@@ -629,33 +628,33 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
     // IDEMPOTENCY: Check if splash screen already exists
     const expectedFileName = `splash-${variant}-${playstyle || 'neutral'}.png`;
     const expectedPath = `./public/splash/${expectedFileName}`;
-    
+
     if (existsSync(expectedPath)) {
       log.info('Splash screen already exists, skipping generation', { variant, playstyle, path: expectedPath });
-      
+
       // Load existing asset from manifest
       const manifest = await this.loadManifest();
-      const existingAsset = manifest.ui?.find((u: UIAsset) => 
+      const existingAsset = manifest.ui?.find((u: UIAsset) =>
         u.files.png?.includes(expectedFileName) || u.id.includes(`splash-${variant}`)
       );
-      
+
       if (existingAsset) {
         return existingAsset;
       }
-      
+
       // Return null if exists but not in manifest (will be added on next run)
       return null;
     }
-    
+
     const descriptions = {
       harmony: 'Serene, flowing evolutionary ecosystem with blues and greens, peaceful creatures, symbiotic relationships, organic growth patterns',
       conquest: 'Dynamic, intense evolutionary ecosystem with reds and oranges, competitive creatures, territorial displays, aggressive adaptations',
       frolick: 'Playful, whimsical evolutionary ecosystem with rainbow and pastel colors, curious creatures, exploratory behaviors, joyful mutations',
       neutral: 'Balanced evolutionary ecosystem showing diverse creatures, varied environments, neutral tones with brand colors, evolutionary progression'
     };
-    
+
     const description = descriptions[playstyle || 'neutral'];
-    
+
     return this.generateUIAsset(
       'splash',
       `Splash screen variant ${variant}: ${description}`,
@@ -666,7 +665,7 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
       }
     );
   }
-  
+
   /**
    * Generate transparent PNG elements (icons, UI elements)
    */
@@ -678,22 +677,22 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
     const elementId = description.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
     const expectedFileName = `element-${elementId}-${size}.png`;
     const expectedPath = `./public/ui/elements/${expectedFileName}`;
-    
+
     if (existsSync(expectedPath)) {
       log.info('Transparent element already exists, skipping generation', { description, size, path: expectedPath });
-      
+
       const manifest = await this.loadManifest();
-      const existingAsset = manifest.ui?.find((u: UIAsset) => 
+      const existingAsset = manifest.ui?.find((u: UIAsset) =>
         u.files.png?.includes(elementId) || u.id.includes(elementId)
       );
-      
+
       if (existingAsset) {
         return existingAsset;
       }
-      
+
       return null;
     }
-    
+
     return this.generateUIAsset(
       'transparent',
       `${description}. Transparent background, clean edges, suitable for overlay on any background`,
@@ -704,7 +703,7 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
       }
     );
   }
-  
+
   /**
    * Generate panel images (UI backgrounds, containers)
    */
@@ -716,22 +715,22 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
     const panelId = description.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
     const expectedFileName = `panel-${panelId}-${dimensions[0]}x${dimensions[1]}.png`;
     const expectedPath = `./public/ui/panels/${expectedFileName}`;
-    
+
     if (existsSync(expectedPath)) {
       log.info('Panel image already exists, skipping generation', { description, dimensions, path: expectedPath });
-      
+
       const manifest = await this.loadManifest();
-      const existingAsset = manifest.ui?.find((u: UIAsset) => 
+      const existingAsset = manifest.ui?.find((u: UIAsset) =>
         u.files.png?.includes(panelId) || u.id.includes(panelId)
       );
-      
+
       if (existingAsset) {
         return existingAsset;
       }
-      
+
       return null;
     }
-    
+
     return this.generateUIAsset(
       'panel',
       `UI panel background: ${description}. Subtle texture, suitable for content overlay, mobile-friendly`,
@@ -742,7 +741,7 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
       }
     );
   }
-  
+
   /**
    * Generate full-screen background images
    */
@@ -754,22 +753,22 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
     const bgId = description.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
     const expectedFileName = `background-${bgId}-${dimensions[0]}x${dimensions[1]}.png`;
     const expectedPath = `./public/ui/backgrounds/${expectedFileName}`;
-    
+
     if (existsSync(expectedPath)) {
       log.info('Background image already exists, skipping generation', { description, dimensions, path: expectedPath });
-      
+
       const manifest = await this.loadManifest();
-      const existingAsset = manifest.ui?.find((u: UIAsset) => 
+      const existingAsset = manifest.ui?.find((u: UIAsset) =>
         u.files.png?.includes(bgId) || u.id.includes(bgId)
       );
-      
+
       if (existingAsset) {
         return existingAsset;
       }
-      
+
       return null;
     }
-    
+
     return this.generateUIAsset(
       'background',
       `Full-screen background: ${description}. Atmospheric, non-distracting, suitable for UI overlay`,
@@ -780,10 +779,10 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
       }
     );
   }
-  
+
   private buildUIPrompt(
-    elementType: string, 
-    description: string, 
+    elementType: string,
+    description: string,
     style: string,
     options?: {
       dimensions?: [number, number];
@@ -791,14 +790,14 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
       fullScreen?: boolean;
     }
   ): string {
-    const baseStyle = style === 'organic' 
+    const baseStyle = style === 'organic'
       ? 'Organic, flowing, nature-inspired design with smooth curves and natural patterns'
-      : style === 'technical' 
-      ? 'Clean, geometric, technical design with precise lines and systematic patterns'
-      : 'Hybrid of organic and technical elements, balanced and modern';
-    
+      : style === 'technical'
+        ? 'Clean, geometric, technical design with precise lines and systematic patterns'
+        : 'Hybrid of organic and technical elements, balanced and modern';
+
     let requirements = 'Game UI element, clean, scalable design, high contrast, mobile-friendly';
-    
+
     if (elementType === 'splash') {
       requirements = 'Full-screen splash screen for mobile game, portrait orientation (1080x1920), atmospheric and immersive, suitable for loading screen, brand identity visible';
     } else if (elementType === 'transparent') {
@@ -808,9 +807,9 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
     } else if (elementType === 'background') {
       requirements = 'Full-screen background image, atmospheric and immersive, non-distracting, suitable for UI overlay, high quality';
     }
-    
+
     const brandColors = 'Brand colors: Deep indigo (#4A5568), emerald green (#38A169), trait gold (#D69E2E), echo silver (#A0AEC0)';
-    
+
     return `Create a ${elementType} for an evolutionary ecosystem game called "Ebb & Bloom".
 
 Description: ${description}
@@ -824,32 +823,32 @@ Requirements: ${requirements}
 ${options?.transparent ? 'CRITICAL REQUIREMENT: Image MUST have a COMPLETELY TRANSPARENT background with alpha channel. No white background, no colored background, no solid background of any kind. The image should be a PNG with transparency. All edges must be clean and anti-aliased for overlay use.' : ''}
 ${options?.fullScreen ? 'IMPORTANT: Full-screen image, optimized for mobile display, portrait orientation' : ''}`;
   }
-  
+
   private async downloadImage(url: string): Promise<Buffer> {
     const response = await axios.get(url, { responseType: 'arraybuffer' });
     return Buffer.from(response.data);
   }
-  
+
   private async downloadAudio(url: string): Promise<Buffer> {
     const response = await axios.get(url, { responseType: 'arraybuffer' });
     return Buffer.from(response.data);
   }
-  
+
   private generateChecksum(buffer: Buffer): string {
     return createHash('sha256').update(buffer).digest('hex');
   }
-  
+
   private async delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
-  
+
   private async updateManifest(assetType: 'models' | 'audio' | 'ui' | 'textures', asset: any): Promise<void> {
     // IDEMPOTENCY: Load existing manifest
     const manifest = await this.loadManifest();
-    
+
     // IDEMPOTENCY: Check if asset already exists (by ID)
     const existingIndex = manifest[assetType]?.findIndex((a: any) => a.id === asset.id);
-    
+
     if (existingIndex !== undefined && existingIndex >= 0) {
       // Update existing asset instead of duplicating
       manifest[assetType][existingIndex] = asset;
@@ -862,24 +861,24 @@ ${options?.fullScreen ? 'IMPORTANT: Full-screen image, optimized for mobile disp
       manifest[assetType].push(asset);
       log.debug('Added new asset to manifest', { assetType, id: asset.id });
     }
-    
+
     manifest.generated = new Date().toISOString();
-    
+
     // Save updated manifest
     await writeFile(this.manifestPath, JSON.stringify(manifest, null, 2));
   }
-  
+
   /**
    * CLI Commands
    */
   setupCLI(): Command {
     const program = new Command();
-    
+
     program
       .name('ebb-bloom-dev')
       .description('Ebb & Bloom AI-powered development tools')
       .version('1.0.0');
-    
+
     // Texture management
     program
       .command('textures')
@@ -898,10 +897,10 @@ ${options?.fullScreen ? 'IMPORTANT: Full-screen image, optimized for mobile disp
           baseDelayMs: 1000,
           timeoutMs: 30000
         });
-        
+
         await downloader.downloadAll();
       });
-    
+
     // Creature generation
     program
       .command('creature')
@@ -912,10 +911,10 @@ ${options?.fullScreen ? 'IMPORTANT: Full-screen image, optimized for mobile disp
       .action(async (options) => {
         const traits = options.traits.split(',').map(Number);
         const morphology = options.morphology || 'Evolutionary adaptation';
-        
+
         await this.generateCreatureAsset(options.name, traits, morphology);
       });
-    
+
     // Audio management
     program
       .command('audio')
@@ -926,7 +925,7 @@ ${options?.fullScreen ? 'IMPORTANT: Full-screen image, optimized for mobile disp
       .action(async (options) => {
         await this.downloadFreesoundAudio(options.query, options.category, parseInt(options.count));
       });
-    
+
     // UI generation
     program
       .command('ui')
@@ -950,7 +949,7 @@ ${options?.fullScreen ? 'IMPORTANT: Full-screen image, optimized for mobile disp
           }
         );
       });
-    
+
     // Splash screen generation
     program
       .command('splash')
@@ -960,7 +959,7 @@ ${options?.fullScreen ? 'IMPORTANT: Full-screen image, optimized for mobile disp
       .action(async (options) => {
         await this.generateSplashScreen(parseInt(options.variant), options.playstyle);
       });
-    
+
     // Transparent element generation
     program
       .command('transparent')
@@ -970,7 +969,7 @@ ${options?.fullScreen ? 'IMPORTANT: Full-screen image, optimized for mobile disp
       .action(async (options) => {
         await this.generateTransparentElement(options.description, parseInt(options.size));
       });
-    
+
     // Panel image generation
     program
       .command('panel')
@@ -984,7 +983,7 @@ ${options?.fullScreen ? 'IMPORTANT: Full-screen image, optimized for mobile disp
           [parseInt(options.width), parseInt(options.height)]
         );
       });
-    
+
     // Background image generation
     program
       .command('background')
@@ -998,7 +997,7 @@ ${options?.fullScreen ? 'IMPORTANT: Full-screen image, optimized for mobile disp
           [parseInt(options.width), parseInt(options.height)]
         );
       });
-    
+
     // Batch generation for all required assets
     program
       .command('generate-all')
@@ -1006,7 +1005,7 @@ ${options?.fullScreen ? 'IMPORTANT: Full-screen image, optimized for mobile disp
       .action(async () => {
         await this.generateAllRequiredAssets();
       });
-    
+
     // Development workflows
     program
       .command('setup')
@@ -1014,7 +1013,7 @@ ${options?.fullScreen ? 'IMPORTANT: Full-screen image, optimized for mobile disp
       .action(async () => {
         await this.setupDevelopmentEnvironment();
       });
-    
+
     // Manifest management
     program
       .command('manifest')
@@ -1029,41 +1028,41 @@ ${options?.fullScreen ? 'IMPORTANT: Full-screen image, optimized for mobile disp
           await this.exportManifest(options.export);
         }
       });
-    
+
     return program;
   }
-  
+
   private async setupDevelopmentEnvironment(): Promise<void> {
     log.info('Setting up complete development environment...');
-    
+
     // 1. Download base texture library
     log.info('Downloading base texture library...');
     // Would call texture downloader
-    
+
     // 2. Generate essential UI elements
     log.info('Generating base UI elements...');
     await this.generateUIAsset('icon', 'evolution tree icon for trait display', 'organic');
     await this.generateUIAsset('background', 'subtle organic pattern for evolution UI', 'organic');
     await this.generateUIAsset('pattern', 'data visualization pattern for generation tracking', 'technical');
-    
+
     // 3. Download essential audio
     log.info('Downloading base audio library...');
     await this.downloadFreesoundAudio('organic growth', 'evolution', 3);
     await this.downloadFreesoundAudio('heartbeat pulse', 'environment', 2);
     await this.downloadFreesoundAudio('water flow', 'environment', 3);
-    
+
     log.info('Development environment setup complete');
   }
-  
+
   /**
    * Generate all required PNG assets for the game
    */
   async generateAllRequiredAssets(): Promise<void> {
     log.info('Generating all required PNG assets - IDEMPOTENT MODE');
-    
+
     let generated = 0;
     let skipped = 0;
-    
+
     try {
       // 1. Generate 4 splash screen variants (IDEMPOTENT)
       log.info('Checking/generating splash screens (4 variants)...');
@@ -1077,7 +1076,7 @@ ${options?.fullScreen ? 'IMPORTANT: Full-screen image, optimized for mobile disp
         }
         await this.delay(2000); // Rate limiting
       }
-      
+
       // 2. Generate transparent PNG elements (IDEMPOTENT)
       log.info('Checking/generating transparent PNG elements...');
       const transparentElements = [
@@ -1092,7 +1091,7 @@ ${options?.fullScreen ? 'IMPORTANT: Full-screen image, optimized for mobile disp
         'Evolution event marker',
         'Material resource icon'
       ];
-      
+
       for (const desc of transparentElements) {
         const result = await this.generateTransparentElement(desc, 512);
         if (result) {
@@ -1102,7 +1101,7 @@ ${options?.fullScreen ? 'IMPORTANT: Full-screen image, optimized for mobile disp
         }
         await this.delay(2000);
       }
-      
+
       // 3. Generate panel images (IDEMPOTENT)
       log.info('Checking/generating UI panel images...');
       const panels = [
@@ -1113,7 +1112,7 @@ ${options?.fullScreen ? 'IMPORTANT: Full-screen image, optimized for mobile disp
         'Pack dynamics panel',
         'Narrative display panel'
       ];
-      
+
       for (const desc of panels) {
         const result = await this.generatePanelImage(desc, [1024, 768]);
         if (result) {
@@ -1123,7 +1122,7 @@ ${options?.fullScreen ? 'IMPORTANT: Full-screen image, optimized for mobile disp
         }
         await this.delay(2000);
       }
-      
+
       // 4. Generate background images (IDEMPOTENT)
       log.info('Checking/generating background images...');
       const backgrounds = [
@@ -1131,7 +1130,7 @@ ${options?.fullScreen ? 'IMPORTANT: Full-screen image, optimized for mobile disp
         'Evolution visualization background',
         'Narrative journal background'
       ];
-      
+
       for (const desc of backgrounds) {
         const result = await this.generateBackgroundImage(desc, [1920, 1080]);
         if (result) {
@@ -1141,29 +1140,29 @@ ${options?.fullScreen ? 'IMPORTANT: Full-screen image, optimized for mobile disp
         }
         await this.delay(2000);
       }
-      
+
       log.info('Asset generation complete', { generated, skipped });
       log.info('Complete asset generation finished - IDEMPOTENT', {
         generated,
         skipped,
         total: generated + skipped
       });
-      
+
     } catch (error) {
       log.error('Failed to generate all assets', error);
       throw error;
     }
   }
-  
+
   private async viewManifest(): Promise<void> {
     if (!existsSync(this.manifestPath)) {
       log.warn('No manifest found. Run setup first.');
       return;
     }
-    
+
     const data = await readFile(this.manifestPath, 'utf-8');
     const manifest = JSON.parse(data);
-    
+
     log.info('Game Asset Manifest', {
       generated: manifest.generated,
       textures: manifest.textures?.length || 0,
@@ -1172,13 +1171,13 @@ ${options?.fullScreen ? 'IMPORTANT: Full-screen image, optimized for mobile disp
       ui: manifest.ui?.length || 0
     });
   }
-  
+
   private async exportManifest(filePath: string): Promise<void> {
     if (!existsSync(this.manifestPath)) {
       log.warn('No manifest found.');
       return;
     }
-    
+
     const data = await readFile(this.manifestPath, 'utf-8');
     await writeFile(filePath, data);
     log.info('Manifest exported', { filePath });
@@ -1192,4 +1191,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   program.parse();
 }
 
-export { GameDevCLI, type GameAssetManifest, type ModelAsset, type AudioAsset, type UIAsset };
+export { GameDevCLI, type AudioAsset, type GameAssetManifest, type ModelAsset, type UIAsset };
