@@ -35,8 +35,10 @@ jobs:
     timeout-minutes: 120  # 2 hours for full pipeline (AI generation can be slow)
     
     steps:
-    - name: Checkout repository
+    - name: Checkout repository with LFS
       uses: actions/checkout@v4
+      with:
+        lfs: true
       
     - name: Setup Node.js
       uses: actions/setup-node@v4
@@ -157,6 +159,9 @@ jobs:
       if: steps.changed-files.outputs.any_changed == 'true'
       timeout-minutes: 5
       run: |
+        # Ensure Git LFS is installed and configured
+        git lfs install
+        
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
         
@@ -164,7 +169,12 @@ jobs:
         echo "## Asset Changes" >> $GITHUB_STEP_SUMMARY
         git status --short >> $GITHUB_STEP_SUMMARY
         
-        git add public/ manifests/ 2>/dev/null || true
+        # Add files (LFS will automatically track files matching .gitattributes patterns)
+        git add public/ manifests/ .gitattributes 2>/dev/null || true
+        
+        # Verify LFS is tracking large files
+        echo "📦 Git LFS tracking status:"
+        git lfs ls-files | head -10 || echo "No LFS files yet"
         
         # Count new assets
         NEW_TEXTURES=$(find public/textures -name "*.jpg" -o -name "*.png" 2>/dev/null | wc -l | tr -d ' ')
@@ -224,8 +234,10 @@ jobs:
     timeout-minutes: 30  # 30 minutes for integration tests
     
     steps:
-    - name: Checkout with generated assets
+    - name: Checkout with generated assets and LFS
       uses: actions/checkout@v4
+      with:
+        lfs: true
       
     - name: Setup Node.js
       uses: actions/setup-node@v4
