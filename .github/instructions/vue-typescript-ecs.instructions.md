@@ -36,7 +36,7 @@ ECS Systems (modify state) → Pinia Store (reactive sync) → Vue Components (d
 - **Lifecycle**: Use composition API lifecycle hooks (`onMounted`, `onUnmounted`)
 
 ### Store Integration
-- **Read-only from ECS**: Zustand store only syncs FROM ECS systems
+- **Read-only from ECS**: Pinia store only syncs FROM ECS systems
 - **UI state only**: Store UI-specific state (modals, selections, camera position)
 - **No direct ECS writes**: Use ECS systems for all game state changes
 
