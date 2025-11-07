@@ -107,4 +107,3 @@ describe('WorldContext', () => {
     expect(screen.getByTestId('ecosystem-null')).toHaveTextContent('yes');
   });
 });
-

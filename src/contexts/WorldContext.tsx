@@ -36,4 +36,3 @@ export const WorldProvider: React.FC<WorldProviderProps> = ({ world, ecosystem, 
     </WorldContext.Provider>
   );
 };
-
