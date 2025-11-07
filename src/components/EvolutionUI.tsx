@@ -193,10 +193,10 @@ const EnvironmentalStatus = () => {
 
   useEffect(() => {
     if (!ecosystem) return;
-    
+
     const envSystem = ecosystem.getEnvironmentalSystem();
     const report = envSystem.getEnvironmentalReport();
-    
+
     setEcosystemState({
       globalPollution: report.globalPollution,
       activeSources: report.activeSources,
@@ -248,10 +248,10 @@ const PackDynamicsDisplay = () => {
 
   useEffect(() => {
     if (!ecosystem) return;
-    
+
     const packSystem = ecosystem.getPackSocialSystem();
     const analysis = packSystem.getPackAnalysis();
-    
+
     setPackData([{
       id: 'pack_summary',
       type: 'summary',

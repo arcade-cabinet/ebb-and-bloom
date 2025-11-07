@@ -3,31 +3,31 @@
  * Shows procedural poetry generated from evolution events
  */
 
-import React, { useState, useEffect } from 'react';
-import type { HaikuEntry } from '../systems/HaikuNarrativeSystem';
+import { useEffect, useState } from 'react';
 import { useWorld } from '../contexts/WorldContext';
+import type { HaikuEntry } from '../systems/HaikuNarrativeSystem';
 
 const NarrativeDisplay = () => {
   const { ecosystem } = useWorld();
   const [currentHaiku, setCurrentHaiku] = useState<HaikuEntry | null>(null);
   const [recentHaikus, setRecentHaikus] = useState<HaikuEntry[]>([]);
   const [showJournal, setShowJournal] = useState(false);
-  
+
   // Connect to real HaikuNarrativeSystem - ONE TIME
   useEffect(() => {
     if (!ecosystem) return;
-    
+
     const narrativeSystem = ecosystem.getNarrativeSystem();
     const haikus = narrativeSystem.getRecentHaikus(10);
     setRecentHaikus(haikus);
-    
+
     // Show most recent haiku if significant
     if (haikus.length > 0 && haikus[0].significance > 0.6) {
       setCurrentHaiku(haikus[0]);
       setTimeout(() => setCurrentHaiku(null), 8000);
     }
   }, []); // Run once on mount
-  
+
   return (
     <>
       {/* Current haiku display - appears center screen */}
@@ -37,7 +37,7 @@ const NarrativeDisplay = () => {
             <div className="text-center">
               <div className="font-display text-lg leading-relaxed text-base-content space-y-2">
                 {currentHaiku.haiku.map((line, index) => (
-                  <div 
+                  <div
                     key={index}
                     className="animate-evolution-pulse"
                     style={{ animationDelay: `${index * 0.8}s` }}
@@ -46,13 +46,13 @@ const NarrativeDisplay = () => {
                   </div>
                 ))}
               </div>
-              
+
               <div className="mt-4 text-xs text-echo-silver-600">
                 Generation {currentHaiku.generation} • {currentHaiku.context.eventType.replace('_', ' ')}
               </div>
-              
+
               <div className="mt-2">
-                <div 
+                <div
                   className="w-full h-1 bg-echo-silver-200 rounded"
                   style={{
                     background: `linear-gradient(90deg, 
@@ -68,15 +68,15 @@ const NarrativeDisplay = () => {
           </div>
         </div>
       )}
-      
+
       {/* Journal toggle button */}
-      <button 
+      <button
         onClick={() => setShowJournal(!showJournal)}
         className="fixed top-4 left-1/2 transform -translate-x-1/2 z-40 haptic-button mobile-touch-target"
       >
         <span className="text-sm">📖 {recentHaikus.length}</span>
       </button>
-      
+
       {/* Haiku journal overlay */}
       {showJournal && (
         <div className="fixed inset-0 bg-base-100/95 backdrop-blur-sm z-50 overflow-y-auto">
@@ -85,29 +85,28 @@ const NarrativeDisplay = () => {
               <h2 className="font-display text-2xl text-trait-gold-600">
                 Evolution Journal
               </h2>
-              <button 
+              <button
                 onClick={() => setShowJournal(false)}
                 className="btn btn-ghost btn-lg"
               >
                 ✕
               </button>
             </div>
-            
+
             {/* Journal entries */}
             <div className="evolution-grid">
               {recentHaikus.map((entry, index) => (
-                <div 
-                  key={index} 
-                  className={`evolution-card ${
-                    entry.significance > 0.7 ? 'evolution-card--significant' : ''
-                  }`}
+                <div
+                  key={index}
+                  className={`evolution-card ${entry.significance > 0.7 ? 'evolution-card--significant' : ''
+                    }`}
                 >
                   <div className="font-display text-base leading-relaxed space-y-1 mb-3">
                     {entry.haiku.map((line, lineIndex) => (
                       <div key={lineIndex}>{line}</div>
                     ))}
                   </div>
-                  
+
                   <div className="border-t border-echo-silver-300 pt-2 space-y-1">
                     <div className="flex justify-between text-xs">
                       <span className="text-echo-silver-600">
@@ -117,19 +116,19 @@ const NarrativeDisplay = () => {
                         {entry.context.eventType.replace('_', ' ')}
                       </span>
                     </div>
-                    
+
                     <div className="text-xs text-echo-silver-600">
                       Location: {entry.context.location}
                     </div>
-                    
+
                     {entry.context.involvedCreatures.length > 0 && (
                       <div className="text-xs text-echo-silver-600">
                         Creatures: {entry.context.involvedCreatures.length}
                       </div>
                     )}
-                    
+
                     <div className="flex items-center space-x-2 mt-2">
-                      <div 
+                      <div
                         className="w-4 h-4 rounded-full"
                         style={{
                           backgroundColor: entry.emotionalTone > 0 ? '#38A169' : '#E53E3E',
@@ -147,7 +146,7 @@ const NarrativeDisplay = () => {
                 </div>
               ))}
             </div>
-            
+
             {recentHaikus.length === 0 && (
               <div className="text-center text-echo-silver-600 mt-12">
                 <div className="font-display text-xl mb-2">No journal entries yet</div>
