@@ -43,16 +43,32 @@ export function selectFromPool<T>(pool: T[], seedComponent: string): T {
 
 export async function generateGen0DataPools(seed: string): Promise<{
   macro: {
-    stellarContexts: string[];  // Population I/II star, post-supernova, binary system
+    stellarContexts: string[];
     selectedContext: string;
+    visualBlueprint: {
+      description: string;
+      ambientCGMaterials: string[];
+      proceduralRules: string;
+      colorPalette: string[];
+    };
   };
   meso: {
-    accretionDynamics: string[];  // Hot/cold zone, giant impacts, comet bombardment
+    accretionDynamics: string[];
     selectedDynamics: string;
+    visualBlueprint: {
+      description: string;
+      surfaceFeatures: string;
+      compositionRules: string;
+    };
   };
   micro: {
-    elementDistributions: string[];  // Metal-rich, carbon-rich, volatile abundance
+    elementDistributions: string[];
     selectedDistribution: string;
+    visualBlueprint: {
+      description: string;
+      materialTextures: string[];
+      shaderProperties: string;
+    };
   };
 }> {
   const { macro, meso, micro } = extractSeedComponents(seed);
@@ -61,33 +77,47 @@ export async function generateGen0DataPools(seed: string): Promise<{
     model: openai('gpt-4o'),
     prompt: `You are an astrophysicist designing diverse planetary formation scenarios.
 
-Generate VARIETY in planetary formation (not just Earth-like):
+Generate VARIETY in planetary formation with VISUAL RENDERING BLUEPRINTS:
 
 **MACRO - Stellar System Context:**
-Generate 5 different stellar contexts that would create DIFFERENT planetary compositions:
-- Population I star (metal-rich, like our Sun)
-- Population II star (metal-poor, early universe)
-- Post-supernova enrichment (heavy element rich)
-- Binary star system (complex orbital dynamics)
-- Red dwarf system (long-lived, tidally locked planets)
+Generate 5 different stellar contexts with visual archetypes:
+- Population I star (metal-rich) → Visual: "warm yellow-white light, metallic glints"
+- Population II star (metal-poor) → Visual: "blue-white harsh light, crystalline surfaces"
+- Post-supernova enrichment → Visual: "deep red-orange glow, heavy element bands"
+- Binary star system → Visual: "dual shadows, complex day/night transitions"
+- Red dwarf system → Visual: "deep red illumination, tidally locked hot/cold hemispheres"
+
+For EACH context, also generate:
+- Visual description (lighting, atmospheric effects, color palette)
+- AmbientCG material recommendations (specific texture names from /public/textures/)
+- Procedural generation rules (noise functions, distribution patterns)
+- Color palette (hex codes for dominant colors)
 
 **MESO - Accretion Dynamics:**
-Generate 5 different accretion scenarios:
-- Hot accretion zone (close to star, volatiles burned off)
-- Cold accretion zone (far from star, ices abundant)
-- Giant impact phase (massive collisions, core mixing)
-- Late heavy bombardment (water/organics delivery)
-- Smooth accretion (gradual, layered composition)
+Generate 5 accretion scenarios with surface feature instructions:
+- Hot accretion zone → Visual: "smooth glassy surfaces, minimal craters, volcanic flow patterns"
+- Cold accretion zone → Visual: "rough icy terrain, deep cracks, sublimation pits"
+- Giant impact phase → Visual: "massive basin scars, ejecta fields, core material exposed"
+- Late heavy bombardment → Visual: "dense crater fields, ray systems, melt pools"
+- Smooth accretion → Visual: "even layering, subtle color bands, minimal disruption"
+
+For EACH, also generate:
+- Surface feature description (terrain types, geological formations)
+- Composition rules (how to layer/blend materials)
 
 **MICRO - Element Distributions:**
-Generate 5 different element profiles (NOT just Earth's):
-- Iron-rich (heavy metal core, magnetic field)
-- Carbon-rich (diamond layers, hydrocarbon seas)
-- Silicate-rich (rocky, low metals)
-- Volatile-rich (thick atmosphere, subsurface oceans)
-- Rare earth enriched (unusual chemistry, exotic materials)
+Generate 5 element profiles with material/shader specs:
+- Iron-rich → Materials: ["metal/Metal035.jpg", "rock/Rock022.jpg"], Shader: "metallic=0.8, roughness=0.3"
+- Carbon-rich → Materials: ["fabric/Fabric015.jpg" for organics, "rock/Rock018.jpg"], Shader: "dark base, specular highlights"
+- Silicate-rich → Materials: ["rock/Rock008.jpg", "concrete/Concrete012.jpg"], Shader: "matte, earth tones"
+- Volatile-rich → Materials: ["grass/Grass004.jpg" for ice, "fabric/Fabric022.jpg"], Shader: "translucent, refractive"
+- Rare earth enriched → Materials: ["metal/Metal018.jpg" for exotic sheen, "rock/Rock033.jpg"], Shader: "iridescent, unusual colors"
 
-Return CREATIVE but PHYSICALLY GROUNDED scenarios.`,
+For EACH, also generate:
+- Material texture assignments (specific AmbientCG paths)
+- Shader property recommendations (PBR values)
+
+Return CREATIVE, PHYSICALLY GROUNDED, **VISUALLY COMPLETE** scenarios.`,
     schema: {
       type: 'object',
       properties: {
