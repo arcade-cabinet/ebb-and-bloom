@@ -3,15 +3,14 @@
  * Uses Zustand for state persistence and Winston for file logging
  */
 
-import { create } from 'zustand';
-import { persist, createJSONStorage, subscribeWithSelector } from 'zustand/middleware';
 import { Capacitor } from '@capacitor/core';
 import { Device } from '@capacitor/device';
-import { log } from '../utils/Logger';
-import type { GameTime, EvolutionEvent } from '../systems/GameClock';
+import { create } from 'zustand';
+import { createJSONStorage, persist, subscribeWithSelector } from 'zustand/middleware';
 import type { EcosystemState } from '../systems/EcosystemFoundation';
-import type { EvolutionaryCreature } from '../systems/CreatureArchetypeSystem';
+import type { EvolutionEvent, GameTime } from '../systems/GameClock';
 import type { PopulationStats } from '../systems/PopulationDynamicsSystem';
+import { log } from '../utils/Logger';
 
 export interface GenerationSnapshot {
   generation: number;
@@ -72,12 +71,12 @@ interface EvolutionDataState {
   currentGeneration: number;
   simulationStartTime: string;
   totalEvolutionEvents: number;
-  
+
   // Historical data
   generationHistory: GenerationSnapshot[];
   significantEvents: EvolutionEvent[];
   emergentSpecies: Record<string, CreatureSnapshot>;
-  
+
   // Analysis cache
   lastAnalysis: {
     timestamp: string;
@@ -86,7 +85,7 @@ interface EvolutionDataState {
     populationTrend: 'growing' | 'stable' | 'declining';
     dominantTraits: number[];
   } | null;
-  
+
   // Unified event system - platform, input, and gestures
   platform: {
     platform: 'web' | 'ios' | 'android' | 'electron';
@@ -101,9 +100,9 @@ interface EvolutionDataState {
     };
     inputMode: 'touch' | 'mouse' | 'keyboard' | 'gamepad';
   };
-  
+
   eventHistory: Array<PlatformEvent | GestureEvent>;
-  
+
   // Configuration
   config: {
     maxHistorySize: number;
@@ -111,11 +110,11 @@ interface EvolutionDataState {
     autoSaveInterval: number;
     fileLoggingEnabled: boolean;
   };
-  
+
   // Actions
   recordGenerationSnapshot: (snapshot: GenerationSnapshot) => void;
   recordEvolutionEvent: (event: EvolutionEvent) => void;
-  
+
   // Unified event actions
   dispatchPlatformEvent: (event: PlatformEvent) => void;
   dispatchGestureEvent: (event: GestureEvent) => void;
@@ -134,7 +133,7 @@ export const useEvolutionDataStore = create<EvolutionDataState>()(
         // Initialize platform state
         const getPlatform = async (): Promise<EvolutionDataState['platform']['platform']> => {
           if (typeof window === 'undefined') return 'web';
-          
+
           try {
             const info = await Device.getInfo();
             if (info.platform === 'ios' || info.platform === 'android') {
@@ -144,7 +143,7 @@ export const useEvolutionDataStore = create<EvolutionDataState>()(
           } catch {
             // Device API not available - assume web
           }
-          
+
           return 'web';
         };
 
@@ -158,222 +157,279 @@ export const useEvolutionDataStore = create<EvolutionDataState>()(
         const initialOrientation = initialWidth > initialHeight ? 'landscape' : 'portrait';
 
         return {
-        // Initial state
-        currentGeneration: 0,
-        simulationStartTime: new Date().toISOString(),
-        totalEvolutionEvents: 0,
-        generationHistory: [],
-        significantEvents: [],
-        emergentSpecies: {},
-        lastAnalysis: null,
-        
-        // Unified platform state
-        platform: {
-          platform,
-          isMobile,
-          isDesktop,
-          isNative,
-          screen: {
-            width: initialWidth,
-            height: initialHeight,
-            orientation: initialOrientation,
-            aspectRatio: initialWidth / initialHeight,
-          },
-          inputMode: isMobile ? 'touch' : 'mouse',
-        },
-        
-        eventHistory: [],
-        
-        config: {
-          maxHistorySize: 100,        // Keep last 100 generations
-          analysisInterval: 10,       // Analyze every 10 generations  
-          autoSaveInterval: 5,        // Auto-save every 5 generations
-          fileLoggingEnabled: true
-        },
-      
-      // Actions
-      recordGenerationSnapshot: (snapshot: GenerationSnapshot) => {
-        set((state) => {
-          const newHistory = [...state.generationHistory, snapshot];
-          
-          // Trim history to max size
-          const trimmedHistory = newHistory.length > state.config.maxHistorySize
-            ? newHistory.slice(-state.config.maxHistorySize)
-            : newHistory;
-          
-          // Log to winston file
-          if (state.config.fileLoggingEnabled) {
-            log.info('Generation snapshot recorded', {
-              generation: snapshot.generation,
-              creatureCount: snapshot.creatures.length,
-              materialCount: snapshot.materials.length,
-              evolutionEvents: snapshot.evolutionEvents.length,
-              significantChanges: snapshot.significantChanges
-            });
-            
-            // Detailed file logging
-            log.debug('Complete generation data', {
-              snapshot: JSON.stringify(snapshot, null, 2)
-            });
-          }
-          
-          return {
-            currentGeneration: snapshot.generation,
-            generationHistory: trimmedHistory,
-            totalEvolutionEvents: state.totalEvolutionEvents + snapshot.evolutionEvents.length
-          };
-        });
-      },
-      
-      recordEvolutionEvent: (event: EvolutionEvent) => {
-        set((state) => {
-          const newEvents = [...state.significantEvents, event];
-          
-          // Keep only significant events (significance > 0.6)
-          const significantOnly = newEvents.filter(e => e.significance > 0.6);
-          
-          // Log to winston
-          log.info('Significant evolution event', {
-            generation: event.generation,
-            eventType: event.eventType,
-            description: event.description,
-            significance: event.significance,
-            affectedCreatures: event.affectedCreatures.length,
-            traits: event.traits
-          });
-          
-          // Check for emergent species
-          if (event.eventType === 'speciation' && event.description.includes('new')) {
-            log.info('New species detected', {
-              generation: event.generation,
-              traits: event.traits,
-              significance: event.significance
-            });
-          }
-          
-          return {
-            significantEvents: significantOnly.slice(-50), // Keep last 50 significant events
-            totalEvolutionEvents: state.totalEvolutionEvents + 1
-          };
-        });
-      },
-      
-      analyzeEvolutionTrends: () => {
-        const state = get();
-        const recentHistory = state.generationHistory.slice(-20); // Last 20 generations
-        
-        if (recentHistory.length < 2) return;
-        
-        // Calculate evolution metrics
-        const evolutionRate = recentHistory.reduce((sum, snap) => 
-          sum + snap.evolutionEvents.length, 0) / recentHistory.length;
-        
-        // Calculate diversity index (how different creatures have become)
-        const allCreatures = recentHistory.flatMap(snap => snap.creatures);
-        const diversityIndex = calculateTraitDiversity(allCreatures);
-        
-        // Population trend
-        const firstPop = recentHistory[0].ecosystemState.totalCreatures;
-        const lastPop = recentHistory[recentHistory.length - 1].ecosystemState.totalCreatures;
-        const populationTrend: 'growing' | 'stable' | 'declining' = 
-          lastPop > firstPop * 1.1 ? 'growing' : 
-          lastPop < firstPop * 0.9 ? 'declining' : 'stable';
-        
-        // Dominant traits
-        const dominantTraits = calculateDominantTraits(allCreatures);
-        
-        const analysis = {
-          timestamp: new Date().toISOString(),
-          evolutionRate,
-          diversityIndex,
-          populationTrend,
-          dominantTraits
-        };
-        
-        set({ lastAnalysis: analysis });
-        
-        // Log comprehensive analysis
-        log.info('Evolution trend analysis complete', analysis);
-        
-        return analysis;
-      },
-      
-      exportToFile: () => {
-        const state = get();
-        
-        const exportData = {
-          metadata: {
-            exportTime: new Date().toISOString(),
-            simulationDuration: Date.now() - new Date(state.simulationStartTime).getTime(),
-            totalGenerations: state.currentGeneration,
-            totalEvents: state.totalEvolutionEvents
-          },
-          fullHistory: state.generationHistory,
-          significantEvents: state.significantEvents,
-          emergentSpecies: state.emergentSpecies,
-          analysis: state.lastAnalysis
-        };
-        
-        // Log complete dataset for file export
-        log.info('Complete evolution dataset export', {
-          exportSize: JSON.stringify(exportData).length,
-          generations: state.generationHistory.length,
-          events: state.significantEvents.length,
-          analysis: exportData.analysis
-        });
-        
-        // Would also save to downloadable file in production
-        return exportData;
-      },
-      
-      clearHistory: () => {
-        log.info('Clearing evolution history');
-        set({
+          // Initial state
+          currentGeneration: 0,
+          simulationStartTime: new Date().toISOString(),
+          totalEvolutionEvents: 0,
           generationHistory: [],
           significantEvents: [],
           emergentSpecies: {},
           lastAnalysis: null,
-          totalEvolutionEvents: 0
-        });
-      },
-      
-      updateConfig: (newConfig) => {
-        set((state) => ({
-          config: { ...state.config, ...newConfig }
-        }));
-        log.info('Evolution data store config updated', newConfig);
-      },
-      
-      // Unified event actions
-      dispatchPlatformEvent: (event: PlatformEvent) => {
-        set((state) => {
-          const newHistory = [...state.eventHistory.slice(-49), event]; // Keep last 50 events
-          
-          log.debug('Platform event dispatched', { type: event.type, data: event.data });
-          
-          // Handle specific event types
-          if (event.type === 'platform') {
-            const getPlatformValue = (): EvolutionDataState['platform']['platform'] => {
-              if (typeof window === 'undefined') return 'web';
-              const plat = Platform.getPlatform();
-              if (plat === 'ios' || plat === 'android') return plat;
-              if (plat === 'electron') return 'electron';
-              return 'web';
+
+          // Unified platform state
+          platform: {
+            platform,
+            isMobile,
+            isDesktop,
+            isNative,
+            screen: {
+              width: initialWidth,
+              height: initialHeight,
+              orientation: initialOrientation,
+              aspectRatio: initialWidth / initialHeight,
+            },
+            inputMode: isMobile ? 'touch' : 'mouse',
+          },
+
+          eventHistory: [],
+
+          config: {
+            maxHistorySize: 100,        // Keep last 100 generations
+            analysisInterval: 10,       // Analyze every 10 generations  
+            autoSaveInterval: 5,        // Auto-save every 5 generations
+            fileLoggingEnabled: true
+          },
+
+          // Actions
+          recordGenerationSnapshot: (snapshot: GenerationSnapshot) => {
+            set((state) => {
+              const newHistory = [...state.generationHistory, snapshot];
+
+              // Trim history to max size
+              const trimmedHistory = newHistory.length > state.config.maxHistorySize
+                ? newHistory.slice(-state.config.maxHistorySize)
+                : newHistory;
+
+              // Log to winston file
+              if (state.config.fileLoggingEnabled) {
+                log.info('Generation snapshot recorded', {
+                  generation: snapshot.generation,
+                  creatureCount: snapshot.creatures.length,
+                  materialCount: snapshot.materials.length,
+                  evolutionEvents: snapshot.evolutionEvents.length,
+                  significantChanges: snapshot.significantChanges
+                });
+
+                // Detailed file logging
+                log.debug('Complete generation data', {
+                  snapshot: JSON.stringify(snapshot, null, 2)
+                });
+              }
+
+              return {
+                currentGeneration: snapshot.generation,
+                generationHistory: trimmedHistory,
+                totalEvolutionEvents: state.totalEvolutionEvents + snapshot.evolutionEvents.length
+              };
+            });
+          },
+
+          recordEvolutionEvent: (event: EvolutionEvent) => {
+            set((state) => {
+              const newEvents = [...state.significantEvents, event];
+
+              // Keep only significant events (significance > 0.6)
+              const significantOnly = newEvents.filter(e => e.significance > 0.6);
+
+              // Log to winston
+              log.info('Significant evolution event', {
+                generation: event.generation,
+                eventType: event.eventType,
+                description: event.description,
+                significance: event.significance,
+                affectedCreatures: event.affectedCreatures.length,
+                traits: event.traits
+              });
+
+              // Check for emergent species
+              if (event.eventType === 'speciation' && event.description.includes('new')) {
+                log.info('New species detected', {
+                  generation: event.generation,
+                  traits: event.traits,
+                  significance: event.significance
+                });
+              }
+
+              return {
+                significantEvents: significantOnly.slice(-50), // Keep last 50 significant events
+                totalEvolutionEvents: state.totalEvolutionEvents + 1
+              };
+            });
+          },
+
+          analyzeEvolutionTrends: () => {
+            const state = get();
+            const recentHistory = state.generationHistory.slice(-20); // Last 20 generations
+
+            if (recentHistory.length < 2) return;
+
+            // Calculate evolution metrics
+            const evolutionRate = recentHistory.reduce((sum, snap) =>
+              sum + snap.evolutionEvents.length, 0) / recentHistory.length;
+
+            // Calculate diversity index (how different creatures have become)
+            const allCreatures = recentHistory.flatMap(snap => snap.creatures);
+            const diversityIndex = calculateTraitDiversity(allCreatures);
+
+            // Population trend
+            const firstPop = recentHistory[0].ecosystemState.totalCreatures;
+            const lastPop = recentHistory[recentHistory.length - 1].ecosystemState.totalCreatures;
+            const populationTrend: 'growing' | 'stable' | 'declining' =
+              lastPop > firstPop * 1.1 ? 'growing' :
+                lastPop < firstPop * 0.9 ? 'declining' : 'stable';
+
+            // Dominant traits
+            const dominantTraits = calculateDominantTraits(allCreatures);
+
+            const analysis = {
+              timestamp: new Date().toISOString(),
+              evolutionRate,
+              diversityIndex,
+              populationTrend,
+              dominantTraits
             };
-            const plat = getPlatformValue();
-            return {
+
+            set({ lastAnalysis: analysis });
+
+            // Log comprehensive analysis
+            log.info('Evolution trend analysis complete', analysis);
+
+            return analysis;
+          },
+
+          exportToFile: () => {
+            const state = get();
+
+            const exportData = {
+              metadata: {
+                exportTime: new Date().toISOString(),
+                simulationDuration: Date.now() - new Date(state.simulationStartTime).getTime(),
+                totalGenerations: state.currentGeneration,
+                totalEvents: state.totalEvolutionEvents
+              },
+              fullHistory: state.generationHistory,
+              significantEvents: state.significantEvents,
+              emergentSpecies: state.emergentSpecies,
+              analysis: state.lastAnalysis
+            };
+
+            // Log complete dataset for file export
+            log.info('Complete evolution dataset export', {
+              exportSize: JSON.stringify(exportData).length,
+              generations: state.generationHistory.length,
+              events: state.significantEvents.length,
+              analysis: exportData.analysis
+            });
+
+            // Would also save to downloadable file in production
+            return exportData;
+          },
+
+          clearHistory: () => {
+            log.info('Clearing evolution history');
+            set({
+              generationHistory: [],
+              significantEvents: [],
+              emergentSpecies: {},
+              lastAnalysis: null,
+              totalEvolutionEvents: 0
+            });
+          },
+
+          updateConfig: (newConfig) => {
+            set((state) => ({
+              config: { ...state.config, ...newConfig }
+            }));
+            log.info('Evolution data store config updated', newConfig);
+          },
+
+          // Unified event actions
+          dispatchPlatformEvent: (event: PlatformEvent) => {
+            set((state) => {
+              const newHistory = [...state.eventHistory.slice(-49), event]; // Keep last 50 events
+
+              log.debug('Platform event dispatched', { type: event.type, data: event.data });
+
+              // Handle specific event types
+              if (event.type === 'platform') {
+                const getPlatformValue = (): EvolutionDataState['platform']['platform'] => {
+                  if (typeof window === 'undefined') return 'web';
+                  const plat = Capacitor.getPlatform();
+                  if (plat === 'ios' || plat === 'android') return plat;
+                  if (plat === 'electron') return 'electron';
+                  return 'web';
+                };
+                const plat = getPlatformValue();
+                return {
+                  platform: {
+                    ...state.platform,
+                    platform: plat,
+                    isMobile: ['ios', 'android'].includes(plat),
+                    isDesktop: plat === 'electron',
+                    isNative: Capacitor.isNativePlatform(),
+                  },
+                  eventHistory: newHistory,
+                };
+              } else if (event.type === 'resize') {
+                const { width, height } = event.data;
+                return {
+                  platform: {
+                    ...state.platform,
+                    screen: {
+                      width,
+                      height,
+                      orientation: width > height ? 'landscape' : 'portrait',
+                      aspectRatio: width / height,
+                    },
+                  },
+                  eventHistory: newHistory,
+                };
+              } else if (event.type === 'orientation') {
+                const { orientation } = event.data;
+                return {
+                  platform: {
+                    ...state.platform,
+                    screen: {
+                      ...state.platform.screen,
+                      orientation: orientation === 'landscape' ? 'landscape' : 'portrait',
+                    },
+                  },
+                  eventHistory: newHistory,
+                };
+              } else if (event.type === 'input') {
+                return {
+                  platform: {
+                    ...state.platform,
+                    inputMode: event.data,
+                  },
+                  eventHistory: newHistory,
+                };
+              }
+
+              return { eventHistory: newHistory };
+            });
+          },
+
+          dispatchGestureEvent: (event: GestureEvent) => {
+            set((state) => {
+              const newHistory = [...state.eventHistory.slice(-49), event]; // Keep last 50 events
+              log.debug('Gesture event dispatched', { type: event.type, position: event.position });
+              return { eventHistory: newHistory };
+            });
+          },
+
+          setInputMode: (mode) => {
+            set((state) => ({
               platform: {
                 ...state.platform,
-                platform: plat,
-                isMobile: ['ios', 'android'].includes(plat),
-                isDesktop: plat === 'electron',
-                isNative: Capacitor.isNativePlatform(),
+                inputMode: mode,
               },
-              eventHistory: newHistory,
-            };
-          } else if (event.type === 'resize') {
-            const { width, height } = event.data;
-            return {
+            }));
+            log.debug('Input mode set', { mode });
+          },
+
+          updateScreen: (width, height) => {
+            set((state) => ({
               platform: {
                 ...state.platform,
                 screen: {
@@ -383,66 +439,9 @@ export const useEvolutionDataStore = create<EvolutionDataState>()(
                   aspectRatio: width / height,
                 },
               },
-              eventHistory: newHistory,
-            };
-          } else if (event.type === 'orientation') {
-            const { orientation } = event.data;
-            return {
-              platform: {
-                ...state.platform,
-                screen: {
-                  ...state.platform.screen,
-                  orientation: orientation === 'landscape' ? 'landscape' : 'portrait',
-                },
-              },
-              eventHistory: newHistory,
-            };
-          } else if (event.type === 'input') {
-            return {
-              platform: {
-                ...state.platform,
-                inputMode: event.data,
-              },
-              eventHistory: newHistory,
-            };
-          }
-          
-          return { eventHistory: newHistory };
-        });
-      },
-      
-      dispatchGestureEvent: (event: GestureEvent) => {
-        set((state) => {
-          const newHistory = [...state.eventHistory.slice(-49), event]; // Keep last 50 events
-          log.debug('Gesture event dispatched', { type: event.type, position: event.position });
-          return { eventHistory: newHistory };
-        });
-      },
-      
-      setInputMode: (mode) => {
-        set((state) => ({
-          platform: {
-            ...state.platform,
-            inputMode: mode,
+            }));
+            log.debug('Screen updated', { width, height });
           },
-        }));
-        log.debug('Input mode set', { mode });
-      },
-      
-      updateScreen: (width, height) => {
-        set((state) => ({
-          platform: {
-            ...state.platform,
-            screen: {
-              width,
-              height,
-              orientation: width > height ? 'landscape' : 'portrait',
-              aspectRatio: width / height,
-            },
-          },
-        }));
-        log.debug('Screen updated', { width, height });
-      },
         };
       }
     ),
@@ -457,60 +456,60 @@ export const useEvolutionDataStore = create<EvolutionDataState>()(
 // Helper functions
 function calculateTraitDiversity(creatures: CreatureSnapshot[]): number {
   if (creatures.length === 0) return 0;
-  
+
   // Calculate variance in trait values across population
   const traitVariances = Array(10).fill(0);
-  
+
   for (let traitIndex = 0; traitIndex < 10; traitIndex++) {
     const values = creatures.map(c => c.traits[traitIndex] || 0);
     const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
     const variance = values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / values.length;
     traitVariances[traitIndex] = variance;
   }
-  
+
   // Average variance as diversity index
   return traitVariances.reduce((sum, variance) => sum + variance, 0) / 10;
 }
 
 function calculateDominantTraits(creatures: CreatureSnapshot[]): number[] {
   if (creatures.length === 0) return Array(10).fill(0);
-  
+
   const traitAverages = Array(10).fill(0);
-  
+
   for (let traitIndex = 0; traitIndex < 10; traitIndex++) {
     const values = creatures.map(c => c.traits[traitIndex] || 0);
     traitAverages[traitIndex] = values.reduce((sum, val) => sum + val, 0) / values.length;
   }
-  
+
   return traitAverages;
 }
 
 // Hook for logging generation snapshots
 export const useGenerationLogger = () => {
   const store = useEvolutionDataStore();
-  
+
   return {
     logGeneration: (snapshot: GenerationSnapshot) => {
       store.recordGenerationSnapshot(snapshot);
-      
+
       // Auto-analyze every N generations
       if (snapshot.generation % store.config.analysisInterval === 0) {
         store.analyzeEvolutionTrends();
       }
-      
+
       // Auto-export every N generations
       if (snapshot.generation % store.config.autoSaveInterval === 0) {
         store.exportToFile();
       }
     },
-    
+
     logEvent: (event: EvolutionEvent) => {
       store.recordEvolutionEvent(event);
     },
-    
+
     getAnalysis: () => store.lastAnalysis,
     getHistory: () => store.generationHistory,
-    
+
     exportData: () => store.exportToFile()
   };
 };

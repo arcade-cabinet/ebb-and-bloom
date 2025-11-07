@@ -16,11 +16,21 @@ const CreatureRenderer: React.FC = () => {
   const [creatureEntities, setCreatureEntities] = useState<any[]>([]);
   const { material: furMaterial, loading: furLoading } = useFabricMaterial('fur');
   
-  // Query creatures from ECS world - ONE TIME
+  // Query creatures from ECS world - Poll for new creatures
   useEffect(() => {
-    const creatures = Array.from(world.with('creature', 'render', 'yukaAgent', 'transform').entities);
-    setCreatureEntities(creatures);
-  }, []); // Run once on mount
+    const queryCreatures = () => {
+      const creatures = Array.from(world.with('creature', 'render', 'yukaAgent', 'transform').entities);
+      setCreatureEntities(creatures);
+    };
+    
+    // Query immediately
+    queryCreatures();
+    
+    // Poll every 500ms to catch newly spawned creatures
+    const interval = setInterval(queryCreatures, 500);
+    
+    return () => clearInterval(interval);
+  }, [world]);
   
   useEffect(() => {
     log.creature('CreatureRenderer mounted', undefined, { 
@@ -30,26 +40,53 @@ const CreatureRenderer: React.FC = () => {
   
   useEffect(() => {
     // Add creature meshes to scene
+    let addedCount = 0;
     for (const entity of creatureEntities) {
-      if (!entity.render?.mesh) continue;
+      if (!entity.render?.mesh) {
+        log.warn('Creature entity missing mesh', { 
+          hasRender: !!entity.render,
+          hasMesh: !!entity.render?.mesh,
+          species: entity.creature?.species 
+        });
+        continue;
+      }
       
       const mesh = entity.render.mesh;
       
+      // Ensure mesh is visible
+      mesh.visible = true;
+      
       // Apply fur material to creatures if available
       if (furMaterial && !furLoading && entity.creature?.species !== 'bird') {
-        mesh.traverse((child) => {
+        mesh.traverse((child: THREE.Object3D) => {
           if (child instanceof THREE.Mesh) {
             child.material = furMaterial.clone();
+            child.visible = true;
           }
         });
       }
       
+      // Ensure mesh has a position
+      if (entity.transform?.position) {
+        mesh.position.copy(entity.transform.position);
+      }
+      
       if (!scene.children.includes(mesh)) {
         scene.add(mesh);
+        addedCount++;
         log.creature('Creature added to scene', entity.creature?.species, {
-          position: entity.transform?.position.toArray()
+          position: entity.transform?.position.toArray(),
+          meshVisible: mesh.visible,
+          meshChildren: mesh.children.length
         });
+      } else {
+        // Mesh already in scene, just ensure it's visible
+        mesh.visible = true;
       }
+    }
+    
+    if (addedCount > 0) {
+      log.info(`Added ${addedCount} creatures to scene, total: ${creatureEntities.length}`);
     }
     
     // Cleanup removed creatures
@@ -66,10 +103,24 @@ const CreatureRenderer: React.FC = () => {
   useFrame(() => {
     try {
       for (const entity of creatureEntities) {
-        if (!entity.yukaAgent?.vehicle || !entity.render?.mesh || !entity.transform) continue;
+        if (!entity.render?.mesh) continue;
+        
+        const mesh = entity.render.mesh;
+        
+        // Ensure mesh is visible
+        if (!mesh.visible) {
+          mesh.visible = true;
+        }
+        
+        if (!entity.yukaAgent?.vehicle || !entity.transform) {
+          // If no vehicle, ensure mesh is still positioned
+          if (entity.transform?.position) {
+            mesh.position.copy(entity.transform.position);
+          }
+          continue;
+        }
         
         const vehicle = entity.yukaAgent.vehicle;
-        const mesh = entity.render.mesh;
         
         // Sync mesh to vehicle position
         mesh.position.copy(vehicle.position);
@@ -84,7 +135,7 @@ const CreatureRenderer: React.FC = () => {
         // Species-specific animations
         if (entity.creature?.species === 'squirrel') {
           // Tail swish
-          const tail = mesh.children.find(child => child.position.z < 0);
+          const tail = mesh.children.find((child: THREE.Object3D) => child.position.z < 0);
           if (tail) {
             tail.rotation.x = Math.sin(Date.now() * 0.008) * 0.3;
           }
@@ -92,8 +143,8 @@ const CreatureRenderer: React.FC = () => {
         
         if (entity.creature?.species === 'rabbit') {
           // Ear twitch
-          const ears = mesh.children.filter(child => child.position.y > 0.15);
-          ears.forEach((ear, i) => {
+          const ears = mesh.children.filter((child: THREE.Object3D) => child.position.y > 0.15);
+          ears.forEach((ear: THREE.Object3D, i: number) => {
             ear.rotation.z = Math.sin(Date.now() * 0.01 + i) * 0.1;
           });
         }

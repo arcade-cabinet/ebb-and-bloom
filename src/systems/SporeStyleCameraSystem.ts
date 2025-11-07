@@ -10,7 +10,7 @@ import { useWorld } from '../contexts/WorldContext';
 import { usePlatformEvents } from '../hooks/usePlatformEvents';
 import { log } from '../utils/Logger';
 import { gameClock, type EvolutionEvent } from './GameClock';
-import type { World, Entity } from 'miniplex';
+import type { World } from 'miniplex';
 import type { WorldSchema } from '../world/ECSWorld';
 
 export enum CameraMode {
@@ -23,7 +23,7 @@ export enum CameraMode {
 
 export interface CameraState {
   mode: CameraMode;
-  target: Entity<WorldSchema> | THREE.Vector3 | null;
+  target: any | THREE.Vector3 | null;
   distance: number;           // 3-100 units from target
   height: number;             // 5-60 units above ground
   orbitalAngle: number;       // 0-2π rotation around target
@@ -175,7 +175,7 @@ class SporeStyleCameraSystem {
     }
   }
   
-  private findEventTarget(event: EvolutionEvent): Entity<WorldSchema> | null {
+  private findEventTarget(event: EvolutionEvent): any | null {
     // Find the most significant creature involved in this event
     if (event.affectedCreatures.length === 0) return null;
     
@@ -191,7 +191,7 @@ class SporeStyleCameraSystem {
     return null;
   }
   
-  private transitionToPreset(presetName: string): void {
+  transitionToPreset(presetName: string): void {
     const preset = this.presets.get(presetName);
     if (!preset) {
       log.warn('Unknown camera preset', { presetName });
@@ -216,7 +216,7 @@ class SporeStyleCameraSystem {
     });
   }
   
-  private setTarget(target: Entity<WorldSchema> | THREE.Vector3 | null, context: string): void {
+  setTarget(target: any | THREE.Vector3 | null, context: string): void {
     this.state.target = target;
     this.state.activityContext = context;
     
@@ -286,7 +286,20 @@ class SporeStyleCameraSystem {
   
   private updateTargetPosition(): void {
     if (!this.state.target) {
-      this.targetPosition.set(0, 0, 0); // Default center
+      // Try to find a creature to follow
+      const creatures = this.world.with('creature', 'transform');
+      const firstCreature = creatures.entities[0];
+      
+      if (firstCreature && firstCreature.transform) {
+        this.targetPosition.copy(firstCreature.transform.position);
+        this.state.target = firstCreature;
+        log.debug('Camera auto-targeting first creature', {
+          position: firstCreature.transform.position.toArray()
+        });
+      } else {
+        // Default to center of spawn area
+        this.targetPosition.set(0, 2, 0);
+      }
       return;
     }
     
@@ -303,7 +316,7 @@ class SporeStyleCameraSystem {
     }
   }
   
-  private calculatePackCenter(creature: Entity<WorldSchema>): THREE.Vector3 {
+  private calculatePackCenter(creature: any): THREE.Vector3 {
     // Find pack members and calculate center point
     const packCenter = new THREE.Vector3();
     const creatures = this.world.with('creature', 'transform');
@@ -366,11 +379,11 @@ class SporeStyleCameraSystem {
   useCameraSystem(): {
     handleGesture: (type: 'zoom' | 'orbit' | 'reset', delta: any) => void;
     getCurrentMode: () => CameraMode;
-    setTarget: (target: Entity<WorldSchema> | THREE.Vector3 | null) => void;
+    setTarget: (target: any | THREE.Vector3 | null) => void;
   } {
     const { camera } = useThree();
     
-    useFrame((state, delta) => {
+    useFrame((_state, delta) => {
       this.updateCamera(camera, delta);
     });
     
@@ -414,10 +427,33 @@ export function SporeStyleCamera() {
     cameraSystem.current = new SporeStyleCameraSystem(world);
   }
   
+  // Update camera every frame
+  useFrame((_state, delta) => {
+    if (cameraSystem.current) {
+      cameraSystem.current.updateCamera(camera, delta);
+    }
+  });
+  
   usePlatformEvents();
   
   useEffect(() => {
     log.info('Spore-style camera component mounted');
+    
+    // Auto-target first creature after a short delay to let creatures spawn
+    const timeout = setTimeout(() => {
+      const creatures = world.with('creature', 'transform');
+      const firstCreature = creatures.entities[0];
+      if (firstCreature && cameraSystem.current) {
+        cameraSystem.current.setTarget(firstCreature, 'auto_init');
+        log.info('Camera auto-targeted first creature on mount', {
+          position: firstCreature.transform?.position.toArray()
+        });
+      } else {
+        // Fallback: look at spawn center
+        cameraSystem.current?.setTarget(new THREE.Vector3(0, 2, 0), 'fallback');
+        log.info('Camera using fallback target (no creatures found)');
+      }
+    }, 1000);
     
     // Listen to evolution events for camera reactions
     const unsubscribe = gameClock.onEvolutionEvent((event: EvolutionEvent) => {
@@ -427,8 +463,11 @@ export function SporeStyleCamera() {
       }
     });
     
-    return unsubscribe;
-  }, []);
+    return () => {
+      clearTimeout(timeout);
+      unsubscribe();
+    };
+  }, [world]);
   
   return null; // This component only handles camera logic
 }

@@ -74,7 +74,7 @@ const CatalystCreator: React.FC<CatalystCreatorProps> = ({ onComplete, onSkip })
                 <Text  fontSize={36} fontWeight="bold" color={0xD69E2E}>
                     Create Your Catalyst
                 </Text>
-                <Text  fontSize={18} color={0xA0AEC0}>
+                <Text fontFamily="inter" fontSize={18} color={0xA0AEC0}>
                     Allocate 10 Evo Points across evolutionary traits
                 </Text>
 
@@ -83,7 +83,7 @@ const CatalystCreator: React.FC<CatalystCreatorProps> = ({ onComplete, onSkip })
                     <Container flexDirection="row" alignItems="center" gap={12}>
                         <Text fontSize={20}>⚡</Text>
                         <Container flexDirection="column">
-                            <Text  fontSize={12} color={0xA0AEC0}>
+                            <Text fontFamily="inter" fontSize={12} color={0xA0AEC0}>
                                 Evo Points Remaining
                             </Text>
                             <Text  fontSize={32} fontWeight="bold" color={remainingPoints === 0 ? 0x38A169 : 0xD69E2E}>
@@ -106,7 +106,7 @@ const CatalystCreator: React.FC<CatalystCreatorProps> = ({ onComplete, onSkip })
                             <CardContent flexDirection="column" gap={12}>
                                 <Container flexDirection="row" alignItems="center" gap={8}>
                                     <Text fontSize={24}>{TRAIT_ICONS[trait]}</Text>
-                                    <Text  fontSize={16} fontWeight="medium" color={0x38A169}>
+                                    <Text fontFamily="inter" fontSize={16} fontWeight="medium" color={0x38A169}>
                                         {trait.charAt(0).toUpperCase() + trait.slice(1)}
                                     </Text>
                                 </Container>

@@ -1,56 +1,52 @@
-# Test Package - Vitest Test Suites
+# Tests
 
-**Purpose**: Comprehensive test coverage for all game systems.
+**Vitest test suites**
 
-## Test Status: 57/57 Passing ✅
+---
 
-### Test Suites
+## Status
 
-| Suite | Tests | Purpose |
-|-------|-------|---------|
-| **components.test.ts** | 4 | ECS component validation |
-| **movement.test.ts** | 3 | Position/velocity updates |
-| **crafting.test.ts** | 3 | Recipe matching, resources |
-| **haiku.test.ts** | 8 | Jaro-Winkler, diversity |
-| **snapping.test.ts** | 6 | Affinity-based combining |
-| **pollution-behavior.test.ts** | 15 | Shocks, playstyle profiling |
-| **pack.test.ts** | 18 | Formation, loyalty, schism |
+**57/57 passing** ✅
+
+---
 
 ## Running Tests
 
 ```bash
-pnpm test              # Run once
-pnpm test:watch        # Watch mode
-pnpm test:ui           # Vitest UI
-pnpm test:coverage     # Coverage report
+pnpm test           # Run all tests
+pnpm test:watch     # Watch mode
+pnpm test:coverage  # Coverage report
 ```
 
-## Test Structure
+---
+
+## Test Files
+
+- ECS components & systems
+- Creature evolution
+- Pack dynamics
+- Pollution & shock events
+- Material systems
+- Haiku generation
+- UI components
+
+---
+
+## Pattern
 
 ```typescript
-describe('System Name', () => {
-  let world: IWorld;
-  
-  beforeEach(() => {
-    world = createWorld();
-  });
-  
-  it('should handle case', () => {
-    // Arrange - Act - Assert
+import { describe, test, expect } from 'vitest';
+
+describe('SystemName', () => {
+  test('should do thing', () => {
+    // Arrange
+    // Act
+    // Assert
   });
 });
 ```
 
-## Setup
-
-- **setup.ts**: Mocks for Phaser and Capacitor
-- **happy-dom**: Fast DOM simulation
-
-## Links
-
-- [DEVELOPMENT.md](../docs/DEVELOPMENT.md) - Testing guide
-
 ---
 
-*Coverage: Comprehensive*  
-*Last Updated: 2025-11-06*
+**All systems MUST have tests before commit.**
+

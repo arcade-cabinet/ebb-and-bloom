@@ -7,7 +7,7 @@
  * This is THE system that makes "Everything is Squirrels" work
  */
 
-import { World, Entity } from 'miniplex';
+import { World } from 'miniplex';
 import * as THREE from 'three';
 import { log } from '../utils/Logger';
 import { gameClock } from './GameClock';
@@ -148,7 +148,8 @@ class YukaSphereCoordinator {
     traitPressures[1] = Math.min(1, (1 - resourceAbundance) * 1.2);
     
     // Trait 2: Excavation - high if deep materials needed (would check material depth)
-    traitPressures[2] = Math.min(1, 0.3 + (generation - 1) * 0.1); // Increases with time
+    // Note: generation parameter not available here, use time-based pressure
+    traitPressures[2] = Math.min(1, 0.3 + (this.currentGeneration - 1) * 0.1); // Increases with time
     
     // Trait 3: Social - high if pack advantage
     traitPressures[3] = Math.min(1, popReport.populationPressure * 0.8);
@@ -300,11 +301,11 @@ class YukaSphereCoordinator {
           break;
           
         case 'synthesize_material':
-          await this.synthesizeMaterialDecision(decision.data);
+          await this.synthesizeMaterialDecision(decision.data, generation);
           break;
           
         case 'construct_building':
-          await this.constructBuildingDecision(decision.data);
+          await this.constructBuildingDecision(decision.data, generation);
           break;
       }
     } catch (error) {
@@ -341,9 +342,9 @@ class YukaSphereCoordinator {
       gameClock.recordEvent({
         generation,
         timestamp: Date.now(),
-        eventType: 'trait_mutation',
+        eventType: 'trait_emergence',
         description: `Creature evolved: ${result.newName || 'Unknown'}`,
-        affectedCreatures: [entity],
+        affectedCreatures: [entity.toString()],
         traits: evolutionData.currentTraits,
         significance: 0.7
       });
@@ -387,36 +388,60 @@ class YukaSphereCoordinator {
       timestamp: Date.now(),
       eventType: 'pack_formation',
       description: 'New offspring born',
-      affectedCreatures: [parent1, parent2],
+      affectedCreatures: [parent1.toString(), parent2.toString()],
       traits: [],
       significance: 0.6
     });
   }
   
-  private async synthesizeMaterialDecision(data: any): Promise<void> {
+  private async synthesizeMaterialDecision(data: any, generation: number): Promise<void> {
     // TODO: Implement material synthesis
     // For now, just spawn some materials
     const dummyHeightData = new Float32Array(256 * 256).fill(20);
+    const chunkX = Math.floor(Math.random() * 3) - 1;
+    const chunkZ = Math.floor(Math.random() * 3) - 1;
     this.materialsSystem.generateMaterialsForChunk(
-      Math.floor(Math.random() * 3) - 1,
-      Math.floor(Math.random() * 3) - 1,
+      chunkX,
+      chunkZ,
       1024,
       dummyHeightData
     );
     
-    log.info('Materials synthesized via Yuka decision', data);
+    log.info('Materials synthesized via Yuka decision', { chunkX, chunkZ, generation });
+    
+    // Record material synthesis event
+    gameClock.recordEvent({
+      generation,
+      timestamp: Date.now(),
+      eventType: 'behavior_shift',
+      description: `New materials synthesized at chunk (${chunkX}, ${chunkZ})`,
+      affectedCreatures: [],
+      traits: [],
+      significance: 0.5
+    });
   }
   
-  private async constructBuildingDecision(data: any): Promise<void> {
+  private async constructBuildingDecision(data: any, generation: number): Promise<void> {
     // TODO: Implement building construction
     // Would spawn buildings based on creature needs
-    log.info('Building construction triggered via Yuka decision', data);
+    log.info('Building construction triggered via Yuka decision', { ...data, generation });
+    
+    // Record building construction event
+    gameClock.recordEvent({
+      generation,
+      timestamp: Date.now(),
+      eventType: 'behavior_shift',
+      description: `Building construction initiated: ${data.buildingType || 'structure'}`,
+      affectedCreatures: data.affectedCreatures || [],
+      traits: [],
+      significance: 0.6
+    });
   }
   
   /**
    * Regenerate creature mesh based on evolved traits
    */
-  private regenerateCreatureMesh(entity: Entity<WorldSchema>, evolutionData: EvolutionaryCreature): THREE.Group | null {
+  private regenerateCreatureMesh(entity: any, evolutionData: EvolutionaryCreature): THREE.Group | null {
     try {
       // Use GeneticSynthesisSystem to get morphological changes
       const synthesis = this.geneticsSystem.synthesizeCreatureForm(evolutionData.currentTraits);

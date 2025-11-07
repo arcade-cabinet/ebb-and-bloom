@@ -48,6 +48,7 @@ class GestureActionMapper {
 
     // Subscribe to gesture events
     useEvolutionDataStore.subscribe((state) => {
+      if (!state.gestureEvents || state.gestureEvents.length === 0) return;
       const latestEvent = state.gestureEvents[state.gestureEvents.length - 1];
       if (latestEvent && Date.now() - latestEvent.timestamp < 100) {
         this.handleGesture(latestEvent.type, latestEvent.position);

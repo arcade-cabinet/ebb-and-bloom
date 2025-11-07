@@ -7,6 +7,7 @@ import * as THREE from 'three';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { log } from '../utils/Logger';
 import { gameClock } from './GameClock';
+import { useEvolutionDataStore } from '../stores/EvolutionDataStore';
 
 export enum GestureType {
   TAP = 'tap',

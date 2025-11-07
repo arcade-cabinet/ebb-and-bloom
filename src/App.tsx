@@ -1,4 +1,5 @@
 import { Canvas } from '@react-three/fiber';
+import { Fullscreen } from '@react-three/uikit';
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { WorldProvider } from './contexts/WorldContext';
@@ -17,8 +18,21 @@ import BuildingRenderer from './components/BuildingRenderer';
 import CatalystCreator, { type TraitAllocation } from './components/CatalystCreator';
 import CreatureRenderer from './components/CreatureRenderer';
 import EvolutionParticles from './components/EvolutionParticles';
-import EvolutionUI from './components/EvolutionUI';
+import {
+  CreatureEvolutionDisplay,
+  EnvironmentalStatus,
+  EvolutionEventFeed,
+  GenerationDisplay,
+  MobileControls,
+  PackDynamicsDisplay
+} from './components/EvolutionUI';
+import MainMenu from './components/MainMenu';
+import {
+  CurrentHaikuDisplay,
+  JournalToggleButton
+} from './components/NarrativeDisplay';
 import OnboardingFlow from './components/OnboardingFlow';
+import SplashScreen from './components/SplashScreen';
 import TerrainRenderer from './components/TerrainRenderer';
 import { SporeStyleCamera } from './systems/SporeStyleCameraSystem';
 
@@ -139,10 +153,10 @@ const Scene: React.FC = () => {
   return (
     <>
       {/* Lighting setup */}
-      <ambientLight intensity={0.4} />
+      <ambientLight intensity={0.6} />
       <directionalLight
         position={[100, 200, 50]}
-        intensity={1}
+        intensity={0.8}
         castShadow
         shadow-mapSize={[2048, 2048]}
         shadow-camera-far={500}
@@ -154,6 +168,12 @@ const Scene: React.FC = () => {
 
       {/* Atmospheric fog for depth */}
       <fog attach="fog" args={[0xcccccc, 100, 1500]} />
+
+      {/* Test plane to verify rendering */}
+      <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[100, 100]} />
+        <meshStandardMaterial color={0x228B22} />
+      </mesh>
 
       {/* World renderers */}
       <TerrainRenderer />
@@ -172,21 +192,34 @@ const Scene: React.FC = () => {
 // Ecosystem Update Loop
 const EcosystemUpdater: React.FC = () => {
   useEffect(() => {
+    let rafId: number | null = null;
+    let isRunning = true;
+
     const updateEcosystem = () => {
+      if (!isRunning) return;
+
       try {
         const deltaTime = 1 / 60; // Fixed timestep
 
         // Update complete ecosystem
         ecosystem.update(deltaTime);
 
-        requestAnimationFrame(updateEcosystem);
-
+        rafId = requestAnimationFrame(updateEcosystem);
       } catch (error) {
         log.error('Ecosystem update failed', error);
+        isRunning = false;
       }
     };
 
-    updateEcosystem();
+    rafId = requestAnimationFrame(updateEcosystem);
+
+    // Cleanup on unmount
+    return () => {
+      isRunning = false;
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+      }
+    };
   }, []);
 
   return null;
@@ -194,21 +227,43 @@ const EcosystemUpdater: React.FC = () => {
 
 // Main App with proper architecture
 const App: React.FC = () => {
-  const [showOnboarding, setShowOnboarding] = useState(true);
+  const [showSplash, setShowSplash] = useState(true);
+  const [showMainMenu, setShowMainMenu] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const [showCatalyst, setShowCatalyst] = useState(false);
 
   useEffect(() => {
     initializeLogging();
     log.info('Ebb & Bloom starting with organized architecture');
     log.info('React Three Fiber + Miniplex + texture system + creature AI');
+  }, []);
+
+  const handleSplashComplete = () => {
+    setShowSplash(false);
 
     // Check if player has completed onboarding before
     const hasCompletedOnboarding = localStorage.getItem('ebb-bloom-onboarding-complete');
     if (hasCompletedOnboarding === 'true') {
+      // Skip to game directly
+      setShowMainMenu(false);
       setShowOnboarding(false);
       setShowCatalyst(false);
+    } else {
+      // Show main menu first time
+      setShowMainMenu(true);
     }
-  }, []);
+  };
+
+  const handleMainMenuStart = () => {
+    setShowMainMenu(false);
+    setShowOnboarding(true);
+  };
+
+  const handleMainMenuContinue = () => {
+    setShowMainMenu(false);
+    // Load existing game state
+    log.info('Continuing existing game');
+  };
 
   const handleOnboardingComplete = () => {
     setShowOnboarding(false);
@@ -233,29 +288,18 @@ const App: React.FC = () => {
 
   return (
     <div style={{ width: '100vw', height: '100vh', background: '#000' }}>
-      {/* Onboarding Flow */}
-      {showOnboarding && (
-        <OnboardingFlow onComplete={handleOnboardingComplete} />
-      )}
-
-      {/* Catalyst Creator */}
-      {showCatalyst && (
-        <CatalystCreator
-          onComplete={handleCatalystComplete}
-          onSkip={handleSkipOnboarding}
-        />
-      )}
-
       <WorldProvider world={world} ecosystem={ecosystem}>
         <TextureContext.Provider value={textureSystem}>
           <Canvas
             shadows
-            camera={{ fov: 75, near: 0.1, far: 2000, position: [0, 5, 0] }}
+            camera={{ fov: 75, near: 0.1, far: 2000, position: [0, 20, 30] }}
             gl={{
               antialias: true,
               powerPreference: 'high-performance',
               toneMapping: THREE.ACESFilmicToneMapping,
-              toneMappingExposure: 1.2
+              toneMappingExposure: 1.2,
+              alpha: false,
+              preserveDrawingBuffer: false
             }}
             onError={(error) => log.error('Canvas error', error)}
             onCreated={({ gl, camera }) => {
@@ -265,12 +309,56 @@ const App: React.FC = () => {
               });
             }}
           >
-            <Scene />
-            <EcosystemUpdater />
-          </Canvas>
+            {/* Splash Screen - UIKit */}
+            {showSplash && (
+              <SplashScreen onComplete={handleSplashComplete} />
+            )}
 
-          {/* Evolution UI overlay with clean information display */}
-          <EvolutionUI />
+            {/* Main Menu - UIKit */}
+            {!showSplash && showMainMenu && (
+              <MainMenu
+                onStartNewGame={handleMainMenuStart}
+                onContinueGame={handleMainMenuContinue}
+                onSettings={() => log.info('Settings clicked')}
+                onCredits={() => log.info('Credits clicked')}
+              />
+            )}
+
+            {/* Onboarding Flow - UIKit (TO MIGRATE) */}
+            {!showSplash && !showMainMenu && showOnboarding && (
+              <OnboardingFlow onComplete={handleOnboardingComplete} />
+            )}
+
+            {/* Catalyst Creator - UIKit (TO MIGRATE) */}
+            {!showSplash && !showMainMenu && showCatalyst && (
+              <CatalystCreator
+                onComplete={handleCatalystComplete}
+                onSkip={handleSkipOnboarding}
+              />
+            )}
+
+            {/* 3D Scene - Always render (even behind menus) */}
+            {!showSplash && (
+              <>
+                <Scene />
+                <EcosystemUpdater />
+              </>
+            )}
+
+            {/* Game HUD - Only show when IN game */}
+            {!showSplash && !showMainMenu && !showOnboarding && !showCatalyst && (
+              <Fullscreen>
+                <GenerationDisplay />
+                <EvolutionEventFeed />
+                <CreatureEvolutionDisplay />
+                <EnvironmentalStatus />
+                <PackDynamicsDisplay />
+                <MobileControls />
+                <CurrentHaikuDisplay />
+                <JournalToggleButton />
+              </Fullscreen>
+            )}
+          </Canvas>
         </TextureContext.Provider>
       </WorldProvider>
     </div>

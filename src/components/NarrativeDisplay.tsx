@@ -1,165 +1,194 @@
 /**
- * Narrative Display - Haiku and storytelling integration
- * Shows procedural poetry generated from evolution events
+ * Narrative Display - UIKit version
+ * Haiku and storytelling integration - FULLY UIKit
+ * Renders INSIDE Canvas as 3D UI elements
  */
 
 import { useEffect, useState } from 'react';
+import { Container, Text } from '@react-three/uikit';
+import { 
+  Card, 
+  CardHeader, 
+  CardTitle, 
+  CardContent, 
+  Button,
+  Progress,
+  Separator
+} from '@react-three/uikit-default';
 import { useWorld } from '../contexts/WorldContext';
 import type { HaikuEntry } from '../systems/HaikuNarrativeSystem';
 
-const NarrativeDisplay = () => {
+// Current Haiku Display - UIKit version (center screen)
+export const CurrentHaikuDisplay = () => {
   const { ecosystem } = useWorld();
   const [currentHaiku, setCurrentHaiku] = useState<HaikuEntry | null>(null);
-  const [recentHaikus, setRecentHaikus] = useState<HaikuEntry[]>([]);
-  const [showJournal, setShowJournal] = useState(false);
 
-  // Connect to real HaikuNarrativeSystem - ONE TIME
   useEffect(() => {
     if (!ecosystem) return;
-
     const narrativeSystem = ecosystem.getNarrativeSystem();
     const haikus = narrativeSystem.getRecentHaikus(10);
-    setRecentHaikus(haikus);
-
-    // Show most recent haiku if significant
+    
     if (haikus.length > 0 && haikus[0].significance > 0.6) {
       setCurrentHaiku(haikus[0]);
       setTimeout(() => setCurrentHaiku(null), 8000);
     }
-  }, []); // Run once on mount
+  }, []);
+
+  if (!currentHaiku) return null;
+
+  return (
+    <Card 
+      width={360}
+      positionType="absolute"
+      positionLeft="50%"
+      positionTop="50%"
+      transformTranslateX="-50%"
+      transformTranslateY="-50%"
+    >
+      <CardContent flexDirection="column" gap={12} alignItems="center">
+        <Container flexDirection="column" gap={8} alignItems="center">
+          {currentHaiku.haiku.map((line, index) => (
+            <Text key={index} fontSize={16} textAlign="center">
+              {line}
+            </Text>
+          ))}
+        </Container>
+        <Separator />
+        <Container flexDirection="column" gap={4} alignItems="center">
+          <Text fontSize={11} opacity={0.6}>
+            Generation {currentHaiku.generation} • {currentHaiku.context.eventType.replace('_', ' ')}
+          </Text>
+          <Progress 
+            value={Math.abs(currentHaiku.emotionalTone)} 
+            width="100%"
+          />
+          <Text fontSize={11} opacity={0.6}>
+            {currentHaiku.emotionalTone > 0 ? 'Joyful' : 'Melancholy'} tone
+          </Text>
+        </Container>
+      </CardContent>
+    </Card>
+  );
+};
+
+// Journal Toggle Button - UIKit version (top center)
+export const JournalToggleButton = () => {
+  const { ecosystem } = useWorld();
+  const [recentHaikus, setRecentHaikus] = useState<HaikuEntry[]>([]);
+  const [showJournal, setShowJournal] = useState(false);
+
+  useEffect(() => {
+    if (!ecosystem) return;
+    const narrativeSystem = ecosystem.getNarrativeSystem();
+    setRecentHaikus(narrativeSystem.getRecentHaikus(10));
+  }, []);
 
   return (
     <>
-      {/* Current haiku display - appears center screen */}
-      {currentHaiku && (
-        <div className="fixed inset-0 flex items-center justify-center z-30 pointer-events-none">
-          <div className="evolution-card max-w-sm mx-4 animate-trait-emerge pointer-events-auto">
-            <div className="text-center">
-              <div className="font-display text-lg leading-relaxed text-base-content space-y-2">
-                {currentHaiku.haiku.map((line, index) => (
-                  <div
-                    key={index}
-                    className="animate-evolution-pulse"
-                    style={{ animationDelay: `${index * 0.8}s` }}
-                  >
-                    {line}
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-4 text-xs text-echo-silver-600">
-                Generation {currentHaiku.generation} • {currentHaiku.context.eventType.replace('_', ' ')}
-              </div>
-
-              <div className="mt-2">
-                <div
-                  className="w-full h-1 bg-echo-silver-200 rounded"
-                  style={{
-                    background: `linear-gradient(90deg, 
-                      ${currentHaiku.emotionalTone > 0 ? '#38A169' : '#E53E3E'} 0%, 
-                      #A0AEC0 ${Math.abs(currentHaiku.emotionalTone) * 100}%)`
-                  }}
-                />
-                <div className="text-xs text-echo-silver-600 mt-1">
-                  {currentHaiku.emotionalTone > 0 ? 'Joyful' : 'Melancholy'} tone
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Journal toggle button */}
-      <button
+      <Button
+        positionType="absolute"
+        positionTop={20}
+        positionLeft="50%"
+        transformTranslateX="-50%"
         onClick={() => setShowJournal(!showJournal)}
-        className="fixed top-4 left-1/2 transform -translate-x-1/2 z-40 haptic-button mobile-touch-target"
       >
-        <span className="text-sm">📖 {recentHaikus.length}</span>
-      </button>
-
-      {/* Haiku journal overlay */}
+        <Text fontSize={14}>📖 {recentHaikus.length}</Text>
+      </Button>
       {showJournal && (
-        <div className="fixed inset-0 bg-base-100/95 backdrop-blur-sm z-50 overflow-y-auto">
-          <div className="evolution-container py-8">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="font-display text-2xl text-trait-gold-600">
-                Evolution Journal
-              </h2>
-              <button
-                onClick={() => setShowJournal(false)}
-                className="btn btn-ghost btn-lg"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Journal entries */}
-            <div className="evolution-grid">
-              {recentHaikus.map((entry, index) => (
-                <div
-                  key={index}
-                  className={`evolution-card ${entry.significance > 0.7 ? 'evolution-card--significant' : ''
-                    }`}
-                >
-                  <div className="font-display text-base leading-relaxed space-y-1 mb-3">
-                    {entry.haiku.map((line, lineIndex) => (
-                      <div key={lineIndex}>{line}</div>
-                    ))}
-                  </div>
-
-                  <div className="border-t border-echo-silver-300 pt-2 space-y-1">
-                    <div className="flex justify-between text-xs">
-                      <span className="text-echo-silver-600">
-                        Gen {entry.generation}
-                      </span>
-                      <span className="text-echo-silver-600">
-                        {entry.context.eventType.replace('_', ' ')}
-                      </span>
-                    </div>
-
-                    <div className="text-xs text-echo-silver-600">
-                      Location: {entry.context.location}
-                    </div>
-
-                    {entry.context.involvedCreatures.length > 0 && (
-                      <div className="text-xs text-echo-silver-600">
-                        Creatures: {entry.context.involvedCreatures.length}
-                      </div>
-                    )}
-
-                    <div className="flex items-center space-x-2 mt-2">
-                      <div
-                        className="w-4 h-4 rounded-full"
-                        style={{
-                          backgroundColor: entry.emotionalTone > 0 ? '#38A169' : '#E53E3E',
-                          opacity: Math.abs(entry.emotionalTone)
-                        }}
-                      />
-                      <span className="text-xs text-echo-silver-600">
-                        {entry.emotionalTone > 0 ? 'Uplifting' : 'Contemplative'}
-                      </span>
-                      <span className="text-xs text-trait-gold-600">
-                        {(entry.significance * 100).toFixed(0)}% significant
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {recentHaikus.length === 0 && (
-              <div className="text-center text-echo-silver-600 mt-12">
-                <div className="font-display text-xl mb-2">No journal entries yet</div>
-                <div className="text-sm">
-                  Evolution events will generate haikus to capture significant moments
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+        <HaikuJournal 
+          haikus={recentHaikus} 
+          onClose={() => setShowJournal(false)} 
+        />
       )}
     </>
   );
+};
+
+// Haiku Journal - UIKit version (full screen overlay)
+const HaikuJournal = ({ haikus, onClose }: { haikus: HaikuEntry[]; onClose: () => void }) => {
+  return (
+    <Card 
+      width={600}
+      maxHeight={600}
+      positionType="absolute"
+      positionLeft="50%"
+      positionTop="50%"
+      transformTranslateX="-50%"
+      transformTranslateY="-50%"
+    >
+      <CardHeader>
+        <Container flexDirection="row" justifyContent="space-between" alignItems="center">
+          <CardTitle>
+            <Text fontSize={20} fontWeight="bold">Evolution Journal</Text>
+          </CardTitle>
+          <Button onClick={onClose} variant="ghost" size="sm">
+            <Text>✕</Text>
+          </Button>
+        </Container>
+      </CardHeader>
+      <CardContent flexDirection="column" gap={12} overflow="scroll">
+        {haikus.length === 0 ? (
+          <Container flexDirection="column" alignItems="center" gap={8}>
+            <Text fontSize={16} fontWeight="medium">No journal entries yet</Text>
+            <Text fontSize={12} opacity={0.6}>
+              Evolution events will generate haikus to capture significant moments
+            </Text>
+          </Container>
+        ) : (
+          haikus.map((entry, index) => (
+            <Card key={index} padding={12} marginBottom={index < haikus.length - 1 ? 12 : 0}>
+              <Container flexDirection="column" gap={8}>
+                <Container flexDirection="column" gap={4}>
+                  {entry.haiku.map((line, lineIndex) => (
+                    <Text key={lineIndex} fontSize={14} textAlign="center">
+                      {line}
+                    </Text>
+                  ))}
+                </Container>
+                <Separator />
+                <Container flexDirection="column" gap={4}>
+                  <Container flexDirection="row" justifyContent="space-between">
+                    <Text fontSize={11} opacity={0.6}>Gen {entry.generation}</Text>
+                    <Text fontSize={11} opacity={0.6}>
+                      {entry.context.eventType.replace('_', ' ')}
+                    </Text>
+                  </Container>
+                  <Text fontSize={11} opacity={0.6}>
+                    Location: {entry.context.location}
+                  </Text>
+                  {entry.context.involvedCreatures.length > 0 && (
+                    <Text fontSize={11} opacity={0.6}>
+                      Creatures: {entry.context.involvedCreatures.length}
+                    </Text>
+                  )}
+                  <Container flexDirection="row" alignItems="center" gap={8}>
+                    <Container 
+                      width={16} 
+                      height={16} 
+                      borderRadius={8}
+                      backgroundColor={entry.emotionalTone > 0 ? 0x38A169 : 0xE53E3E}
+                      opacity={Math.abs(entry.emotionalTone)}
+                    />
+                    <Text fontSize={11} opacity={0.6}>
+                      {entry.emotionalTone > 0 ? 'Uplifting' : 'Contemplative'}
+                    </Text>
+                    <Text fontSize={11} fontWeight="medium">
+                      {(entry.significance * 100).toFixed(0)}% significant
+                    </Text>
+                  </Container>
+                </Container>
+              </Container>
+            </Card>
+          ))
+        )}
+      </CardContent>
+    </Card>
+  );
+};
+
+// Legacy export for compatibility (DOM-based, will be removed)
+const NarrativeDisplay = () => {
+  return null; // No longer used - all components exported separately
 };
 
 export default NarrativeDisplay;

@@ -125,7 +125,7 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
 
                     {/* Description */}
                     <Text
-                        
+                        fontFamily="inter"
                         fontSize={18}
                         color={0xA0AEC0}
                         textAlign="center"
@@ -180,7 +180,7 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
 
             {/* Footer */}
             <Text
-                
+                fontFamily="inter"
                 fontSize={12}
                 color={0xA0AEC0}
                 opacity={0.6}

@@ -1,257 +1,265 @@
 /**
- * Evolution UI - Main interface displaying evolutionary ecosystem in action
- * Clean information hierarchy with evolution visualization
+ * Evolution UI - FULL UIKit Migration COMPLETE
+ * All components render INSIDE Canvas as 3D UI elements
+ * NO DOM-based UI - everything uses @react-three/uikit
  */
 
 import { useEffect, useState } from 'react';
+import { Container, Text } from '@react-three/uikit';
+import { 
+  Card, 
+  CardHeader, 
+  CardTitle, 
+  CardContent, 
+  Progress, 
+  Button,
+  Separator
+} from '@react-three/uikit-default';
 import { useWorld } from '../contexts/WorldContext';
 import type { EvolutionEvent } from '../systems/GameClock';
 import { gameClock } from '../systems/GameClock';
-import NarrativeDisplay from './NarrativeDisplay';
 import TraitEvolutionDisplay from './TraitEvolutionDisplay';
 
-// Clean information hierarchy for evolution display
-const GenerationDisplay = () => {
+// Generation Display - UIKit version (top-right)
+export const GenerationDisplay = () => {
   const [currentTime, setCurrentTime] = useState(gameClock.getCurrentTime());
 
   useEffect(() => {
     const unsubscribe = gameClock.onTimeUpdate((time) => {
       setCurrentTime(time);
     });
-
     return unsubscribe;
   }, []);
 
   return (
-    <div className="evolution-card fixed top-4 right-4 z-50 bg-ebb-indigo-800/90 backdrop-blur-md border border-trait-gold-400/20 shadow-lg">
-      <div className="flex items-center gap-2 mb-2">
-        <div className="w-6 h-6 rounded-full bg-trait-gold-500/30 flex items-center justify-center">
-          <span className="text-xs">⚡</span>
-        </div>
-        <div className="generation-counter text-xl font-mono text-trait-gold-300">
-          Generation {currentTime.generation}
-        </div>
-      </div>
-      <div className="w-48 bg-ebb-indigo-900/50 rounded-full h-2.5 mt-2 border border-echo-silver-500/20">
-        <div
-          className="trait-fill h-full rounded-full transition-all duration-1000 bg-gradient-to-r from-trait-gold-500 to-bloom-emerald-500"
-          style={{ width: `${currentTime.generationProgress * 100}%` }}
-        />
-      </div>
-      <div className="text-xs text-echo-silver-400 mt-2 font-mono">
-        {Math.floor(currentTime.generationProgress * 100)}% complete
-      </div>
-      <div className="text-xs text-echo-silver-400 font-mono">
-        Events: {currentTime.evolutionEvents.length}
-      </div>
-    </div>
+    <Card 
+      width={280}
+      positionType="absolute"
+      positionTop={20}
+      positionRight={20}
+    >
+      <CardHeader>
+        <CardTitle>
+          <Container flexDirection="row" alignItems="center" gap={8}>
+            <Text fontSize={16}>⚡</Text>
+            <Text fontSize={18} fontWeight="bold">
+              Generation {currentTime.generation}
+            </Text>
+          </Container>
+        </CardTitle>
+      </CardHeader>
+      <CardContent flexDirection="column" gap={8}>
+        <Progress value={currentTime.generationProgress} width="100%" />
+        <Container flexDirection="column" gap={4}>
+          <Text fontSize={12}>
+            {Math.floor(currentTime.generationProgress * 100)}% complete
+          </Text>
+          <Text fontSize={12}>
+            Events: {currentTime.evolutionEvents.length}
+          </Text>
+        </Container>
+      </CardContent>
+    </Card>
   );
 };
 
-// Advanced creature evolution display with Spore-inspired trait visualization
-const CreatureEvolutionDisplay = () => {
-  const { world } = useWorld();
-  const [creatures, setCreatures] = useState<any[]>([]);
-  const [selectedCreature, setSelectedCreature] = useState<any>(null);
-
-  // Query creatures from ECS world - ONE TIME on mount
-  useEffect(() => {
-    const creatureQuery = world.with('creature', 'transform');
-    setCreatures(Array.from(creatureQuery.entities));
-  }, []); // Run once on mount
-
-  return (
-    <>
-      <div className="fixed bottom-20 left-4 z-50 max-w-sm">
-        <div className="evolution-card bg-ebb-indigo-800/90 backdrop-blur-md border border-bloom-emerald-400/20 shadow-lg">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-5 h-5 rounded bg-bloom-emerald-500/30 flex items-center justify-center">
-              <span className="text-xs">🌿</span>
-            </div>
-            <h3 className="font-display font-bold text-bloom-emerald-300">
-              Active Creatures ({creatures.length})
-            </h3>
-          </div>
-          <div className="space-y-3 max-h-80 overflow-y-auto">
-            {creatures.slice(0, 6).map((creature, index) => (
-              <TraitEvolutionDisplay
-                key={index}
-                creature={creature}
-                onSelect={() => setSelectedCreature(creature)}
-              />
-            ))}
-            {creatures.length === 0 && (
-              <div className="text-echo-silver-600 text-sm italic">
-                No creatures detected. Ecosystem initializing...
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Selected creature detailed view */}
-      {selectedCreature && (
-        <div className="fixed inset-0 bg-base-100/90 backdrop-blur-sm z-60 flex items-center justify-center">
-          <div className="evolution-card max-w-lg mx-4">
-            <div className="flex justify-between items-start mb-4">
-              <h3 className="font-display text-xl text-trait-gold-600">
-                Creature Analysis
-              </h3>
-              <button
-                onClick={() => setSelectedCreature(null)}
-                className="btn btn-ghost btn-sm"
-              >
-                ✕
-              </button>
-            </div>
-
-            <TraitEvolutionDisplay creature={selectedCreature} />
-
-            <div className="mt-4 pt-4 border-t border-echo-silver-300">
-              <button
-                onClick={() => {
-                  // Would trigger camera focus on this creature
-                  console.log('Focus camera on creature:', selectedCreature);
-                }}
-                className="btn btn-primary w-full mobile-touch-target"
-              >
-                Focus Camera
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
-  );
-};
-
-// Real-time evolution event feed
-const EvolutionEventFeed = () => {
+// Evolution Event Feed - UIKit version (top-left)
+export const EvolutionEventFeed = () => {
   const [recentEvents, setRecentEvents] = useState<EvolutionEvent[]>([]);
 
   useEffect(() => {
     const unsubscribe = gameClock.onEvolutionEvent((event) => {
-      setRecentEvents(prev => [...prev.slice(-4), event]); // Keep last 5 events
+      setRecentEvents(prev => [...prev.slice(-4), event]);
     });
-
     return unsubscribe;
   }, []);
 
   return (
-    <div className="fixed top-4 left-4 z-50 max-w-md">
-      <div className="evolution-card bg-ebb-indigo-800/90 backdrop-blur-md border border-trait-gold-400/20 shadow-lg">
-        <div className="flex items-center gap-2 mb-3">
-          <div className="w-5 h-5 rounded bg-trait-gold-500/30 flex items-center justify-center">
-            <span className="text-xs">✨</span>
-          </div>
-          <h3 className="font-display font-bold text-trait-gold-300">
-            Evolution Events
-          </h3>
-        </div>
-        <div className="space-y-2 max-h-48 overflow-y-auto">
-          {recentEvents.map((event, index) => (
-            <div
-              key={index}
-              className={`p-2 rounded-lg border transition-all duration-500 animate-trait-emerge ${event.significance > 0.7
-                ? 'evolution-card--significant'
-                : 'bg-base-200/50 border-echo-silver-300'
-                }`}
-            >
-              <div className="flex justify-between items-start">
-                <div className="font-semibold text-sm capitalize">
-                  {event.eventType.replace('_', ' ')}
-                </div>
-                <div className="text-xs text-echo-silver-600">
-                  Gen {event.generation}
-                </div>
-              </div>
-              <div className="text-xs text-base-content/80 mt-1">
+    <Card 
+      width={320}
+      positionType="absolute"
+      positionTop={20}
+      positionLeft={20}
+      maxHeight={300}
+    >
+      <CardHeader>
+        <CardTitle>
+          <Container flexDirection="row" alignItems="center" gap={8}>
+            <Text fontSize={16}>✨</Text>
+            <Text fontSize={16} fontWeight="bold">Evolution Events</Text>
+          </Container>
+        </CardTitle>
+      </CardHeader>
+      <CardContent flexDirection="column" gap={8} overflow="scroll">
+        {recentEvents.length === 0 ? (
+          <Text fontSize={12} opacity={0.6}>Awaiting evolution events...</Text>
+        ) : (
+          recentEvents.map((event, index) => (
+            <Card key={index} padding={8} marginBottom={index < recentEvents.length - 1 ? 8 : 0}>
+              <Container flexDirection="row" justifyContent="space-between" alignItems="flex-start">
+                <Text fontSize={12} fontWeight="medium">
+                  {event.eventType.replace('_', ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                </Text>
+                <Text fontSize={11} opacity={0.6}>Gen {event.generation}</Text>
+              </Container>
+              <Text fontSize={11} marginTop={4} opacity={0.8}>
                 {event.description}
-              </div>
+              </Text>
               {event.affectedCreatures.length > 0 && (
-                <div className="text-xs text-echo-silver-600 mt-1">
+                <Text fontSize={11} marginTop={4} opacity={0.6}>
                   Affects: {event.affectedCreatures.length} creature(s)
-                </div>
+                </Text>
               )}
-            </div>
-          ))}
-          {recentEvents.length === 0 && (
-            <div className="text-echo-silver-600 text-sm italic">
-              Awaiting evolution events...
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
+            </Card>
+          ))
+        )}
+      </CardContent>
+    </Card>
   );
 };
 
-// Environmental status display
-const EnvironmentalStatus = () => {
+// Creature Evolution Display - UIKit version (bottom-left)
+export const CreatureEvolutionDisplay = () => {
+  const { world } = useWorld();
+  const [creatures, setCreatures] = useState<any[]>([]);
+  const [selectedCreature, setSelectedCreature] = useState<any>(null);
+
+  useEffect(() => {
+    const creatureQuery = world.with('creature', 'transform');
+    setCreatures(Array.from(creatureQuery.entities));
+  }, []);
+
+  if (selectedCreature) {
+  return (
+    <Card 
+      width={400}
+      positionType="absolute"
+      positionLeft="50%"
+      positionTop="50%"
+      transformTranslateX="-50%"
+      transformTranslateY="-50%"
+    >
+        <CardHeader>
+          <Container flexDirection="row" justifyContent="space-between" alignItems="center">
+            <CardTitle>
+              <Text fontSize={18} fontWeight="bold">Creature Analysis</Text>
+            </CardTitle>
+            <Button onClick={() => setSelectedCreature(null)} variant="ghost" size="sm">
+              <Text>✕</Text>
+            </Button>
+          </Container>
+        </CardHeader>
+        <CardContent flexDirection="column" gap={16}>
+          <TraitEvolutionDisplay creature={selectedCreature} />
+          <Separator />
+          <Button onClick={() => console.log('Focus camera on creature:', selectedCreature)}>
+            <Text>Focus Camera</Text>
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card 
+      width={320}
+      positionType="absolute"
+      positionBottom={100}
+      positionLeft={20}
+      maxHeight={400}
+    >
+      <CardHeader>
+        <CardTitle>
+          <Container flexDirection="row" alignItems="center" gap={8}>
+            <Text fontSize={16}>🌿</Text>
+            <Text fontSize={16} fontWeight="bold">
+              Active Creatures ({creatures.length})
+            </Text>
+          </Container>
+        </CardTitle>
+      </CardHeader>
+      <CardContent flexDirection="column" gap={12} overflow="scroll">
+        {creatures.length === 0 ? (
+          <Text fontSize={12} opacity={0.6}>No creatures detected. Ecosystem initializing...</Text>
+        ) : (
+          creatures.slice(0, 6).map((creature, index) => (
+            <Card 
+              key={index} 
+              padding={8}
+              onClick={() => setSelectedCreature(creature)}
+              cursor="pointer"
+            >
+              <TraitEvolutionDisplay creature={creature} onSelect={() => setSelectedCreature(creature)} />
+            </Card>
+          ))
+        )}
+      </CardContent>
+    </Card>
+  );
+};
+
+// Environmental Status - UIKit version (bottom-right)
+export const EnvironmentalStatus = () => {
   const { ecosystem } = useWorld();
   const [ecosystemState, setEcosystemState] = useState<any>(null);
 
   useEffect(() => {
     if (!ecosystem) return;
-
     const envSystem = ecosystem.getEnvironmentalSystem();
     const report = envSystem.getEnvironmentalReport();
-
     setEcosystemState({
       globalPollution: report.globalPollution,
       activeSources: report.activeSources,
       refugeAreas: report.refugeAreas
     });
-  }, []); // Run once on mount
+  }, []);
 
   if (!ecosystemState) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 z-50">
-      <div className="evolution-card bg-ebb-indigo-800/90 backdrop-blur-md border border-echo-silver-400/20 shadow-lg">
-        <div className="flex items-center gap-2 mb-3">
-          <div className="w-5 h-5 rounded bg-echo-silver-500/30 flex items-center justify-center">
-            <span className="text-xs">🌍</span>
-          </div>
-          <h3 className="font-display font-bold text-echo-silver-300">
-            Environment
-          </h3>
-        </div>
-        <div className="space-y-2">
-          <div className="flex justify-between items-center">
-            <span className="text-sm">Pollution</span>
-            <div className={`pollution-indicator ${ecosystemState.globalPollution > 0.4 ? 'animate-pulse' : ''
-              }`}>
-              {(ecosystemState.globalPollution * 100).toFixed(0)}%
-            </div>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-sm">Active Sources</span>
-            <span className="font-mono text-sm">{ecosystemState.activeSources}</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-sm">Refuge Areas</span>
-            <div className="clean-zone-indicator">
-              {ecosystemState.refugeAreas}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Card 
+      width={240}
+      positionType="absolute"
+      positionBottom={100}
+      positionRight={20}
+    >
+      <CardHeader>
+        <CardTitle>
+          <Container flexDirection="row" alignItems="center" gap={8}>
+            <Text fontSize={16}>🌍</Text>
+            <Text fontSize={16} fontWeight="bold">Environment</Text>
+          </Container>
+        </CardTitle>
+      </CardHeader>
+      <CardContent flexDirection="column" gap={8}>
+        <Container flexDirection="row" justifyContent="space-between" alignItems="center">
+          <Text fontSize={12}>Pollution</Text>
+          <Text fontSize={12} fontWeight="medium">
+            {(ecosystemState.globalPollution * 100).toFixed(0)}%
+          </Text>
+        </Container>
+        <Container flexDirection="row" justifyContent="space-between" alignItems="center">
+          <Text fontSize={12}>Active Sources</Text>
+          <Text fontSize={12} fontFamily="monospace">{ecosystemState.activeSources}</Text>
+        </Container>
+        <Container flexDirection="row" justifyContent="space-between" alignItems="center">
+          <Text fontSize={12}>Refuge Areas</Text>
+          <Text fontSize={12}>{ecosystemState.refugeAreas}</Text>
+        </Container>
+      </CardContent>
+    </Card>
   );
 };
 
-// Pack dynamics visualization
-const PackDynamicsDisplay = () => {
+// Pack Dynamics Display - UIKit version (top-right below generation)
+export const PackDynamicsDisplay = () => {
   const { ecosystem } = useWorld();
   const [packData, setPackData] = useState<any[]>([]);
 
   useEffect(() => {
     if (!ecosystem) return;
-
     const packSystem = ecosystem.getPackSocialSystem();
     const analysis = packSystem.getPackAnalysis();
-
     setPackData([{
       id: 'pack_summary',
       type: 'summary',
@@ -259,84 +267,70 @@ const PackDynamicsDisplay = () => {
       cohesion: 0.8,
       territory: Math.sqrt(analysis.totalTerritorialCoverage / Math.PI)
     }]);
-  }, []); // Run once on mount
+  }, []);
 
   return (
-    <div className="fixed top-20 right-4 z-40 max-w-xs">
+    <Container 
+      positionType="absolute"
+      positionTop={180}
+      positionRight={20}
+      flexDirection="column"
+      gap={8}
+    >
       {packData.map((pack) => (
-        <div key={pack.id} className="evolution-card mb-2 animate-pack-form">
-          <div className="font-semibold text-sm text-bloom-emerald-600">
+        <Card key={pack.id} width={240} padding={12}>
+          <Text fontSize={12} fontWeight="bold">
             {pack.type.replace('_', ' ').toUpperCase()}
-          </div>
-          <div className="text-xs text-echo-silver-600 mt-1">
-            {pack.members} members • {pack.territory}m territory
-          </div>
-          <div className="trait-bar mt-2">
-            <div
-              className="trait-fill"
-              style={{ width: `${pack.cohesion * 100}%` }}
-            />
-          </div>
-          <div className="text-xs text-echo-silver-600 mt-1">
+          </Text>
+          <Text fontSize={11} marginTop={4} opacity={0.6}>
+            {pack.members} members • {pack.territory.toFixed(1)}m territory
+          </Text>
+          <Progress value={pack.cohesion} width="100%" marginTop={8} />
+          <Text fontSize={11} marginTop={4} opacity={0.6}>
             Cohesion: {(pack.cohesion * 100).toFixed(0)}%
-          </div>
-        </div>
+          </Text>
+        </Card>
       ))}
-    </div>
+    </Container>
   );
 };
 
-// Main evolution UI container
-const EvolutionUI = () => {
+// Mobile Controls Overlay - UIKit version (bottom)
+export const MobileControls = () => {
   return (
-    <>
-      {/* Generation progress (top-right) */}
-      <GenerationDisplay />
-
-      {/* Evolution events feed (top-left) */}
-      <EvolutionEventFeed />
-
-      {/* Advanced creature display with trait visualization (bottom-left) */}
-      <CreatureEvolutionDisplay />
-
-      {/* Environmental status (bottom-right) */}
-      <EnvironmentalStatus />
-
-      {/* Pack dynamics (top-right below generation) */}
-      <PackDynamicsDisplay />
-
-      {/* Narrative system - haikus and storytelling */}
-      <NarrativeDisplay />
-
-      {/* Mobile-friendly controls overlay - Brand aligned */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 p-4 bg-gradient-to-t from-ebb-indigo-900/95 via-ebb-indigo-800/90 to-transparent backdrop-blur-sm">
-        <div className="flex justify-center space-x-3">
-          <button
-            className="haptic-button mobile-touch-target px-6 py-3 rounded-2xl bg-bloom-emerald-500/20 hover:bg-bloom-emerald-500/30 border border-bloom-emerald-400/30 transition-all duration-200 active:scale-95"
-            style={{ minWidth: '120px', minHeight: '50px' }}
-          >
-            <span className="text-sm font-medium text-bloom-emerald-200">👁️ Observe</span>
-          </button>
-          <button
-            className="haptic-button mobile-touch-target px-6 py-3 rounded-2xl bg-trait-gold-500/20 hover:bg-trait-gold-500/30 border border-trait-gold-400/30 transition-all duration-200 active:scale-95"
-            style={{ minWidth: '120px', minHeight: '50px' }}
-          >
-            <span className="text-sm font-medium text-trait-gold-200">🧬 Influence</span>
-          </button>
-          <button
-            className="haptic-button mobile-touch-target px-6 py-3 rounded-2xl bg-ebb-indigo-500/20 hover:bg-ebb-indigo-500/30 border border-echo-silver-400/30 transition-all duration-200 active:scale-95"
-            style={{ minWidth: '120px', minHeight: '50px' }}
-          >
-            <span className="text-sm font-medium text-echo-silver-200">📊 Analyze</span>
-          </button>
-        </div>
-
-        <div className="text-center mt-3 text-xs text-echo-silver-400 font-mono">
-          Spore-style camera: Pinch zoom • Drag orbit • Double-tap reset
-        </div>
-      </div>
-    </>
+    <Container 
+      positionType="absolute"
+      positionBottom={20}
+      positionLeft="50%"
+      transformTranslateX="-50%"
+      flexDirection="column"
+      alignItems="center"
+      gap={12}
+    >
+      <Container flexDirection="row" gap={12}>
+        <Button variant="default" size="lg">
+          <Text fontSize={14}>👁️ Observe</Text>
+        </Button>
+        <Button variant="default" size="lg">
+          <Text fontSize={14}>🧬 Influence</Text>
+        </Button>
+        <Button variant="default" size="lg">
+          <Text fontSize={14}>📊 Analyze</Text>
+        </Button>
+      </Container>
+      <Text fontSize={10} opacity={0.6} fontFamily="monospace">
+        Spore-style camera: Pinch zoom • Drag orbit • Double-tap reset
+      </Text>
+    </Container>
   );
+};
+
+// Main Evolution UI - ALL COMPONENTS ARE NOW UIKit
+// This file exports all UIKit components for use inside Canvas
+// NO DOM-based UI remains - migration complete
+const EvolutionUI = () => {
+  // Empty - all components exported and rendered in App.tsx Canvas
+  return null;
 };
 
 export default EvolutionUI;

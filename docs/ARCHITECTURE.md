@@ -1,337 +1,344 @@
-# Architecture - Ebb & Bloom
+# Ebb & Bloom - Architecture
 
-**Version**: 2.0.0  
-**Date**: 2025-01-XX  
-**Status**: Frozen - Raycast 3D Architecture Committed
-
----
-
-## System Architecture Overview
-
-Ebb & Bloom uses a clean Entity-Component-System (ECS) architecture with BitECS, where game logic is completely separated from rendering (Raycast 3D) and UI state (Zustand).
-
-```
-┌─────────────────────────────────────────┐
-│          Capacitor (Native Mobile)      │
-├─────────────────────────────────────────┤
-│           Ionic Vue (UI Layer)          │
-│  ┌───────────────────────────────────┐  │
-│  │   Raycast 3D (Rendering ONLY)    │  │
-│  │      Reads from ECS  ←──┐         │  │
-│  └──────────────────────────┼───────┘  │
-│                             │          │
-│  ┌──────────────────────────▼───────┐  │
-│  │   BitECS (Game Logic)           │  │
-│  │   - Components (data)           │  │
-│  │   - Systems (logic)             │  │
-│  │   - Entities (IDs)              │  │
-│  └──────────────────────────────────┘  │
-│           ▲                            │
-│  ┌────────┴─────────────────────────┐  │
-│  │  Zustand (UI State - Read Only) │  │
-│  │   Syncs FROM ECS for display    │  │
-│  └──────────────────────────────────┘  │
-└─────────────────────────────────────────┘
-```
-
-### Core Principle: ECS as Single Source of Truth
-
-**Rule**: All game state lives in BitECS components. Systems modify components. Raycast renderer and Zustand only READ, never WRITE.
+**Version**: 2.0  
+**Last Updated**: 2025-01-09
 
 ---
 
-## Rendering Architecture: 2D → Raycasted 3D
+## Core Philosophy
 
-### Current State (Stage 2 - Production)
-- **Implementation**: 2D tile-based (Phaser 3)
-- **Status**: Production-ready for Stage 2 complete playable mobile game
-- **Performance**: 60 FPS achieved on mid-range Android
-- **Timeline**: Stage 2 (8-12 weeks) completes 2D implementation
+**"Everything is Squirrels"**: Base archetypes evolve through environmental pressure into infinite variations.
 
-### Vision: Raycast Engine (Stage 3 - Conditional)
-- **Approach**: Wolfenstein-style raycasting with modern smoothing
-- **Why**: Efficient, seed-driven, feels vast without VRAM suck
-- **Mobile-Friendly**: ~100 rays per frame (60FPS target)
-- **Aesthetic**: DOS-era inspired, modern-smoothed
-- **Timeline**: Stage 3 (10 weeks) AFTER performance validation
-- **Decision Gate**: Phase 1 performance validation is MANDATORY before commitment
-- **Fallback**: Enhanced 2D with shaders (2 weeks if raycast fails)
-
-### Target Implementation
-- **Engine**: Custom raycast or raycast.js library (~5KB)
-- **Heightmaps**: Perlin noise for ebb valleys + bloom ridges
-- **Controls**: Gesture-based (swipe-turn, pinch-zoom, tap-stride)
-- **Visual Style**: Pseudo-3D slice rendering
-  - Color gradients: Indigo ebb (close) → Emerald bloom (far)
-  - Void haze overlay (20% darken when void affinity high)
-  - Particle effects: Blue wisps (flow), red sparks (heat)
-
-### Data Flow
-```
-User Input → Systems (modify ECS) → Zustand (read) → UI Display
-                                   → React Three Fiber (read) → 3D Rendering
-```
-
-**NEVER**: UI or React Three Fiber modifying ECS directly
-
-### Performance Optimizations (From Grok Documents)
-**Implemented**:
-- ✅ Terrain generation with FBM noise (multi-octave SimplexNoise)
-- ✅ ECS architecture (cache-friendly Miniplex)
-- ✅ Procedural building generation
-
-**NOT Implemented** (from Grok-TypeScript_Procedural_Open-World_Scene.md):
-- ❌ Instanced rendering (InstancedMesh for rocks/shrubs/grass)
-- ❌ Sky dome with gradient and procedural clouds
-- ❌ Billboard grass rendering
-- ❌ Poisson disk sampling for vegetation placement
-- ❌ LOD (Level of Detail) system
-- ❌ Viewport/frustum culling
-
-**Partially Implemented**:
-- ✅ Fog system (basic fog in `src/App.tsx`, but not full exponential fog with procedural variation)
-
-**NOT Implemented** (from Grok-Multi-Platform_React_Three_Fiber_Development.md):
-- ❌ Platform detection (PlatformContext for mobile/web/desktop)
-- ❌ Responsive design patterns (screen size adaptation)
-- ❌ Unified input system (touch/keyboard/gamepad switching)
-- ❌ Screen orientation handling
-- ❌ Zustand event tracking store
-
-**Documented**: Performance targets in `docs/vision/09_mobile_perf_constraints.md`
+**NO hardcoded progression. NO arbitrary unlocks. NO predetermined outcomes.**
 
 ---
 
-## System Decomposition
+## Generational Architecture
 
-### Rendering Layer
-- **Vision**: Raycasted 3D (Wolfenstein-style)
-- **Current**: Phaser 3 (2D tile-based) - interim
-- **Responsibility**: Visual representation only (READ-ONLY from ECS)
-- **Key Constraint**: 60 FPS on mid-range Android
+### Generation 0: Planetary Genesis (MISSING - CRITICAL)
 
-### World Generation
-- **Approach**: Perlin noise, chunk-based, deterministic seeds
-- **Current**: 64x64 grid, 3 biomes, tile-based
-- **Vision**: Raycasted heightmaps, infinite generation, streaming
-- **Key Constraint**: <3s load time, <2s world gen
+**Purpose**: Create physical reality from seed.
 
-### Simulation/Ecology
-- **Approach**: BitECS (Entity-Component-System)
-- **Systems**: Movement, Crafting, Snapping, Pack, Pollution, Behavior
-- **AI**: YukaJS (steering behaviors, FSM)
-- **Key Constraint**: <5ms per frame for ECS systems
+**Input**: Seed phrase (3 words) → seedrandom → Deterministic planet
 
-### Crafting System
-- **Approach**: Affinity-based magnetic snapping
-- **Current**: Basic snapping (ore + water = alloy)
-- **Vision**: Infinite permutations, demand-responsive scaling
-- **Key Constraint**: 10-deep chain cap, batch queries
+**Components**:
+1. Core Type Selection (8 types: Molten, Iron, Diamond, Living Wood, Water, Ice, Void, Dual)
+2. Planetary Physics (gravity, rotation, day/night, tides)
+3. Layer Assembly (Core → Mantle → Crust → Hydrosphere → Atmosphere)
+4. Material Distribution (depths/hardness from layers, NOT hardcoded)
+5. Primordial Wells (life spawn points)
 
-### Persistence/Saves
-- **Approach**: IndexedDB (web) / Capacitor Filesystem (native)
-- **Current**: Basic save/load
-- **Vision**: Cross-world persistence, journal persistence
-- **Key Constraint**: Async saves, <100ms save time
-
-### Content Pipelines
-- **Approach**: Procedural generation (no hand-authored content)
-- **Current**: Basic world gen, critter spawning
-- **Vision**: Emergent villages and quests
-- **Key Constraint**: Infinite variety, no repetition
-
-### Platform/Engine Wrapper
-- **Current**: Vue/Capacitor/Ionic
-- **Vision**: Mobile-first, web fallback
-- **Key Constraint**: APK <15MB, 60 FPS mobile
+**Status**: ❌ Does not exist
 
 ---
 
-## ECS Architecture (BitECS)
+### Generation 1: ECS Archetypes
 
-### Components (`src/ecs/components/`)
+**Purpose**: Initialize world with base archetypes (Daggerfall-style prefabs)
 
-#### Core Components
+**Components**:
+- 8 creatures spawn near Primordial Wells
+- Materials spawn per planetary layers
+- Terrain from planetary geology
+- No tools (creatures start tool-less)
+- No buildings (creatures start nomadic)
+
+**Status**: ⚠️ Works but uses hardcoded values
+
+---
+
+### Generation 2+: Yuka Sphere Coordination
+
+**Purpose**: ALL evolution driven by Yuka AI responding to environmental pressure
+
+**Yuka Sphere Network**:
+- **Creature Sphere**: Trait evolution, reproduction, morphology
+- **Tool Sphere**: Archetype emergence, capability unlocks
+- **Material Sphere**: Accessibility updates, synthesis
+- **Building Sphere**: Construction, social unlocks
+
+**Inter-Sphere Communication**:
+- Spheres signal each other with pressure/capability changes
+- Decisions coordinated (no contradictions)
+- Feedback loops create emergent complexity
+
+**Status**: ⚠️ Creature/Material work, Tool/Building not integrated
+
+---
+
+## The Yuka Sphere System
+
+### Core Principle
+
+After Gen 1, **EVERYTHING is Yuka decisions** responding to:
+- Environmental physics (depth, hardness, gravity - immutable)
+- Player actions (pressure source)
+- Other Yuka spheres (collaborative evolution)
+
+### Example: Bronze Age Emergence
+
+```
+Gen 1 (ECS):
+  Copper: 7m depth, 5.8 hardness (from Gen 0 planetary layers)
+  Tin: 12m depth, 7.2 hardness (from Gen 0)
+  Stone tools: 0m reach, 4.0 hardness
+
+Gen 2 (Yuka):
+  Material Sphere: "Copper exists but inaccessible (tool reach 0m, ore at 7m)"
+  Tool Sphere: "Need EXTRACTOR with reach > 7m, hardness > 5.8"
+  Creature Sphere: "Current manipulation 0.4 < required 0.5"
+  Decision: Evolve creature manipulation first
+
+Gen 3-4 (Yuka):
+  Creature manipulation now 0.7
+  Tool Sphere: "Creatures ready - emerge EXTRACTOR Gen 2"
+  EXTRACTOR: reach 3m, hardness 5.0 (still can't reach copper)
+  More pressure builds...
+
+Gen 5-7 (Yuka):
+  Tool Sphere: "Evolve EXTRACTOR Gen 3"
+  EXTRACTOR: reach 8m, hardness 6.0
+  Material Sphere: "Copper NOW accessible!"
+  Copper harvesting begins
+
+Gen 8-10 (Yuka):
+  Copper + Tin available
+  Tool Sphere: "TRANSFORMER can create alloys"
+  Bronze synthesis emerges
+  Tool Sphere: "Bronze enables better tools"
+  Bronze Age achieved
+```
+
+**NO hardcoded "Level 5 = Bronze Age"**. Emerged from physical reality + Yuka coordination.
+
+---
+
+## Tool Archetypes
+
+### 8 Fundamental Categories
+
+1. **ASSEMBLER** - Joins things (hammer, needle, mortar)
+2. **DISASSEMBLER** - Breaks things (axe, knife, saw)
+3. **TRANSFORMER** - Changes form (furnace, mill, loom)
+4. **EXTRACTOR** - Gets from depths (shovel, drill, pump)
+5. **CARRIER** - Moves things (basket, cart, rope)
+6. **MEASURER** - Understands things (scale, compass, clock)
+7. **PROTECTOR** - Shields things (armor, walls, shelter)
+8. **RECORDER** - Preserves knowledge (writing, maps) - **Enables culture**
+
+### Emergence Conditions
+
+- **EXTRACTOR**: Material depth > 5m
+- **RECORDER**: Social > 0.8 AND generation > 5
+- **ASSEMBLER**: Social > 0.4, multiple materials available
+- **PROTECTOR**: Territorial conflict > 0.6
+
+### Property-Based Capabilities
+
+**NOT hardcoded**. Derived from properties:
+
 ```typescript
-Position: { x: f32, y: f32 }
-Velocity: { x: f32, y: f32 }
-Inventory: { ore: ui16, water: ui16, alloy: ui16, ... }
-Sprite: { textureKey: ui32 }
-```
-
-#### Trait Components (10 total)
-```typescript
-FlipperFeet: { level: ui8 }        // Water speed, flow affinity
-ChainsawHands: { level: ui8 }     // Wood harvest, scares critters
-DrillArms: { level: ui8 }          // Ore mining, reveals veins
-WingGliders: { level: ui8 }        // Glide distance, aerial view
-EchoSonar: { level: ui8 }          // Resource ping radius
-BioLumGlow: { level: ui8 }         // Night vision, attracts critters
-StorageSacs: { level: ui8 }        // Inventory capacity
-FiltrationGills: { level: ui8 }    // Pollution resistance
-ShieldCarapace: { level: ui8 }     // Damage reduction
-ToxinSpines: { level: ui8 }         // Counter-attack
-```
-
-#### Social Components
-```typescript
-Pack: {
-  leaderId: ui32,      // Entity ID of leader
-  loyalty: f32,        // 0-1 loyalty to player
-  size: ui8,           // Number of members
-  affMask: ui32,       // Inherited affinity traits
-  packType: ui8        // neutral/ally/rival
+// Hardness determines what can be broken
+if (tool.properties.hardness > 7.0 && tool.archetype === DISASSEMBLER) {
+  capabilities.push('break_stone', 'cut_metal');
 }
 
-Critter: {
-  species: ui8,        // fish/squirrel/bird/beaver
-  packId: ui32,        // Pack entity ID (0 if solo)
-  role: ui8,           // leader/specialist/follower
-  inheritedTrait: ui8, // Diluted trait from player
-  needState: ui8       // idle/foraging/fleeing
+// Reach determines accessibility
+if (tool.properties.reach > 2.0 && tool.archetype === EXTRACTOR) {
+  capabilities.push('deep_mining');
+}
+
+// Precision determines assembly quality
+if (tool.properties.precision > 0.8 && tool.archetype === ASSEMBLER) {
+  capabilities.push('fine_assembly', 'complex_construction');
 }
 ```
 
-### Systems (`src/ecs/systems/`)
+### Tool-Creature Co-Evolution
 
-#### MovementSystem
-- Applies velocity to position
-- Handles friction and deceleration
-- Delta-time based updates
-- Query: `[Position, Velocity]`
+Tools inform creatures ("need manipulation 0.8 for better tools")  
+Creatures inform tools ("creatures ready for Gen 3 tools now")
 
-#### CraftingSystem
-- Recipe matching engine
-- Resource validation
-- Inventory updates
-- Pollution tracking
-- Query: `[Inventory]`
-
-#### SnappingSystem
-- Affinity-based resource combinatorics
-- 8-bit flag matching (HEAT, FLOW, BIND, POWER, LIFE, METAL, VOID, WILD)
-- Procedural haiku generation for snaps
-- Query: `[Position, Inventory]`
-
-#### PackSystem
-- Formation logic (3-15 critters)
-- Loyalty calculation (0-1 scale)
-- Role assignment (leader/specialist/follower)
-- Pack schism mechanics (split at <0.3 loyalty)
-- Query: `[Pack, Position]` and `[Critter, Position]`
-
-#### PollutionSystem
-- Tracks global pollution (0-100%)
-- Calculates shock thresholds (Whisper 40%, Tempest 70%, Collapse 90%)
-- Playstyle-specific mutations
-- Purity Grove mitigation
-- Query: `[all entities]` (global state)
-
-#### BehaviorSystem
-- Profiles Harmony/Conquest/Frolick playstyle
-- Rolling 100-action window
-- World reaction modifiers
-- No punishment - just consequences
-- Query: `[player entity]` (behavior tracking)
+**Status**: ⚠️ ToolArchetypeSystem complete, not integrated with YukaSphereCoordinator
 
 ---
 
-## Performance Strategy
+## Consciousness System
 
-### Targets
-- **60 FPS**: Steady on mid-range Android (Snapdragon 700+)
-- **Frame Time**: <16.67ms per frame
-- **Memory**: <150MB RAM
-- **Load Time**: <3 seconds to playable
-- **Battery**: <10% drain per hour
+### Core Concept
 
-### Optimizations
-1. **Viewport Culling**: Only render visible tiles/chunks
-2. **Sprite Pooling**: Reuse sprites (no create/destroy in loop)
-3. **ECS Architecture**: Cache-friendly memory layout
-4. **Batch Updates**: Group component modifications
-5. **Throttle AI**: Yuka updates to 100ms
-6. **Chunk-Based Loading**: Load on demand, cache generated
-7. **Raycast Efficiency**: ~100 rays per frame, distance-based LOD
+**Player is transferable awareness**, not bound to one creature.
+
+**Can**:
+- Possess any creature
+- Release to Yuka (full auto mode)
+- Transfer on death (no game over)
+- Preserve knowledge via RECORDER tools
+
+### Knowledge Persistence
+
+```
+Player possesses creature A
+  → Creature A dies
+  → Consciousness transfers to creature B
+  → IF RECORDER tools exist: Knowledge preserved
+  → IF NOT: Knowledge lost
+```
+
+**RECORDER tools enable**:
+- Knowledge storage
+- Cultural transmission
+- Religion emergence
+- Governance emergence
+
+**Status**: ✅ Backend complete, ❌ No UI
+
+---
+
+## Deconstruction System
+
+### Reverse Synthesis
+
+**Gen 3 creature dies**:
+```
+Gen 3 creature (complex)
+  → Extract Gen 2 synthesized components (manipulator, coordinator, armor)
+  → Extract Gen 1 archetypes (flesh, bone, hide)
+  → Extract raw materials (organic matter)
+```
+
+**Property-Based Usage**:
+- Hardness → armor potential
+- Volume → container potential
+- Organic → food potential
+
+**NO loot tables**. Usage derived from physical properties.
+
+**Status**: ✅ Complete
+
+---
+
+## Supporting Systems
+
+### Pack Social System
+- Pack formation based on proximity & social trait
+- Role assignment (alpha, scout, gatherer)
+- Loyalty calculation & pack splitting
+- Migration coordination
+- **Status**: ✅ Complete
+
+### Combat System
+- Health, Combat, Momentum components
+- Trait-driven combat styles (toxic, defensive, evasive)
+- Death triggers deconstruction
+- **Status**: ⚠️ Complete but not triggered by Yuka
+
+### Environmental Pressure System
+- Pollution tracking (sources, spread, decay)
+- Shock events (environmental crises)
+- Pressure calculation for Yuka
+- **Status**: ✅ Complete
+
+### Population Dynamics System
+- Population tracking & growth
+- Carrying capacity
+- Generation turnover
+- **Status**: ✅ Complete
+
+### Genetic Synthesis System
+- Trait blending from parents
+- Morphology generation from traits
+- Mutation application
+- **Status**: ✅ Complete
+
+### Haiku Narrative System
+- Procedural haiku generation
+- Jaro-Winkler diversity guard
+- Event-driven storytelling
+- **Status**: ✅ Complete
+
+### Gesture & Haptic Systems
+- Touch input (tap, long-press, swipe, pinch)
+- Haptic feedback patterns
+- Event-driven haptics
+- **Status**: ✅ Complete
+
+### Camera System
+- Spore-style dynamic third-person
+- Auto-targeting
+- Zoom presets (intimate, observe, ecosystem)
+- **Status**: ✅ Complete
+
+### Terrain System
+- Procedural heightmap generation
+- FBM (Fractal Brownian Motion)
+- Chunk-based streaming
+- **Status**: ⚠️ Complete but needs Gen 0 for geology
+
+### Texture System
+- AmbientCG texture loading
+- Material assignment
+- ECS integration
+- **Status**: ✅ Complete
 
 ---
 
 ## Technology Stack
 
-### Core Framework
-- **pnpm 9.x**: Package manager
-- **TypeScript 5.7+**: Type safety
-- **Node >= 20.x**: Runtime
-
-### Mobile Framework
-- **Capacitor 6.1+**: Native mobile bridge
-- **Ionic Vue 8.7+**: Mobile UI components
-- **Vue 3.5+**: Composition API
-
-### Game Engine & Architecture
-- **BitECS 0.3+**: High-performance ECS
-- **Yuka 0.7+**: AI steering behaviors
-- **Pinia 3.0+**: State management (Vue-integrated, NOT Zustand as originally planned)
-- **Phaser 3.87+**: 2D rendering (production for Stage 2)
-- **Raycast Engine**: Custom or raycast.js (Stage 3 target, conditional)
-
-### Build & Dev Tools
-- **Vite 6.0+**: Fast dev server
-- **Vitest 2.1+**: Unit testing
-- **GitHub Actions**: CI/CD automation
-- **Renovate Bot**: Automated dependency updates
+- **ECS**: Miniplex (game logic)
+- **Rendering**: React Three Fiber
+- **UI**: @react-three/uikit (NO DOM)
+- **AI**: Yuka (creature behavior)
+- **State**: Zustand (read-only from ECS)
+- **Platform**: Capacitor (mobile)
+- **Seed**: seedrandom (TO BE ADDED)
 
 ---
 
-## Architecture Decisions
+## File Structure
 
-### Why BitECS?
-- High performance (cache-friendly memory layout)
-- Scales to thousands of entities
-- Proper separation of data and logic
-- Future-proof for complex gameplay
-
-### Why Raycast Over Full 3D?
-- Efficient (seed-driven, no asset bloat)
-- Feels vast without VRAM suck
-- Mobile-friendly (~100 rays per frame)
-- DOS-era aesthetic (matches vision)
-
-### Why Pinia over Zustand/Vuex?
-- **Original Plan**: Zustand (framework-agnostic)
-- **Actual Implementation**: Pinia (Vue-native state management)
-- **Rationale**: Better Vue 3 Composition API integration
-- **Benefits**: Type-safe, devtools support, modular stores
-- **Perfect for**: ECS → UI sync with Vue components
-
-### Why Vue/Capacitor?
-- Mobile-first framework
-- Native plugin support
-- Web fallback (PWA)
-- Good performance on mobile
+```
+src/
+├── systems/      # ECS systems (game logic)
+├── world/        # ECS schema (WorldSchema)
+├── components/   # React Three Fiber (rendering)
+├── stores/       # Zustand (UI state)
+└── App.tsx       # Entry point
+```
 
 ---
 
-## Future Architecture (Stage 2+)
+## What Works
 
-### Combat System
-- New ECS components: Health, Combat, Momentum
-- New system: CombatSystem
-- Gesture integration (swipe clashes, pinch siphons)
+ECS, creature evolution, packs, pollution, haikus, camera, haptics, gestures, deconstruction, rendering.
 
-### Content Systems
-- Recipe expansion (10+ recipes)
-- Trait expansion (15+ traits)
-- Biome expansion (5+ biomes)
-
-### Raycasted 3D Migration
-- Replace Phaser 2D with raycast engine
-- Heightmap-based world generation
-- Gesture-based camera controls
-- Performance validation on mobile
+Tests: 57/57 passing.
 
 ---
 
-**Last Updated**: 2025-01-XX  
-**Version**: 2.0.0 (Raycast 3D Architecture Committed)  
-**Status**: Frozen - Master Architecture Document
+## What's Broken
+
+- NO Gen 0 (planetary genesis)
+- Tool Sphere not integrated
+- Building Sphere not integrated
+- Inter-sphere communication missing
+- Material accessibility static
+- Hardcoded values everywhere
+- Game loop incomplete (Gen 1-2 works, Gen 3+ doesn't)
+
+---
+
+## Critical Path
+
+1. **Generation 0** - Seed → planetary physics → material distribution
+2. **Tool Sphere** - Integrate with YukaSphereCoordinator
+3. **Inter-Sphere Communication** - Spheres signal each other
+4. **Material Refactor** - Remove hardcoding
+5. **Building Integration** - Connect to Yuka
+6. **Player Influence** - Evo Points system, Influence Panel
+7. **Essential UI** - Pause, Save/Load, Settings
+
+---
+
+**See source code in `src/systems/` for implementation details.**
+

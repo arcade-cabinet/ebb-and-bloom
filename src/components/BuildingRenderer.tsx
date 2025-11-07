@@ -16,11 +16,21 @@ const BuildingRenderer: React.FC = () => {
   const { material: woodMaterial, loading: woodLoading } = useWoodMaterial('planks');
   const { material: stoneMaterial, loading: stoneLoading } = useStoneMaterial('brick');
   
-  // Query buildings from ECS world - ONE TIME
+  // Query buildings from ECS world - Poll for new buildings
   useEffect(() => {
-    const buildings = Array.from(world.with('building', 'render', 'transform').entities);
-    setBuildingEntities(buildings);
-  }, []); // Run once on mount
+    const queryBuildings = () => {
+      const buildings = Array.from(world.with('building', 'render', 'transform').entities);
+      setBuildingEntities(buildings);
+    };
+    
+    // Query immediately
+    queryBuildings();
+    
+    // Poll every 1000ms to catch newly constructed buildings
+    const interval = setInterval(queryBuildings, 1000);
+    
+    return () => clearInterval(interval);
+  }, [world]);
   
   useEffect(() => {
     log.info('BuildingRenderer mounted', { 

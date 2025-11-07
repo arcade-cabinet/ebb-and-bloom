@@ -1,125 +1,135 @@
-# Cline's Memory Bank
+# Cline Agent Rules
 
-I am Cline, an expert software engineer with a unique characteristic: my memory resets completely between sessions. This isn't a limitation - it's what drives me to maintain perfect documentation. After each reset, I rely ENTIRELY on my Memory Bank to understand the project and continue work effectively. I MUST read ALL memory bank files at the start of EVERY task - this is not optional.
+**Primary configuration for Cline**
 
-## Memory Bank Structure
+---
 
-The Memory Bank consists of core files and optional context files, all in Markdown format. Files build upon each other in a clear hierarchy:
+## Memory Bank First
 
-```mermaid
-flowchart TD
-    PB[projectbrief.md] --> PC[productContext.md]
-    PB --> SP[systemPatterns.md]
-    PB --> TC[techContext.md]
+Read at start of EVERY session (in order):
+1. `memory-bank/agent-permanent-context.md` - Project facts (never changes)
+2. `memory-bank/agent-collaboration.md` - Multi-agent rules
+3. `memory-bank/activeContext.md` - Current focus (changes frequently)
+4. `memory-bank/progress.md` - Status (changes frequently)
 
-    PC --> AC[activeContext.md]
-    SP --> AC
-    TC --> AC
+---
 
-    AC --> P[progress.md]
+## YOLO Mode (Default)
+
+**Autonomous execution is the default**. Execute immediately, iterate until complete.
+
+### Execution Pattern
+1. Read memory bank
+2. Read relevant docs (docs/ARCHITECTURE.md, docs/core/)
+3. Execute immediately (no planning phase)
+4. Iterate until requirements met
+5. Update memory bank
+6. Run tests (all must pass)
+
+### Stop Only For
+- Hard blockers (missing requirements, conflicting specs)
+- User intervention needed (design decisions, trade-offs)
+
+### Never Stop For
+- Implementation details
+- Refactoring decisions
+- Dependency changes
+- File deletions
+- Test writing
+
+---
+
+## Memory Bank Standards
+
+**AI agents do NOT need human project management.**
+
+### NEVER Write
+- ❌ Percentage completion
+- ❌ Week/sprint estimates
+- ❌ Timeline projections
+- ❌ Status reports
+- ❌ Summary documents
+- ❌ Gap analyses
+- ❌ Audit reports
+- ❌ "What remains" documents
+
+### ONLY Write
+- ✅ Current focus (activeContext.md)
+- ✅ What works/broken (progress.md)
+- ✅ Architecture patterns (systemPatterns.md)
+
+**If it's not needed for next session, don't write it.**
+
+---
+
+## Documentation Tiers
+
+### 1. Memory Bank (ephemeral, AI-only)
+- Current state only
+- No history, no estimates
+- Pure facts
+
+### 2. docs/ (permanent, versioned)
+- Architecture specs
+- System designs
+- UI/UX specifications
+
+### 3. NEVER Create
+- Status documents
+- Planning documents
+- Completion reports
+
+---
+
+## Core Principles
+
+See `memory-bank/agent-permanent-context.md` for:
+- "Everything is Squirrels"
+- Generational architecture (Gen 0 → Gen 1 → Gen 2+)
+- Technology stack
+- Critical architectural rules
+
+---
+
+## Development Workflow
+
+### Before
+1. Read memory bank
+2. Check docs if needed
+3. Write tests first
+
+### During
+1. Implement in ECS (if logic)
+2. Update rendering (if visuals)
+3. Run `pnpm test`
+
+### After
+1. Update activeContext.md
+2. Update progress.md
+3. Tests must pass
+4. Semantic commit
+
+---
+
+## CLI Integration
+
+### Invoke Other Agents
+```bash
+# Use Claude for architecture analysis
+claude "Analyze planetary physics calculations"
+
+# Use process-compose for parallel tasks
+process-compose up dev-server &
 ```
 
-### Core Files (Required)
-1. `projectbrief.md`
-   - Foundation document that shapes all other files
-   - Created at project start if it doesn't exist
-   - Defines core requirements and goals
-   - Source of truth for project scope
-
-2. `productContext.md`
-   - Why this project exists
-   - Problems it solves
-   - How it should work
-   - User experience goals
-
-3. `activeContext.md`
-   - Current work focus
-   - Recent changes
-   - Next steps
-   - Active decisions and considerations
-   - Important patterns and preferences
-   - Learnings and project insights
-
-4. `systemPatterns.md`
-   - System architecture
-   - Key technical decisions
-   - Design patterns in use
-   - Component relationships
-   - Critical implementation paths
-
-5. `techContext.md`
-   - Technologies used
-   - Development setup
-   - Technical constraints
-   - Dependencies
-   - Tool usage patterns
-
-6. `progress.md`
-   - What works
-   - What's left to build
-   - Current status
-   - Known issues
-   - Evolution of project decisions
-
-### Additional Context
-Create additional files/folders within memory-bank/ when they help organize:
-- Complex feature documentation
-- Integration specifications
-- API documentation
-- Testing strategies
-- Deployment procedures
-
-## Core Workflows
-
-### Plan Mode
-
-```mermaid
-flowchart TD
-    Start[Start] --> ReadFiles[Read Memory Bank]
-    ReadFiles --> CheckFiles{Files Complete?}
-
-    CheckFiles -->|No| Plan[Create Plan]
-    Plan --> Document[Document in Chat]
-
-    CheckFiles -->|Yes| Verify[Verify Context]
-    Verify --> Strategy[Develop Strategy]
-    Strategy --> Present[Present Approach]
+### YOLO Mode Invocation
+```bash
+cline "implement feature" --yolo
+cline "fix bug" --oneshot
 ```
 
-### Act Mode
+---
 
-```mermaid
-flowchart TD
-    Start[Start] --> Context[Check Memory Bank]
-    Context --> Update[Update Documentation]
-    Update --> Execute[Execute Task]
-    Execute --> Document[Document Changes]
-```
+**For collaboration details, see**: `memory-bank/agent-collaboration.md`  
+**For permanent context, see**: `memory-bank/agent-permanent-context.md`
 
-## Documentation Updates
-
-Memory Bank updates occur when:
-1. Discovering new project patterns
-2. After implementing significant changes
-3. When user requests with **update memory bank** (MUST review ALL files)
-4. When context needs clarification
-
-```mermaid
-flowchart TD
-    Start[Update Process]
-
-    subgraph Process
-        P1[Review ALL Files]
-        P2[Document Current State]
-        P3[Clarify Next Steps]
-        P4[Document Insights & Patterns]
-
-        P1 --> P2 --> P3 --> P4
-    end
-
-    Start --> Process
-```
-
-Note: When triggered by **update memory bank**, I MUST review every memory bank file, even if some don't require updates. Focus particularly on activeContext.md and progress.md as they track current state.
-
-REMEMBER: After every memory reset, I begin completely fresh. The Memory Bank is my only link to previous work. It must be maintained with precision and clarity, as my effectiveness depends entirely on its accuracy.
