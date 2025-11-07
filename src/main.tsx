@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
-import './styles/globals.css';
+// CSS removed - focusing on functional evolutionary game
 
 const container = document.getElementById('root');
 const root = createRoot(container!);

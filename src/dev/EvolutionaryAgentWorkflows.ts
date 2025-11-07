@@ -6,6 +6,7 @@
 import { generateText, generateObject } from 'ai';
 import { openai } from '@ai-sdk/openai';
 import { log } from '../utils/Logger';
+import { AI_MODELS } from '../config/ai-models';
 import type { EvolutionEvent } from '../systems/GameClock';
 
 // Universal evolutionary framework - EVERYTHING is an evolutionary system
@@ -211,7 +212,7 @@ Analyze how this pressure should drive evolution in the ${systemId} system.`;
 
       try {
         const response = await generateText({
-          model: openai('gpt-4o'),
+          model: openai(AI_MODELS.TEXT_GENERATION),
           system: systemPrompt,
           prompt: `Given the evolutionary pressure event, determine what adaptation should emerge in the ${systemId} system.
 
@@ -265,7 +266,7 @@ Respond with a specific adaptation that would naturally emerge from this pressur
     
     try {
       const result = await generateObject({
-        model: openai('gpt-4o'),
+        model: openai(AI_MODELS.TEXT_GENERATION),
         system: systemPrompt,
         prompt: `Analyze predator-prey coevolution for an evolutionary ecosystem:
 
@@ -321,7 +322,7 @@ Focus on: speed vs stealth, detection vs camouflage, coordination vs evasion, to
     
     try {
       const result = await generateObject({
-        model: openai('gpt-4o'),
+        model: openai(AI_MODELS.TEXT_GENERATION),
         system: systemPrompt,
         prompt: `Design progressive material unlock system based on evolutionary pressure:
 
@@ -388,7 +389,7 @@ Example: "Tin deposits exist at 15m depth → creatures evolve excavation trait 
     
     try {
       const result = await generateObject({
-        model: openai('gpt-4o'),
+        model: openai(AI_MODELS.TEXT_GENERATION),
         system: systemPrompt,
         prompt: `Design building evolution response to current conditions:
 
@@ -554,7 +555,7 @@ Example: "Population 50+ → Food storage pressure → Granary building evolutio
     
     try {
       const result = await generateText({
-        model: openai('gpt-4o'),
+        model: openai(AI_MODELS.TEXT_GENERATION),
         system: systemPrompt,
         prompt: `Generate evolutionary archetypes for ${systemId} system:
 
