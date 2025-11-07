@@ -41,6 +41,9 @@ importers:
       axios:
         specifier: ^1.13.2
         version: 1.13.2
+      fast-simplex-noise:
+        specifier: ^4.0.0
+        version: 4.0.0
       miniplex:
         specifier: ^2.0.0
         version: 2.0.0
@@ -65,9 +68,6 @@ importers:
       three:
         specifier: ^0.170.0
         version: 0.170.0
-      three-terrain:
-        specifier: ^0.0.10
-        version: 0.0.10
       yuka:
         specifier: ^0.7.8
         version: 0.7.8
@@ -1379,6 +1379,9 @@ packages:
   fast-safe-stringify@2.1.1:
     resolution: {integrity: sha512-W+KJc2dmILlPplD/H4K9l9LcAHAfPtP6BY84uVLXQ6Evcz9Lcg33Y2z1IVblT6xdY54PXYVHEv+0Wpq8Io6zkA==}
 
+  fast-simplex-noise@4.0.0:
+    resolution: {integrity: sha512-2zRCJkPdMnPyXNEeI5IYgH555Nbd/j9nC8YVoOm5dmFDjqxuLD888nEAGB8cSUIyxLlNHCZVlZ7AO27Fm3boJA==}
+
   fd-slicer@1.1.0:
     resolution: {integrity: sha512-cE1qsB/VwyQozZ+q1dGxR8LBYNZeofhEdUNGSMbQD3Gw2lAzX9Zb3uIU6Ebc/Fmyjo9AWWfnn0AUCHqtevs/8g==}
 
@@ -2084,12 +2087,6 @@ packages:
     resolution: {integrity: sha512-kv0Byb++AXztEGsULgMAs8U2jgUdz6HPpAB/wDJnLiLlaWQX2APHhiTJIN7rqW+Of0eRgcp7jn05U1BsCP3xBA==}
     peerDependencies:
       three: '>=0.128.0'
-
-  three-terrain@0.0.10:
-    resolution: {integrity: sha512-VchDcKXz2D/MvpyvraRbLRuD8UrToO21uSTSmWdu/tpgwKFVavB3Fb6pnXX0vzLwo9vzxe6Z5m0OhRG+k93FQg==}
-
-  three@0.133.1:
-    resolution: {integrity: sha512-WydohO8ll949B0FTD6MGz59Yv2Lwj8hvObg/0Heh2r42S6+tQC1WByfCNRdmG4D7+odfGod+n8JPV1I2xrboWw==}
 
   three@0.170.0:
     resolution: {integrity: sha512-FQK+LEpYc0fBD+J8g6oSEyyNzjp+Q7Ks1C568WWaoMRLW+TkNNWmenWeGgJjV105Gd+p/2ql1ZcjYvNiPZBhuQ==}
@@ -3645,6 +3642,8 @@ snapshots:
 
   fast-safe-stringify@2.1.1: {}
 
+  fast-simplex-noise@4.0.0: {}
+
   fd-slicer@1.1.0:
     dependencies:
       pend: 1.2.0
@@ -4356,12 +4355,6 @@ snapshots:
       fflate: 0.6.10
       potpack: 1.0.2
       three: 0.170.0
-
-  three-terrain@0.0.10:
-    dependencies:
-      three: 0.133.1
-
-  three@0.133.1: {}
 
   three@0.170.0: {}
 

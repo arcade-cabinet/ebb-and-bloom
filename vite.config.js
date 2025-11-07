@@ -11,15 +11,18 @@ export default defineConfig({
   },
   test: {
     globals: true,
-    environment: 'jsdom', // Better for React testing
+    environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     coverage: {
       reporter: ['text', 'json', 'html'],
       exclude: [
         'node_modules/',
         'src/test/',
-        'src/utils/Logger.ts' // Skip logger in coverage
+        'src/utils/Logger.ts'
       ]
+    },
+    deps: {
+      external: ['three-terrain'] // Exclude problematic packages from test bundling
     }
   }
 });
