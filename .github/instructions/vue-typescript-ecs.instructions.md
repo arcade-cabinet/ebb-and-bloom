@@ -136,7 +136,7 @@ src/
 │   ├── entities/         # Entity factory functions
 │   └── world.ts          # ECS world instance
 ├── stores/
-│   └── gameStore.ts      # Zustand reactive store
+│   └── gameStore.ts      # Pinia reactive store
 ├── views/                # Vue page components
 ├── components/           # Vue UI components
 └── game/
