@@ -13,6 +13,8 @@ dev:
     process-compose up vite-dev
 
 # Start full development environment (dev server + tests + typecheck)
+dev-full:
+    process-compose up vite-dev test typecheck
 
 # Start development server (direct pnpm - for simple cases)
 dev-simple:
