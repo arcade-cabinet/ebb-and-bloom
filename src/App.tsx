@@ -14,7 +14,7 @@ import * as THREE from 'three';
 import TerrainRenderer from './components/TerrainRenderer';
 import CreatureRenderer from './components/CreatureRenderer';
 import BuildingRenderer from './components/BuildingRenderer';
-import EvolutionObserver from './components/EvolutionObserver';
+import { SporeStyleCamera } from './systems/SporeStyleCameraSystem';
 
 // Initialize complete ecosystem
 const world = getWorld();
@@ -135,8 +135,8 @@ const Scene: React.FC = () => {
       <CreatureRenderer />
       <BuildingRenderer />
       
-      {/* Fixed observation camera - no player controller */}
-      <EvolutionObserver />
+      {/* Spore-style dynamic third-person camera */}
+      <SporeStyleCamera />
     </>
   );
 };
