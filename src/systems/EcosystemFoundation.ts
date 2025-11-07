@@ -25,6 +25,7 @@ import DeconstructionSystem from './DeconstructionSystem';
 import ToolArchetypeSystem from './ToolArchetypeSystem';
 import CombatSystem from './CombatSystem';
 import GestureActionMapper from './GestureActionMapper';
+import ConsciousnessSystem from './ConsciousnessSystem';
 
 export interface EcosystemState {
   totalCreatures: number;
@@ -57,6 +58,7 @@ class EcosystemFoundation {
   private toolSystem: ToolArchetypeSystem;
   private combatSystem: CombatSystem;
   private gestureMapper: GestureActionMapper;
+  private consciousnessSystem: ConsciousnessSystem;
 
   // System state
   private initialized = false;
@@ -101,8 +103,11 @@ class EcosystemFoundation {
     
     // Gesture Action Mapper - Wires gestures to game actions with haptic feedback
     this.gestureMapper = new GestureActionMapper(world, this.gestureSystem, this.deconstructionSystem);
+    
+    // Consciousness System - Player as transferable awareness
+    this.consciousnessSystem = new ConsciousnessSystem(world);
 
-    log.info('EcosystemFoundation created with ALL SYSTEMS - COMPLETE YUKA ARCHITECTURE + COMBAT + GESTURES');
+    log.info('EcosystemFoundation created with ALL SYSTEMS - COMPLETE YUKA ARCHITECTURE');
   }
 
   async initialize(): Promise<void> {
@@ -148,7 +153,15 @@ class EcosystemFoundation {
     await this.spawnEdenPopulation();
 
     // Initialize haptic feedback for evolution events
-    this.gestureSystem.initializeEvolutionListening();
+    if (typeof this.gestureSystem.initializeEvolutionListening === 'function') {
+      this.gestureSystem.initializeEvolutionListening();
+    } else {
+      // Manual setup if method doesn't exist
+      gameClock.onEvolutionEvent((event) => {
+        this.gestureSystem.triggerEvolutionHaptic(event.eventType, event.significance);
+      });
+      log.info('HapticGestureSystem manually wired to evolution events');
+    }
     
     this.initialized = true;
     log.info('Ecosystem foundation initialization complete - PRODUCTION MODE + HAPTICS');
@@ -276,7 +289,6 @@ class EcosystemFoundation {
   // Analysis and monitoring
   getCurrentEcosystemState(): EcosystemState {
     const creatures = this.world.with('creature');
-    const materials = this.world.with('resource');
 
     const populationReport = this.populationSystem.getPopulationReport();
     const materialAnalysis = this.materialsSystem.getMaterialAnalysis();
@@ -322,7 +334,18 @@ class EcosystemFoundation {
   getDeconstructionSystem(): DeconstructionSystem {
     return this.deconstructionSystem;
   }
+  
+  getConsciousnessSystem(): ConsciousnessSystem {
+    return this.consciousnessSystem;
+  }
+  
+  getToolSystem(): ToolArchetypeSystem {
+    return this.toolSystem;
+  }
+  
+  getCombatSystem(): CombatSystem {
+    return this.combatSystem;
+  }
 }
 
 export default EcosystemFoundation;
-export type { EcosystemState };
