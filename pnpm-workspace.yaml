@@ -1,0 +1,15 @@
+# Ebb & Bloom - Monorepo Workspace Configuration
+# 
+# Architecture:
+# - @ebb/backend  - Game logic, REST API server, ECS systems, Yuka integration
+# - @ebb/cli      - CLI client (blocking/non-blocking modes)
+# - @ebb/frontend - React + Three.js + R3F renderer (queries backend API)
+#
+# Backend is developed FIRST. Frontend queries backend API.
+# CLI also queries backend API.
+# This ensures game logic is 100% separate from rendering.
+
+packages:
+  - 'packages/backend'
+  - 'packages/cli'
+  - 'packages/frontend'

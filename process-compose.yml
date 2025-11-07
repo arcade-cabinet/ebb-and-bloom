@@ -1,157 +1,59 @@
+# Ebb & Bloom - Process Orchestration
+# 
+# Start all services with: process-compose up
+# Or use pnpm commands in root package.json
+#
+# Architecture:
+# 1. backend  - Game logic REST API (port 3001)
+# 2. frontend - React + Three.js (port 5173)
+# 3. cli      - CLI client (connects to backend)
+
 version: "0.5"
 
-# Ebb & Bloom Process Compose Configuration
-# Manages dev server, Capacitor web build, and testing processes
-
-environment:
-  - "NODE_ENV=development"
-  - "VITE_DEV_SERVER_PORT=5173"
-
-log_level: info
-log_configuration:
-  disable_json: true
-  timestamp_format: "15:04:05"
-
 processes:
-  # Core Vite development server
-  vite-dev:
-    command: "mise exec -- pnpm dev"
+  # Backend API Server
+  backend:
+    command: "pnpm --filter @ebb/backend dev"
     working_dir: "."
-    description: "Vite development server with HMR"
-    log_location: "./logs/vite-dev.log"
-    restart_policy:
+    availability:
       restart: "on_failure"
-      backoff_seconds: 2
+      max_restarts: 5
+    readiness_probe:
+      http_get:
+        host: "localhost"
+        port: 3001
+        path: "/health"
+      initial_delay_seconds: 2
+      period_seconds: 1
+      timeout_seconds: 1
+      success_threshold: 1
+      failure_threshold: 3
+    
+  # Frontend Development Server
+  frontend:
+    command: "pnpm --filter @ebb/frontend dev"
+    working_dir: "."
+    depends_on:
+      backend:
+        condition: process_healthy
+    availability:
+      restart: "on_failure"
       max_restarts: 5
     readiness_probe:
       http_get:
         host: "localhost"
         port: 5173
         path: "/"
-        scheme: "http"
       initial_delay_seconds: 5
       period_seconds: 2
-      timeout_seconds: 5
-      failure_threshold: 10
-    environment:
-      - "NODE_ENV=development"
-      - "HOST=0.0.0.0"
-      - "PORT=5173"
-
-  # Capacitor web build sync (for Android development)
-  capacitor-sync:
-    command: "mise exec -- pnpm build && pnpm exec cap sync"
-    working_dir: "."
-    description: "Build and sync web assets to Capacitor platforms"
-    restart_policy:
-      restart: "no"
-    depends_on:
-      vite-dev:
-        condition: process_healthy
-    disabled: true  # Enable manually when needed
-
-  # Unit tests in watch mode
-  test-watch:
-    command: "mise exec -- pnpm test:watch"
-    working_dir: "."
-    description: "Vitest unit tests in watch mode"
-    restart_policy:
-      restart: "on_failure"
-      backoff_seconds: 1
-      max_restarts: 3
-    disabled: true  # Enable manually when needed
-
-  # E2E tests (requires dev server)
-  test-e2e:
-    command: "mise exec -- pnpm test:e2e"
-    working_dir: "."
-    description: "Playwright E2E tests against dev server"
-    restart_policy:
-      restart: "no"
-    depends_on:
-      vite-dev:
-        condition: process_healthy
-
-  # TypeScript checking in watch mode
-  typecheck-watch:
-    command: "mise exec -- pnpm exec tsc --noEmit --watch"
-    working_dir: "."
-    description: "TypeScript checking in watch mode"
-    restart_policy:
-      restart: "on_failure"
-      backoff_seconds: 2
-      max_restarts: 3
-    disabled: true  # Enable manually when needed
-
-  # Android live reload (when connected device available)
-  android-run:
-    command: "mise exec -- pnpm exec cap run android --livereload --external"
-    working_dir: "."
-    description: "Run on Android device with live reload"
-    restart_policy:
-      restart: "no"
-    depends_on:
-      vite-dev:
-        condition: process_healthy
-    disabled: true  # Enable manually when device connected
-
-  # iOS live reload (macOS only, when device available)
-  ios-run:
-    command: "mise exec -- pnpm exec cap run ios --livereload --external"
-    working_dir: "."
-    description: "Run on iOS device with live reload"
-    restart_policy:
-      restart: "no"  
-    depends_on:
-      vite-dev:
-        condition: process_healthy
-    disabled: true  # Enable manually when device connected
-
-  # Log aggregator for ECS systems (development debugging)
-  ecs-debug:
-    command: "tail -f logs/ecs-*.log 2>/dev/null || echo 'No ECS logs yet'"
-    working_dir: "."
-    description: "Monitor ECS system logs"
-    restart_policy:
-      restart: "always"
-      backoff_seconds: 5
-    disabled: true  # Enable manually when debugging
-
-  # AI Asset Generation - UI Assets (splash, panels, transparent elements)
-  asset-generation:
-    command: "mise exec -- pnpm dev:cli generate-all"
-    working_dir: "."
-    description: "Generate all UI assets (splash screens, panels, transparent elements) using GPT-image-1"
-    log_location: "./logs/asset-generation.log"
-    restart_policy:
-      restart: "on_failure"
-      backoff_seconds: 30
-      max_restarts: 3
-    environment:
-      - "OPENAI_API_KEY=${OPENAI_API_KEY}"
-      - "FREESOUND_API_KEY=${FREESOUND_API_KEY}"
-    disabled: false  # Enable to generate assets
-
-  # Master Evolution Pipeline - Complete ecosystem generation
-  evolution-pipeline:
-    command: "mise exec -- pnpm evolution:pipeline"
-    working_dir: "."
-    description: "Master evolution pipeline: archetypes → creature specs → building assemblies → visual assets → audio"
-    log_location: "./logs/evolution-pipeline.log"
-    restart_policy:
-      restart: "on_failure"
-      backoff_seconds: 60
-      max_restarts: 2
-    environment:
-      - "OPENAI_API_KEY=${OPENAI_API_KEY}"
-      - "FREESOUND_API_KEY=${FREESOUND_API_KEY}"
-    disabled: false  # Enable to run full pipeline
-
-# Global settings
-global:
-  environment:
-    - "NODE_ENV=development"
-    - "PNPM_HOME=${HOME}/.local/share/pnpm"
-    - "OPENAI_API_KEY=${OPENAI_API_KEY}"
-    - "FREESOUND_API_KEY=${FREESOUND_API_KEY}"
+      timeout_seconds: 2
+      success_threshold: 1
+      failure_threshold: 3
   
+  # CLI (manual start, not auto-started)
+  # cli:
+  #   command: "pnpm --filter @ebb/cli dev"
+  #   working_dir: "."
+  #   depends_on:
+  #     backend:
+  #       condition: process_healthy

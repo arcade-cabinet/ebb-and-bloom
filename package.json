@@ -3,7 +3,16 @@
   "version": "0.2.0",
   "private": true,
   "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
+    "dev": "process-compose up",
+    "dev:backend": "pnpm --filter @ebb/backend dev",
+    "dev:frontend": "pnpm --filter @ebb/frontend dev",
+    "dev:cli": "pnpm --filter @ebb/cli dev",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite preview",
