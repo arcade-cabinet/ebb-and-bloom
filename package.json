@@ -16,8 +16,11 @@
     "dev:cli": "tsx src/dev/GameDevCLI.ts",
     "dev:setup": "tsx src/dev/GameDevCLI.ts setup",
     "dev:creature": "tsx src/dev/GameDevCLI.ts creature",
-    "dev:audio": "tsx src/dev/GameDevCLI.ts audio",
-    "dev:ui": "tsx src/dev/GameDevCLI.ts ui"
+    "dev:audio": "tsx src/dev/GameDevCLI.ts audio", 
+    "dev:ui": "tsx src/dev/GameDevCLI.ts ui",
+    "generate:assets": "tsx src/dev/ProductionAssetGenerator.ts",
+    "generate:creatures": "tsx -e 'import PAG from \"./src/dev/ProductionAssetGenerator.ts\"; const gen = new PAG.default(); gen.generateCompleteAssetLibrary()'",
+    "generate:buildings": "tsx -e 'import PAG from \"./src/dev/ProductionAssetGenerator.ts\"; const gen = new PAG.default(); console.log(\"Building generation ready\")'""
   },
   "dependencies": {
     "@ai-sdk/openai": "^2.0.64",
@@ -51,6 +54,7 @@
     "@capacitor/cli": "^6.1.2",
     "@playwright/test": "^1.56.1",
     "@react-three/test-renderer": "^9.1.0",
+    "@tailwindcss/postcss": "^4.1.17",
     "@tailwindcss/typography": "^0.5.19",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
