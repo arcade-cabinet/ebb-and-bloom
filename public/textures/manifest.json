@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2025-11-07T00:30:02.923Z",
+  "generatedAt": "2025-11-07T14:08:20.471Z",
   "totalTextures": 141,
   "categories": [
     "Wood",
@@ -22,12 +22,28 @@
       "localPath": "public/textures/wood/Wood094_bundle_2K.jpg"
     },
     {
+      "assetId": "Wood092",
+      "name": "Wood 092",
+      "category": "Wood",
+      "mapType": "bundle",
+      "filePath": "public/textures/wood/Wood092_bundle_2K.jpg",
+      "localPath": "public/textures/wood/Wood092_bundle_2K.jpg"
+    },
+    {
       "assetId": "Wood051",
       "name": "Wood 051",
       "category": "Wood",
       "mapType": "bundle",
       "filePath": "public/textures/wood/Wood051_bundle_2K.jpg",
       "localPath": "public/textures/wood/Wood051_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Wood066",
+      "name": "Wood 066",
+      "category": "Wood",
+      "mapType": "bundle",
+      "filePath": "public/textures/wood/Wood066_bundle_2K.jpg",
+      "localPath": "public/textures/wood/Wood066_bundle_2K.jpg"
     },
     {
       "assetId": "Wood049",
@@ -46,68 +62,12 @@
       "localPath": "public/textures/wood/Wood058_bundle_2K.jpg"
     },
     {
-      "assetId": "Wood092",
-      "name": "Wood 092",
-      "category": "Wood",
-      "mapType": "bundle",
-      "filePath": "public/textures/wood/Wood092_bundle_2K.jpg",
-      "localPath": "public/textures/wood/Wood092_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Wood066",
-      "name": "Wood 066",
-      "category": "Wood",
-      "mapType": "bundle",
-      "filePath": "public/textures/wood/Wood066_bundle_2K.jpg",
-      "localPath": "public/textures/wood/Wood066_bundle_2K.jpg"
-    },
-    {
       "assetId": "Wood067",
       "name": "Wood 067",
       "category": "Wood",
       "mapType": "bundle",
       "filePath": "public/textures/wood/Wood067_bundle_2K.jpg",
       "localPath": "public/textures/wood/Wood067_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Wood048",
-      "name": "Wood 048",
-      "category": "Wood",
-      "mapType": "bundle",
-      "filePath": "public/textures/wood/Wood048_bundle_2K.jpg",
-      "localPath": "public/textures/wood/Wood048_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Metal048A",
-      "name": "Metal 048 A",
-      "category": "Metal",
-      "mapType": "bundle",
-      "filePath": "public/textures/metal/Metal048A_bundle_2K.jpg",
-      "localPath": "public/textures/metal/Metal048A_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Wood026",
-      "name": "Wood 026",
-      "category": "Wood",
-      "mapType": "bundle",
-      "filePath": "public/textures/wood/Wood026_bundle_2K.jpg",
-      "localPath": "public/textures/wood/Wood026_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Wood050",
-      "name": "Wood 050",
-      "category": "Wood",
-      "mapType": "bundle",
-      "filePath": "public/textures/wood/Wood050_bundle_2K.jpg",
-      "localPath": "public/textures/wood/Wood050_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Metal049A",
-      "name": "Metal 049 A",
-      "category": "Metal",
-      "mapType": "bundle",
-      "filePath": "public/textures/metal/Metal049A_bundle_2K.jpg",
-      "localPath": "public/textures/metal/Metal049A_bundle_2K.jpg"
     },
     {
       "assetId": "Wood060",
@@ -118,20 +78,36 @@
       "localPath": "public/textures/wood/Wood060_bundle_2K.jpg"
     },
     {
-      "assetId": "Metal046B",
-      "name": "Metal 046 B",
-      "category": "Metal",
+      "assetId": "Wood048",
+      "name": "Wood 048",
+      "category": "Wood",
       "mapType": "bundle",
-      "filePath": "public/textures/metal/Metal046B_bundle_2K.jpg",
-      "localPath": "public/textures/metal/Metal046B_bundle_2K.jpg"
+      "filePath": "public/textures/wood/Wood048_bundle_2K.jpg",
+      "localPath": "public/textures/wood/Wood048_bundle_2K.jpg"
     },
     {
-      "assetId": "Metal061B",
-      "name": "Metal 061 B",
+      "assetId": "Wood050",
+      "name": "Wood 050",
+      "category": "Wood",
+      "mapType": "bundle",
+      "filePath": "public/textures/wood/Wood050_bundle_2K.jpg",
+      "localPath": "public/textures/wood/Wood050_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Wood026",
+      "name": "Wood 026",
+      "category": "Wood",
+      "mapType": "bundle",
+      "filePath": "public/textures/wood/Wood026_bundle_2K.jpg",
+      "localPath": "public/textures/wood/Wood026_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Metal049A",
+      "name": "Metal 049 A",
       "category": "Metal",
       "mapType": "bundle",
-      "filePath": "public/textures/metal/Metal061B_bundle_2K.jpg",
-      "localPath": "public/textures/metal/Metal061B_bundle_2K.jpg"
+      "filePath": "public/textures/metal/Metal049A_bundle_2K.jpg",
+      "localPath": "public/textures/metal/Metal049A_bundle_2K.jpg"
     },
     {
       "assetId": "Metal055A",
@@ -142,28 +118,36 @@
       "localPath": "public/textures/metal/Metal055A_bundle_2K.jpg"
     },
     {
+      "assetId": "Metal046B",
+      "name": "Metal 046 B",
+      "category": "Metal",
+      "mapType": "bundle",
+      "filePath": "public/textures/metal/Metal046B_bundle_2K.jpg",
+      "localPath": "public/textures/metal/Metal046B_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Metal048A",
+      "name": "Metal 048 A",
+      "category": "Metal",
+      "mapType": "bundle",
+      "filePath": "public/textures/metal/Metal048A_bundle_2K.jpg",
+      "localPath": "public/textures/metal/Metal048A_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Metal061B",
+      "name": "Metal 061 B",
+      "category": "Metal",
+      "mapType": "bundle",
+      "filePath": "public/textures/metal/Metal061B_bundle_2K.jpg",
+      "localPath": "public/textures/metal/Metal061B_bundle_2K.jpg"
+    },
+    {
       "assetId": "Metal041A",
       "name": "Metal 041 A",
       "category": "Metal",
       "mapType": "bundle",
       "filePath": "public/textures/metal/Metal041A_bundle_2K.jpg",
       "localPath": "public/textures/metal/Metal041A_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Metal046A",
-      "name": "Metal 046 A",
-      "category": "Metal",
-      "mapType": "bundle",
-      "filePath": "public/textures/metal/Metal046A_bundle_2K.jpg",
-      "localPath": "public/textures/metal/Metal046A_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Metal053C",
-      "name": "Metal 053 C",
-      "category": "Metal",
-      "mapType": "bundle",
-      "filePath": "public/textures/metal/Metal053C_bundle_2K.jpg",
-      "localPath": "public/textures/metal/Metal053C_bundle_2K.jpg"
     },
     {
       "assetId": "Metal032",
@@ -174,28 +158,12 @@
       "localPath": "public/textures/metal/Metal032_bundle_2K.jpg"
     },
     {
-      "assetId": "Metal048B",
-      "name": "Metal 048 B",
+      "assetId": "Metal053C",
+      "name": "Metal 053 C",
       "category": "Metal",
       "mapType": "bundle",
-      "filePath": "public/textures/metal/Metal048B_bundle_2K.jpg",
-      "localPath": "public/textures/metal/Metal048B_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Metal048C",
-      "name": "Metal 048 C",
-      "category": "Metal",
-      "mapType": "bundle",
-      "filePath": "public/textures/metal/Metal048C_bundle_2K.jpg",
-      "localPath": "public/textures/metal/Metal048C_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Metal034",
-      "name": "Metal 034",
-      "category": "Metal",
-      "mapType": "bundle",
-      "filePath": "public/textures/metal/Metal034_bundle_2K.jpg",
-      "localPath": "public/textures/metal/Metal034_bundle_2K.jpg"
+      "filePath": "public/textures/metal/Metal053C_bundle_2K.jpg",
+      "localPath": "public/textures/metal/Metal053C_bundle_2K.jpg"
     },
     {
       "assetId": "Metal050A",
@@ -206,20 +174,20 @@
       "localPath": "public/textures/metal/Metal050A_bundle_2K.jpg"
     },
     {
-      "assetId": "Metal052C",
-      "name": "Metal 052 C",
+      "assetId": "Metal046A",
+      "name": "Metal 046 A",
       "category": "Metal",
       "mapType": "bundle",
-      "filePath": "public/textures/metal/Metal052C_bundle_2K.jpg",
-      "localPath": "public/textures/metal/Metal052C_bundle_2K.jpg"
+      "filePath": "public/textures/metal/Metal046A_bundle_2K.jpg",
+      "localPath": "public/textures/metal/Metal046A_bundle_2K.jpg"
     },
     {
-      "assetId": "Metal042A",
-      "name": "Metal 042 A",
+      "assetId": "Metal048C",
+      "name": "Metal 048 C",
       "category": "Metal",
       "mapType": "bundle",
-      "filePath": "public/textures/metal/Metal042A_bundle_2K.jpg",
-      "localPath": "public/textures/metal/Metal042A_bundle_2K.jpg"
+      "filePath": "public/textures/metal/Metal048C_bundle_2K.jpg",
+      "localPath": "public/textures/metal/Metal048C_bundle_2K.jpg"
     },
     {
       "assetId": "Metal062C",
@@ -230,20 +198,52 @@
       "localPath": "public/textures/metal/Metal062C_bundle_2K.jpg"
     },
     {
+      "assetId": "Metal048B",
+      "name": "Metal 048 B",
+      "category": "Metal",
+      "mapType": "bundle",
+      "filePath": "public/textures/metal/Metal048B_bundle_2K.jpg",
+      "localPath": "public/textures/metal/Metal048B_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Metal034",
+      "name": "Metal 034",
+      "category": "Metal",
+      "mapType": "bundle",
+      "filePath": "public/textures/metal/Metal034_bundle_2K.jpg",
+      "localPath": "public/textures/metal/Metal034_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Metal038",
+      "name": "Metal 038",
+      "category": "Metal",
+      "mapType": "bundle",
+      "filePath": "public/textures/metal/Metal038_bundle_2K.jpg",
+      "localPath": "public/textures/metal/Metal038_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Metal042A",
+      "name": "Metal 042 A",
+      "category": "Metal",
+      "mapType": "bundle",
+      "filePath": "public/textures/metal/Metal042A_bundle_2K.jpg",
+      "localPath": "public/textures/metal/Metal042A_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Metal052C",
+      "name": "Metal 052 C",
+      "category": "Metal",
+      "mapType": "bundle",
+      "filePath": "public/textures/metal/Metal052C_bundle_2K.jpg",
+      "localPath": "public/textures/metal/Metal052C_bundle_2K.jpg"
+    },
+    {
       "assetId": "Metal007",
       "name": "Metal 007",
       "category": "Metal",
       "mapType": "bundle",
       "filePath": "public/textures/metal/Metal007_bundle_2K.jpg",
       "localPath": "public/textures/metal/Metal007_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Concrete048",
-      "name": "Concrete 048",
-      "category": "Concrete",
-      "mapType": "bundle",
-      "filePath": "public/textures/concrete/Concrete048_bundle_2K.jpg",
-      "localPath": "public/textures/concrete/Concrete048_bundle_2K.jpg"
     },
     {
       "assetId": "Concrete048",
@@ -270,28 +270,12 @@
       "localPath": "public/textures/bricks/Bricks097_bundle_2K.jpg"
     },
     {
-      "assetId": "Metal038",
-      "name": "Metal 038",
-      "category": "Metal",
+      "assetId": "Bricks103",
+      "name": "Bricks 103",
+      "category": "Bricks",
       "mapType": "bundle",
-      "filePath": "public/textures/metal/Metal038_bundle_2K.jpg",
-      "localPath": "public/textures/metal/Metal038_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Concrete047A",
-      "name": "Concrete 047 A",
-      "category": "Concrete",
-      "mapType": "bundle",
-      "filePath": "public/textures/concrete/Concrete047A_bundle_2K.jpg",
-      "localPath": "public/textures/concrete/Concrete047A_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Concrete034",
-      "name": "Concrete 034",
-      "category": "Concrete",
-      "mapType": "bundle",
-      "filePath": "public/textures/concrete/Concrete034_bundle_2K.jpg",
-      "localPath": "public/textures/concrete/Concrete034_bundle_2K.jpg"
+      "filePath": "public/textures/bricks/Bricks103_bundle_2K.jpg",
+      "localPath": "public/textures/bricks/Bricks103_bundle_2K.jpg"
     },
     {
       "assetId": "Bricks094",
@@ -318,12 +302,28 @@
       "localPath": "public/textures/bricks/Bricks085_bundle_2K.jpg"
     },
     {
-      "assetId": "Concrete042A",
-      "name": "Concrete 042 A",
+      "assetId": "Concrete048",
+      "name": "Concrete 048",
       "category": "Concrete",
       "mapType": "bundle",
-      "filePath": "public/textures/concrete/Concrete042A_bundle_2K.jpg",
-      "localPath": "public/textures/concrete/Concrete042A_bundle_2K.jpg"
+      "filePath": "public/textures/concrete/Concrete048_bundle_2K.jpg",
+      "localPath": "public/textures/concrete/Concrete048_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Concrete047A",
+      "name": "Concrete 047 A",
+      "category": "Concrete",
+      "mapType": "bundle",
+      "filePath": "public/textures/concrete/Concrete047A_bundle_2K.jpg",
+      "localPath": "public/textures/concrete/Concrete047A_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Concrete034",
+      "name": "Concrete 034",
+      "category": "Concrete",
+      "mapType": "bundle",
+      "filePath": "public/textures/concrete/Concrete034_bundle_2K.jpg",
+      "localPath": "public/textures/concrete/Concrete034_bundle_2K.jpg"
     },
     {
       "assetId": "Concrete046",
@@ -334,20 +334,28 @@
       "localPath": "public/textures/concrete/Concrete046_bundle_2K.jpg"
     },
     {
+      "assetId": "Concrete042A",
+      "name": "Concrete 042 A",
+      "category": "Concrete",
+      "mapType": "bundle",
+      "filePath": "public/textures/concrete/Concrete042A_bundle_2K.jpg",
+      "localPath": "public/textures/concrete/Concrete042A_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Concrete031",
+      "name": "Concrete 031",
+      "category": "Concrete",
+      "mapType": "bundle",
+      "filePath": "public/textures/concrete/Concrete031_bundle_2K.jpg",
+      "localPath": "public/textures/concrete/Concrete031_bundle_2K.jpg"
+    },
+    {
       "assetId": "Concrete030",
       "name": "Concrete 030",
       "category": "Concrete",
       "mapType": "bundle",
       "filePath": "public/textures/concrete/Concrete030_bundle_2K.jpg",
       "localPath": "public/textures/concrete/Concrete030_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Bricks103",
-      "name": "Bricks 103",
-      "category": "Bricks",
-      "mapType": "bundle",
-      "filePath": "public/textures/bricks/Bricks103_bundle_2K.jpg",
-      "localPath": "public/textures/bricks/Bricks103_bundle_2K.jpg"
     },
     {
       "assetId": "Concrete044D",
@@ -364,14 +372,6 @@
       "mapType": "bundle",
       "filePath": "public/textures/concrete/Concrete036_bundle_2K.jpg",
       "localPath": "public/textures/concrete/Concrete036_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Concrete031",
-      "name": "Concrete 031",
-      "category": "Concrete",
-      "mapType": "bundle",
-      "filePath": "public/textures/concrete/Concrete031_bundle_2K.jpg",
-      "localPath": "public/textures/concrete/Concrete031_bundle_2K.jpg"
     },
     {
       "assetId": "Concrete047B",
@@ -414,12 +414,68 @@
       "localPath": "public/textures/concrete/Concrete044C_bundle_2K.jpg"
     },
     {
+      "assetId": "Concrete033",
+      "name": "Concrete 033",
+      "category": "Concrete",
+      "mapType": "bundle",
+      "filePath": "public/textures/concrete/Concrete033_bundle_2K.jpg",
+      "localPath": "public/textures/concrete/Concrete033_bundle_2K.jpg"
+    },
+    {
       "assetId": "Concrete025",
       "name": "Concrete 025",
       "category": "Concrete",
       "mapType": "bundle",
       "filePath": "public/textures/concrete/Concrete025_bundle_2K.jpg",
       "localPath": "public/textures/concrete/Concrete025_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Concrete024",
+      "name": "Concrete 024",
+      "category": "Concrete",
+      "mapType": "bundle",
+      "filePath": "public/textures/concrete/Concrete024_bundle_2K.jpg",
+      "localPath": "public/textures/concrete/Concrete024_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Concrete023",
+      "name": "Concrete 023",
+      "category": "Concrete",
+      "mapType": "bundle",
+      "filePath": "public/textures/concrete/Concrete023_bundle_2K.jpg",
+      "localPath": "public/textures/concrete/Concrete023_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Concrete042C",
+      "name": "Concrete 042 C",
+      "category": "Concrete",
+      "mapType": "bundle",
+      "filePath": "public/textures/concrete/Concrete042C_bundle_2K.jpg",
+      "localPath": "public/textures/concrete/Concrete042C_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Concrete028",
+      "name": "Concrete 028",
+      "category": "Concrete",
+      "mapType": "bundle",
+      "filePath": "public/textures/concrete/Concrete028_bundle_2K.jpg",
+      "localPath": "public/textures/concrete/Concrete028_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Bricks102",
+      "name": "Bricks 102",
+      "category": "Bricks",
+      "mapType": "bundle",
+      "filePath": "public/textures/bricks/Bricks102_bundle_2K.jpg",
+      "localPath": "public/textures/bricks/Bricks102_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Bricks101",
+      "name": "Bricks 101",
+      "category": "Bricks",
+      "mapType": "bundle",
+      "filePath": "public/textures/bricks/Bricks101_bundle_2K.jpg",
+      "localPath": "public/textures/bricks/Bricks101_bundle_2K.jpg"
     },
     {
       "assetId": "Bricks097",
@@ -438,20 +494,20 @@
       "localPath": "public/textures/bricks/Bricks103_bundle_2K.jpg"
     },
     {
-      "assetId": "Concrete033",
-      "name": "Concrete 033",
-      "category": "Concrete",
+      "assetId": "Bricks075A",
+      "name": "Bricks 075 A",
+      "category": "Bricks",
       "mapType": "bundle",
-      "filePath": "public/textures/concrete/Concrete033_bundle_2K.jpg",
-      "localPath": "public/textures/concrete/Concrete033_bundle_2K.jpg"
+      "filePath": "public/textures/bricks/Bricks075A_bundle_2K.jpg",
+      "localPath": "public/textures/bricks/Bricks075A_bundle_2K.jpg"
     },
     {
-      "assetId": "Concrete023",
-      "name": "Concrete 023",
-      "category": "Concrete",
+      "assetId": "Bricks092",
+      "name": "Bricks 092",
+      "category": "Bricks",
       "mapType": "bundle",
-      "filePath": "public/textures/concrete/Concrete023_bundle_2K.jpg",
-      "localPath": "public/textures/concrete/Concrete023_bundle_2K.jpg"
+      "filePath": "public/textures/bricks/Bricks092_bundle_2K.jpg",
+      "localPath": "public/textures/bricks/Bricks092_bundle_2K.jpg"
     },
     {
       "assetId": "Bricks094",
@@ -470,76 +526,12 @@
       "localPath": "public/textures/bricks/Bricks085_bundle_2K.jpg"
     },
     {
-      "assetId": "Bricks102",
-      "name": "Bricks 102",
-      "category": "Bricks",
-      "mapType": "bundle",
-      "filePath": "public/textures/bricks/Bricks102_bundle_2K.jpg",
-      "localPath": "public/textures/bricks/Bricks102_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Concrete024",
-      "name": "Concrete 024",
-      "category": "Concrete",
-      "mapType": "bundle",
-      "filePath": "public/textures/concrete/Concrete024_bundle_2K.jpg",
-      "localPath": "public/textures/concrete/Concrete024_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Concrete028",
-      "name": "Concrete 028",
-      "category": "Concrete",
-      "mapType": "bundle",
-      "filePath": "public/textures/concrete/Concrete028_bundle_2K.jpg",
-      "localPath": "public/textures/concrete/Concrete028_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Concrete042C",
-      "name": "Concrete 042 C",
-      "category": "Concrete",
-      "mapType": "bundle",
-      "filePath": "public/textures/concrete/Concrete042C_bundle_2K.jpg",
-      "localPath": "public/textures/concrete/Concrete042C_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Bricks075A",
-      "name": "Bricks 075 A",
-      "category": "Bricks",
-      "mapType": "bundle",
-      "filePath": "public/textures/bricks/Bricks075A_bundle_2K.jpg",
-      "localPath": "public/textures/bricks/Bricks075A_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Bricks101",
-      "name": "Bricks 101",
-      "category": "Bricks",
-      "mapType": "bundle",
-      "filePath": "public/textures/bricks/Bricks101_bundle_2K.jpg",
-      "localPath": "public/textures/bricks/Bricks101_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Bricks092",
-      "name": "Bricks 092",
-      "category": "Bricks",
-      "mapType": "bundle",
-      "filePath": "public/textures/bricks/Bricks092_bundle_2K.jpg",
-      "localPath": "public/textures/bricks/Bricks092_bundle_2K.jpg"
-    },
-    {
       "assetId": "Bricks060",
       "name": "Bricks 060",
       "category": "Bricks",
       "mapType": "bundle",
       "filePath": "public/textures/bricks/Bricks060_bundle_2K.jpg",
       "localPath": "public/textures/bricks/Bricks060_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Bricks100",
-      "name": "Bricks 100",
-      "category": "Bricks",
-      "mapType": "bundle",
-      "filePath": "public/textures/bricks/Bricks100_bundle_2K.jpg",
-      "localPath": "public/textures/bricks/Bricks100_bundle_2K.jpg"
     },
     {
       "assetId": "Bricks066",
@@ -558,12 +550,12 @@
       "localPath": "public/textures/bricks/Bricks059_bundle_2K.jpg"
     },
     {
-      "assetId": "Bricks084",
-      "name": "Bricks 084",
+      "assetId": "Bricks100",
+      "name": "Bricks 100",
       "category": "Bricks",
       "mapType": "bundle",
-      "filePath": "public/textures/bricks/Bricks084_bundle_2K.jpg",
-      "localPath": "public/textures/bricks/Bricks084_bundle_2K.jpg"
+      "filePath": "public/textures/bricks/Bricks100_bundle_2K.jpg",
+      "localPath": "public/textures/bricks/Bricks100_bundle_2K.jpg"
     },
     {
       "assetId": "Bricks091",
@@ -574,12 +566,36 @@
       "localPath": "public/textures/bricks/Bricks091_bundle_2K.jpg"
     },
     {
+      "assetId": "Bricks084",
+      "name": "Bricks 084",
+      "category": "Bricks",
+      "mapType": "bundle",
+      "filePath": "public/textures/bricks/Bricks084_bundle_2K.jpg",
+      "localPath": "public/textures/bricks/Bricks084_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Bricks089",
+      "name": "Bricks 089",
+      "category": "Bricks",
+      "mapType": "bundle",
+      "filePath": "public/textures/bricks/Bricks089_bundle_2K.jpg",
+      "localPath": "public/textures/bricks/Bricks089_bundle_2K.jpg"
+    },
+    {
       "assetId": "Bricks093",
       "name": "Bricks 093",
       "category": "Bricks",
       "mapType": "bundle",
       "filePath": "public/textures/bricks/Bricks093_bundle_2K.jpg",
       "localPath": "public/textures/bricks/Bricks093_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Bricks090",
+      "name": "Bricks 090",
+      "category": "Bricks",
+      "mapType": "bundle",
+      "filePath": "public/textures/bricks/Bricks090_bundle_2K.jpg",
+      "localPath": "public/textures/bricks/Bricks090_bundle_2K.jpg"
     },
     {
       "assetId": "Bricks051",
@@ -598,44 +614,12 @@
       "localPath": "public/textures/bricks/Bricks086_bundle_2K.jpg"
     },
     {
-      "assetId": "Bricks090",
-      "name": "Bricks 090",
+      "assetId": "Bricks074",
+      "name": "Bricks 074",
       "category": "Bricks",
       "mapType": "bundle",
-      "filePath": "public/textures/bricks/Bricks090_bundle_2K.jpg",
-      "localPath": "public/textures/bricks/Bricks090_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Bricks089",
-      "name": "Bricks 089",
-      "category": "Bricks",
-      "mapType": "bundle",
-      "filePath": "public/textures/bricks/Bricks089_bundle_2K.jpg",
-      "localPath": "public/textures/bricks/Bricks089_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Grass004",
-      "name": "Grass 004",
-      "category": "Grass",
-      "mapType": "bundle",
-      "filePath": "public/textures/grass/Grass004_bundle_2K.jpg",
-      "localPath": "public/textures/grass/Grass004_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Grass001",
-      "name": "Grass 001",
-      "category": "Grass",
-      "mapType": "bundle",
-      "filePath": "public/textures/grass/Grass001_bundle_2K.jpg",
-      "localPath": "public/textures/grass/Grass001_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Grass006",
-      "name": "Grass 006",
-      "category": "Grass",
-      "mapType": "bundle",
-      "filePath": "public/textures/grass/Grass006_bundle_2K.jpg",
-      "localPath": "public/textures/grass/Grass006_bundle_2K.jpg"
+      "filePath": "public/textures/bricks/Bricks074_bundle_2K.jpg",
+      "localPath": "public/textures/bricks/Bricks074_bundle_2K.jpg"
     },
     {
       "assetId": "Grass005",
@@ -646,12 +630,28 @@
       "localPath": "public/textures/grass/Grass005_bundle_2K.jpg"
     },
     {
-      "assetId": "Rock051",
-      "name": "Rock 051",
-      "category": "Rock",
+      "assetId": "Grass001",
+      "name": "Grass 001",
+      "category": "Grass",
       "mapType": "bundle",
-      "filePath": "public/textures/rock/Rock051_bundle_2K.jpg",
-      "localPath": "public/textures/rock/Rock051_bundle_2K.jpg"
+      "filePath": "public/textures/grass/Grass001_bundle_2K.jpg",
+      "localPath": "public/textures/grass/Grass001_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Grass004",
+      "name": "Grass 004",
+      "category": "Grass",
+      "mapType": "bundle",
+      "filePath": "public/textures/grass/Grass004_bundle_2K.jpg",
+      "localPath": "public/textures/grass/Grass004_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Grass006",
+      "name": "Grass 006",
+      "category": "Grass",
+      "mapType": "bundle",
+      "filePath": "public/textures/grass/Grass006_bundle_2K.jpg",
+      "localPath": "public/textures/grass/Grass006_bundle_2K.jpg"
     },
     {
       "assetId": "Grass008",
@@ -660,14 +660,6 @@
       "mapType": "bundle",
       "filePath": "public/textures/grass/Grass008_bundle_2K.jpg",
       "localPath": "public/textures/grass/Grass008_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Bricks074",
-      "name": "Bricks 074",
-      "category": "Bricks",
-      "mapType": "bundle",
-      "filePath": "public/textures/bricks/Bricks074_bundle_2K.jpg",
-      "localPath": "public/textures/bricks/Bricks074_bundle_2K.jpg"
     },
     {
       "assetId": "Grass007",
@@ -686,12 +678,36 @@
       "localPath": "public/textures/grass/Grass003_bundle_2K.jpg"
     },
     {
+      "assetId": "Grass002",
+      "name": "Grass 002",
+      "category": "Grass",
+      "mapType": "bundle",
+      "filePath": "public/textures/grass/Grass002_bundle_2K.jpg",
+      "localPath": "public/textures/grass/Grass002_bundle_2K.jpg"
+    },
+    {
       "assetId": "Rock058",
       "name": "Rock 058",
       "category": "Rock",
       "mapType": "bundle",
       "filePath": "public/textures/rock/Rock058_bundle_2K.jpg",
       "localPath": "public/textures/rock/Rock058_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Rock060",
+      "name": "Rock 060",
+      "category": "Rock",
+      "mapType": "bundle",
+      "filePath": "public/textures/rock/Rock060_bundle_2K.jpg",
+      "localPath": "public/textures/rock/Rock060_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Rock051",
+      "name": "Rock 051",
+      "category": "Rock",
+      "mapType": "bundle",
+      "filePath": "public/textures/rock/Rock051_bundle_2K.jpg",
+      "localPath": "public/textures/rock/Rock051_bundle_2K.jpg"
     },
     {
       "assetId": "Rock061",
@@ -710,14 +726,6 @@
       "localPath": "public/textures/rock/Rock035_bundle_2K.jpg"
     },
     {
-      "assetId": "Grass002",
-      "name": "Grass 002",
-      "category": "Grass",
-      "mapType": "bundle",
-      "filePath": "public/textures/grass/Grass002_bundle_2K.jpg",
-      "localPath": "public/textures/grass/Grass002_bundle_2K.jpg"
-    },
-    {
       "assetId": "Rock062",
       "name": "Rock 062",
       "category": "Rock",
@@ -732,14 +740,6 @@
       "mapType": "bundle",
       "filePath": "public/textures/rock/Rock020_bundle_2K.jpg",
       "localPath": "public/textures/rock/Rock020_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Rock060",
-      "name": "Rock 060",
-      "category": "Rock",
-      "mapType": "bundle",
-      "filePath": "public/textures/rock/Rock060_bundle_2K.jpg",
-      "localPath": "public/textures/rock/Rock060_bundle_2K.jpg"
     },
     {
       "assetId": "Rock030",
@@ -758,28 +758,12 @@
       "localPath": "public/textures/rock/Rock050_bundle_2K.jpg"
     },
     {
-      "assetId": "Rock059",
-      "name": "Rock 059",
-      "category": "Rock",
-      "mapType": "bundle",
-      "filePath": "public/textures/rock/Rock059_bundle_2K.jpg",
-      "localPath": "public/textures/rock/Rock059_bundle_2K.jpg"
-    },
-    {
       "assetId": "Rock029",
       "name": "Rock 029",
       "category": "Rock",
       "mapType": "bundle",
       "filePath": "public/textures/rock/Rock029_bundle_2K.jpg",
       "localPath": "public/textures/rock/Rock029_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Rock041",
-      "name": "Rock 041",
-      "category": "Rock",
-      "mapType": "bundle",
-      "filePath": "public/textures/rock/Rock041_bundle_2K.jpg",
-      "localPath": "public/textures/rock/Rock041_bundle_2K.jpg"
     },
     {
       "assetId": "Rock028",
@@ -790,12 +774,12 @@
       "localPath": "public/textures/rock/Rock028_bundle_2K.jpg"
     },
     {
-      "assetId": "Rock031",
-      "name": "Rock 031",
+      "assetId": "Rock059",
+      "name": "Rock 059",
       "category": "Rock",
       "mapType": "bundle",
-      "filePath": "public/textures/rock/Rock031_bundle_2K.jpg",
-      "localPath": "public/textures/rock/Rock031_bundle_2K.jpg"
+      "filePath": "public/textures/rock/Rock059_bundle_2K.jpg",
+      "localPath": "public/textures/rock/Rock059_bundle_2K.jpg"
     },
     {
       "assetId": "Rock057",
@@ -804,6 +788,22 @@
       "mapType": "bundle",
       "filePath": "public/textures/rock/Rock057_bundle_2K.jpg",
       "localPath": "public/textures/rock/Rock057_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Rock041",
+      "name": "Rock 041",
+      "category": "Rock",
+      "mapType": "bundle",
+      "filePath": "public/textures/rock/Rock041_bundle_2K.jpg",
+      "localPath": "public/textures/rock/Rock041_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Rock031",
+      "name": "Rock 031",
+      "category": "Rock",
+      "mapType": "bundle",
+      "filePath": "public/textures/rock/Rock031_bundle_2K.jpg",
+      "localPath": "public/textures/rock/Rock031_bundle_2K.jpg"
     },
     {
       "assetId": "Rock054",
@@ -822,6 +822,22 @@
       "localPath": "public/textures/rock/Rock026_bundle_2K.jpg"
     },
     {
+      "assetId": "Rock053",
+      "name": "Rock 053",
+      "category": "Rock",
+      "mapType": "bundle",
+      "filePath": "public/textures/rock/Rock053_bundle_2K.jpg",
+      "localPath": "public/textures/rock/Rock053_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Fabric081C",
+      "name": "Fabric 081 C",
+      "category": "Fabric",
+      "mapType": "bundle",
+      "filePath": "public/textures/fabric/Fabric081C_bundle_2K.jpg",
+      "localPath": "public/textures/fabric/Fabric081C_bundle_2K.jpg"
+    },
+    {
       "assetId": "Fabric082A",
       "name": "Fabric 082 A",
       "category": "Fabric",
@@ -838,20 +854,28 @@
       "localPath": "public/textures/fabric/Fabric061_bundle_2K.jpg"
     },
     {
-      "assetId": "Fabric081C",
-      "name": "Fabric 081 C",
+      "assetId": "Fabric066",
+      "name": "Fabric 066",
       "category": "Fabric",
       "mapType": "bundle",
-      "filePath": "public/textures/fabric/Fabric081C_bundle_2K.jpg",
-      "localPath": "public/textures/fabric/Fabric081C_bundle_2K.jpg"
+      "filePath": "public/textures/fabric/Fabric066_bundle_2K.jpg",
+      "localPath": "public/textures/fabric/Fabric066_bundle_2K.jpg"
     },
     {
-      "assetId": "Rock053",
-      "name": "Rock 053",
-      "category": "Rock",
+      "assetId": "Fabric030",
+      "name": "Fabric 030",
+      "category": "Fabric",
       "mapType": "bundle",
-      "filePath": "public/textures/rock/Rock053_bundle_2K.jpg",
-      "localPath": "public/textures/rock/Rock053_bundle_2K.jpg"
+      "filePath": "public/textures/fabric/Fabric030_bundle_2K.jpg",
+      "localPath": "public/textures/fabric/Fabric030_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Fabric036",
+      "name": "Fabric 036",
+      "category": "Fabric",
+      "mapType": "bundle",
+      "filePath": "public/textures/fabric/Fabric036_bundle_2K.jpg",
+      "localPath": "public/textures/fabric/Fabric036_bundle_2K.jpg"
     },
     {
       "assetId": "Fabric062",
@@ -860,14 +884,6 @@
       "mapType": "bundle",
       "filePath": "public/textures/fabric/Fabric062_bundle_2K.jpg",
       "localPath": "public/textures/fabric/Fabric062_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Fabric066",
-      "name": "Fabric 066",
-      "category": "Fabric",
-      "mapType": "bundle",
-      "filePath": "public/textures/fabric/Fabric066_bundle_2K.jpg",
-      "localPath": "public/textures/fabric/Fabric066_bundle_2K.jpg"
     },
     {
       "assetId": "Fabric081A",
@@ -886,14 +902,6 @@
       "localPath": "public/textures/fabric/Fabric080_bundle_2K.jpg"
     },
     {
-      "assetId": "Fabric036",
-      "name": "Fabric 036",
-      "category": "Fabric",
-      "mapType": "bundle",
-      "filePath": "public/textures/fabric/Fabric036_bundle_2K.jpg",
-      "localPath": "public/textures/fabric/Fabric036_bundle_2K.jpg"
-    },
-    {
       "assetId": "Fabric019",
       "name": "Fabric 019",
       "category": "Fabric",
@@ -902,28 +910,12 @@
       "localPath": "public/textures/fabric/Fabric019_bundle_2K.jpg"
     },
     {
-      "assetId": "Fabric030",
-      "name": "Fabric 030",
-      "category": "Fabric",
-      "mapType": "bundle",
-      "filePath": "public/textures/fabric/Fabric030_bundle_2K.jpg",
-      "localPath": "public/textures/fabric/Fabric030_bundle_2K.jpg"
-    },
-    {
       "assetId": "Fabric079",
       "name": "Fabric 079",
       "category": "Fabric",
       "mapType": "bundle",
       "filePath": "public/textures/fabric/Fabric079_bundle_2K.jpg",
       "localPath": "public/textures/fabric/Fabric079_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Fabric045",
-      "name": "Fabric 045",
-      "category": "Fabric",
-      "mapType": "bundle",
-      "filePath": "public/textures/fabric/Fabric045_bundle_2K.jpg",
-      "localPath": "public/textures/fabric/Fabric045_bundle_2K.jpg"
     },
     {
       "assetId": "Fabric060",
@@ -942,20 +934,12 @@
       "localPath": "public/textures/fabric/Fabric048_bundle_2K.jpg"
     },
     {
-      "assetId": "Fabric023",
-      "name": "Fabric 023",
+      "assetId": "Fabric045",
+      "name": "Fabric 045",
       "category": "Fabric",
       "mapType": "bundle",
-      "filePath": "public/textures/fabric/Fabric023_bundle_2K.jpg",
-      "localPath": "public/textures/fabric/Fabric023_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Fabric028",
-      "name": "Fabric 028",
-      "category": "Fabric",
-      "mapType": "bundle",
-      "filePath": "public/textures/fabric/Fabric028_bundle_2K.jpg",
-      "localPath": "public/textures/fabric/Fabric028_bundle_2K.jpg"
+      "filePath": "public/textures/fabric/Fabric045_bundle_2K.jpg",
+      "localPath": "public/textures/fabric/Fabric045_bundle_2K.jpg"
     },
     {
       "assetId": "Fabric077",
@@ -966,12 +950,12 @@
       "localPath": "public/textures/fabric/Fabric077_bundle_2K.jpg"
     },
     {
-      "assetId": "Fabric082B",
-      "name": "Fabric 082 B",
+      "assetId": "Fabric023",
+      "name": "Fabric 023",
       "category": "Fabric",
       "mapType": "bundle",
-      "filePath": "public/textures/fabric/Fabric082B_bundle_2K.jpg",
-      "localPath": "public/textures/fabric/Fabric082B_bundle_2K.jpg"
+      "filePath": "public/textures/fabric/Fabric023_bundle_2K.jpg",
+      "localPath": "public/textures/fabric/Fabric023_bundle_2K.jpg"
     },
     {
       "assetId": "Fabric063",
@@ -982,12 +966,20 @@
       "localPath": "public/textures/fabric/Fabric063_bundle_2K.jpg"
     },
     {
-      "assetId": "Leather038",
-      "name": "Leather 038",
-      "category": "Leather",
+      "assetId": "Fabric028",
+      "name": "Fabric 028",
+      "category": "Fabric",
       "mapType": "bundle",
-      "filePath": "public/textures/leather/Leather038_bundle_2K.jpg",
-      "localPath": "public/textures/leather/Leather038_bundle_2K.jpg"
+      "filePath": "public/textures/fabric/Fabric028_bundle_2K.jpg",
+      "localPath": "public/textures/fabric/Fabric028_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Fabric082B",
+      "name": "Fabric 082 B",
+      "category": "Fabric",
+      "mapType": "bundle",
+      "filePath": "public/textures/fabric/Fabric082B_bundle_2K.jpg",
+      "localPath": "public/textures/fabric/Fabric082B_bundle_2K.jpg"
     },
     {
       "assetId": "Leather037",
@@ -998,28 +990,12 @@
       "localPath": "public/textures/leather/Leather037_bundle_2K.jpg"
     },
     {
-      "assetId": "Leather026",
-      "name": "Leather 026",
+      "assetId": "Leather038",
+      "name": "Leather 038",
       "category": "Leather",
       "mapType": "bundle",
-      "filePath": "public/textures/leather/Leather026_bundle_2K.jpg",
-      "localPath": "public/textures/leather/Leather026_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Leather030",
-      "name": "Leather 030",
-      "category": "Leather",
-      "mapType": "bundle",
-      "filePath": "public/textures/leather/Leather030_bundle_2K.jpg",
-      "localPath": "public/textures/leather/Leather030_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Leather027",
-      "name": "Leather 027",
-      "category": "Leather",
-      "mapType": "bundle",
-      "filePath": "public/textures/leather/Leather027_bundle_2K.jpg",
-      "localPath": "public/textures/leather/Leather027_bundle_2K.jpg"
+      "filePath": "public/textures/leather/Leather038_bundle_2K.jpg",
+      "localPath": "public/textures/leather/Leather038_bundle_2K.jpg"
     },
     {
       "assetId": "Leather039",
@@ -1030,12 +1006,36 @@
       "localPath": "public/textures/leather/Leather039_bundle_2K.jpg"
     },
     {
+      "assetId": "Leather030",
+      "name": "Leather 030",
+      "category": "Leather",
+      "mapType": "bundle",
+      "filePath": "public/textures/leather/Leather030_bundle_2K.jpg",
+      "localPath": "public/textures/leather/Leather030_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Leather026",
+      "name": "Leather 026",
+      "category": "Leather",
+      "mapType": "bundle",
+      "filePath": "public/textures/leather/Leather026_bundle_2K.jpg",
+      "localPath": "public/textures/leather/Leather026_bundle_2K.jpg"
+    },
+    {
       "assetId": "Leather034C",
       "name": "Leather 034 C",
       "category": "Leather",
       "mapType": "bundle",
       "filePath": "public/textures/leather/Leather034C_bundle_2K.jpg",
       "localPath": "public/textures/leather/Leather034C_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Leather027",
+      "name": "Leather 027",
+      "category": "Leather",
+      "mapType": "bundle",
+      "filePath": "public/textures/leather/Leather027_bundle_2K.jpg",
+      "localPath": "public/textures/leather/Leather027_bundle_2K.jpg"
     },
     {
       "assetId": "Leather035D",
@@ -1054,14 +1054,6 @@
       "localPath": "public/textures/leather/Leather033A_bundle_2K.jpg"
     },
     {
-      "assetId": "Leather033C",
-      "name": "Leather 033 C",
-      "category": "Leather",
-      "mapType": "bundle",
-      "filePath": "public/textures/leather/Leather033C_bundle_2K.jpg",
-      "localPath": "public/textures/leather/Leather033C_bundle_2K.jpg"
-    },
-    {
       "assetId": "Leather032",
       "name": "Leather 032",
       "category": "Leather",
@@ -1070,12 +1062,12 @@
       "localPath": "public/textures/leather/Leather032_bundle_2K.jpg"
     },
     {
-      "assetId": "Leather014",
-      "name": "Leather 014",
+      "assetId": "Leather033C",
+      "name": "Leather 033 C",
       "category": "Leather",
       "mapType": "bundle",
-      "filePath": "public/textures/leather/Leather014_bundle_2K.jpg",
-      "localPath": "public/textures/leather/Leather014_bundle_2K.jpg"
+      "filePath": "public/textures/leather/Leather033C_bundle_2K.jpg",
+      "localPath": "public/textures/leather/Leather033C_bundle_2K.jpg"
     },
     {
       "assetId": "Leather028",
@@ -1084,6 +1076,30 @@
       "mapType": "bundle",
       "filePath": "public/textures/leather/Leather028_bundle_2K.jpg",
       "localPath": "public/textures/leather/Leather028_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Leather034D",
+      "name": "Leather 034 D",
+      "category": "Leather",
+      "mapType": "bundle",
+      "filePath": "public/textures/leather/Leather034D_bundle_2K.jpg",
+      "localPath": "public/textures/leather/Leather034D_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Leather031",
+      "name": "Leather 031",
+      "category": "Leather",
+      "mapType": "bundle",
+      "filePath": "public/textures/leather/Leather031_bundle_2K.jpg",
+      "localPath": "public/textures/leather/Leather031_bundle_2K.jpg"
+    },
+    {
+      "assetId": "Leather014",
+      "name": "Leather 014",
+      "category": "Leather",
+      "mapType": "bundle",
+      "filePath": "public/textures/leather/Leather014_bundle_2K.jpg",
+      "localPath": "public/textures/leather/Leather014_bundle_2K.jpg"
     },
     {
       "assetId": "Leather011",
@@ -1102,14 +1118,6 @@
       "localPath": "public/textures/leather/Leather025_bundle_2K.jpg"
     },
     {
-      "assetId": "Leather031",
-      "name": "Leather 031",
-      "category": "Leather",
-      "mapType": "bundle",
-      "filePath": "public/textures/leather/Leather031_bundle_2K.jpg",
-      "localPath": "public/textures/leather/Leather031_bundle_2K.jpg"
-    },
-    {
       "assetId": "Leather036D",
       "name": "Leather 036 D",
       "category": "Leather",
@@ -1124,14 +1132,6 @@
       "mapType": "bundle",
       "filePath": "public/textures/leather/Leather029_bundle_2K.jpg",
       "localPath": "public/textures/leather/Leather029_bundle_2K.jpg"
-    },
-    {
-      "assetId": "Leather034D",
-      "name": "Leather 034 D",
-      "category": "Leather",
-      "mapType": "bundle",
-      "filePath": "public/textures/leather/Leather034D_bundle_2K.jpg",
-      "localPath": "public/textures/leather/Leather034D_bundle_2K.jpg"
     },
     {
       "assetId": "Leather012",
