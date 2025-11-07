@@ -60,8 +60,8 @@ globalThis.requestAnimationFrame = vi.fn((cb) => setTimeout(cb, 16));
 globalThis.cancelAnimationFrame = vi.fn();
 
 // Mock SimplexNoise for deterministic testing
-vi.mock('simplex-noise', () => ({
-  SimplexNoise: class MockSimplexNoise {
+vi.mock('simplex-noise', () => {
+  const MockSimplexNoise = class {
     noise2D(x: number, y: number): number {
       return Math.sin(x * 0.1) * Math.cos(y * 0.1) * 0.5;
     }
@@ -69,8 +69,13 @@ vi.mock('simplex-noise', () => ({
     noise3D(x: number, y: number, z: number): number {
       return Math.sin(x * 0.1) * Math.cos(y * 0.1) * Math.sin(z * 0.1) * 0.5;
     }
-  }
-}));
+  };
+  
+  return {
+    SimplexNoise: MockSimplexNoise,
+    default: MockSimplexNoise
+  };
+});
 
 // Mock three-terrain for testing
 vi.mock('three-terrain', () => ({
