@@ -196,7 +196,7 @@
 12. **Documentation Cleanup** - Assessment documents integrated (completed)
 
 ### Future (Can Defer to Stage 3+)
-13. **Audio System** - Deferred to Stage 5
+13. **Audio System** - Infrastructure ready (FreesoundClient, manifest system), content deferred to Stage 5
 14. **Visual Effects/Shaders** - Deferred to Stage 5
 15. **Nova Cycles** - Deferred to Stage 3
 16. **Villages & Quests** - Deferred to Stage 4

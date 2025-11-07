@@ -55,8 +55,7 @@ jobs:
     - name: Setup environment variables
       run: |
         echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
-        # FREESOUND_API_KEY disabled - audio workflow not implemented yet
-        # echo "FREESOUND_API_KEY=${{ secrets.FREESOUND_API_KEY }}" >> $GITHUB_ENV
+        echo "FREESOUND_API_KEY=${{ secrets.FREESOUND_API_KEY }}" >> $GITHUB_ENV
         
     - name: Generate AmbientCG Textures (IDEMPOTENT)
       if: ${{ github.event.inputs.asset_type == 'all' || github.event.inputs.asset_type == 'textures' }}
@@ -121,9 +120,8 @@ jobs:
           # Check asset counts
           UI_COUNT=$(cat public/assets/game-manifest.json | jq '.ui | length' 2>/dev/null || echo "0")
           MODELS_COUNT=$(cat public/assets/game-manifest.json | jq '.models | length' 2>/dev/null || echo "0")
-          # AUDIO_COUNT disabled - audio workflow not implemented yet
-          # AUDIO_COUNT=$(cat public/assets/game-manifest.json | jq '.audio | length' 2>/dev/null || echo "0")
-          echo "📊 UI assets: $UI_COUNT, Models: $MODELS_COUNT"
+          AUDIO_COUNT=$(cat public/assets/game-manifest.json | jq '.audio | length' 2>/dev/null || echo "0")
+          echo "📊 UI assets: $UI_COUNT, Models: $MODELS_COUNT, Audio: $AUDIO_COUNT"
         else
           echo "⚠️ Game manifest not found (will be created on first run)"
         fi
@@ -183,7 +181,7 @@ jobs:
         NEW_TEXTURES=$(find public/textures -name "*.jpg" -o -name "*.png" 2>/dev/null | wc -l | tr -d ' ')
         NEW_UI=$(find public/ui public/splash -name "*.png" 2>/dev/null | wc -l | tr -d ' ')
         NEW_MODELS=$(find public/models -name "*.png" -o -name "*.glb" 2>/dev/null | wc -l | tr -d ' ')
-        # NEW_AUDIO=$(find public/audio -name "*.mp3" -o -name "*.ogg" -o -name "*.wav" 2>/dev/null | wc -l | tr -d ' ')
+        NEW_AUDIO=$(find public/audio -name "*.mp3" -o -name "*.ogg" -o -name "*.wav" 2>/dev/null | wc -l | tr -d ' ')
         
         git commit -m "chore: generate assets via AI pipeline
 
@@ -194,7 +192,7 @@ jobs:
         - AmbientCG textures: $NEW_TEXTURES files
         - UI assets: $NEW_UI files (splash screens, panels, transparent elements, backgrounds)
         - Models: $NEW_MODELS files
-        - Audio: disabled (FREEAUDIO not fully implemented)
+        - Audio: $NEW_AUDIO files
 
         All workflows are idempotent (skip existing assets)"
         
@@ -219,7 +217,7 @@ jobs:
           - **Textures**: $(find public/textures -name "*.jpg" -o -name "*.png" 2>/dev/null | wc -l | tr -d ' ') files
           - **UI Assets**: $(find public/ui public/splash -name "*.png" 2>/dev/null | wc -l | tr -d ' ') files
           - **Models**: $(find public/models -name "*.png" -o -name "*.glb" 2>/dev/null | wc -l | tr -d ' ') files
-          - **Audio**: disabled (FREEAUDIO not fully implemented)
+          - **Audio**: $(find public/audio -name "*.mp3" -o -name "*.ogg" -o -name "*.wav" 2>/dev/null | wc -l | tr -d ' ') files
           
           ### Changes
           ${{ steps.changed-files.outputs.all_changed_files }}

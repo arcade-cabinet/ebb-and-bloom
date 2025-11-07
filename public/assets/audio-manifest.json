@@ -1,58 +1,5 @@
 {
   "version": "1.0.0",
   "generated": "2025-01-08T00:00:00.000Z",
-  "audio": [
-    {
-      "id": "evolution-organic-growth-1",
-      "name": "Organic Growth Ambience",
-      "category": "evolution",
-      "source": {
-        "type": "freesound",
-        "freesoundId": 12345,
-        "query": "organic growth"
-      },
-      "files": {
-        "ogg": "/audio/evolution-12345.ogg"
-      },
-      "metadata": {
-        "duration": 3.5,
-        "size": 45678,
-        "checksum": "",
-        "generated": "2025-01-08T00:00:00.000Z",
-        "tags": ["organic", "growth", "ambient"],
-        "license": "CC0",
-        "bitrate": 128,
-        "samplerate": 44100
-      },
-      "usage": {
-        "contexts": ["evolution_morph", "trait_emergence"],
-        "volume": 0.6,
-        "loop": false,
-        "fadeIn": 0.5,
-        "fadeOut": 0.5
-      }
-    },
-    {
-      "id": "procedural-pollution-hum",
-      "name": "Pollution Hum",
-      "category": "procedural",
-      "source": {
-        "type": "procedural"
-      },
-      "files": {},
-      "metadata": {
-        "duration": 0,
-        "size": 0,
-        "checksum": "",
-        "generated": "2025-01-08T00:00:00.000Z"
-      },
-      "usage": {
-        "contexts": ["pollution_shock", "environmental_decay"],
-        "volume": 0.4,
-        "loop": true,
-        "fadeIn": 1.0,
-        "fadeOut": 1.0
-      }
-    }
-  ]
+  "audio": []
 }
