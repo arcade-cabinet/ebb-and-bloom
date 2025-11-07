@@ -146,9 +146,7 @@ ios/
 # Build outputs
 build/
 
-# Generated assets (AI-generated, downloaded, or built)
-public/textures/
-!public/textures/.gitkeep
+# Generated assets (AI-generated or built)
 public/splash/
 public/ui/
 public/models/
@@ -158,6 +156,9 @@ public/creatures/
 # Keep manifest files (tracked for reference)
 !public/assets/
 !public/assets/*.json
+
+# Textures are TRACKED (downloaded via script, but should be in repo)
+# public/textures/ is NOT ignored - these are source assets
 
 # Playwright test results (can be large)
 playwright-results/
