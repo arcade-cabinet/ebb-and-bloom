@@ -1,0 +1,10 @@
+{
+  "creature_id": "Littoral Harvester",
+  "base_visual": "Shoreline wader with partially webbed feet, tolerance for brackish water evolutionary creature",
+  "evolution_stages": [
+    "base",
+    "intermediate",
+    "advanced"
+  ],
+  "generated": "2025-11-07T05:18:54.464Z"
+}

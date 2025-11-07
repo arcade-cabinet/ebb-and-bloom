@@ -12,6 +12,13 @@ import { gameClock, type EvolutionEvent } from './GameClock';
 import { AffinityType } from './RawMaterialsSystem';
 import type { WorldSchema, Transform, CreatureData, YukaAgent } from '../world/ECSWorld';
 
+// Creature category classification (for archetype lookup)
+export enum CreatureCategory {
+  SMALL_FORAGER = 'small_forager',     // Small, quick, opportunistic
+  MEDIUM_GRAZER = 'medium_grazer',     // Medium, social, browsing
+  HYBRID_FORM = 'hybrid_form'          // Evolved combinations
+}
+
 // Base archetype families (not specific creatures)
 export enum ArchetypeFamily {
   // Fundamental ecological niches

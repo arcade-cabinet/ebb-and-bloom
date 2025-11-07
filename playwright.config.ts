@@ -7,24 +7,24 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   // Test directory
   testDir: './tests/e2e',
-  
+
   // Global test timeout
   timeout: 30000,
-  
+
   // Expect timeout for assertions
   expect: {
     timeout: 5000
   },
-  
+
   // Fail the build on CI if you accidentally left test.only in the source code
   forbidOnly: !!process.env.CI,
-  
+
   // Retry on CI only
   retries: process.env.CI ? 2 : 0,
-  
+
   // Opt out of parallel tests on CI
   workers: process.env.CI ? 1 : undefined,
-  
+
   // Reporter configuration
   reporter: [
     ['html', { open: 'never' }],
@@ -34,30 +34,30 @@ export default defineConfig({
     // Line reporter for local development
     ...(!process.env.CI ? [['line']] : []),
   ],
-  
+
   // Global setup and teardown
   globalSetup: './tests/e2e/global-setup.ts',
-  
+
   // Shared settings for all projects
   use: {
     // Base URL for the game (will be overridden per environment)
     baseURL: process.env.PLAYWRIGHT_BASE_URL || `http://localhost:${process.env.VITE_DEV_SERVER_PORT || process.env.PORT || '3000'}`,
-    
+
     // Collect trace when retrying the failed test
     trace: 'on-first-retry',
-    
+
     // Take screenshot on failure
     screenshot: 'only-on-failure',
-    
+
     // Record video on failure
     video: 'retain-on-failure',
-    
+
     // Global timeout for actions
     actionTimeout: 10000,
-    
+
     // Ignore HTTPS errors
     ignoreHTTPSErrors: true,
-    
+
     // Viewport size (mobile game focus)
     viewport: { width: 375, height: 667 }, // iPhone SE size
   },
@@ -122,14 +122,14 @@ export default defineConfig({
 
   // Output directory
   outputDir: 'playwright-results/',
-  
+
   // Global test configuration
   globalTimeout: 600000, // 10 minutes for full test suite
-  
+
   // Test metadata
   metadata: {
     project: 'Ebb & Bloom Mobile Game',
-    framework: 'Vue 3 + Phaser 3 + BitECS',
+    framework: 'React Three Fiber + Miniplex ECS',
     testEnvironment: process.env.NODE_ENV || 'development',
   },
 });

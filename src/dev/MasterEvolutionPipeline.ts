@@ -63,7 +63,7 @@ class MasterEvolutionPipeline {
     try {
       const systemPrompt = `You are the lead evolutionary systems architect for Ebb & Bloom, a revolutionary game where EVERYTHING evolves based on pressure instead of arbitrary level gates. Generate base archetypes for each evolutionary system that will adapt and communicate through Yuka AI coordination.`;
       
-      const result = await generateObject({
+      const result = await generateText({
         model: openai(AI_MODELS.SYSTEM_ARCHITECTURE),
         system: systemPrompt,
         prompt: `Generate evolutionary system archetypes for:
@@ -76,31 +76,20 @@ class MasterEvolutionPipeline {
 
 Each archetype needs: starting form, pressure triggers, evolution pathways, inter-system communication protocols.
 
-Focus on: Realistic evolutionary pressure, Yuka AI coordination between systems, no arbitrary unlocks.`,
-        schema: {
-          type: 'object',
-          properties: {
-            creature_archetypes: { 
-              type: 'array', 
-              items: { 
-                type: 'object',
-                properties: {
-                  name: { type: 'string' },
-                  base_form: { type: 'string' },
-                  pressure_triggers: { type: 'array', items: { type: 'string' } },
-                  evolution_pathways: { type: 'array', items: { type: 'string' } }
-                },
-                required: ['name', 'base_form', 'pressure_triggers', 'evolution_pathways']
-              }
-            },
-            tool_archetypes: { type: 'array', items: { type: 'object' } },
-            building_archetypes: { type: 'array', items: { type: 'object' } },
-            material_archetypes: { type: 'array', items: { type: 'object' } },
-            social_archetypes: { type: 'array', items: { type: 'object' } }
-          },
-          required: ['creature_archetypes', 'tool_archetypes', 'building_archetypes', 'material_archetypes', 'social_archetypes']
-        }
+Focus on: Realistic evolutionary pressure, Yuka AI coordination between systems, no arbitrary unlocks.
+
+Output as JSON with this structure:
+{
+  "creature_archetypes": [{"name": "...", "base_form": "...", "pressure_triggers": [...], "evolution_pathways": [...]}],
+  "tool_archetypes": [...],
+  "building_archetypes": [...],
+  "material_archetypes": [...],
+  "social_archetypes": [...]
+}`
       });
+      
+      // Parse JSON from text response
+      const archetypes = JSON.parse(result.text);
       
       // IDEMPOTENCY: Only write if doesn't exist (already checked above, but double-check)
       if (!existsSync('./manifests/evolutionary-archetypes.json')) {
@@ -108,13 +97,13 @@ Focus on: Realistic evolutionary pressure, Yuka AI coordination between systems,
         if (!existsSync('./manifests')) {
           mkdirSync('./manifests', { recursive: true });
         }
-        writeFileSync('./manifests/evolutionary-archetypes.json', JSON.stringify(result.object, null, 2));
+        writeFileSync('./manifests/evolutionary-archetypes.json', JSON.stringify(archetypes, null, 2));
       }
       
       this.results.push({ 
         step: 'Evolutionary Archetype Generation', 
         status: 'success',
-        output: `Generated ${Object.keys(result.object).length} system archetypes`,
+        output: `Generated ${Object.keys(archetypes).length} system archetypes`,
         generatedAssets: ['evolutionary-archetypes.json']
       });
       

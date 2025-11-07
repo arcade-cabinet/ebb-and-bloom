@@ -8,6 +8,8 @@ import EcosystemFoundation from './systems/EcosystemFoundation';
 import { gameClock } from './systems/GameClock';
 import { useEvolutionDataStore, useGenerationLogger } from './stores/EvolutionDataStore';
 import { log, initializeLogging } from './utils/Logger';
+import { usePlatformEvents } from './hooks/usePlatformEvents';
+import { useResponsiveScene } from './hooks/useResponsiveScene';
 import * as THREE from 'three';
 
 // Components
@@ -26,6 +28,12 @@ const ecosystem = new EcosystemFoundation(world, textureSystem);
 const Scene: React.FC = () => {
   const initialized = useRef(false);
   const { logGeneration, logEvent } = useGenerationLogger();
+  
+  // Initialize platform event listeners
+  usePlatformEvents();
+  
+  // Responsive scene adaptation
+  useResponsiveScene();
   
   useEffect(() => {
     if (initialized.current) return;
