@@ -43,24 +43,36 @@ const Scene: React.FC = () => {
         // Start evolution simulation
         ecosystem.start();
         
-        // Create some test scenarios
-        log.info('Setting up evolution test scenarios...');
+        // Create comprehensive test scenarios
+        log.info('Setting up complete evolution test scenarios...');
         
-        // Test 1: Tool-use evolution pressure
+        // Test 1: Tool-use evolution with building proximity
         ecosystem.requestEvolutionTest(
           'tool_use_evolution',
-          [0.1, 0.2, 0.8, 0.6, 0.9, 0.3, 0.4, 0.2, 0.5, 0.3], // High tool-use traits
+          [0.1, 0.2, 0.8, 0.6, 0.9, 0.3, 0.4, 0.2, 0.5, 0.3], // High manipulation traits
           'tiny_scavenger',
-          new THREE.Vector3(-30, 2, -30)
+          new THREE.Vector3(-50, 2, -50)
         );
         
-        // Test 2: Social coordination pressure  
+        // Test 2: Social coordination with pack formation
         ecosystem.requestEvolutionTest(
           'social_evolution',
           [0.3, 0.4, 0.2, 0.9, 0.5, 0.7, 0.8, 0.3, 0.4, 0.6], // High social traits
           'small_browser',
-          new THREE.Vector3(40, 2, 40)
+          new THREE.Vector3(60, 2, 60)
         );
+        
+        // Test 3: Environmental adaptation
+        ecosystem.requestEvolutionTest(
+          'pollution_resistance',
+          [0.5, 0.3, 0.4, 0.2, 0.6, 0.7, 0.8, 0.9, 0.8, 0.4], // High resistance traits
+          'medium_forager',
+          new THREE.Vector3(0, 2, -80)
+        );
+        
+        // Generate a small settlement for building interaction testing
+        log.info('Generating test settlement...');
+        // Would call buildingSystem.generateSettlement() here
         
         log.info('Complete ecosystem initialization finished');
         

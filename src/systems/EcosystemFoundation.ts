@@ -14,6 +14,11 @@ import CreatureArchetypeSystem from './CreatureArchetypeSystem';
 import GeneticSynthesisSystem from './GeneticSynthesisSystem';
 import PopulationDynamicsSystem from './PopulationDynamicsSystem';
 import TextureSystem from './TextureSystem';
+import BuildingSystem from './BuildingSystem';
+import PackSocialSystem from './PackSocialSystem';
+import EnvironmentalPressureSystem from './EnvironmentalPressureSystem';
+import HaikuNarrativeSystem from './HaikuNarrativeSystem';
+import HapticGestureSystem from './HapticGestureSystem';
 
 export interface EcosystemState {
   totalCreatures: number;
@@ -36,6 +41,11 @@ class EcosystemFoundation {
   private geneticsSystem: GeneticSynthesisSystem;
   private populationSystem: PopulationDynamicsSystem;
   private textureSystem: TextureSystem;
+  private buildingSystem: BuildingSystem;
+  private packSocialSystem: PackSocialSystem;
+  private environmentalSystem: EnvironmentalPressureSystem;
+  private narrativeSystem: HaikuNarrativeSystem;
+  private gestureSystem: HapticGestureSystem;
   
   // System state
   private initialized = false;
@@ -51,6 +61,11 @@ class EcosystemFoundation {
     this.creatureSystem = new CreatureArchetypeSystem(world);
     this.geneticsSystem = new GeneticSynthesisSystem();
     this.populationSystem = new PopulationDynamicsSystem(world);
+    this.buildingSystem = new BuildingSystem(world);
+    this.packSocialSystem = new PackSocialSystem(world);
+    this.environmentalSystem = new EnvironmentalPressureSystem(world);
+    this.narrativeSystem = new HaikuNarrativeSystem();
+    this.gestureSystem = new HapticGestureSystem();
     
     log.info('EcosystemFoundation created with all systems');
   }
@@ -146,10 +161,13 @@ class EcosystemFoundation {
       // Update all systems in proper order
       this.terrainSystem.update(deltaTime);
       this.materialsSystem.update(deltaTime);
+      this.environmentalSystem.update(deltaTime);
       this.populationSystem.update(deltaTime);
       this.creatureSystem.update(deltaTime);
+      this.packSocialSystem.update(deltaTime);
+      this.buildingSystem.update(deltaTime);
       
-      // Cross-system interactions would go here
+      // Cross-system interactions
       this.processEcosystemInteractions();
       
     } catch (error) {
