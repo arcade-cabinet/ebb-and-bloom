@@ -3,7 +3,20 @@
  * Creatures form packs when beneficial, use Cohesion/Separation/Alignment
  */
 
-import { Vehicle, CohesionBehavior, SeparationBehavior, AlignmentBehavior } from 'yuka';
+import { 
+  Vehicle, 
+  CohesionBehavior, 
+  SeparationBehavior, 
+  AlignmentBehavior,
+  FuzzyModule,
+  FuzzyVariable,
+  FuzzySet,
+  FuzzyRule,
+  FuzzyAND,
+  TriangularFuzzySet,
+  LeftShoulderFuzzySet,
+  RightShoulderFuzzySet,
+} from 'yuka';
 import {
   Pack,
   Creature,
@@ -12,39 +25,97 @@ import {
 } from '../schemas/index.js';
 
 /**
- * Heuristic: When should a pack form?
- * Uses simple fuzzy-like logic without Yuka's FuzzyModule complexity
+ * REAL Yuka FuzzyModule for Pack Formation
  */
-export class PackFormationEvaluator {
+export class PackFormationFuzzy {
+  private fuzzy: FuzzyModule;
+  private scarcityVar: FuzzyVariable;
+  private proximityVar: FuzzyVariable;
+  private desirabilityVar: FuzzyVariable;
+
+  // Store FuzzySet references
+  private scarcityLow!: FuzzySet;
+  private scarcityMod!: FuzzySet;
+  private scarcityHigh!: FuzzySet;
+  private proximityFew!: FuzzySet;
+  private proximitySome!: FuzzySet;
+  private proximityMany!: FuzzySet;
+  private desirabilityLow!: FuzzySet;
+  private desirabilityMod!: FuzzySet;
+  private desirabilityHigh!: FuzzySet;
+
+  constructor() {
+    this.fuzzy = new FuzzyModule();
+
+    // Input 1: Resource scarcity (0 = abundant, 1 = scarce)
+    this.scarcityVar = new FuzzyVariable();
+    this.scarcityLow = new LeftShoulderFuzzySet(0, 0, 0.3);
+    this.scarcityMod = new TriangularFuzzySet(0.2, 0.5, 0.8);
+    this.scarcityHigh = new RightShoulderFuzzySet(0.7, 1, 1);
+    this.scarcityVar.add(this.scarcityLow);
+    this.scarcityVar.add(this.scarcityMod);
+    this.scarcityVar.add(this.scarcityHigh);
+    this.fuzzy.addFLV('scarcity', this.scarcityVar);
+
+    // Input 2: Nearby creatures (0 = none, 1 = many)
+    this.proximityVar = new FuzzyVariable();
+    this.proximityFew = new LeftShoulderFuzzySet(0, 0, 0.3);
+    this.proximitySome = new TriangularFuzzySet(0.2, 0.5, 0.8);
+    this.proximityMany = new RightShoulderFuzzySet(0.7, 1, 1);
+    this.proximityVar.add(this.proximityFew);
+    this.proximityVar.add(this.proximitySome);
+    this.proximityVar.add(this.proximityMany);
+    this.fuzzy.addFLV('proximity', this.proximityVar);
+
+    // Output: Pack desirability (0 = no, 1 = yes)
+    this.desirabilityVar = new FuzzyVariable();
+    this.desirabilityLow = new LeftShoulderFuzzySet(0, 0, 0.4);
+    this.desirabilityMod = new TriangularFuzzySet(0.3, 0.5, 0.7);
+    this.desirabilityHigh = new RightShoulderFuzzySet(0.6, 1, 1);
+    this.desirabilityVar.add(this.desirabilityLow);
+    this.desirabilityVar.add(this.desirabilityMod);
+    this.desirabilityVar.add(this.desirabilityHigh);
+    this.fuzzy.addFLV('desirability', this.desirabilityVar);
+
+    // Build REAL FuzzyRule objects
+    // Rule 1: IF scarcity IS high AND proximity IS many THEN desirability IS high
+    this.fuzzy.addRule(new FuzzyRule(
+      new FuzzyAND(this.scarcityHigh, this.proximityMany),
+      this.desirabilityHigh
+    ));
+
+    // Rule 2: IF scarcity IS moderate AND proximity IS some THEN desirability IS moderate
+    this.fuzzy.addRule(new FuzzyRule(
+      new FuzzyAND(this.scarcityMod, this.proximitySome),
+      this.desirabilityMod
+    ));
+
+    // Rule 3: IF scarcity IS low THEN desirability IS low
+    this.fuzzy.addRule(new FuzzyRule(
+      this.scarcityLow,
+      this.desirabilityLow
+    ));
+
+    // Rule 4: IF proximity IS few THEN desirability IS low
+    this.fuzzy.addRule(new FuzzyRule(
+      this.proximityFew,
+      this.desirabilityLow
+    ));
+  }
+
   evaluate(resourceScarcity: number, nearbyCreatureCount: number, maxCreatures: number): number {
     // Normalize inputs
     const scarcity = Math.min(1, Math.max(0, resourceScarcity));
     const proximity = Math.min(1, nearbyCreatureCount / maxCreatures);
 
-    // Fuzzy-like rules:
-    // High scarcity + many nearby = high desirability (safety in numbers)
-    // Low scarcity = low desirability (no need to pack)
-    // Few nearby = low desirability (can't form pack)
+    this.fuzzy.fuzzify('scarcity', scarcity);
+    this.fuzzy.fuzzify('proximity', proximity);
 
-    let desirability = 0;
+    const result = this.fuzzy.defuzzify('desirability');
 
-    if (scarcity > 0.7 && proximity > 0.7) {
-      // High scarcity + many nearby
-      desirability = 0.9;
-    } else if (scarcity > 0.4 && proximity > 0.4) {
-      // Moderate scarcity + some nearby
-      desirability = 0.6;
-    } else if (scarcity < 0.3 || proximity < 0.3) {
-      // Low scarcity or few nearby
-      desirability = 0.2;
-    } else {
-      // Middle ground
-      desirability = 0.5;
-    }
+    console.log(`[PackFormationFuzzy] scarcity=${scarcity.toFixed(2)}, proximity=${proximity.toFixed(2)} → desirability=${result.toFixed(2)}`);
 
-    console.log(`[PackFormation] scarcity=${scarcity.toFixed(2)}, proximity=${proximity.toFixed(2)} → desirability=${desirability.toFixed(2)}`);
-
-    return desirability;
+    return result;
   }
 }
 
