@@ -18,7 +18,7 @@ version: '1.0'
 
 ### Data Flow Pattern
 ```
-ECS Systems (modify state) → Zustand Store (reactive sync) → Vue Components (display)
+ECS Systems (modify state) → Pinia Store (reactive sync) → Vue Components (display)
                           → Phaser Scene (render sprites)
 ```
 
