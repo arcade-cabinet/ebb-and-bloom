@@ -20,6 +20,7 @@ import PopulationDynamicsSystem from './PopulationDynamicsSystem';
 import RawMaterialsSystem from './RawMaterialsSystem';
 import TerrainSystem from './TerrainSystem';
 import TextureSystem from './TextureSystem';
+import YukaSphereCoordinator from './YukaSphereCoordinator';
 
 export interface EcosystemState {
   totalCreatures: number;
@@ -47,6 +48,7 @@ class EcosystemFoundation {
   private environmentalSystem: EnvironmentalPressureSystem;
   private narrativeSystem: HaikuNarrativeSystem;
   private gestureSystem: HapticGestureSystem;
+  private yukaCoordinator: YukaSphereCoordinator;
 
   // System state
   private initialized = false;
@@ -67,8 +69,20 @@ class EcosystemFoundation {
     this.environmentalSystem = new EnvironmentalPressureSystem(world);
     this.narrativeSystem = new HaikuNarrativeSystem();
     this.gestureSystem = new HapticGestureSystem();
+    
+    // Yuka Sphere Coordinator - THE EVOLUTIONARY ENGINE
+    this.yukaCoordinator = new YukaSphereCoordinator(
+      world,
+      this.creatureSystem,
+      this.geneticsSystem,
+      this.materialsSystem,
+      this.buildingSystem,
+      this.environmentalSystem,
+      this.packSocialSystem,
+      this.populationSystem
+    );
 
-    log.info('EcosystemFoundation created with all systems');
+    log.info('EcosystemFoundation created with all systems + YUKA COORDINATOR');
   }
 
   async initialize(): Promise<void> {

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { getWorld, initializeYuka } from './world/ECSWorld';
 import TextureSystem, { TextureContext } from './systems/TextureSystem';
@@ -17,6 +17,8 @@ import TerrainRenderer from './components/TerrainRenderer';
 import CreatureRenderer from './components/CreatureRenderer';
 import BuildingRenderer from './components/BuildingRenderer';
 import EvolutionUI from './components/EvolutionUI';
+import CatalystCreator, { type TraitAllocation } from './components/CatalystCreator';
+import OnboardingFlow from './components/OnboardingFlow';
 import { SporeStyleCamera } from './systems/SporeStyleCameraSystem';
 
 // Initialize complete ecosystem
@@ -188,14 +190,59 @@ const EcosystemUpdater: React.FC = () => {
 
 // Main App with proper architecture
 const App: React.FC = () => {
+  const [showOnboarding, setShowOnboarding] = useState(true);
+  const [showCatalyst, setShowCatalyst] = useState(false);
+  const [playerTraits, setPlayerTraits] = useState<TraitAllocation | null>(null);
+  
   useEffect(() => {
     initializeLogging();
     log.info('Ebb & Bloom starting with organized architecture');
     log.info('React Three Fiber + Miniplex + texture system + creature AI');
+    
+    // Check if player has completed onboarding before
+    const hasCompletedOnboarding = localStorage.getItem('ebb-bloom-onboarding-complete');
+    if (hasCompletedOnboarding === 'true') {
+      setShowOnboarding(false);
+      setShowCatalyst(false);
+    }
   }, []);
+  
+  const handleOnboardingComplete = () => {
+    setShowOnboarding(false);
+    setShowCatalyst(true);
+    localStorage.setItem('ebb-bloom-onboarding-complete', 'true');
+  };
+  
+  const handleCatalystComplete = (traits: TraitAllocation) => {
+    setPlayerTraits(traits);
+    setShowCatalyst(false);
+    log.info('Player catalyst created', { traits });
+    
+    // Would use traits to influence initial creature generation
+    // For now, just proceed to game
+  };
+  
+  const handleSkipOnboarding = () => {
+    setShowOnboarding(false);
+    setShowCatalyst(false);
+    localStorage.setItem('ebb-bloom-onboarding-complete', 'true');
+  };
   
   return (
     <div style={{ width: '100vw', height: '100vh', background: '#000' }}>
+      {/* Onboarding Flow */}
+      {showOnboarding && (
+        <OnboardingFlow onComplete={handleOnboardingComplete} />
+      )}
+      
+      {/* Catalyst Creator */}
+      {showCatalyst && (
+        <CatalystCreator 
+          onComplete={handleCatalystComplete}
+          onSkip={handleSkipOnboarding}
+        />
+      )}
+      
       <WorldProvider world={world} ecosystem={ecosystem}>
         <TextureContext.Provider value={textureSystem}>
           <Canvas
