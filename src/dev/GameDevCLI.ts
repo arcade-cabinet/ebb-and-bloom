@@ -186,7 +186,7 @@ class GameDevCLI {
         prompt,
         size: "1024x1024",
         providerOptions: {
-          openai: { quality: 'hd' }
+          openai: { quality: 'high' }
         }
       });
 
@@ -511,7 +511,7 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
         size: imageSize,
         providerOptions: {
           openai: {
-            quality: 'hd'
+            quality: 'high' // Valid values: 'low', 'medium', 'high', 'auto'
           }
         }
       });

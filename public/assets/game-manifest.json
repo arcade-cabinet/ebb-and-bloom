@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generated": "2025-11-07T07:52:26.470Z",
+  "generated": "2025-11-07T08:20:22.951Z",
   "textures": [],
   "models": [],
   "audio": [],
@@ -91,6 +91,358 @@
         "generated": "2025-11-07T07:52:26.470Z",
         "transparent": false,
         "fullScreen": true
+      }
+    },
+    {
+      "id": "splash-57bc2748",
+      "name": "Meditative evolutionary ecosystem scene, deep indigo (#4A5568) and bloom emerald (#38A169) color palette, flowing organic forms suggesting growth and emergence, peaceful creatures in symbiotic relationships, contemplative atmosphere, mobile game loading screen portrait 1080x1920, soft focus, poetic beauty",
+      "category": "splash",
+      "source": {
+        "type": "openai_generated",
+        "prompt": "Create a splash for an evolutionary ecosystem game called \"Ebb & Bloom\".\n\nDescription: Meditative evolutionary ecosystem scene, deep indigo (#4A5568) and bloom emerald (#38A169) color palette, flowing organic forms suggesting growth and emergence, peaceful creatures in symbiotic relationships, contemplative atmosphere, mobile game loading screen portrait 1080x1920, soft focus, poetic beauty\n\nStyle: Hybrid of organic and technical elements, balanced and modern\n\nBrand colors: Deep indigo (#4A5568), emerald green (#38A169), trait gold (#D69E2E), echo silver (#A0AEC0)\n\nRequirements: Full-screen splash screen for mobile game, portrait orientation (1080x1920), atmospheric and immersive, suitable for loading screen, brand identity visible\n\n\n"
+      },
+      "files": {
+        "png": "/splash/splash-57bc2748.png"
+      },
+      "metadata": {
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "size": 2450402,
+        "generated": "2025-11-07T08:06:17.528Z",
+        "transparent": false,
+        "fullScreen": true
+      }
+    },
+    {
+      "id": "transparent-419c7241",
+      "name": "Mobile game button \"Observe\", organic flowing design with asymmetric rounded corners, deep indigo (#4A5568) base with bloom emerald (#38A169) accent, clean modern UI, transparent PNG, 120x50, meditative contemplative style",
+      "category": "transparent",
+      "source": {
+        "type": "openai_generated",
+        "prompt": "Create a transparent for an evolutionary ecosystem game called \"Ebb & Bloom\".\n\nDescription: Mobile game button \"Observe\", organic flowing design with asymmetric rounded corners, deep indigo (#4A5568) base with bloom emerald (#38A169) accent, clean modern UI, transparent PNG, 120x50, meditative contemplative style\n\nStyle: Hybrid of organic and technical elements, balanced and modern\n\nBrand colors: Deep indigo (#4A5568), emerald green (#38A169), trait gold (#D69E2E), echo silver (#A0AEC0)\n\nRequirements: TRANSPARENT PNG element with COMPLETELY TRANSPARENT background (no white, no color, pure alpha channel), clean anti-aliased edges, suitable for overlay on any surface, high quality edges, PNG format with alpha channel\n\nCRITICAL REQUIREMENT: Image MUST have a COMPLETELY TRANSPARENT background with alpha channel. No white background, no colored background, no solid background of any kind. The image should be a PNG with transparency. All edges must be clean and anti-aliased for overlay use.\n"
+      },
+      "files": {
+        "png": "/ui/elements/transparent-419c7241.png"
+      },
+      "metadata": {
+        "dimensions": [
+          120,
+          50
+        ],
+        "size": 2511,
+        "generated": "2025-11-07T08:07:00.128Z",
+        "transparent": true,
+        "fullScreen": false
+      }
+    },
+    {
+      "id": "transparent-b9dbcb89",
+      "name": "Mobile game button \"Influence\", organic flowing design with asymmetric rounded corners, deep indigo (#4A5568) base with trait gold (#D69E2E) accent, clean modern UI, transparent PNG, 120x50, active shaping style",
+      "category": "transparent",
+      "source": {
+        "type": "openai_generated",
+        "prompt": "Create a transparent for an evolutionary ecosystem game called \"Ebb & Bloom\".\n\nDescription: Mobile game button \"Influence\", organic flowing design with asymmetric rounded corners, deep indigo (#4A5568) base with trait gold (#D69E2E) accent, clean modern UI, transparent PNG, 120x50, active shaping style\n\nStyle: Hybrid of organic and technical elements, balanced and modern\n\nBrand colors: Deep indigo (#4A5568), emerald green (#38A169), trait gold (#D69E2E), echo silver (#A0AEC0)\n\nRequirements: TRANSPARENT PNG element with COMPLETELY TRANSPARENT background (no white, no color, pure alpha channel), clean anti-aliased edges, suitable for overlay on any surface, high quality edges, PNG format with alpha channel\n\nCRITICAL REQUIREMENT: Image MUST have a COMPLETELY TRANSPARENT background with alpha channel. No white background, no colored background, no solid background of any kind. The image should be a PNG with transparency. All edges must be clean and anti-aliased for overlay use.\n"
+      },
+      "files": {
+        "png": "/ui/elements/transparent-b9dbcb89.png"
+      },
+      "metadata": {
+        "dimensions": [
+          120,
+          50
+        ],
+        "size": 2205,
+        "generated": "2025-11-07T08:07:44.830Z",
+        "transparent": true,
+        "fullScreen": false
+      }
+    },
+    {
+      "id": "transparent-5a02311b",
+      "name": "Mobile game button \"Analyze\", organic flowing design with asymmetric rounded corners, deep indigo (#4A5568) base with echo silver (#A0AEC0) accent, clean modern UI, transparent PNG, 120x50, technical data-focused style",
+      "category": "transparent",
+      "source": {
+        "type": "openai_generated",
+        "prompt": "Create a transparent for an evolutionary ecosystem game called \"Ebb & Bloom\".\n\nDescription: Mobile game button \"Analyze\", organic flowing design with asymmetric rounded corners, deep indigo (#4A5568) base with echo silver (#A0AEC0) accent, clean modern UI, transparent PNG, 120x50, technical data-focused style\n\nStyle: Hybrid of organic and technical elements, balanced and modern\n\nBrand colors: Deep indigo (#4A5568), emerald green (#38A169), trait gold (#D69E2E), echo silver (#A0AEC0)\n\nRequirements: TRANSPARENT PNG element with COMPLETELY TRANSPARENT background (no white, no color, pure alpha channel), clean anti-aliased edges, suitable for overlay on any surface, high quality edges, PNG format with alpha channel\n\nCRITICAL REQUIREMENT: Image MUST have a COMPLETELY TRANSPARENT background with alpha channel. No white background, no colored background, no solid background of any kind. The image should be a PNG with transparency. All edges must be clean and anti-aliased for overlay use.\n"
+      },
+      "files": {
+        "png": "/ui/elements/transparent-5a02311b.png"
+      },
+      "metadata": {
+        "dimensions": [
+          120,
+          50
+        ],
+        "size": 3125,
+        "generated": "2025-11-07T08:08:28.623Z",
+        "transparent": true,
+        "fullScreen": false
+      }
+    },
+    {
+      "id": "transparent-8ff975ec",
+      "name": "Mobile game button \"Evolution Tree\", organic flowing branches design suggesting growth and inheritance, bloom emerald (#38A169) and deep indigo (#4A5568) colors, trait gold (#D69E2E) highlights, clean modern UI, transparent PNG, 200x50",
+      "category": "transparent",
+      "source": {
+        "type": "openai_generated",
+        "prompt": "Create a transparent for an evolutionary ecosystem game called \"Ebb & Bloom\".\n\nDescription: Mobile game button \"Evolution Tree\", organic flowing branches design suggesting growth and inheritance, bloom emerald (#38A169) and deep indigo (#4A5568) colors, trait gold (#D69E2E) highlights, clean modern UI, transparent PNG, 200x50\n\nStyle: Hybrid of organic and technical elements, balanced and modern\n\nBrand colors: Deep indigo (#4A5568), emerald green (#38A169), trait gold (#D69E2E), echo silver (#A0AEC0)\n\nRequirements: TRANSPARENT PNG element with COMPLETELY TRANSPARENT background (no white, no color, pure alpha channel), clean anti-aliased edges, suitable for overlay on any surface, high quality edges, PNG format with alpha channel\n\nCRITICAL REQUIREMENT: Image MUST have a COMPLETELY TRANSPARENT background with alpha channel. No white background, no colored background, no solid background of any kind. The image should be a PNG with transparency. All edges must be clean and anti-aliased for overlay use.\n"
+      },
+      "files": {
+        "png": "/ui/elements/transparent-8ff975ec.png"
+      },
+      "metadata": {
+        "dimensions": [
+          200,
+          50
+        ],
+        "size": 2990,
+        "generated": "2025-11-07T08:09:17.204Z",
+        "transparent": true,
+        "fullScreen": false
+      }
+    },
+    {
+      "id": "transparent-4815759b",
+      "name": "Stylized icon showing movement/mobility trait, flowing organic lines suggesting speed and fluidity, trait gold (#D69E2E) color accent, asymmetric organic shape, clean vector style, transparent PNG, 64x64, evolutionary theme",
+      "category": "transparent",
+      "source": {
+        "type": "openai_generated",
+        "prompt": "Create a transparent for an evolutionary ecosystem game called \"Ebb & Bloom\".\n\nDescription: Stylized icon showing movement/mobility trait, flowing organic lines suggesting speed and fluidity, trait gold (#D69E2E) color accent, asymmetric organic shape, clean vector style, transparent PNG, 64x64, evolutionary theme\n\nStyle: Hybrid of organic and technical elements, balanced and modern\n\nBrand colors: Deep indigo (#4A5568), emerald green (#38A169), trait gold (#D69E2E), echo silver (#A0AEC0)\n\nRequirements: TRANSPARENT PNG element with COMPLETELY TRANSPARENT background (no white, no color, pure alpha channel), clean anti-aliased edges, suitable for overlay on any surface, high quality edges, PNG format with alpha channel\n\nCRITICAL REQUIREMENT: Image MUST have a COMPLETELY TRANSPARENT background with alpha channel. No white background, no colored background, no solid background of any kind. The image should be a PNG with transparency. All edges must be clean and anti-aliased for overlay use.\n"
+      },
+      "files": {
+        "png": "/ui/elements/transparent-4815759b.png"
+      },
+      "metadata": {
+        "dimensions": [
+          64,
+          64
+        ],
+        "size": 3587,
+        "generated": "2025-11-07T08:09:53.879Z",
+        "transparent": true,
+        "fullScreen": false
+      }
+    },
+    {
+      "id": "transparent-cf921b10",
+      "name": "Stylized icon showing social/group trait, interconnected organic nodes suggesting community and bonding, trait gold (#D69E2E) color, asymmetric flowing design, clean vector style, transparent PNG, 64x64, evolutionary theme",
+      "category": "transparent",
+      "source": {
+        "type": "openai_generated",
+        "prompt": "Create a transparent for an evolutionary ecosystem game called \"Ebb & Bloom\".\n\nDescription: Stylized icon showing social/group trait, interconnected organic nodes suggesting community and bonding, trait gold (#D69E2E) color, asymmetric flowing design, clean vector style, transparent PNG, 64x64, evolutionary theme\n\nStyle: Hybrid of organic and technical elements, balanced and modern\n\nBrand colors: Deep indigo (#4A5568), emerald green (#38A169), trait gold (#D69E2E), echo silver (#A0AEC0)\n\nRequirements: TRANSPARENT PNG element with COMPLETELY TRANSPARENT background (no white, no color, pure alpha channel), clean anti-aliased edges, suitable for overlay on any surface, high quality edges, PNG format with alpha channel\n\nCRITICAL REQUIREMENT: Image MUST have a COMPLETELY TRANSPARENT background with alpha channel. No white background, no colored background, no solid background of any kind. The image should be a PNG with transparency. All edges must be clean and anti-aliased for overlay use.\n"
+      },
+      "files": {
+        "png": "/ui/elements/transparent-cf921b10.png"
+      },
+      "metadata": {
+        "dimensions": [
+          64,
+          64
+        ],
+        "size": 4655,
+        "generated": "2025-11-07T08:10:28.556Z",
+        "transparent": true,
+        "fullScreen": false
+      }
+    },
+    {
+      "id": "transparent-9bcea48f",
+      "name": "Stylized icon showing aggression/combat trait, sharp angular organic design suggesting conflict, pollution red (#E53E3E) accent, asymmetric flowing form, clean vector style, transparent PNG, 64x64, evolutionary theme",
+      "category": "transparent",
+      "source": {
+        "type": "openai_generated",
+        "prompt": "Create a transparent for an evolutionary ecosystem game called \"Ebb & Bloom\".\n\nDescription: Stylized icon showing aggression/combat trait, sharp angular organic design suggesting conflict, pollution red (#E53E3E) accent, asymmetric flowing form, clean vector style, transparent PNG, 64x64, evolutionary theme\n\nStyle: Hybrid of organic and technical elements, balanced and modern\n\nBrand colors: Deep indigo (#4A5568), emerald green (#38A169), trait gold (#D69E2E), echo silver (#A0AEC0)\n\nRequirements: TRANSPARENT PNG element with COMPLETELY TRANSPARENT background (no white, no color, pure alpha channel), clean anti-aliased edges, suitable for overlay on any surface, high quality edges, PNG format with alpha channel\n\nCRITICAL REQUIREMENT: Image MUST have a COMPLETELY TRANSPARENT background with alpha channel. No white background, no colored background, no solid background of any kind. The image should be a PNG with transparency. All edges must be clean and anti-aliased for overlay use.\n"
+      },
+      "files": {
+        "png": "/ui/elements/transparent-9bcea48f.png"
+      },
+      "metadata": {
+        "dimensions": [
+          64,
+          64
+        ],
+        "size": 5114,
+        "generated": "2025-11-07T08:11:15.555Z",
+        "transparent": true,
+        "fullScreen": false
+      }
+    },
+    {
+      "id": "transparent-db216554",
+      "name": "Pollution warning icon, organic toxic cloud design suggesting environmental pressure, pollution red (#E53E3E) and warning orange (#ED8936) colors, asymmetric flowing form, clean vector style, transparent PNG, 64x64, evolutionary theme",
+      "category": "transparent",
+      "source": {
+        "type": "openai_generated",
+        "prompt": "Create a transparent for an evolutionary ecosystem game called \"Ebb & Bloom\".\n\nDescription: Pollution warning icon, organic toxic cloud design suggesting environmental pressure, pollution red (#E53E3E) and warning orange (#ED8936) colors, asymmetric flowing form, clean vector style, transparent PNG, 64x64, evolutionary theme\n\nStyle: Hybrid of organic and technical elements, balanced and modern\n\nBrand colors: Deep indigo (#4A5568), emerald green (#38A169), trait gold (#D69E2E), echo silver (#A0AEC0)\n\nRequirements: TRANSPARENT PNG element with COMPLETELY TRANSPARENT background (no white, no color, pure alpha channel), clean anti-aliased edges, suitable for overlay on any surface, high quality edges, PNG format with alpha channel\n\nCRITICAL REQUIREMENT: Image MUST have a COMPLETELY TRANSPARENT background with alpha channel. No white background, no colored background, no solid background of any kind. The image should be a PNG with transparency. All edges must be clean and anti-aliased for overlay use.\n"
+      },
+      "files": {
+        "png": "/ui/elements/transparent-db216554.png"
+      },
+      "metadata": {
+        "dimensions": [
+          64,
+          64
+        ],
+        "size": 3243,
+        "generated": "2025-11-07T08:12:12.366Z",
+        "transparent": true,
+        "fullScreen": false
+      }
+    },
+    {
+      "id": "transparent-da6ceb81",
+      "name": "Pack formation icon, organic group of creatures together suggesting social bonding, bloom emerald (#38A169) accent, interconnected flowing forms, clean vector style, transparent PNG, 64x64, evolutionary theme",
+      "category": "transparent",
+      "source": {
+        "type": "openai_generated",
+        "prompt": "Create a transparent for an evolutionary ecosystem game called \"Ebb & Bloom\".\n\nDescription: Pack formation icon, organic group of creatures together suggesting social bonding, bloom emerald (#38A169) accent, interconnected flowing forms, clean vector style, transparent PNG, 64x64, evolutionary theme\n\nStyle: Hybrid of organic and technical elements, balanced and modern\n\nBrand colors: Deep indigo (#4A5568), emerald green (#38A169), trait gold (#D69E2E), echo silver (#A0AEC0)\n\nRequirements: TRANSPARENT PNG element with COMPLETELY TRANSPARENT background (no white, no color, pure alpha channel), clean anti-aliased edges, suitable for overlay on any surface, high quality edges, PNG format with alpha channel\n\nCRITICAL REQUIREMENT: Image MUST have a COMPLETELY TRANSPARENT background with alpha channel. No white background, no colored background, no solid background of any kind. The image should be a PNG with transparency. All edges must be clean and anti-aliased for overlay use.\n"
+      },
+      "files": {
+        "png": "/ui/elements/transparent-da6ceb81.png"
+      },
+      "metadata": {
+        "dimensions": [
+          64,
+          64
+        ],
+        "size": 5955,
+        "generated": "2025-11-07T08:12:54.585Z",
+        "transparent": true,
+        "fullScreen": false
+      }
+    },
+    {
+      "id": "transparent-e2eac4cc",
+      "name": "Generation counter icon, organic circular progress design with evolutionary spiral pattern, trait gold (#D69E2E) accent, flowing asymmetric form, clean vector style, transparent PNG, 64x64, evolutionary theme",
+      "category": "transparent",
+      "source": {
+        "type": "openai_generated",
+        "prompt": "Create a transparent for an evolutionary ecosystem game called \"Ebb & Bloom\".\n\nDescription: Generation counter icon, organic circular progress design with evolutionary spiral pattern, trait gold (#D69E2E) accent, flowing asymmetric form, clean vector style, transparent PNG, 64x64, evolutionary theme\n\nStyle: Hybrid of organic and technical elements, balanced and modern\n\nBrand colors: Deep indigo (#4A5568), emerald green (#38A169), trait gold (#D69E2E), echo silver (#A0AEC0)\n\nRequirements: TRANSPARENT PNG element with COMPLETELY TRANSPARENT background (no white, no color, pure alpha channel), clean anti-aliased edges, suitable for overlay on any surface, high quality edges, PNG format with alpha channel\n\nCRITICAL REQUIREMENT: Image MUST have a COMPLETELY TRANSPARENT background with alpha channel. No white background, no colored background, no solid background of any kind. The image should be a PNG with transparency. All edges must be clean and anti-aliased for overlay use.\n"
+      },
+      "files": {
+        "png": "/ui/elements/transparent-e2eac4cc.png"
+      },
+      "metadata": {
+        "dimensions": [
+          64,
+          64
+        ],
+        "size": 4202,
+        "generated": "2025-11-07T08:13:36.248Z",
+        "transparent": true,
+        "fullScreen": false
+      }
+    },
+    {
+      "id": "panel-4e0aa0ee",
+      "name": "Semi-transparent panel for creature display, organic flowing design with asymmetric rounded corners, deep indigo (#4A5568) base with subtle bloom emerald (#38A169) patterns, meditative contemplative style, modern game UI, transparent PNG, 400x300",
+      "category": "panel",
+      "source": {
+        "type": "openai_generated",
+        "prompt": "Create a panel for an evolutionary ecosystem game called \"Ebb & Bloom\".\n\nDescription: Semi-transparent panel for creature display, organic flowing design with asymmetric rounded corners, deep indigo (#4A5568) base with subtle bloom emerald (#38A169) patterns, meditative contemplative style, modern game UI, transparent PNG, 400x300\n\nStyle: Hybrid of organic and technical elements, balanced and modern\n\nBrand colors: Deep indigo (#4A5568), emerald green (#38A169), trait gold (#D69E2E), echo silver (#A0AEC0)\n\nRequirements: UI panel background, subtle texture, suitable for content overlay, non-distracting, mobile-optimized\n\nCRITICAL REQUIREMENT: Image MUST have a COMPLETELY TRANSPARENT background with alpha channel. No white background, no colored background, no solid background of any kind. The image should be a PNG with transparency. All edges must be clean and anti-aliased for overlay use.\n"
+      },
+      "files": {
+        "png": "/ui/panels/panel-4e0aa0ee.png"
+      },
+      "metadata": {
+        "dimensions": [
+          400,
+          300
+        ],
+        "size": 72191,
+        "generated": "2025-11-07T08:15:01.173Z",
+        "transparent": true,
+        "fullScreen": false
+      }
+    },
+    {
+      "id": "panel-e989b992",
+      "name": "Semi-transparent panel for environmental status, organic flowing design with asymmetric rounded corners, bloom emerald (#38A169) base with subtle deep indigo (#4A5568) patterns, growth and emergence theme, modern game UI, transparent PNG, 400x300",
+      "category": "panel",
+      "source": {
+        "type": "openai_generated",
+        "prompt": "Create a panel for an evolutionary ecosystem game called \"Ebb & Bloom\".\n\nDescription: Semi-transparent panel for environmental status, organic flowing design with asymmetric rounded corners, bloom emerald (#38A169) base with subtle deep indigo (#4A5568) patterns, growth and emergence theme, modern game UI, transparent PNG, 400x300\n\nStyle: Hybrid of organic and technical elements, balanced and modern\n\nBrand colors: Deep indigo (#4A5568), emerald green (#38A169), trait gold (#D69E2E), echo silver (#A0AEC0)\n\nRequirements: UI panel background, subtle texture, suitable for content overlay, non-distracting, mobile-optimized\n\nCRITICAL REQUIREMENT: Image MUST have a COMPLETELY TRANSPARENT background with alpha channel. No white background, no colored background, no solid background of any kind. The image should be a PNG with transparency. All edges must be clean and anti-aliased for overlay use.\n"
+      },
+      "files": {
+        "png": "/ui/panels/panel-e989b992.png"
+      },
+      "metadata": {
+        "dimensions": [
+          400,
+          300
+        ],
+        "size": 83999,
+        "generated": "2025-11-07T08:16:26.528Z",
+        "transparent": true,
+        "fullScreen": false
+      }
+    },
+    {
+      "id": "panel-f4d0d4d1",
+      "name": "Semi-transparent panel for pack dynamics, organic flowing design with asymmetric rounded corners, trait gold (#D69E2E) base with subtle deep indigo (#4A5568) patterns, discovery and mutation theme, modern game UI, transparent PNG, 400x300",
+      "category": "panel",
+      "source": {
+        "type": "openai_generated",
+        "prompt": "Create a panel for an evolutionary ecosystem game called \"Ebb & Bloom\".\n\nDescription: Semi-transparent panel for pack dynamics, organic flowing design with asymmetric rounded corners, trait gold (#D69E2E) base with subtle deep indigo (#4A5568) patterns, discovery and mutation theme, modern game UI, transparent PNG, 400x300\n\nStyle: Hybrid of organic and technical elements, balanced and modern\n\nBrand colors: Deep indigo (#4A5568), emerald green (#38A169), trait gold (#D69E2E), echo silver (#A0AEC0)\n\nRequirements: UI panel background, subtle texture, suitable for content overlay, non-distracting, mobile-optimized\n\nCRITICAL REQUIREMENT: Image MUST have a COMPLETELY TRANSPARENT background with alpha channel. No white background, no colored background, no solid background of any kind. The image should be a PNG with transparency. All edges must be clean and anti-aliased for overlay use.\n"
+      },
+      "files": {
+        "png": "/ui/panels/panel-f4d0d4d1.png"
+      },
+      "metadata": {
+        "dimensions": [
+          400,
+          300
+        ],
+        "size": 63328,
+        "generated": "2025-11-07T08:17:19.538Z",
+        "transparent": true,
+        "fullScreen": false
+      }
+    },
+    {
+      "id": "panel-060691ef",
+      "name": "Semi-transparent panel for narrative/haiku display, poetic flowing design with asymmetric rounded corners, echo silver (#A0AEC0) base with subtle deep indigo (#4A5568) patterns, memory and inheritance theme, meditative contemplative style, modern game UI, transparent PNG, 600x200",
+      "category": "panel",
+      "source": {
+        "type": "openai_generated",
+        "prompt": "Create a panel for an evolutionary ecosystem game called \"Ebb & Bloom\".\n\nDescription: Semi-transparent panel for narrative/haiku display, poetic flowing design with asymmetric rounded corners, echo silver (#A0AEC0) base with subtle deep indigo (#4A5568) patterns, memory and inheritance theme, meditative contemplative style, modern game UI, transparent PNG, 600x200\n\nStyle: Hybrid of organic and technical elements, balanced and modern\n\nBrand colors: Deep indigo (#4A5568), emerald green (#38A169), trait gold (#D69E2E), echo silver (#A0AEC0)\n\nRequirements: UI panel background, subtle texture, suitable for content overlay, non-distracting, mobile-optimized\n\nCRITICAL REQUIREMENT: Image MUST have a COMPLETELY TRANSPARENT background with alpha channel. No white background, no colored background, no solid background of any kind. The image should be a PNG with transparency. All edges must be clean and anti-aliased for overlay use.\n"
+      },
+      "files": {
+        "png": "/ui/panels/panel-060691ef.png"
+      },
+      "metadata": {
+        "dimensions": [
+          600,
+          200
+        ],
+        "size": 57016,
+        "generated": "2025-11-07T08:18:21.136Z",
+        "transparent": true,
+        "fullScreen": false
+      }
+    },
+    {
+      "id": "panel-7c630065",
+      "name": "Semi-transparent panel for evolution events, dynamic flowing design with asymmetric rounded corners, deep indigo (#4A5568) base with trait gold (#D69E2E) and mutation purple (#805AD5) accents, significant evolutionary leap theme, modern game UI, transparent PNG, 350x150",
+      "category": "panel",
+      "source": {
+        "type": "openai_generated",
+        "prompt": "Create a panel for an evolutionary ecosystem game called \"Ebb & Bloom\".\n\nDescription: Semi-transparent panel for evolution events, dynamic flowing design with asymmetric rounded corners, deep indigo (#4A5568) base with trait gold (#D69E2E) and mutation purple (#805AD5) accents, significant evolutionary leap theme, modern game UI, transparent PNG, 350x150\n\nStyle: Hybrid of organic and technical elements, balanced and modern\n\nBrand colors: Deep indigo (#4A5568), emerald green (#38A169), trait gold (#D69E2E), echo silver (#A0AEC0)\n\nRequirements: UI panel background, subtle texture, suitable for content overlay, non-distracting, mobile-optimized\n\nCRITICAL REQUIREMENT: Image MUST have a COMPLETELY TRANSPARENT background with alpha channel. No white background, no colored background, no solid background of any kind. The image should be a PNG with transparency. All edges must be clean and anti-aliased for overlay use.\n"
+      },
+      "files": {
+        "png": "/ui/panels/panel-7c630065.png"
+      },
+      "metadata": {
+        "dimensions": [
+          350,
+          150
+        ],
+        "size": 35449,
+        "generated": "2025-11-07T08:20:22.950Z",
+        "transparent": true,
+        "fullScreen": false
       }
     }
   ]
