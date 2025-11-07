@@ -20,13 +20,18 @@ const BuildingRenderer: React.FC = () => {
   useEffect(() => {
     const updateBuildings = () => {
       const buildings = Array.from(world.with('building', 'render', 'transform').entities);
-      setBuildingEntities(buildings);
+      setBuildingEntities(prev => {
+        if (buildings.length !== prev.length) {
+          return buildings;
+        }
+        return prev;
+      });
     };
     
     updateBuildings();
-    const interval = setInterval(updateBuildings, 500); // Update 2x per second
+    const interval = setInterval(updateBuildings, 5000); // Buildings change rarely
     return () => clearInterval(interval);
-  }, [world]);
+  }, []); // Empty deps - world is stable
   
   useEffect(() => {
     log.info('BuildingRenderer mounted', { 

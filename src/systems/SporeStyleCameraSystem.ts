@@ -6,6 +6,7 @@
 import * as THREE from 'three';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useRef, useEffect } from 'react';
+import { useWorld } from '../contexts/WorldContext';
 import { log } from '../utils/Logger';
 import { gameClock, type EvolutionEvent } from './GameClock';
 import type { World, Entity } from 'miniplex';

@@ -20,13 +20,18 @@ const CreatureRenderer: React.FC = () => {
   useEffect(() => {
     const updateCreatures = () => {
       const creatures = Array.from(world.with('creature', 'render', 'yukaAgent', 'transform').entities);
-      setCreatureEntities(creatures);
+      setCreatureEntities(prev => {
+        if (creatures.length !== prev.length) {
+          return creatures;
+        }
+        return prev;
+      });
     };
     
     updateCreatures();
-    const interval = setInterval(updateCreatures, 100); // Update 10x per second
+    const interval = setInterval(updateCreatures, 500); // Update 2x per second - less aggressive
     return () => clearInterval(interval);
-  }, [world]);
+  }, []); // Empty deps - world is stable
   
   useEffect(() => {
     log.creature('CreatureRenderer mounted', undefined, { 

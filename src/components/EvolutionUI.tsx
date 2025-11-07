@@ -58,13 +58,20 @@ const CreatureEvolutionDisplay = () => {
   useEffect(() => {
     const updateCreatures = () => {
       const creatureQuery = world.with('creature', 'transform');
-      setCreatures(Array.from(creatureQuery.entities));
+      const newCreatures = Array.from(creatureQuery.entities);
+      setCreatures(prev => {
+        // Only update if actually changed to prevent infinite loops
+        if (newCreatures.length !== prev.length) {
+          return newCreatures;
+        }
+        return prev;
+      });
     };
-
+    
     updateCreatures();
-    const interval = setInterval(updateCreatures, 1000);
+    const interval = setInterval(updateCreatures, 2000); // Slower polling
     return () => clearInterval(interval);
-  }, [world]);
+  }, []); // Empty deps - world is stable
 
   return (
     <>
@@ -199,31 +206,31 @@ const EnvironmentalStatus = () => {
 
   useEffect(() => {
     if (!ecosystem) return;
-
-    const updateInterval = setInterval(() => {
+    
+    const updateEnv = () => {
       const envSystem = ecosystem.getEnvironmentalSystem();
       const report = envSystem.getEnvironmentalReport();
-
-      setEcosystemState({
-        globalPollution: report.globalPollution,
-        activeSources: report.activeSources,
-        refugeAreas: report.refugeAreas
+      
+      setEcosystemState(prev => {
+        const newState = {
+          globalPollution: report.globalPollution,
+          activeSources: report.activeSources,
+          refugeAreas: report.refugeAreas
+        };
+        
+        // Only update if changed
+        if (!prev || prev.globalPollution !== newState.globalPollution || 
+            prev.activeSources !== newState.activeSources) {
+          return newState;
+        }
+        return prev;
       });
-    }, 2000); // Update every 2 seconds
-
-    // Initial update
-    if (ecosystem) {
-      const envSystem = ecosystem.getEnvironmentalSystem();
-      const report = envSystem.getEnvironmentalReport();
-      setEcosystemState({
-        globalPollution: report.globalPollution,
-        activeSources: report.activeSources,
-        refugeAreas: report.refugeAreas
-      });
-    }
-
-    return () => clearInterval(updateInterval);
-  }, [ecosystem]);
+    };
+    
+    updateEnv();
+    const interval = setInterval(updateEnv, 3000);
+    return () => clearInterval(interval);
+  }, []); // Empty deps - ecosystem is stable
 
   if (!ecosystemState) return null;
 
@@ -269,41 +276,32 @@ const PackDynamicsDisplay = () => {
 
   useEffect(() => {
     if (!ecosystem) return;
-
-    const updateInterval = setInterval(() => {
+    
+    const updatePacks = () => {
       const packSystem = ecosystem.getPackSocialSystem();
       const analysis = packSystem.getPackAnalysis();
-
-      // Convert pack analysis to display format
-      // Note: This is a simplified version - full implementation would query individual packs
-      setPackData([
-        {
-          id: 'pack_summary',
-          type: 'summary',
-          members: Math.round(analysis.averagePackSize),
-          cohesion: 0.8, // Would calculate from actual pack data
-          territory: Math.sqrt(analysis.totalTerritorialCoverage / Math.PI)
-        }
-      ]);
-    }, 3000);
-
-    // Initial update
-    if (ecosystem) {
-      const packSystem = ecosystem.getPackSocialSystem();
-      const analysis = packSystem.getPackAnalysis();
-      setPackData([
-        {
+      
+      setPackData(prev => {
+        const newData = [{
           id: 'pack_summary',
           type: 'summary',
           members: Math.round(analysis.averagePackSize),
           cohesion: 0.8,
           territory: Math.sqrt(analysis.totalTerritorialCoverage / Math.PI)
+        }];
+        
+        // Only update if changed
+        if (prev.length === 0 || prev[0].members !== newData[0].members) {
+          return newData;
         }
-      ]);
-    }
-
-    return () => clearInterval(updateInterval);
-  }, [ecosystem]);
+        return prev;
+      });
+    };
+    
+    updatePacks();
+    const interval = setInterval(updatePacks, 3000);
+    return () => clearInterval(interval);
+  }, []); // Empty deps - ecosystem is stable
 
   return (
     <div className="fixed top-20 right-4 z-40 max-w-xs">
