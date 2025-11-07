@@ -173,8 +173,26 @@
     ]
   },
 
+  "evolutionary_system_networks": {
+    "description": "Universal evolutionary framework where ALL systems evolve based on pressure (not arbitrary unlocks)",
+    "philosophy": "Everything is 'squirrels' - base archetypes that evolve through environmental pressure and inter-system communication via Yuka AI coordination",
+    "systems": {
+      "creatures": "Base archetypes evolve traits → unlock tool use → create building pressure → enable social coordination",
+      "tools": "Pressure from creature needs → evolve from stone → metal → composite based on available materials + dexterity",  
+      "buildings": "Population pressure → evolve from shelter → workshops → settlements based on social organization",
+      "materials": "Access evolves based on tool capability → surface → deep → synthesis materials as extraction improves", 
+      "social": "Coordination pressure → evolve from individuals → packs → hierarchy → civilization based on group benefits"
+    },
+    "pressure_driven_unlocks": {
+      "no_level_gates": "NO 'Level 5 unlock tin' - everything emerges from evolutionary pressure",
+      "deep_materials": "Rare materials at depth require evolved excavation traits + durable tools",
+      "complex_tools": "Advanced tools require material synthesis + high manipulation traits + social coordination",
+      "architecture": "Building complexity emerges from population pressure + available technology + social organization"
+    }
+  },
+
   "generation_workflow": {
-    "description": "AI-powered asset generation workflow using GPT-5 and GPT-image-1",
+    "description": "AI-powered asset generation workflow using GPT-4o and upgraded models",
     "steps": [
       {
         "step": 1,
