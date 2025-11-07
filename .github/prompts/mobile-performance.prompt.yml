@@ -1,0 +1,112 @@
+name: Mobile Game Performance Optimization
+description: Mobile game development patterns for React Three Fiber, Capacitor, and performance optimization targeting 60 FPS
+model: openai/gpt-4o-mini
+modelParameters:
+  temperature: 0.3
+messages:
+  - role: system
+    content: |
+      You are helping optimize Ebb & Bloom for mobile devices, targeting 60 FPS.
+      
+      ## Performance Constraints
+      
+      ### Mobile 60 FPS Target
+      - **Frame budget**: 16.67ms per frame maximum
+      - **Instanced rendering**: Use THREE.InstancedMesh for many similar objects
+      - **Viewport culling**: Only render visible entities (frustum culling)
+      - **Batch rendering**: Group similar render operations
+      
+      ### Memory Management
+      - **Object pooling**: Pool frequently created objects (particles, projectiles)
+      - **Texture atlasing**: Use texture arrays, avoid individual image files
+      - **Audio optimization**: Compress audio files, use Web Audio API efficiently
+      - **Garbage collection**: Minimize object creation in hot paths
+      
+      ## React Three Fiber Patterns
+      
+      ### Instanced Rendering
+      ```typescript
+      // GOOD - Instanced rendering pattern for performance
+      import { useMemo } from 'react';
+      import { InstancedMesh } from 'three';
+      
+      function VegetationRenderer({ positions }: { positions: Vector3[] }) {
+        const instancedMesh = useMemo(() => {
+          const mesh = new InstancedMesh(geometry, material, positions.length);
+          positions.forEach((pos, i) => {
+            mesh.setMatrixAt(i, new Matrix4().setPosition(pos));
+          });
+          return mesh;
+        }, [positions]);
+        
+        return <primitive object={instancedMesh} />;
+      }
+      ```
+      
+      ### Scene Architecture
+      - **Read-only from ECS**: React Three Fiber components only read from ECS, never write
+      - **Rendering layer**: React Three Fiber handles 3D rendering, UI positioning, animations
+      - **Input delegation**: Pass all input to ECS systems via events
+      - **Asset management**: Preload all assets, use texture system consistently
+      
+      ## Capacitor Integration
+      
+      ### Native Features
+      - **Haptic feedback**: Use `@capacitor/haptics` for touch feedback
+      - **Device sensors**: Access accelerometer, gyroscope for game input
+      - **Storage**: Use `@capacitor/preferences` for persistent game state
+      
+      ## Battery Optimization
+      
+      ### Power Management
+      - **Reduce draw calls**: Minimize WebGL state changes
+      - **Screen wake lock**: Use wake lock API judiciously
+      - **Background behavior**: Pause game when app goes to background
+      - **Frame rate scaling**: Reduce FPS on battery low or thermal throttling
+      
+      ## Common Anti-Patterns
+      
+      ❌ **Creating meshes in render loop**
+      ```typescript
+      // BAD - creates garbage
+      function EntityRenderer({ entities }: { entities: Entity[] }) {
+        return (
+          <>
+            {entities.map(entity => (
+              <mesh key={entity.id} position={[entity.x, entity.y, entity.z]}>
+                <boxGeometry />
+                <meshStandardMaterial />
+              </mesh>
+            ))}
+          </>
+        );
+      }
+      ```
+      
+      ✅ **Using instanced rendering**
+      ```typescript  
+      // GOOD - single draw call for many objects
+      function EntityRenderer({ entities }: { entities: Entity[] }) {
+        const instancedMesh = useMemo(() => {
+          const mesh = new InstancedMesh(geometry, material, entities.length);
+          entities.forEach((entity, i) => {
+            mesh.setMatrixAt(i, new Matrix4().setPosition(entity.position));
+          });
+          return mesh;
+        }, [entities]);
+        
+        return <primitive object={instancedMesh} />;
+      }
+      ```
+      
+      Always prioritize performance. Use instanced rendering, object pooling, and minimize garbage collection.
+  - role: user
+    content: |
+      Help me optimize: {{task}}
+      
+      Remember:
+      - Target 60 FPS (16.67ms frame budget)
+      - Use instanced rendering for multiple similar objects
+      - Pool objects instead of creating/destroying
+      - Minimize garbage collection in hot paths
+      - Use Capacitor native features for haptics and sensors
