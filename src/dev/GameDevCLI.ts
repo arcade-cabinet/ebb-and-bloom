@@ -294,35 +294,36 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
   }
   
   /**
-   * Download audio from Freesound API
+   * Download audio from Freesound API using modern FreesoundClient
    */
   async downloadFreesoundAudio(
     query: string,
     category: AudioAsset['category'],
-    count: number = 5
+    count: number = 5,
+    usage?: { contexts: string[]; volume?: number; loop?: boolean; fadeIn?: number; fadeOut?: number }
   ): Promise<AudioAsset[]> {
     
     log.info('Downloading audio from Freesound', { query, category, count });
     
-    const assets: AudioAsset[] = [];
+    if (!this.freesoundApiKey) {
+      log.warn('FREESOUND_API_KEY not set, skipping audio download');
+      return [];
+    }
     
     try {
-      // Search Freesound API
-      const searchResponse = await axios.get('https://freesound.org/apiv2/search/text/', {
-        params: {
-          query,
-          token: this.freesoundApiKey,
-          page_size: count,
-          filter: 'duration:[0.1 TO 10]', // 0.1 to 10 seconds
-          sort: 'score',
-          fields: 'id,name,url,previews,download,filesize,duration'
-        }
-      });
+      // Use modern FreesoundClient
+      const { FreesoundClient } = await import('../utils/FreesoundClient.js');
+      const client = new FreesoundClient({ apiKey: this.freesoundApiKey });
       
-      const sounds = searchResponse.data.results || [];
+      // Search and get manifest entries
+      const manifestEntries = await client.searchForManifest(query, category, count, usage);
       
-      for (const sound of sounds) {
-        const audioAsset = await this.downloadSingleSound(sound, category);
+      const assets: AudioAsset[] = [];
+      
+      for (const entry of manifestEntries) {
+        // Get full sound details to download
+        const sound = await client.getSound(entry.source.freesoundId!);
+        const audioAsset = await this.downloadSingleSound(sound, category, entry);
         if (audioAsset) assets.push(audioAsset);
       }
       
@@ -340,13 +341,26 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
     }
   }
   
-  private async downloadSingleSound(soundData: any, category: AudioAsset['category']): Promise<AudioAsset | null> {
+  private async downloadSingleSound(
+    soundData: any, 
+    category: AudioAsset['category'],
+    manifestEntry?: { usage?: { contexts?: string[]; volume?: number; loop?: boolean; fadeIn?: number; fadeOut?: number } }
+  ): Promise<AudioAsset | null> {
     try {
-      const audioUrl = soundData.previews['preview-hq-ogg'] || soundData.previews['preview-lq-ogg'];
+      // Use FreesoundClient to get preview URL
+      const { FreesoundClient } = await import('../utils/FreesoundClient.js');
+      const client = new FreesoundClient({ apiKey: this.freesoundApiKey });
+      
+      const audioUrl = client.getPreviewUrl(soundData, 'hq', 'ogg') || 
+                      client.getPreviewUrl(soundData, 'hq', 'mp3') ||
+                      client.getPreviewUrl(soundData, 'lq', 'ogg') ||
+                      client.getPreviewUrl(soundData, 'lq', 'mp3');
+      
       if (!audioUrl) return null;
       
       const audioBuffer = await this.downloadAudio(audioUrl);
-      const fileName = `${category}-${soundData.id}.ogg`;
+      const fileExtension = audioUrl.split('.').pop()?.split('?')[0] || 'ogg';
+      const fileName = `${category}-${soundData.id}.${fileExtension}`;
       const filePath = `./public/audio/${fileName}`;
       
       await writeFile(filePath, audioBuffer);
@@ -360,7 +374,7 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
           freesoundId: soundData.id
         },
         files: {
-          ogg: `/audio/${fileName}`
+          [fileExtension]: `/audio/${fileName}`
         },
         metadata: {
           duration: soundData.duration,
@@ -371,6 +385,16 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
       };
       
       await this.updateManifest('audio', asset);
+      
+      // Also update audio manifest if usage context provided
+      if (manifestEntry?.usage) {
+        const { AudioManifestManager } = await import('../utils/FreesoundClient.js');
+        const audioManifest = new AudioManifestManager('./public/assets/audio-manifest.json');
+        await audioManifest.addEntry({
+          ...asset,
+          usage: manifestEntry.usage
+        });
+      }
       
       return asset;
       
