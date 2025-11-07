@@ -24,6 +24,7 @@ import YukaSphereCoordinator from './YukaSphereCoordinator';
 import DeconstructionSystem from './DeconstructionSystem';
 import ToolArchetypeSystem from './ToolArchetypeSystem';
 import CombatSystem from './CombatSystem';
+import GestureActionMapper from './GestureActionMapper';
 
 export interface EcosystemState {
   totalCreatures: number;
@@ -55,6 +56,7 @@ class EcosystemFoundation {
   private deconstructionSystem: DeconstructionSystem;
   private toolSystem: ToolArchetypeSystem;
   private combatSystem: CombatSystem;
+  private gestureMapper: GestureActionMapper;
 
   // System state
   private initialized = false;
@@ -96,8 +98,11 @@ class EcosystemFoundation {
     
     // Combat System - Conquest playstyle
     this.combatSystem = new CombatSystem(world, this.deconstructionSystem);
+    
+    // Gesture Action Mapper - Wires gestures to game actions with haptic feedback
+    this.gestureMapper = new GestureActionMapper(world, this.gestureSystem, this.deconstructionSystem);
 
-    log.info('EcosystemFoundation created with ALL SYSTEMS - COMPLETE YUKA ARCHITECTURE + COMBAT');
+    log.info('EcosystemFoundation created with ALL SYSTEMS - COMPLETE YUKA ARCHITECTURE + COMBAT + GESTURES');
   }
 
   async initialize(): Promise<void> {
@@ -142,8 +147,11 @@ class EcosystemFoundation {
     log.info('Spawning Eden baseline creature population...');
     await this.spawnEdenPopulation();
 
+    // Initialize haptic feedback for evolution events
+    this.gestureSystem.initializeEvolutionListening();
+    
     this.initialized = true;
-    log.info('Ecosystem foundation initialization complete - PRODUCTION MODE');
+    log.info('Ecosystem foundation initialization complete - PRODUCTION MODE + HAPTICS');
   }
 
   private async spawnEdenPopulation(): Promise<void> {

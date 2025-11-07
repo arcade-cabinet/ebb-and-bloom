@@ -347,6 +347,10 @@ class YukaSphereCoordinator {
         traits: evolutionData.currentTraits,
         significance: 0.7
       });
+      
+      // CRITICAL: Trigger haptic feedback for significant evolution
+      // Note: HapticGestureSystem listens to gameClock evolution events
+      // and triggers appropriate haptics automatically via triggerEvolutionHaptic()
     }
   }
   
