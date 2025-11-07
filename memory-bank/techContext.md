@@ -296,9 +296,9 @@ FREESOUND_API_KEY=   # Required for audio library
 - `docs/BRAND_IDENTITY_2025.md` - Updated brand guidelines for 3D ecosystem
 
 ### Memory Bank Context
-- `memory-bank/EVOLUTION_FOUNDATION_STATUS.md` - Foundation completion status
-- `memory-bank/Grok-TypeScript_Procedural_Open-World_Scene.md` - Original R3F inspiration
-- `memory-bank/Grok-Multi-Platform_React_Three_Fiber_Development.md` - Multi-platform architecture
+- `memory-bank/activeContext.md` - Current state and next steps
+- `memory-bank/progress.md` - Detailed completion status
+- `memory-bank/productContext.md` - Game vision and design
 
 ---
 

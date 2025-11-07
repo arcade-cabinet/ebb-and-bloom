@@ -1,6 +1,6 @@
 /**
  * Evolution UI - Main interface displaying evolutionary ecosystem in action
- * Inspired by Daggerfall's functional clarity and Spore's evolution visualization
+ * Clean information hierarchy with evolution visualization
  */
 
 import React, { useEffect, useState } from 'react';
@@ -11,7 +11,7 @@ import TraitEvolutionDisplay from './TraitEvolutionDisplay';
 import NarrativeDisplay from './NarrativeDisplay';
 import type { EvolutionEvent } from '../systems/GameClock';
 
-// Daggerfall-inspired clean information hierarchy
+// Clean information hierarchy for evolution display
 const GenerationDisplay = () => {
   const [currentTime, setCurrentTime] = useState(gameClock.getCurrentTime());
   

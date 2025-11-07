@@ -114,10 +114,9 @@ git diff
    - Component export: `ChainshawHands` → `ChainsawHands`
    - TRAIT_COSTS key: `chainshawHands` → `chainsawHands`
    - Comment references
-3. Fixed docs: 4 memory bank files + `.copilot-instructions.md`
+3. Fixed docs: 3 memory bank files + `.copilot-instructions.md`
    - `memory-bank/techContext.md`
    - `memory-bank/productContext.md`
-   - `memory-bank/PROGRESS_ASSESSMENT.md`
    - `src/ecs/README.md`
 4. Updated file list: ORGANIZATION_COMPLETE.md (12 → 17 files)
 5. Committed: `git commit -m "fix: correct typo Chainshaw → Chainsaw..."`

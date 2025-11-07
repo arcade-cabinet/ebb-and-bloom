@@ -174,3 +174,4 @@ function combineResources(aff1, aff2, demands = { ore: 0, power: 0 }) {
 
 **Next Stage**: Villages, quests, and emergent content systems
 
+

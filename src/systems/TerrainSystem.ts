@@ -1,10 +1,14 @@
 /**
- * Terrain System - Noise-based heightmaps inspired by Daggerfall Unity
- * Simple, working terrain generation without broken dependencies
+ * Terrain System - FBM-based heightmap generation using SimplexNoise
+ * 
+ * Generates procedural terrain using Fractal Brownian Motion (FBM) with:
+ * - Continuous noise functions to avoid gaps between terrain chunks
+ * - Proper amplitude normalization for mathematically correct results
+ * - Configurable frequency, amplitude, persistence, and octaves
  */
 
 import * as THREE from 'three';
-import { SimplexNoise } from 'simplex-noise';
+import { createNoise2D } from 'simplex-noise';
 import { log, measurePerformance } from '../utils/Logger';
 import type { World, Entity } from 'miniplex';
 import type { WorldSchema, TerrainChunk, Transform, RenderData } from '../world/ECSWorld';
@@ -19,16 +23,27 @@ interface HeightmapData {
 
 class TerrainSystem {
   private world: World<WorldSchema>;
-  private noise: SimplexNoise;
+  private noise: ReturnType<typeof createNoise2D>;
   private heightmapDimension = 256;
   private maxTerrainHeight = 60;
   private scale = 1.0;
   private terrainChunks = new Map<string, Entity<WorldSchema>>();
   
+  // FBM (Fractal Brownian Motion) parameters for terrain generation
+  private readonly fbmConfig = {
+    frequency: 0.01,      // Base frequency (wavelength = 1/frequency)
+    amplitude: 0.5,       // Base amplitude
+    lacunarity: 2.0,      // Frequency multiplier per octave
+    persistence: 0.1,     // Amplitude decay per octave (lower = smoother terrain)
+    octaves: 4            // Number of noise layers (more = more detail)
+  };
+  
   constructor(world: World<WorldSchema>) {
     this.world = world;
-    this.noise = new SimplexNoise();
-    log.info('TerrainSystem initialized with noise-based heightmaps');
+    this.noise = createNoise2D();
+    log.info('TerrainSystem initialized with FBM-based heightmaps', {
+      fbmConfig: this.fbmConfig
+    });
   }
   
   /**
@@ -109,8 +124,16 @@ class TerrainSystem {
         const noisex = mapPixelX * (this.heightmapDimension - 1) + x;
         const noisey = mapPixelY * (this.heightmapDimension - 1) + y;
         
-        // Multi-octave noise for realistic terrain
-        const height = this.getTerrainNoise(noisex, noisey, 0.01, 0.5, 0.1, 2) * this.scale;
+        // Multi-octave FBM noise for realistic terrain
+        const height = this.getTerrainNoise(
+          noisex, 
+          noisey,
+          this.fbmConfig.frequency,
+          this.fbmConfig.amplitude,
+          this.fbmConfig.lacunarity,
+          this.fbmConfig.persistence,
+          this.fbmConfig.octaves
+        ) * this.scale;
         
         samples[y * this.heightmapDimension + x] = height;
         
@@ -134,28 +157,58 @@ class TerrainSystem {
   }
   
   /**
-   * Multi-octave noise generation
+   * Fractal Brownian Motion (FBM) - Multi-octave noise generation
+   * 
+   * Implements proper FBM following best practices:
+   * - Multiple octaves at different frequencies
+   * - Proper amplitude normalization to keep result in predictable range
+   * - Configurable persistence (amplitude decay) and lacunarity (frequency scaling)
+   * 
+   * @param x - X coordinate in world space
+   * @param y - Y coordinate in world space
+   * @param frequency - Base frequency (wavelength = 1/frequency)
+   * @param amplitude - Base amplitude
+   * @param lacunarity - Frequency multiplier per octave (typically 2.0)
+   * @param persistence - Amplitude decay per octave (typically 0.5)
+   * @param octaves - Number of noise layers to combine
+   * @returns Height value normalized to [0, maxTerrainHeight]
    */
   private getTerrainNoise(
     x: number, 
     y: number, 
     frequency: number, 
     amplitude: number, 
-    lacunarity: number, 
+    lacunarity: number,
+    persistence: number,
     octaves: number
   ): number {
     
     let value = 0;
     let currentAmplitude = amplitude;
     let currentFrequency = frequency;
+    let amplitudeSum = 0; // Track sum of amplitudes for normalization
     
+    // Generate multiple octaves of noise
     for (let i = 0; i < octaves; i++) {
-      value += this.noise.noise2D(x * currentFrequency, y * currentFrequency) * currentAmplitude;
-      currentAmplitude *= 0.5;
+      // SimplexNoise returns values in range [-1, 1]
+      const noiseValue = this.noise(x * currentFrequency, y * currentFrequency);
+      value += noiseValue * currentAmplitude;
+      amplitudeSum += currentAmplitude;
+      
+      // Scale frequency and amplitude for next octave
       currentFrequency *= lacunarity;
+      currentAmplitude *= persistence;
     }
     
-    return (value + 1) * 0.5 * this.maxTerrainHeight;
+    // Normalize by sum of amplitudes to keep result in predictable range
+    // This prevents the sum from exceeding the expected range
+    const normalizedValue = amplitudeSum > 0 ? value / amplitudeSum : 0;
+    
+    // Convert from [-1, 1] range to [0, 1] then scale to terrain height
+    // Normalized value is already in a predictable range due to normalization
+    const heightValue = (normalizedValue + 1) * 0.5;
+    
+    return heightValue * this.maxTerrainHeight;
   }
   
   /**

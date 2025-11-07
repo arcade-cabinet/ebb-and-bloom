@@ -1,16 +1,16 @@
 /**
- * Building System - Complete Daggerfall-inspired functional architecture
+ * Building System - Complete functional architecture
  * Generates purposeful buildings with interiors, doors, and NPC placement
  */
 
 import { World, Entity } from 'miniplex';
 import * as THREE from 'three';
-import { SimplexNoise } from 'simplex-noise';
+import { createNoise2D } from 'simplex-noise';
 import { log, measurePerformance } from '../utils/Logger';
 import type { WorldSchema, Transform, BuildingData, RenderData } from '../world/ECSWorld';
 import { textureLibrary } from './TextureLibrary';
 
-// Daggerfall building type classification
+// Building type classification
 export enum BuildingType {
   // Essential services (inner ring placement)
   GENERAL_STORE = 'general_store',
@@ -120,7 +120,7 @@ interface FunctionalAreaSpec {
 
 class BuildingSystem {
   private world: World<WorldSchema>;
-  private buildingNoise = new SimplexNoise();
+  private buildingNoise = createNoise2D();
   private templates = new Map<BuildingType, BuildingTemplate>();
   private settlements: Entity<WorldSchema>[] = [];
   private buildings: Entity<WorldSchema>[] = [];
@@ -128,11 +128,11 @@ class BuildingSystem {
   constructor(world: World<WorldSchema>) {
     this.world = world;
     this.initializeBuildingTemplates();
-    log.info('BuildingSystem initialized with Daggerfall-inspired architecture');
+    log.info('BuildingSystem initialized with functional architecture');
   }
   
   private initializeBuildingTemplates(): void {
-    log.info('Initializing building templates based on Daggerfall classification...');
+    log.info('Initializing building templates...');
     
     // Essential service: General Store
     this.templates.set(BuildingType.GENERAL_STORE, {
@@ -503,7 +503,7 @@ class BuildingSystem {
   }
   
   /**
-   * Generate settlement with Daggerfall-style functional placement
+   * Generate settlement with functional placement rules
    */
   generateSettlement(
     centerPosition: THREE.Vector3,
@@ -573,7 +573,7 @@ class BuildingSystem {
     
     for (let i = 0; i < count; i++) {
       const angle = (i / count) * Math.PI * 2;
-      const jitter = (this.buildingNoise.noise2D(i * 10, center.x * 0.01) * 0.5) * 15;
+      const jitter = (this.buildingNoise(i * 10, center.x * 0.01) * 0.5) * 15;
       
       const position = new THREE.Vector3(
         center.x + Math.cos(angle) * (radius + jitter),
@@ -592,7 +592,7 @@ class BuildingSystem {
     
     for (let i = 0; i < count; i++) {
       const angle = (i / count) * Math.PI * 2 + (Math.PI / count); // Offset from services
-      const radiusVariation = this.buildingNoise.noise2D(i * 5, center.z * 0.01) * 20;
+      const radiusVariation = this.buildingNoise(i * 5, center.z * 0.01) * 20;
       const radius = baseRadius + radiusVariation;
       
       const position = new THREE.Vector3(

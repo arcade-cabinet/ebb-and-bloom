@@ -1,8 +1,0 @@
-{'average_similarity': 0.25,
- 'flagged_pairs': [(0, 2, 0.2857142857142857), (0, 4, 0.3333333333333333), (2, 4, 0.5)],
- 'haikus': ['flipper whispers in the vein of forgotten echoes tides pull the light low',
-  'burr whispers in the vein of forgotten echoes tides pull the light low',
-  'flipper vein whispers in the vein of forgotten echoes tides pull the light low',
-  'tidal scar whispers in the vein of forgotten echoes tides pull the light low',
-  'flipper tide whispers in the vein of forgotten echoes tides pull the light low'],
- 'recommendation': 'Diversify: Introduce unlikely metaphors (e.g., thorn as lover)'}

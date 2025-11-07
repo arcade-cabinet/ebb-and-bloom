@@ -4,7 +4,7 @@
  */
 
 import * as THREE from 'three';
-import { SimplexNoise } from 'simplex-noise';
+import { createNoise2D } from 'simplex-noise';
 import { log } from '../utils/Logger';
 import { gameClock } from './GameClock';
 import type { EvolutionaryCreature, CreatureArchetype } from './CreatureArchetypeSystem';
@@ -79,7 +79,7 @@ interface NamingRules {
 class GeneticSynthesisSystem {
   private compatibilityMatrix: GeneticCompatibility[] = [];
   private namingRules: NamingRules;
-  private synthesisNoise = new SimplexNoise();
+  private synthesisNoise = createNoise2D();
   
   constructor() {
     this.initializeCompatibilityMatrix();
@@ -345,7 +345,7 @@ class GeneticSynthesisSystem {
   
   /**
    * Generate emergent creature name from trait synthesis
-   * Combines Daggerfall's systematic approach with haiku-like poetry
+   * Combines systematic naming with haiku-like poetry
    */
   generateEmergentName(
     traits: number[],

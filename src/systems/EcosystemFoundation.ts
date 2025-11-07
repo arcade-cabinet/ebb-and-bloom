@@ -35,7 +35,7 @@ class EcosystemFoundation {
   private world: World<WorldSchema>;
   
   // All major systems
-  private terrainSystem: DaggerfallTerrainSystem;
+  private terrainSystem: TerrainSystem;
   private materialsSystem: RawMaterialsSystem;
   private creatureSystem: CreatureArchetypeSystem;
   private geneticsSystem: GeneticSynthesisSystem;
@@ -71,34 +71,49 @@ class EcosystemFoundation {
   }
   
   async initialize(): Promise<void> {
-    if (this.initialized) return;
-    
-    try {
-      log.info('Initializing complete ecosystem foundation...');
-      
-      // Initialize texture system first (materials need it)
-      await this.textureSystem.initialize();
-      
-      // Generate initial terrain chunk
-      log.info('Generating Eden baseline terrain...');
-      this.terrainSystem.generateChunk(0, 0, 1024, 256);
-      
-      // Generate raw materials across terrain
-      log.info('Placing raw materials using Daggerfall algorithms...');
-      const dummyHeightData = new Float32Array(256 * 256).fill(20); // Placeholder
-      this.materialsSystem.generateMaterialsForChunk(0, 0, 1024, dummyHeightData);
-      
-      // Spawn initial creature population (Eden state)
-      log.info('Spawning Eden baseline creature population...');
-      await this.spawnEdenPopulation();
-      
-      this.initialized = true;
-      log.info('Ecosystem foundation initialization complete');
-      
-    } catch (error) {
-      log.error('Ecosystem initialization failed', error);
-      throw error;
+    if (this.initialized) {
+      log.warn('Ecosystem already initialized, skipping');
+      return;
     }
+    
+    log.info('Initializing complete ecosystem foundation - PRODUCTION MODE');
+    
+    // PRODUCTION GATE: Texture system MUST be initialized first
+    // (Initialized in App.tsx before this is called)
+    if (!this.textureSystem) {
+      throw new Error(
+        'PRODUCTION REQUIREMENT: TextureSystem not provided to EcosystemFoundation\n' +
+        'Texture system must be initialized before ecosystem initialization'
+      );
+    }
+    
+    // Verify texture system has textures loaded
+    const textureEntities = this.world.with('resource');
+    if (textureEntities.entities.length === 0) {
+      throw new Error(
+        'PRODUCTION REQUIREMENT: No texture resources found in ECS\n' +
+        'Texture system must be initialized and have loaded textures before ecosystem initialization\n' +
+        'Run: pnpm setup:textures'
+      );
+    }
+    
+    log.info('Texture system verified - proceeding with ecosystem initialization');
+    
+    // Generate initial terrain chunk
+    log.info('Generating Eden baseline terrain...');
+    this.terrainSystem.generateChunk(0, 0, 1024, 256);
+    
+    // Generate raw materials across terrain
+    log.info('Placing raw materials across terrain...');
+    const dummyHeightData = new Float32Array(256 * 256).fill(20); // Placeholder
+    this.materialsSystem.generateMaterialsForChunk(0, 0, 1024, dummyHeightData);
+    
+    // Spawn initial creature population (Eden state)
+    log.info('Spawning Eden baseline creature population...');
+    await this.spawnEdenPopulation();
+    
+    this.initialized = true;
+    log.info('Ecosystem foundation initialization complete - PRODUCTION MODE');
   }
   
   private async spawnEdenPopulation(): Promise<void> {

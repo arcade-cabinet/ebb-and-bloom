@@ -44,12 +44,20 @@ Mobile-first viability is important, but fun > framework. Target 60 FPS on mobil
 **Viewport Culling**:
 - Only render visible tiles (not entire world)
 - Distance-based updates (re-render chunks only when needed)
-- Frustum culling for 3D raycast (if implemented)
+- Frustum culling for 3D (React Three Fiber)
+- **Status**: ❌ NOT implemented - currently renders all entities
+
+**Instanced Rendering**:
+- Use THREE.InstancedMesh for rocks/shrubs/grass (thousands of objects)
+- Single draw call for many objects (performance optimization)
+- **Status**: ❌ NOT implemented - should use InstancedMesh for vegetation
+- **Reference**: Grok-TypeScript_Procedural_Open-World_Scene.md
 
 **Sprite Pooling**:
 - Reuse sprites instead of creating new
 - No create/destroy in game loop
 - Pre-allocate sprite pools on init
+- **Status**: N/A (3D rendering, not 2D sprites)
 
 **ECS Performance**:
 - Cache-friendly memory layout (BitECS archetypes)
@@ -164,4 +172,5 @@ Mobile-first viability is important, but fun > framework. Target 60 FPS on mobil
 ---
 
 **Next Stage**: Vertical slice plan and MVP scope
+
 

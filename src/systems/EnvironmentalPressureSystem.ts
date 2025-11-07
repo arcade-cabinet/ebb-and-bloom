@@ -5,7 +5,7 @@
 
 import { World, Entity } from 'miniplex';
 import * as THREE from 'three';
-import { SimplexNoise } from 'simplex-noise';
+import { createNoise2D } from 'simplex-noise';
 import { log } from '../utils/Logger';
 import { gameClock, type EvolutionEvent } from './GameClock';
 import type { WorldSchema, PollutionState, BiomeProperties } from '../world/ECSWorld';
@@ -79,7 +79,7 @@ class EnvironmentalPressureSystem {
   private world: World<WorldSchema>;
   private pollutionNodes: PollutionNode[] = [];
   private biomeStates = new Map<string, BiomeStressState>();
-  private environmentNoise = new SimplexNoise();
+  private environmentNoise = createNoise2D();
   private shockThresholds = {
     [ShockEvent.WHISPER_SHOCK]: 0.4,
     [ShockEvent.TEMPEST_SHOCK]: 0.7,

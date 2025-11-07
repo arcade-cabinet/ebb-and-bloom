@@ -1,5 +1,0 @@
-// Phaser post-FX pass
-const shader = this.add.postFX('morph-shader', { morphProg: 0, audioEnvelope: 0 });
-morphTween.to({ morphProg: 1 }, 1000); // Trait dilute
-audio.onaudioprocess = (e) => shader.audioEnvelope = gainNode.gain.value; // Sync swell
-// Haptic: Warp intensity >0.5? Haptics.impact({ style: 'light' });

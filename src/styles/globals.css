@@ -4,9 +4,7 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
 
-@tailwind base;
-@tailwind components; 
-@tailwind utilities;
+@import "tailwindcss";
 
 /* CSS Custom Properties for brand colors */
 :root {
@@ -24,17 +22,21 @@
 /* Base layer - evolutionary foundation */
 @layer base {
   body {
-    @apply font-sans antialiased bg-base-100 text-base-content;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     background: linear-gradient(135deg, var(--ebb-indigo) 0%, var(--bloom-emerald) 100%);
     background-attachment: fixed;
+    background-color: #ffffff;
+    color: #1a202c;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display;
+    font-family: 'Playfair Display', Georgia, serif;
   }
   
   code {
-    @apply font-mono;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
   }
 }
 
@@ -42,91 +44,159 @@
 @layer components {
   /* Evolution Event Cards */
   .evolution-card {
-    @apply bg-base-100/90 backdrop-blur-sm rounded-organic border border-echo-silver-300;
-    @apply p-4 shadow-lg animate-trait-emerge;
+    background-color: rgb(255 255 255 / 0.9);
+    backdrop-filter: blur(4px);
+    border-radius: 1rem 2rem 1rem 2rem;
+    border: 1px solid rgb(160 174 192 / 0.3);
+    padding: 1rem;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    animation: trait-emerge 2s ease-in-out;
   }
   
   .evolution-card--significant {
-    @apply border-trait-gold-400 shadow-trait-gold-400/20;
+    border-color: rgb(214 158 46 / 0.4);
+    box-shadow: 0 10px 15px -3px rgb(214 158 46 / 0.2);
   }
   
   /* Creature Display */
   .creature-display {
-    @apply relative rounded-evolution bg-base-200/80 p-3;
-    @apply border border-bloom-emerald-300 animate-organic-breathe;
+    position: relative;
+    border-radius: 0.5rem 1.5rem 0.5rem 1.5rem;
+    background-color: rgb(247 250 252 / 0.8);
+    padding: 0.75rem;
+    border: 1px solid rgb(56 161 105 / 0.3);
+    animation: organic-breathe 4s ease-in-out infinite;
   }
   
   .creature-name {
-    @apply font-display font-bold text-trait-gold-600;
-    @apply text-shadow-sm;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 700;
+    color: #d97706;
+    text-shadow: 0 1px 2px rgb(0 0 0 / 0.1);
   }
   
   /* Generation Progress */
   .generation-counter {
-    @apply font-mono text-echo-silver-600;
-    @apply bg-base-100/70 px-3 py-1 rounded-full;
-    @apply border border-echo-silver-300;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    color: #4b5563;
+    background-color: rgb(255 255 255 / 0.7);
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    border: 1px solid rgb(160 174 192 / 0.3);
   }
   
   /* Environmental Indicators */
   .pollution-indicator {
-    @apply bg-pollution-red-100 border-pollution-red-400;
-    @apply text-pollution-red-800 px-2 py-1 rounded-full text-sm;
-    @apply animate-pulse;
+    background-color: #fee2e2;
+    border: 1px solid #fca5a5;
+    color: #991b1b;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
   
   .clean-zone-indicator {
-    @apply bg-bloom-emerald-100 border-bloom-emerald-400;
-    @apply text-bloom-emerald-800 px-2 py-1 rounded-full text-sm;
+    background-color: #c6f6d5;
+    border: 1px solid #9ae6b4;
+    color: #22543d;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
   }
   
   /* Trait Visualization */
   .trait-bar {
-    @apply h-2 bg-echo-silver-200 rounded-full overflow-hidden;
+    height: 0.5rem;
+    background-color: #e5e7eb;
+    border-radius: 9999px;
+    overflow: hidden;
   }
   
   .trait-fill {
-    @apply h-full bg-trait-gold-500 transition-all duration-1000 ease-out;
+    height: 100%;
+    background-color: #d97706;
+    transition: all 1000ms ease-out;
   }
   
   .trait-fill--emerging {
-    @apply bg-gradient-to-r from-trait-gold-400 to-mutation-purple-500;
-    @apply animate-data-flow;
+    background: linear-gradient(to right, #fbbf24, #805AD5);
+    animation: data-flow 2s linear infinite;
   }
   
   /* Interactive Elements */
   .haptic-button {
-    @apply btn btn-primary transition-all duration-200;
-    @apply active:scale-95 active:shadow-inner;
+    transition: all 200ms;
   }
   
   .haptic-button:active {
+    transform: scale(0.95);
+    box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.06);
     animation: shock-wave 0.3s ease-out;
   }
   
   /* Data Visualization */
   .evolution-chart {
-    @apply bg-base-100/80 backdrop-blur-sm rounded-lg p-4;
-    @apply border border-echo-silver-300;
+    background-color: rgb(255 255 255 / 0.8);
+    backdrop-filter: blur(4px);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    border: 1px solid rgb(160 174 192 / 0.3);
   }
   
   .data-point {
-    @apply w-2 h-2 rounded-full bg-trait-gold-500;
-    @apply animate-evolution-pulse;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background-color: #d97706;
+    animation: evolution-pulse 3s ease-in-out infinite;
   }
   
   /* Mobile-first responsive containers */
   .evolution-container {
-    @apply container mx-auto px-4 sm:px-6 lg:px-8;
-    @apply max-w-7xl;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    max-width: 80rem;
+  }
+  
+  @media (min-width: 640px) {
+    .evolution-container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .evolution-container {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
   }
   
   .evolution-grid {
-    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4;
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  
+  @media (min-width: 768px) {
+    .evolution-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .evolution-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
   
   .mobile-touch-target {
-    @apply min-h-[44px] min-w-[44px]; /* Apple HIG minimum touch target */
+    min-height: 44px;
+    min-width: 44px;
   }
 }
 
@@ -134,11 +204,11 @@
 @layer utilities {
   /* Text shadows for readability */
   .text-shadow-sm {
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    text-shadow: 0 1px 2px rgb(0 0 0 / 0.1);
   }
   
   .text-shadow-md {
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 2px 4px rgb(0 0 0 / 0.2);
   }
   
   /* Evolutionary glow effects */
@@ -156,23 +226,23 @@
   
   /* Environmental overlays */
   .pollution-overlay {
-    background: linear-gradient(45deg, 
-      transparent 25%, 
-      rgba(229, 62, 62, 0.1) 25%, 
-      rgba(229, 62, 62, 0.1) 50%, 
+    background: linear-gradient(45deg,
+      transparent 25%,
+      rgb(229 62 62 / 0.1) 25%,
+      rgb(229 62 62 / 0.1) 50%,
       transparent 50%);
     background-size: 20px 20px;
   }
   
   .clean-overlay {
-    background: radial-gradient(circle, 
-      rgba(56, 161, 105, 0.1) 0%, 
+    background: radial-gradient(circle,
+      rgb(56 161 105 / 0.1) 0%,
       transparent 70%);
   }
   
   /* Organic patterns for backgrounds */
   .pattern-organic {
-    background-image: 
+    background-image:
       radial-gradient(circle at 25% 25%, var(--bloom-emerald) 2%, transparent 2%),
       radial-gradient(circle at 75% 75%, var(--ebb-indigo) 2%, transparent 2%);
     background-size: 40px 40px;
@@ -186,4 +256,41 @@
     background-size: 60px 60px;
     opacity: 0.05;
   }
+}
+
+/* Keyframes for animations */
+@keyframes trait-emerge {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes evolution-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50% { transform: scale(1.02); opacity: 1; }
+}
+
+@keyframes pack-form {
+  0% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes shock-wave {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+
+@keyframes organic-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.01); }
+}
+
+@keyframes data-flow {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }

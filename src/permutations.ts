@@ -22,7 +22,7 @@ function combineResources(aff1, aff2, demands = { ore: 0, power: 0 }) {
         newAff |= AFFINITIES.metal;
     }
     // Noise twist
-    const hash = noise.noise2D(aff1 + aff2 + Date.now() * 0.01, behavior.conquest);
+    const hash = noise(aff1 + aff2 + Date.now() * 0.01, behavior.conquest);
     if (hash > 0.9) newAff |= AFFINITIES.wild; // Exotic
     if (behavior.conquest > 0.6) newAff |= AFFINITIES.void; // Risk
     return newAff;
