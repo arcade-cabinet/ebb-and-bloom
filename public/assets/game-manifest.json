@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generated": "2025-11-07T07:47:01.231Z",
+  "generated": "2025-11-07T07:52:26.470Z",
   "textures": [],
   "models": [],
   "audio": [],
@@ -23,6 +23,72 @@
         ],
         "size": 2711863,
         "generated": "2025-11-07T07:47:01.231Z",
+        "transparent": false,
+        "fullScreen": true
+      }
+    },
+    {
+      "id": "splash-cdbb752c",
+      "name": "Splash screen variant 2: Dynamic, intense evolutionary ecosystem with reds and oranges, competitive creatures, territorial displays, aggressive adaptations",
+      "category": "splash",
+      "source": {
+        "type": "openai_generated",
+        "prompt": "Create a splash for an evolutionary ecosystem game called \"Ebb & Bloom\".\n\nDescription: Splash screen variant 2: Dynamic, intense evolutionary ecosystem with reds and oranges, competitive creatures, territorial displays, aggressive adaptations\n\nStyle: Clean, geometric, technical design with precise lines and systematic patterns\n\nBrand colors: Deep indigo (#4A5568), emerald green (#38A169), trait gold (#D69E2E), echo silver (#A0AEC0)\n\nRequirements: Full-screen splash screen for mobile game, portrait orientation (1080x1920), atmospheric and immersive, suitable for loading screen, brand identity visible\n\n\nIMPORTANT: Full-screen image, optimized for mobile display, portrait orientation"
+      },
+      "files": {
+        "png": "/splash/splash-cdbb752c.png"
+      },
+      "metadata": {
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "size": 3036219,
+        "generated": "2025-11-07T07:49:37.555Z",
+        "transparent": false,
+        "fullScreen": true
+      }
+    },
+    {
+      "id": "splash-f7906440",
+      "name": "Splash screen variant 3: Playful, whimsical evolutionary ecosystem with rainbow and pastel colors, curious creatures, exploratory behaviors, joyful mutations",
+      "category": "splash",
+      "source": {
+        "type": "openai_generated",
+        "prompt": "Create a splash for an evolutionary ecosystem game called \"Ebb & Bloom\".\n\nDescription: Splash screen variant 3: Playful, whimsical evolutionary ecosystem with rainbow and pastel colors, curious creatures, exploratory behaviors, joyful mutations\n\nStyle: Hybrid of organic and technical elements, balanced and modern\n\nBrand colors: Deep indigo (#4A5568), emerald green (#38A169), trait gold (#D69E2E), echo silver (#A0AEC0)\n\nRequirements: Full-screen splash screen for mobile game, portrait orientation (1080x1920), atmospheric and immersive, suitable for loading screen, brand identity visible\n\n\nIMPORTANT: Full-screen image, optimized for mobile display, portrait orientation"
+      },
+      "files": {
+        "png": "/splash/splash-f7906440.png"
+      },
+      "metadata": {
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "size": 2945569,
+        "generated": "2025-11-07T07:50:57.812Z",
+        "transparent": false,
+        "fullScreen": true
+      }
+    },
+    {
+      "id": "splash-0619b5cf",
+      "name": "Splash screen variant 4: Balanced evolutionary ecosystem showing diverse creatures, varied environments, neutral tones with brand colors, evolutionary progression",
+      "category": "splash",
+      "source": {
+        "type": "openai_generated",
+        "prompt": "Create a splash for an evolutionary ecosystem game called \"Ebb & Bloom\".\n\nDescription: Splash screen variant 4: Balanced evolutionary ecosystem showing diverse creatures, varied environments, neutral tones with brand colors, evolutionary progression\n\nStyle: Hybrid of organic and technical elements, balanced and modern\n\nBrand colors: Deep indigo (#4A5568), emerald green (#38A169), trait gold (#D69E2E), echo silver (#A0AEC0)\n\nRequirements: Full-screen splash screen for mobile game, portrait orientation (1080x1920), atmospheric and immersive, suitable for loading screen, brand identity visible\n\n\nIMPORTANT: Full-screen image, optimized for mobile display, portrait orientation"
+      },
+      "files": {
+        "png": "/splash/splash-0619b5cf.png"
+      },
+      "metadata": {
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "size": 2557897,
+        "generated": "2025-11-07T07:52:26.470Z",
         "transparent": false,
         "fullScreen": true
       }
