@@ -4,138 +4,242 @@
 
 ---
 
-## VISION CLARITY: Resource Race, Not 4X
+## PRIMARY REFERENCE
 
-**The Game**:
-- World starts → race begins
-- Resources are finite (what the planet is made of)
-- Evolve creatures, develop tools, expand tribe → settlement → civilization
-- Compete against other tribes (Yuka-driven AI)
-- Multiple ending paths based on playstyle
+**READ THIS FIRST**: `docs/WORLD.md` (2,005 lines)
 
-**Victory = Speed + Strategy**:
-- How FAST you reach endgame
-- Which PATH you took (conquest, harmony, mutualism)
-- Internal metrics track playstyle → determine ending
-- NO punishment for playstyle, just different endings
+**WORLD.md is THE comprehensive source of truth**:
+- Complete world-building (Gen 0 → mythology)
+- Full codebase audit (17 systems, 10 flaws, 10 strengths)
+- Dev tools review (Vercel AI, Meshy, hooks, stores, utils)
+- 7-phase resurrection roadmap
 
-**Three Ending Types**:
-1. **Mutualism** - Unity with all other tribes
-2. **Parasitism** - Subjugate all tribes as workers
-3. **Domination** - Eliminate all other tribes
-
-**After ending**: Option to keep playing (no score) or end game
+**This file (activeContext.md) ONLY tracks**:
+- Immediate next steps
+- Current blockers
+- What's actively being worked on
 
 ---
 
-## What Makes It a Game (Not Simulation)
+## Current Focus: Phase 0 - Foundation
 
-### Yuka Needs GOALS Per Generation
+**CRITICAL BLOCKER**: No Generation 0 exists. Everything is hardcoded.
 
-**Gen 1-3**: "Survive" → Gather resources, avoid threats  
-**Gen 4-7**: "Establish" → Form tribe, claim territory  
-**Gen 8-12**: "Expand" → Found settlement, develop tools  
-**Gen 13-20**: "Compete** → Conquer/ally/subjugate rival tribes  
-**Gen 20+**: "Dominate" → Achieve one of three endings
+### Immediate Next Steps
 
-### Event Messaging System
+1. **Install Missing Dependencies**:
+   ```bash
+   pnpm add seedrandom @types/seedrandom
+   ```
+   **Why**: Required for deterministic planetary generation from seed phrase.
 
-**Discovery events**:
-- "You have discovered [material]"
-- "RECORDER tools unlocked"
-- "Bronze synthesis achieved"
+2. **Create Directory Structure**:
+   ```bash
+   mkdir -p src/ai/workflows
+   mkdir -p src/goals
+   mkdir -p src/fuzzy
+   mkdir -p src/messaging
+   ```
+   **Why**: Organization for Gen 0 AI workflows and Yuka expansion.
 
-**Social events**:
-- "[Tribe name] has formed"
-- "[Leader name] elected/crowned"
-- "[Settlement name] founded"
+3. **Create Meshy Config**:
+   - File: `src/config/meshy-models.ts`
+   - Purpose: Meshy API integration (3D model generation)
+   - Status: ❌ Not created
 
-**Conflict events**:
-- "[Tribe A] conquered [Tribe B]"
-- "[Tribe A] allied with [Tribe B]"
-- "[Leader] declared war"
+4. **Parent-Child AI Workflows** (CRITICAL):
+   - `src/ai/workflows/creative-director.ts` - Parent workflow
+   - `src/ai/workflows/core-specialist.ts` - Child workflow (per core)
+   - `src/ai/workflows/workflow-orchestrator.ts` - Parallel execution
+   - Status: ❌ Not created
 
-**Governance events**:
-- "Democracy established"
-- "Despotic rule begins"
-- "Religious theocracy formed"
-
-### World Score Tracking
-
-**Track internally** (multiple rubrics):
-- Violence score (hunts, kills, conquests)
-- Harmony score (alliances, mutualism, balance)
-- Exploitation score (resource depletion, pollution)
-- Innovation score (tool discoveries, tech advancement)
-- Speed score (generations to milestones)
-
-**At endgame**: Present dominant playstyle + score
+5. **PlanetaryPhysicsSystem**:
+   - File: `src/systems/PlanetaryPhysicsSystem.ts`
+   - Purpose: Gen 0 foundation (calls AI workflows, generates manifests)
+   - Status: ❌ Not created
 
 ---
 
-## ECS/Yuka Integration Strategy
+## What's Broken (Preventing Work)
 
-### Archetypal Actions (AI-Generated)
+**Runtime Errors** (game won't load):
+- ✅ `Platform is not defined` - FIXED (changed to `Capacitor.getPlatform()`)
+- ✅ `useEvolutionDataStore` undefined - FIXED (added import)
+- ✅ GestureActionMapper crashes - FIXED (added null checks)
+- ✅ SplashScreen name collision - FIXED (aliased import)
+- ✅ Font errors - FIXED (removed custom fonts)
+- ⚠️ **Missing textures** - Run `pnpm setup:textures` FIRST
+- ⚠️ **WebGL context lost** - Scene not initializing properly
 
-**For each raw material** → Generate Yuka task:
-- "Collect wood", "Mine copper", "Gather water"
-- Taxonomically applies to ALL synthetic mutations
-
-**For each creature archetype** → Generate Yuka goals:
-- Hunt [archetype] → Applies to all mutations (gummy bear, bone lizard, etc.)
-- Decompose [archetype] → Extract parts based on synthesis
-
-**For each tool type** → Generate Yuka capabilities:
-- Use EXTRACTOR → Derived from properties
-- Craft with ASSEMBLER → Derived from properties
-
-### Division of Responsibility
-
-**ECS Systems/Components**:
-- Core mechanics (evolution, synthesis, decomposition)
-- Physics simulation (gravity, movement, collisions)
-- Rendering (meshes, materials, lighting)
-
-**AI-Generated Manifests**:
-- Goal trees per generation
-- Task definitions per material/archetype
-- Event messaging templates
-- Fuzzy logic rules
-
-**Yuka**:
-- Execute goals (FuzzyModule, GoalEvaluator, CompositeGoal)
-- Make tactical decisions (which task to do)
-- Navigate world (steering behaviors)
-- Communicate (MessageDispatcher)
+**Can't assess game without it rendering**.
 
 ---
 
-## Current State: Completely Broken
+## Game Vision Summary (from WORLD.md)
 
-**Critical errors preventing ANY assessment**:
-- `Platform` undefined (multiple locations)
-- `useEvolutionDataStore` undefined
-- GestureActionMapper crashes
-- Textures setup but not loading properly
-- WebGL context lost
-- 31 linter errors
-- 8/89 tests failing
+**Genre**: Resource race with emergent endings
 
-**Result**: Game never renders. Cannot assess look/feel/vision alignment.
+**Core Loop**:
+1. Seed phrase → Gen 0 planetary physics
+2. Creatures evolve → Tools emerge → Materials unlock
+3. Tribes form → Compete for resources
+4. World score tracks playstyle (violence, harmony, exploitation, innovation, speed)
+5. Ending emerges: Mutualism, Parasitism, Domination, or Transcendence
+
+**Yuka Role**: Everything is a Yuka entity with goals (planet, materials, creatures, tools, buildings, tribes, myths).
+
+**Player Role**: Evolutionary force (guide, not control).
 
 ---
 
-## Priority
+## Yuka Architecture Overhaul (from WORLD.md)
 
-**STOP trying to fix broken code.**
+**Current**: Only 3 of 10+ Yuka systems used (steering behaviors only).
 
-**START**:
-1. Define clear goal trees per generation
-2. Design event messaging system
-3. Design world score tracking (violence, harmony, exploitation, innovation, speed)
-4. Design three endings (mutualism, parasitism, domination)
-5. Map archetypal actions to Yuka tasks
-6. THEN implement properly
+**Target**: ALL Yuka systems integrated:
+- ✅ Vehicle (steering behaviors)
+- ❌ CompositeGoal (hierarchical goal trees)
+- ❌ GoalEvaluator (desirability scoring)
+- ❌ FuzzyModule (fuzzy logic decisions)
+- ❌ StateMachine (FSM for states)
+- ❌ Vision (perception, line-of-sight)
+- ❌ MemorySystem (short-term memory)
+- ❌ Trigger (event-driven actions)
+- ❌ TaskQueue (sequential tasks)
+- ❌ MessageDispatcher (entity communication)
+- ❌ CohesionBehavior (material snapping!)
+- ❌ SeparationBehavior (spacing)
+- ❌ AlignmentBehavior (group movement)
 
-**The vision is clear now. The implementation is garbage. Need clean foundation with Gen 0 + proper Yuka integration.**
+**See `docs/WORLD.md` sections**:
+- "Yuka Capabilities We're NOT Using" (lines 46-79)
+- "Yuka Severely Underutilized" (lines 780-807)
+- "Manual Decision Loops, Not Yuka Goals" (lines 871-912)
+
+---
+
+## Critical Systems Status
+
+**Gen 0**: ❌ Doesn't exist (BLOCKER)  
+**Tool Sphere**: ❌ Commented out (line 110-112 of YukaSphereCoordinator)  
+**Building Sphere**: ⚠️ Logs only, doesn't build (line 425+)  
+**Inter-Sphere Messaging**: ❌ None (spheres isolated)  
+**Event Log**: ❌ None (player has zero feedback)  
+**World Score**: ❌ None (no ending detection)
+
+**See `docs/WORLD.md` section**: "What's BROKEN (Fundamental Flaws)" (lines 760-1000)
+
+---
+
+## What Works (Preserve)
+
+✅ ECS architecture (Miniplex clean)  
+✅ R3F rendering separation (logic in ECS, rendering in R3F)  
+✅ UIKit migration (all UI in Canvas)  
+✅ Yuka foundation (exists, just underutilized)  
+✅ Procedural systems (terrain, textures, archetypes)  
+✅ GameClock (generational architecture)  
+✅ Genetic synthesis (trait blending)  
+✅ Deconstruction (reverse synthesis)  
+✅ Haiku narrative (storytelling)  
+✅ Consciousness (player awareness transfer)
+
+**See `docs/WORLD.md` section**: "What's GOOD (Preserve These)" (lines 1003-1093)
+
+---
+
+## Resurrection Roadmap (from WORLD.md)
+
+**Phase 0**: Foundation (CURRENT)
+- Install dependencies
+- Create directory structure
+- Port Meshy config
+- Set up AI workflow scaffolding
+
+**Phase 1**: Gen 0 Implementation
+- Creative Director workflow
+- Core Specialist workflows
+- PlanetaryPhysicsSystem
+- Refactor RawMaterialsSystem
+
+**Phase 2**: Yuka Expansion
+- Expand YukaAgent component
+- Create goal implementations
+- Create fuzzy modules
+- Refactor YukaSphereCoordinator
+
+**Phase 3**: Inter-Sphere Communication
+- MessageTypes enum
+- InterSphereMessaging wrapper
+- EventLog entity + UI
+- Integrate into all spheres
+
+**Phase 4**: Tool & Building Integration
+- Uncomment Tool Sphere
+- Implement FuzzyModule decisions
+- Complete Building Sphere
+- Wire messaging
+
+**Phase 5**: Player Feedback
+- WorldScoreStore
+- EventMessagingSystem
+- Event Log UI
+- EndingDetectionSystem
+
+**Phase 6**: Endings
+- Define thresholds
+- Implement detection
+- Create cinematics
+- Integrate haikus
+
+**Phase 7**: Polish
+- Reactive queries
+- Freesound audio
+- Missing tests
+- Mobile deployment
+
+**See `docs/WORLD.md` section**: "Critical Path Summary" (lines 1932-1984)
+
+---
+
+## Immediate Actions (Next Session)
+
+1. ✅ Read `docs/WORLD.md` in full (understand complete vision)
+2. ⬜ Install `seedrandom` dependency
+3. ⬜ Create directory structure (`src/ai/workflows/`, `src/goals/`, `src/fuzzy/`, `src/messaging/`)
+4. ⬜ Create `src/config/meshy-models.ts`
+5. ⬜ Begin `creative-director.ts` (parent AI workflow using Vercel AI SDK)
+6. ⬜ Begin `core-specialist.ts` (child AI workflow)
+7. ⬜ Begin `workflow-orchestrator.ts` (parallel execution manager)
+8. ⬜ Begin `PlanetaryPhysicsSystem.ts` (Gen 0 orchestrator)
+
+**Goal**: Get Gen 0 foundation in place so refactoring can begin.
+
+---
+
+## Key Realizations (from Session)
+
+1. **Yuka is the nervous system of the ENTIRE world** - not just creatures, but materials (CohesionBehavior!), tools (FuzzyModule!), buildings (Triggers!), tribes (MessageDispatcher!), and even the planet itself (goal trees!).
+
+2. **Procedural generation IS Yuka** - Material placement uses CohesionBehavior. Creature spawning uses GoalEvaluator. Tool emergence uses FuzzyModule. Generation isn't separate from behavior.
+
+3. **Game is a resource race with emergent endings** - Not a sandbox simulation. Player guides evolution, competes against Yuka-driven tribes, and playstyle determines one of 4 endings (Mutualism, Parasitism, Domination, Transcendence).
+
+4. **No Gen 0 = foundation is broken** - ALL values are hardcoded (Copper at 10m depth, Tin at 30m, etc.). Can't refactor anything until Gen 0 generates these from seed.
+
+5. **AI workflows exist but aren't integrated** - `MasterEvolutionPipeline.ts` and `EvolutionaryAgentWorkflows.ts` are DEV-TIME only. Need RUNTIME AI workflows for Gen 0 (parent-child orchestration via Vercel AI SDK).
+
+6. **Documentation is now clean** - 11 core files, DRY principles, `WORLD.md` as comprehensive source of truth. Memory bank is production-quality.
+
+---
+
+## Remember
+
+**Don't duplicate `WORLD.md` content here**. This file is for ACTIVE work only.
+
+**For comprehensive details**:
+- Vision → `docs/WORLD.md` (lines 1-733)
+- Codebase audit → `docs/WORLD.md` (lines 716-1255)
+- Dev tools → `docs/WORLD.md` (lines 1258-1884)
+- Critical path → `docs/WORLD.md` (lines 1932-1984)
 
