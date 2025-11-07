@@ -4,7 +4,7 @@
  * NO DOM-based UI - everything uses @react-three/uikit
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Container, Text } from '@react-three/uikit';
 import { 
   Card, 
@@ -23,10 +23,16 @@ import TraitEvolutionDisplay from './TraitEvolutionDisplay';
 // Generation Display - UIKit version (top-right)
 export const GenerationDisplay = () => {
   const [currentTime, setCurrentTime] = useState(gameClock.getCurrentTime());
+  const lastUpdateRef = useRef(0);
 
   useEffect(() => {
     const unsubscribe = gameClock.onTimeUpdate((time) => {
-      setCurrentTime(time);
+      // Throttle updates to once per second to avoid excessive re-renders
+      const now = Date.now();
+      if (now - lastUpdateRef.current > 1000) {
+        setCurrentTime(time);
+        lastUpdateRef.current = now;
+      }
     });
     return unsubscribe;
   }, []);

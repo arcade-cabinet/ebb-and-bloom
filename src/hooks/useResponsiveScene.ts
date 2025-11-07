@@ -4,7 +4,7 @@
  * Based on Grok conversation recommendations
  */
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useThree } from '@react-three/fiber';
 import { PerspectiveCamera } from 'three';
 import { useEvolutionDataStore } from '../stores/EvolutionDataStore';
@@ -20,10 +20,23 @@ export function useResponsiveScene() {
     screen: state.platform.screen,
     isMobile: state.platform.isMobile,
   }));
+  
+  // Use ref to track if we've already adjusted for current dimensions
+  const lastAdjustmentRef = useRef({ width: 0, height: 0, isMobile: false });
 
   useEffect(() => {
+    // Only adjust if dimensions or mobile state actually changed
+    const { width, height } = size;
+    const last = lastAdjustmentRef.current;
+    
+    if (last.width === width && last.height === height && last.isMobile === isMobile) {
+      return; // No change, skip adjustment
+    }
+    
+    lastAdjustmentRef.current = { width, height, isMobile };
+
     // Adjust camera for aspect ratio and platform
-    const aspect = size.width / size.height;
+    const aspect = width / height;
 
     if (camera instanceof PerspectiveCamera) {
       // Wider FOV on mobile for immersion, narrower on desktop for detail
@@ -41,7 +54,7 @@ export function useResponsiveScene() {
         child.scale.setScalar(scale);
       }
     });
-  }, [size, viewport, camera, scene, isMobile, screen]);
+  }, [size.width, size.height, viewport.width, camera, scene, isMobile]);
 
   return {
     size,

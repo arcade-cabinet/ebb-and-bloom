@@ -5,19 +5,19 @@
  * Provides feedback through haptics for every action
  */
 
-import { World, Entity } from 'miniplex';
+import type { World } from 'miniplex';
 import * as THREE from 'three';
 import { log } from '../utils/Logger';
 import type { WorldSchema } from '../world/ECSWorld';
 import type { GestureType } from './HapticGestureSystem';
 import HapticGestureSystem from './HapticGestureSystem';
 import DeconstructionSystem from './DeconstructionSystem';
-import { useEvolutionDataStore } from '../stores/EvolutionDataStore';
+import { useEvolutionDataStore, type GestureEvent } from '../stores/EvolutionDataStore';
 
 export interface GestureAction {
   type: GestureType;
   position: THREE.Vector3;
-  target?: Entity<WorldSchema>;
+  target?: import('miniplex').With<WorldSchema, keyof WorldSchema>;
   duration?: number;
   force?: number;
 }
@@ -26,7 +26,7 @@ class GestureActionMapper {
   private world: World<WorldSchema>;
   private hapticSystem: HapticGestureSystem;
   private deconstructionSystem: DeconstructionSystem;
-  private selectedCreature: Entity<WorldSchema> | null = null;
+  private selectedCreature: import('miniplex').With<WorldSchema, keyof WorldSchema> | null = null;
 
   constructor(
     world: World<WorldSchema>,
@@ -46,12 +46,18 @@ class GestureActionMapper {
   private setupGestureListeners(): void {
     const store = useEvolutionDataStore.getState();
 
-    // Subscribe to gesture events
+    // Subscribe to gesture events from eventHistory
     useEvolutionDataStore.subscribe((state) => {
-      if (!state.gestureEvents || state.gestureEvents.length === 0) return;
-      const latestEvent = state.gestureEvents[state.gestureEvents.length - 1];
-      if (latestEvent && Date.now() - latestEvent.timestamp < 100) {
-        this.handleGesture(latestEvent.type, latestEvent.position);
+      // Filter eventHistory for GestureEvent types
+      const gestureEvents = state.eventHistory.filter((e): e is GestureEvent => 
+        'type' in e && ['swipe', 'pinch', 'hold', 'tap', 'drag', 'rotate', 'double_tap', 'long_press'].includes(e.type)
+      );
+      
+      if (gestureEvents.length === 0) return;
+      
+      const latestEvent = gestureEvents[gestureEvents.length - 1];
+      if (latestEvent && Date.now() - latestEvent.timestamp < 100 && latestEvent.position) {
+        this.handleGesture(latestEvent.type, new THREE.Vector2(latestEvent.position.x, latestEvent.position.y));
       }
     });
   }
@@ -221,7 +227,7 @@ class GestureActionMapper {
   /**
    * Harvest resource and provide haptic feedback
    */
-  private harvestResource(entity: Entity<WorldSchema>): void {
+  private harvestResource(entity: import('miniplex').With<WorldSchema, keyof WorldSchema>): void {
     if (!entity.resource) return;
 
     const quantity = entity.resource.quantity;
@@ -246,7 +252,7 @@ class GestureActionMapper {
   /**
    * Raycast from screen to world entities
    */
-  private raycastForEntity(worldPos: THREE.Vector3): Entity<WorldSchema> | null {
+  private raycastForEntity(worldPos: THREE.Vector3): import('miniplex').With<WorldSchema, keyof WorldSchema> | null {
     const SELECTION_RADIUS = 5;
 
     // Check creatures

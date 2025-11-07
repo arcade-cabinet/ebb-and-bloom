@@ -7,7 +7,7 @@
  * Aligns with "Everything is Squirrels" doctrine
  */
 
-import { World, Entity } from 'miniplex';
+import type { World } from 'miniplex';
 import * as THREE from 'three';
 import { log } from '../utils/Logger';
 import type { WorldSchema } from '../world/ECSWorld';
@@ -40,7 +40,7 @@ class DeconstructionSystem {
   /**
    * Deconstruct a creature into its generational parts
    */
-  deconstructCreature(entity: Entity<WorldSchema>): DeconstructedPart[] {
+  deconstructCreature(entity: import('miniplex').With<WorldSchema, keyof WorldSchema>): DeconstructedPart[] {
     const evolutionData = (entity as any).evolutionaryCreature as EvolutionaryCreature;
     
     if (!evolutionData || !entity.transform) {
@@ -323,7 +323,7 @@ class DeconstructionSystem {
   /**
    * Deconstruct a building (similar logic)
    */
-  deconstructBuilding(entity: Entity<WorldSchema>): DeconstructedPart[] {
+  deconstructBuilding(entity: import('miniplex').With<WorldSchema, keyof WorldSchema>): DeconstructedPart[] {
     // TODO: Implement building deconstruction
     // Buildings break into their assembly parts
     log.info('Building deconstruction not yet implemented');

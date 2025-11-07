@@ -40,8 +40,31 @@ export function usePlatformEvents() {
     window.addEventListener('resize', handleResize);
     handleResize(); // Initial call
 
+    // Input detection (switch on first touch/keydown)
+    const handleTouchStart = () => {
+      setInputMode('touch');
+    };
+
+    const handleKeyDown = () => {
+      setInputMode('keyboard');
+    };
+
+    const handleMouseMove = () => {
+      setInputMode('mouse');
+    };
+
+    // Gamepad detection
+    const handleGamepadConnected = () => {
+      setInputMode('gamepad');
+    };
+
+    document.addEventListener('touchstart', handleTouchStart, { once: true });
+    document.addEventListener('keydown', handleKeyDown, { once: true });
+    document.addEventListener('mousemove', handleMouseMove, { once: true });
+    window.addEventListener('gamepadconnected', handleGamepadConnected);
+
     // Orientation listener (mobile-focused)
-    // Note: ScreenOrientation plugin requires Capacitor 7+, using window.orientation as fallback
+    let orientationCleanup: (() => void) | undefined;
     if (Capacitor.isNativePlatform() && typeof window !== 'undefined') {
       const handleOrientationChange = () => {
         const orientation = window.innerWidth > window.innerHeight ? 'landscape' : 'portrait';
@@ -55,42 +78,20 @@ export function usePlatformEvents() {
       window.addEventListener('orientationchange', handleOrientationChange);
       window.addEventListener('resize', handleOrientationChange);
       
-      return () => {
+      orientationCleanup = () => {
         window.removeEventListener('orientationchange', handleOrientationChange);
         window.removeEventListener('resize', handleOrientationChange);
       };
     }
 
-    // Input detection (switch on first touch/keydown)
-    const handleTouchStart = () => {
-      setInputMode('touch');
-      document.removeEventListener('touchstart', handleTouchStart);
-    };
-
-    const handleKeyDown = () => {
-      setInputMode('keyboard');
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-
-    const handleMouseMove = () => {
-      setInputMode('mouse');
-      document.removeEventListener('mousemove', handleMouseMove);
-    };
-
-    // Gamepad detection
-    const handleGamepadConnected = () => {
-      setInputMode('gamepad');
-    };
-
-    document.addEventListener('touchstart', handleTouchStart, { once: true });
-    document.addEventListener('keydown', handleKeyDown, { once: true });
-    document.addEventListener('mousemove', handleMouseMove, { once: true });
-    window.addEventListener('gamepadconnected', handleGamepadConnected);
-
-    // Cleanup
+    // Cleanup all event listeners
     return () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('gamepadconnected', handleGamepadConnected);
+      // Note: once:true listeners are automatically removed
+      if (orientationCleanup) {
+        orientationCleanup();
+      }
     };
   }, [dispatchPlatformEvent, setInputMode, updateScreen]);
 }

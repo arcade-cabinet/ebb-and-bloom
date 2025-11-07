@@ -3,7 +3,7 @@
  * Drives evolutionary changes based on environmental conditions
  */
 
-import { World, Entity } from 'miniplex';
+import type { World } from 'miniplex';
 import * as THREE from 'three';
 import { createNoise2D } from 'simplex-noise';
 import { log } from '../utils/Logger';
@@ -227,7 +227,7 @@ class EnvironmentalPressureSystem {
     return nearestBiome;
   }
   
-  private getBiomeId(biomeEntity: Entity<WorldSchema>): string {
+  private getBiomeId(biomeEntity: import('miniplex').With<WorldSchema, keyof WorldSchema>): string {
     // Would extract proper biome ID from entity
     return 'central'; // Simplified
   }
@@ -470,7 +470,7 @@ class EnvironmentalPressureSystem {
   /**
    * Calculate environmental pressure on specific creature
    */
-  calculateCreaturePressure(creature: Entity<WorldSchema>): {
+  calculateCreaturePressure(creature: import('miniplex').With<WorldSchema, keyof WorldSchema>): {
     totalPressure: number;
     stressSources: string[];
     adaptationBonuses: number[];

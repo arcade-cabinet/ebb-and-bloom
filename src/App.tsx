@@ -115,8 +115,8 @@ const Scene: React.FC = () => {
 
         log.info('Complete ecosystem initialization finished');
 
-        // Set up generation logging
-        gameClock.onTimeUpdate((time) => {
+        // Set up generation logging - use ref to avoid re-renders
+        const timeUpdateUnsubscribe = gameClock.onTimeUpdate((time) => {
           if (time.generation > 0 && time.generationProgress < 0.1) {
             // Log generation snapshot to persistent storage
             const ecosystemState = ecosystem.getCurrentEcosystemState();
@@ -138,17 +138,28 @@ const Scene: React.FC = () => {
         });
 
         // Set up evolution event logging
-        gameClock.onEvolutionEvent((event) => {
+        const eventUnsubscribe = gameClock.onEvolutionEvent((event) => {
           logEvent(event);
         });
+
+        // Store unsubscribe functions for cleanup
+        return () => {
+          timeUpdateUnsubscribe();
+          eventUnsubscribe();
+        };
 
       } catch (error) {
         log.error('Ecosystem initialization failed', error);
       }
     };
 
-    initializeWorld();
-  }, []);
+    const cleanup = initializeWorld();
+    
+    // Cleanup subscriptions on unmount
+    return () => {
+      cleanup?.then(cleanupFn => cleanupFn?.());
+    };
+  }, [logGeneration, logEvent]);
 
   return (
     <>
