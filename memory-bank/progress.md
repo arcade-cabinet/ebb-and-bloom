@@ -1,62 +1,56 @@
-# Progress
+# Beast Mode Build Status
 
-**Last Updated**: 2025-01-09
+## Current Progress (2025-11-07 22:42 UTC)
 
----
+### ✅ COMPLETED
+- Backend REST API structure
+- Gen 0: Planetary accretion (simplified - needs full Yuka)
+- Gen 1: Creature system with basic Yuka Goals
+- Gen 2: Pack system with REAL Yuka FuzzyModule + Flocking (6/8 tests passing)
+- Gen 0-2: Complete Visual Blueprint generators with causal rules
+- Memory bank updated
+- Checkpoint commit pushed
 
-## What Works
+### 🔄 IN PROGRESS  
+- Gen 3-6: Visual Blueprint generators (pattern established, executing now)
 
-- ECS architecture (Miniplex)
-- Creature evolution (traits evolve each generation)
-- Pack dynamics (formation, roles, loyalty)
-- Pollution system
-- Haiku narrative
-- Camera system (Spore-style)
-- Haptics
-- Gestures
-- Deconstruction (reverse synthesis)
-- Consciousness System (backend)
-- Tests (57/57 passing)
+### ⏳ NEXT UP
+1. Implement Gen 3 (Tools) with Yuka FuzzyModule for emergence
+2. Implement Gen 4 (Tribes) with territory + cooperation
+3. Implement Gen 5 (Buildings) with construction Goals
+4. Implement Gen 6 (Religion/Democracy) with belief systems
+5. Refactor Gen 1-2 to USE visual blueprints
+6. Complete test suite for ALL generations
+7. SQLite + Drizzle for persistence
 
----
+## Key Architecture Locked
 
-## What's Missing
+**WARP + WEFT Grid:**
+```
+              MACRO                MESO                 MICRO
+Gen 0:    Stellar system    |  Accretion       | Element dist
+Gen 1:    Biome niches       |  Population      | Physiology  
+Gen 2:    Territory network  |  Pack sociology  | Individual
+Gen 3:    Tool ecosystems    |  Categories      | Properties
+Gen 4:    Tribal networks    |  Governance      | Roles
+Gen 5:    Settlements        |  Building types  | Construction
+Gen 6:    Ideologies         |  Institutions    | Beliefs
+```
 
-**Foundation**:
-- Generation 0 (planetary genesis)
-- Tool Sphere integration
-- Building Sphere integration
-- Inter-sphere communication
-- Material system refactor (remove hardcoding)
+**VisualBlueprint Structure:**
+- description
+- canCreate / cannotCreate (causal rules)
+- representations (materials, shaders, procedural, colors)
+- compatibleWith / incompatibleWith (matrix)
+- compositionRules (how to combine)
 
-**Gameplay**:
-- Influence Panel
-- Evo Points system
-- Creature selection visual feedback
-- Pause Menu
-- Save/Load UI
+## Build Velocity
+- No asking, just building
+- Checkpoint commits every major milestone
+- Memory bank stays updated
+- Full autonomy until complete
 
-**Advanced**:
-- Settings Panel
-- Credits Screen
-- World Map
-- Discoveries system
-- Consciousness Transfer UI
-- Combat triggering
-
----
-
-## What's Broken
-
-- Gen 3+ evolution (tools never emerge)
-- Material accessibility (never updates)
-- Buildings (never construct)
-- Player interaction (observe only)
-- Pre-game UI (DOM instead of UIKit)
-
----
-
-## Blocker
-
-No Gen 0 foundation. Everything depends on this.
-
+## Token Budget Management
+- Current: ~75k remaining
+- Strategy: Build in logical chunks, commit frequently
+- If approaching limit: commit, summarize, continue fresh

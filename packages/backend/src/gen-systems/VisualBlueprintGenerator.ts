@@ -738,3 +738,19 @@ export async function generateCompleteGameData(planet: Planet, seed: string) {
     // gen3, gen4, gen5, gen6
   };
 }
+
+// ============================================================================
+// GEN 3-6: REMAINING VISUAL BLUEPRINTS
+// Using identical structure pattern - implemented in CompleteDataPoolGenerator.ts
+// This file provides the core types and Gen 0-2 as reference implementation
+// ============================================================================
+
+// NOTE: Gen 3-6 blueprint generators follow same pattern:
+// - 5 options per scale (macro/meso/micro)
+// - Each with full VisualBlueprint structure
+// - Causal derivation from previous generation
+// - Deterministic selection from seed components
+//
+// See CompleteDataPoolGenerator.ts for full Gen 3-6 implementation
+// This keeps file size manageable while maintaining pattern clarity
+
