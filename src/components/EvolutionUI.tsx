@@ -23,20 +23,25 @@ const GenerationDisplay = () => {
   }, []);
   
   return (
-    <div className="evolution-card fixed top-4 right-4 z-50">
-      <div className="generation-counter text-xl font-mono">
-        Generation {currentTime.generation}
+    <div className="evolution-card fixed top-4 right-4 z-50 bg-ebb-indigo-800/90 backdrop-blur-md border border-trait-gold-400/20 shadow-lg">
+      <div className="flex items-center gap-2 mb-2">
+        <div className="w-6 h-6 rounded-full bg-trait-gold-500/30 flex items-center justify-center">
+          <span className="text-xs">⚡</span>
+        </div>
+        <div className="generation-counter text-xl font-mono text-trait-gold-300">
+          Generation {currentTime.generation}
+        </div>
       </div>
-      <div className="w-48 bg-base-200 rounded-full h-2 mt-2">
+      <div className="w-48 bg-ebb-indigo-900/50 rounded-full h-2.5 mt-2 border border-echo-silver-500/20">
         <div 
-          className="trait-fill h-full rounded-full transition-all duration-1000"
+          className="trait-fill h-full rounded-full transition-all duration-1000 bg-gradient-to-r from-trait-gold-500 to-bloom-emerald-500"
           style={{ width: `${currentTime.generationProgress * 100}%` }}
         />
       </div>
-      <div className="text-xs text-echo-silver-600 mt-1">
+      <div className="text-xs text-echo-silver-400 mt-2 font-mono">
         {Math.floor(currentTime.generationProgress * 100)}% complete
       </div>
-      <div className="text-xs text-echo-silver-600">
+      <div className="text-xs text-echo-silver-400 font-mono">
         Events: {currentTime.evolutionEvents.length}
       </div>
     </div>
@@ -64,10 +69,15 @@ const CreatureEvolutionDisplay = () => {
   return (
     <>
       <div className="fixed bottom-20 left-4 z-50 max-w-sm">
-        <div className="evolution-card">
-          <h3 className="font-display font-bold text-bloom-emerald-600 mb-3">
-            Active Creatures ({creatures.length})
-          </h3>
+        <div className="evolution-card bg-ebb-indigo-800/90 backdrop-blur-md border border-bloom-emerald-400/20 shadow-lg">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-5 h-5 rounded bg-bloom-emerald-500/30 flex items-center justify-center">
+              <span className="text-xs">🌿</span>
+            </div>
+            <h3 className="font-display font-bold text-bloom-emerald-300">
+              Active Creatures ({creatures.length})
+            </h3>
+          </div>
           <div className="space-y-3 max-h-80 overflow-y-auto">
             {creatures.slice(0, 6).map((creature, index) => (
               <TraitEvolutionDisplay
@@ -135,10 +145,15 @@ const EvolutionEventFeed = () => {
   
   return (
     <div className="fixed top-4 left-4 z-50 max-w-md">
-      <div className="evolution-card">
-        <h3 className="font-display font-bold text-trait-gold-600 mb-3">
-          Evolution Events
-        </h3>
+      <div className="evolution-card bg-ebb-indigo-800/90 backdrop-blur-md border border-trait-gold-400/20 shadow-lg">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-5 h-5 rounded bg-trait-gold-500/30 flex items-center justify-center">
+            <span className="text-xs">✨</span>
+          </div>
+          <h3 className="font-display font-bold text-trait-gold-300">
+            Evolution Events
+          </h3>
+        </div>
         <div className="space-y-2 max-h-48 overflow-y-auto">
           {recentEvents.map((event, index) => (
             <div 
@@ -215,10 +230,15 @@ const EnvironmentalStatus = () => {
   
   return (
     <div className="fixed bottom-4 right-4 z-50">
-      <div className="evolution-card">
-        <h3 className="font-display font-bold text-ebb-indigo-600 mb-3">
-          Environment
-        </h3>
+      <div className="evolution-card bg-ebb-indigo-800/90 backdrop-blur-md border border-echo-silver-400/20 shadow-lg">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-5 h-5 rounded bg-echo-silver-500/30 flex items-center justify-center">
+            <span className="text-xs">🌍</span>
+          </div>
+          <h3 className="font-display font-bold text-echo-silver-300">
+            Environment
+          </h3>
+        </div>
         <div className="space-y-2">
           <div className="flex justify-between items-center">
             <span className="text-sm">Pollution</span>
@@ -334,21 +354,30 @@ const EvolutionUI = () => {
       {/* Narrative system - haikus and storytelling */}
       <NarrativeDisplay />
       
-      {/* Mobile-friendly controls overlay */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 p-4 bg-gradient-to-t from-base-100/90 to-transparent">
-        <div className="flex justify-center space-x-4">
-          <button className="haptic-button mobile-touch-target">
-            <span className="text-sm">👁️ Observe</span>
+      {/* Mobile-friendly controls overlay - Brand aligned */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 p-4 bg-gradient-to-t from-ebb-indigo-900/95 via-ebb-indigo-800/90 to-transparent backdrop-blur-sm">
+        <div className="flex justify-center space-x-3">
+          <button 
+            className="haptic-button mobile-touch-target px-6 py-3 rounded-2xl bg-bloom-emerald-500/20 hover:bg-bloom-emerald-500/30 border border-bloom-emerald-400/30 transition-all duration-200 active:scale-95"
+            style={{ minWidth: '120px', minHeight: '50px' }}
+          >
+            <span className="text-sm font-medium text-bloom-emerald-200">👁️ Observe</span>
           </button>
-          <button className="haptic-button mobile-touch-target">
-            <span className="text-sm">🧬 Influence</span>
+          <button 
+            className="haptic-button mobile-touch-target px-6 py-3 rounded-2xl bg-trait-gold-500/20 hover:bg-trait-gold-500/30 border border-trait-gold-400/30 transition-all duration-200 active:scale-95"
+            style={{ minWidth: '120px', minHeight: '50px' }}
+          >
+            <span className="text-sm font-medium text-trait-gold-200">🧬 Influence</span>
           </button>
-          <button className="haptic-button mobile-touch-target">
-            <span className="text-sm">📊 Analyze</span>
+          <button 
+            className="haptic-button mobile-touch-target px-6 py-3 rounded-2xl bg-ebb-indigo-500/20 hover:bg-ebb-indigo-500/30 border border-echo-silver-400/30 transition-all duration-200 active:scale-95"
+            style={{ minWidth: '120px', minHeight: '50px' }}
+          >
+            <span className="text-sm font-medium text-echo-silver-200">📊 Analyze</span>
           </button>
         </div>
         
-        <div className="text-center mt-2 text-xs text-echo-silver-600 font-mono">
+        <div className="text-center mt-3 text-xs text-echo-silver-400 font-mono">
           Spore-style camera: Pinch zoom • Drag orbit • Double-tap reset
         </div>
       </div>
