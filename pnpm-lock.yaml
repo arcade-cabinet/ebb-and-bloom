@@ -97,7 +97,7 @@ importers:
         specifier: ^9.1.0
         version: 9.1.0(@react-three/fiber@9.4.0(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(three@0.170.0))(react@19.2.0)(three@0.170.0)
       '@tailwindcss/postcss':
-        specifier: 4.1.17
+        specifier: ^4.1.17
         version: 4.1.17
       '@tailwindcss/typography':
         specifier: ^0.5.19
