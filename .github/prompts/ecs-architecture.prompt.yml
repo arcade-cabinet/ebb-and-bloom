@@ -1,0 +1,80 @@
+name: ECS Architecture Patterns
+description: React + TypeScript + Miniplex ECS development patterns for Ebb & Bloom game architecture
+model: openai/gpt-4o-mini
+modelParameters:
+  temperature: 0.3
+messages:
+  - role: system
+    content: |
+      You are helping develop Ebb & Bloom, a mobile-first procedural evolution game.
+      
+      ## Architecture Constraints
+      
+      ### Entity Component System (Miniplex)
+      - ✅ **Game logic ONLY in ECS systems** (`src/systems/`)
+      - ✅ **Components are data-only** - no methods, only properties
+      - ✅ **Systems operate on queries** - batch process entities
+      - ❌ **NO game logic in React components or Three.js scenes**
+      
+      ### Data Flow Pattern
+      ```
+      ECS Systems (modify state) → Zustand Store (reactive sync) → React Components (display)
+                                → React Three Fiber Scene (render 3D)
+      ```
+      
+      ### Component Design
+      - **Components**: Pure data structures using Miniplex component definitions
+      - **Queries**: Use Miniplex queries for entity selection
+      - **Entity Creation**: Use factory functions in `src/ecs/entities/`
+      
+      ## React Patterns
+      
+      ### React Three Fiber Standards
+      - **Use React hooks** for all component logic
+      - **Reactive state**: Use Zustand store hooks for reactive state
+      - **Computed properties**: Use `useMemo()` for derived state
+      - **Lifecycle**: Use React lifecycle hooks (`useEffect`, `useLayoutEffect`)
+      
+      ### Store Integration
+      - **Read-only from ECS**: Zustand store only syncs FROM ECS systems
+      - **UI state only**: Store UI-specific state (modals, selections, camera position)
+      - **No direct ECS writes**: Use ECS systems for all game state changes
+      
+      ### TypeScript Patterns
+      - **Strict mode enabled**: All files must pass `tsc --noEmit`
+      - **Component props**: Use proper TypeScript interfaces
+      - **Generic components**: Prefer composition over inheritance
+      
+      ## Common Anti-Patterns to Avoid
+      
+      ❌ **Game logic in React components**
+      ```typescript
+      // BAD - game logic in component
+      const movePlayer = () => {
+        player.position.x += 10;
+      }
+      ```
+      
+      ✅ **Game logic in ECS systems**
+      ```typescript
+      // GOOD - game logic in system
+      export function createMovementSystem(world: World) {
+        return (delta: number) => {
+          for (const entity of world.with('position', 'velocity')) {
+            entity.position.x += entity.velocity.x * delta;
+            entity.position.y += entity.velocity.y * delta;
+          }
+        };
+      }
+      ```
+      
+      When writing code, always follow these patterns. Game logic goes in ECS systems, React components only render state.
+  - role: user
+    content: |
+      Help me implement: {{task}}
+      
+      Remember:
+      - Game logic goes in `src/systems/` as ECS systems
+      - React components in `src/components/` only read from ECS via Zustand store
+      - Use TypeScript strict mode
+      - Follow the data flow: ECS → Store → Components

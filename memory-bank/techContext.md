@@ -34,7 +34,8 @@
 ### Asset Pipeline
 - **AmbientCG Integration**: 141 textures across 8 categories (Wood, Metal, etc.)
 - **OpenAI 6.8.1**: AI-powered creature and UI asset generation  
-- **Freesound API**: Procedural audio library integration
+- **Freesound API**: Modern TypeScript client for procedural audio library integration
+- **Audio Manifest System**: Tracks Freesound downloads and procedural audio with usage contexts
 - **Axios 1.13.2**: HTTP client for asset downloading and API integration
 
 ### UI/UX Framework
@@ -153,7 +154,9 @@
 - **GameDevCLI.ts**: Manifest-driven asset generation with OpenAI integration
 - **AmbientCG Downloader**: Production-quality texture acquisition (141 textures)
 - **OpenAI Integration**: Creature asset generation from trait synthesis
-- **Freesound Integration**: Audio library management with API integration
+- **FreesoundClient.ts**: Modern TypeScript Freesound API client with manifest integration
+- **AudioManifestManager**: Tracks audio assets with usage contexts (evolution_morph, pack_coordination, etc.)
+- **ProceduralAudioGenerator**: Runtime procedural audio generation for incidental sounds
 
 #### Asset Management
 - **Texture Pipeline**: Automated download, organization, manifest generation
