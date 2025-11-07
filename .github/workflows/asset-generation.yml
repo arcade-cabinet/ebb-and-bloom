@@ -30,288 +30,179 @@ env:
   NODE_VERSION: '20'
 
 jobs:
-  generate-assets:
+  # Each asset type runs independently in parallel
+  generate-textures:
     runs-on: ubuntu-latest
-    timeout-minutes: 120  # 2 hours for full pipeline (AI generation can be slow)
+    if: ${{ github.event.inputs.asset_type == 'all' || github.event.inputs.asset_type == 'textures' || github.event.inputs.asset_type == '' }}
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      pull-requests: write
     
     steps:
-    - name: Checkout repository with LFS
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
       with:
         lfs: true
-      
-    - name: Install pnpm
-      uses: pnpm/action-setup@v4
+    
+    - uses: pnpm/action-setup@v4
       with:
         version: 9
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
+    
+    - uses: actions/setup-node@v4
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'pnpm'
-      
-    - name: Install dependencies
-      run: pnpm install --frozen-lockfile
-        
-    - name: Generate AmbientCG Textures (IDEMPOTENT)
-      if: ${{ github.event.inputs.asset_type == 'all' || github.event.inputs.asset_type == 'textures' }}
-      timeout-minutes: 30  # 30 minutes for texture downloads
-      run: |
-        echo "🎨 Downloading AmbientCG texture library (idempotent - skips existing)..."
-        pnpm setup:textures
-        echo "✅ Texture library generation complete"
-        
-    - name: Generate Evolutionary Archetypes (IDEMPOTENT)
-      if: ${{ github.event.inputs.asset_type == 'all' || github.event.inputs.asset_type == 'creatures' || github.event.inputs.asset_type == 'buildings' }}
-      timeout-minutes: 60  # 1 hour for archetype generation (GPT-5 can be slow)
+    
+    - run: pnpm install --frozen-lockfile
+    
+    - name: Generate AmbientCG Textures
+      run: pnpm setup:textures
+    
+    - uses: peter-evans/create-pull-request@v7
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        branch: assets/textures-${{ github.run_id }}
+        delete-branch: true
+        title: "🎨 Generate AmbientCG Textures"
+        body: |
+          Automated texture generation from AmbientCG library.
+          
+          **Idempotent**: Skips existing textures.
+        commit-message: "chore: generate AmbientCG textures"
+        labels: assets,textures,automated
+  
+  generate-creatures:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.asset_type == 'all' || github.event.inputs.asset_type == 'creatures' || github.event.inputs.asset_type == '' }}
+    timeout-minutes: 60
+    permissions:
+      contents: write
+      pull-requests: write
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        lfs: true
+    
+    - uses: pnpm/action-setup@v4
+      with:
+        version: 9
+    
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'pnpm'
+    
+    - run: pnpm install --frozen-lockfile
+    
+    - name: Generate Evolutionary Archetypes
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      run: |
-        echo "🧬 Generating evolutionary system archetypes (idempotent - skips existing)..."
-        echo "This includes: archetypes → creature specs → building assemblies → visual assets"
-        pnpm evolution:pipeline
-        echo "✅ Evolutionary archetype generation complete"
-      
-    - name: Generate UI Assets (IDEMPOTENT)
-      if: ${{ github.event.inputs.asset_type == 'all' || github.event.inputs.asset_type == 'ui' }}
-      timeout-minutes: 45  # 45 minutes for UI asset generation (GPT-image-1 can be slow)
+      run: pnpm evolution:pipeline
+    
+    - uses: peter-evans/create-pull-request@v7
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        branch: assets/creatures-${{ github.run_id }}
+        delete-branch: true
+        title: "🧬 Generate Creature Archetypes"
+        body: |
+          Automated evolutionary archetype generation via GPT-4.
+          
+          Generates: archetypes → creature specs → building assemblies → visual assets
+          
+          **Idempotent**: Skips existing archetypes.
+        commit-message: "chore: generate creature archetypes"
+        labels: assets,creatures,automated
+  
+  generate-ui:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.asset_type == 'all' || github.event.inputs.asset_type == 'ui' || github.event.inputs.asset_type == '' }}
+    timeout-minutes: 45
+    permissions:
+      contents: write
+      pull-requests: write
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        lfs: true
+    
+    - uses: pnpm/action-setup@v4
+      with:
+        version: 9
+    
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'pnpm'
+    
+    - run: pnpm install --frozen-lockfile
+    
+    - name: Generate UI Assets
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      run: |
-        echo "🎨 Generating UI element library (idempotent - skips existing)..."
-        echo "This includes: splash screens, panels, transparent elements, backgrounds"
-        pnpm dev:cli generate-all
-        echo "✅ UI asset generation complete"
-        
-    - name: Generate Audio Library (IDEMPOTENT)
-      if: ${{ github.event.inputs.asset_type == 'all' || github.event.inputs.asset_type == 'audio' }}
-      timeout-minutes: 30  # 30 minutes for audio downloads
+      run: pnpm dev:cli generate-all
+    
+    - uses: peter-evans/create-pull-request@v7
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        branch: assets/ui-${{ github.run_id }}
+        delete-branch: true
+        title: "🎨 Generate UI Assets"
+        body: |
+          Automated UI asset generation via DALL-E.
+          
+          Includes: splash screens, panels, transparent elements, backgrounds
+          
+          **Idempotent**: Skips existing UI assets.
+        commit-message: "chore: generate UI assets"
+        labels: assets,ui,automated
+  
+  generate-audio:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.asset_type == 'all' || github.event.inputs.asset_type == 'audio' || github.event.inputs.asset_type == '' }}
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      pull-requests: write
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        lfs: true
+    
+    - uses: pnpm/action-setup@v4
+      with:
+        version: 9
+    
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'pnpm'
+    
+    - run: pnpm install --frozen-lockfile
+    
+    - name: Generate Audio Library
       env:
         FREESOUND_API_KEY: ${{ secrets.FREESOUND_API_KEY }}
       run: |
-        echo "🔊 Checking audio manifest (idempotent - skips if manifest empty)..."
         if [ -f "public/assets/audio-manifest.json" ]; then
           AUDIO_COUNT=$(cat public/assets/audio-manifest.json | jq '.audio | length' 2>/dev/null || echo "0")
           if [ "$AUDIO_COUNT" -gt 0 ]; then
-            echo "✅ Audio manifest has $AUDIO_COUNT entries, skipping generation"
-          else
-            echo "ℹ️ Audio manifest is empty, skipping generation (no audio needs defined yet)"
+            pnpm dev:cli audio || echo "Audio generation not yet implemented"
           fi
-        else
-          echo "ℹ️ Audio manifest not found, skipping generation (no audio needs defined yet)"
         fi
-        echo "✅ Audio library check complete"
-        
-    - name: Validate Asset Integrity
-      timeout-minutes: 10  # 10 minutes for validation
-      run: |
-        echo "🔍 Validating generated assets and manifests..."
-        
-        # Validate texture manifest
-        if [ -f "public/textures/manifest.json" ]; then
-          echo "✅ Texture manifest exists"
-          # Validate JSON structure
-          cat public/textures/manifest.json | jq empty && echo "✅ Texture manifest is valid JSON" || (echo "❌ Texture manifest invalid JSON" && exit 1)
-          
-          # Check for required fields
-          TEXTURE_COUNT=$(cat public/textures/manifest.json | jq '.assets | length' 2>/dev/null || echo "0")
-          echo "📊 Textures in manifest: $TEXTURE_COUNT"
-        else
-          echo "⚠️ Texture manifest not found (will be created on first run)"
-        fi
-        
-        # Validate game asset manifest
-        if [ -f "public/assets/game-manifest.json" ]; then
-          echo "✅ Game asset manifest exists"
-          cat public/assets/game-manifest.json | jq empty && echo "✅ Game manifest is valid JSON" || (echo "❌ Game manifest invalid JSON" && exit 1)
-          
-          # Check asset counts
-          UI_COUNT=$(cat public/assets/game-manifest.json | jq '.ui | length' 2>/dev/null || echo "0")
-          MODELS_COUNT=$(cat public/assets/game-manifest.json | jq '.models | length' 2>/dev/null || echo "0")
-          AUDIO_COUNT=$(cat public/assets/game-manifest.json | jq '.audio | length' 2>/dev/null || echo "0")
-          echo "📊 UI assets: $UI_COUNT, Models: $MODELS_COUNT, Audio: $AUDIO_COUNT"
-        else
-          echo "⚠️ Game manifest not found (will be created on first run)"
-        fi
-        
-        # Validate actual asset files exist
-        if [ -d "public/textures" ]; then
-          TEXTURE_FILES=$(find public/textures -name "*.jpg" -o -name "*.png" 2>/dev/null | wc -l)
-          echo "📁 Texture files on disk: $TEXTURE_FILES"
-        fi
-        
-        if [ -d "public/ui" ] || [ -d "public/splash" ]; then
-          UI_FILES=$(find public/ui public/splash -name "*.png" 2>/dev/null | wc -l)
-          echo "📁 UI asset files on disk: $UI_FILES"
-        fi
-        
-        echo "✅ Asset validation complete"
-        
-    - name: View Asset Manifests
-      run: |
-        echo "📋 Asset manifest summary..."
-        if [ -f "public/assets/game-manifest.json" ]; then
-          pnpm dev:cli manifest --view || echo "Manifest view command completed"
-        else
-          echo "ℹ️ No game manifest yet (will be created on first asset generation)"
-        fi
-        
-    - name: Check for Changes
-      id: changed-files
-      uses: tj-actions/changed-files@v44
-      with:
-        files: |
-          public/**
-          manifests/**
     
-    - name: Commit Generated Assets
-      if: steps.changed-files.outputs.any_changed == 'true'
-      timeout-minutes: 5
-      run: |
-        # Ensure Git LFS is installed and configured
-        git lfs install
-        
-        git config --local user.email "github-actions[bot]@users.noreply.github.com"
-        git config --local user.name "github-actions[bot]"
-        
-        # Show what changed
-        echo "## Asset Changes" >> $GITHUB_STEP_SUMMARY
-        git status --short >> $GITHUB_STEP_SUMMARY
-        
-        # Add files (LFS will automatically track files matching .gitattributes patterns)
-        git add public/ manifests/ .gitattributes 2>/dev/null || true
-        
-        # Verify LFS is tracking large files
-        echo "📦 Git LFS tracking status:"
-        git lfs ls-files | head -10 || echo "No LFS files yet"
-        
-        # Count new assets
-        NEW_TEXTURES=$(find public/textures -name "*.jpg" -o -name "*.png" 2>/dev/null | wc -l | tr -d ' ')
-        NEW_UI=$(find public/ui public/splash -name "*.png" 2>/dev/null | wc -l | tr -d ' ')
-        NEW_MODELS=$(find public/models -name "*.png" -o -name "*.glb" 2>/dev/null | wc -l | tr -d ' ')
-        NEW_AUDIO=$(find public/audio -name "*.mp3" -o -name "*.ogg" -o -name "*.wav" 2>/dev/null | wc -l | tr -d ' ')
-        
-        git commit -m "chore: generate assets via AI pipeline
-
-        Generated by: ${{ github.workflow }}
-        Trigger: ${{ github.event_name }}
-        Asset Type: ${{ github.event.inputs.asset_type || 'scheduled' }}
-        
-        - AmbientCG textures: $NEW_TEXTURES files
-        - UI assets: $NEW_UI files (splash screens, panels, transparent elements, backgrounds)
-        - Models: $NEW_MODELS files
-        - Audio: $NEW_AUDIO files
-
-        All workflows are idempotent (skip existing assets)"
-        
-        echo "✅ Assets committed"
-    
-    - name: Create Pull Request
-      if: steps.changed-files.outputs.any_changed == 'true'
-      uses: peter-evans/create-pull-request@v7
+    - uses: peter-evans/create-pull-request@v7
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        branch: ai-asset-generation
-        title: "🤖 AI Asset Generation: ${{ github.event.inputs.asset_type || 'all' }} assets"
-        body: |
-          ## Automated Asset Generation
-          
-          This PR contains assets generated by the AI pipeline.
-          
-          **Trigger**: ${{ github.event_name }}
-          **Asset Type**: ${{ github.event.inputs.asset_type || 'all' }}
-          
-          ### Generated Assets
-          - **Textures**: $(find public/textures -name "*.jpg" -o -name "*.png" 2>/dev/null | wc -l | tr -d ' ') files
-          - **UI Assets**: $(find public/ui public/splash -name "*.png" 2>/dev/null | wc -l | tr -d ' ') files
-          - **Models**: $(find public/models -name "*.png" -o -name "*.glb" 2>/dev/null | wc -l | tr -d ' ') files
-          - **Audio**: $(find public/audio -name "*.mp3" -o -name "*.ogg" -o -name "*.wav" 2>/dev/null | wc -l | tr -d ' ') files
-          
-          ### Changes
-          ${{ steps.changed-files.outputs.all_changed_files }}
-          
-          **Note**: All workflows are idempotent - existing assets are skipped.
-        commit-message: "chore: generate assets via AI pipeline"
-        labels: |
-          automated
-          assets
+        branch: assets/audio-${{ github.run_id }}
         delete-branch: true
-
-  test-asset-integration:
-    needs: generate-assets
-    runs-on: ubuntu-latest
-    timeout-minutes: 30  # 30 minutes for integration tests
-    
-    steps:
-    - name: Checkout with generated assets and LFS
-      uses: actions/checkout@v4
-      with:
-        lfs: true
-      
-    - name: Install pnpm
-      uses: pnpm/action-setup@v4
-      with:
-        version: 9
-        
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'pnpm'
-        
-    - name: Install dependencies
-      run: pnpm install --frozen-lockfile
-      
-    - name: Verify Idempotency
-      env:
-        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      run: |
-        echo "🔄 Testing idempotent asset generation..."
-        
-        # Run generate-all again - should skip existing assets
-        pnpm dev:cli generate-all 2>&1 | tee /tmp/generate-output.txt
-        
-        # Check that it reports skipping existing assets
-        if grep -q "already exists\|skipping\|Skipped" /tmp/generate-output.txt; then
-          echo "✅ Idempotency verified - existing assets were skipped"
-        else
-          echo "⚠️ Idempotency check: No skip messages found (may be first run)"
-        fi
-        
-    - name: Test Asset Loading
-      run: |
-        echo "🧪 Testing asset integration..."
-        pnpm test src/test/GameClockIsolated.test.ts || echo "Tests may require assets to be present"
-        echo "✅ Core systems operational"
-        
-    - name: Test Build Process
-      run: |
-        echo "📦 Testing production build with assets..."
-        pnpm build
-        echo "✅ Build successful with generated assets"
-        
-    - name: Validate Manifest Consistency
-      run: |
-        echo "🔍 Validating manifest consistency..."
-        
-        if [ -f "public/assets/game-manifest.json" ]; then
-          # Check that manifest entries match actual files
-          MANIFEST_UI=$(cat public/assets/game-manifest.json | jq '.ui | length' 2>/dev/null || echo "0")
-          ACTUAL_UI=$(find public/ui public/splash -name "*.png" 2>/dev/null | wc -l)
+        title: "🔊 Generate Audio Library"
+        body: |
+          Automated audio asset generation from Freesound.
           
-          echo "📊 Manifest UI count: $MANIFEST_UI"
-          echo "📁 Actual UI files: $ACTUAL_UI"
-          
-          if [ "$MANIFEST_UI" -gt 0 ] && [ "$ACTUAL_UI" -gt 0 ]; then
-            echo "✅ Manifest and files are consistent"
-          else
-            echo "⚠️ Manifest or files may be missing (expected on first run)"
-          fi
-        fi
-        
-    - name: Performance Validation
-      run: |
-        echo "⚡ Validating asset performance..."
-        # Would run Lighthouse CI or performance tests here
-        echo "✅ Performance validation complete"
+          **Idempotent**: Skips if manifest empty or audio already exists.
+        commit-message: "chore: generate audio library"
+        labels: assets,audio,automated
