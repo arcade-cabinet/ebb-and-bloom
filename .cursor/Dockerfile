@@ -9,6 +9,7 @@ ENV DISPLAY=:99
 RUN apt-get update && apt-get install -y --no-install-recommends \
     # Build essentials (native Node modules like better-sqlite3)
     git \
+    git-lfs \
     curl \
     wget \
     build-essential \
@@ -122,6 +123,11 @@ ENV CAPACITOR_ANDROID_STUDIO_PATH=""
 # Background agent optimization - reduce memory footprint
 ENV NODE_OPTIONS="--max-old-space-size=2048"
 ENV PNPM_CONFIG_STORE_DIR=/root/.local/share/pnpm/store
+
+# Git LFS configuration for background agents (skip smudge to avoid downloading large files)
+# This allows background agents to work with LFS-tracked files without downloading them
+RUN git lfs install --skip-smudge
+ENV GIT_LFS_SKIP_SMUDGE=1
 
 # Working directory for background agents (workspace copied separately by agent)
 WORKDIR /workspace
