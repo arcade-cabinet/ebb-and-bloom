@@ -183,7 +183,7 @@ jobs:
         NEW_TEXTURES=$(find public/textures -name "*.jpg" -o -name "*.png" 2>/dev/null | wc -l | tr -d ' ')
         NEW_UI=$(find public/ui public/splash -name "*.png" 2>/dev/null | wc -l | tr -d ' ')
         NEW_MODELS=$(find public/models -name "*.png" -o -name "*.glb" 2>/dev/null | wc -l | tr -d ' ')
-          # NEW_AUDIO=$(find public/audio -name "*.mp3" -o -name "*.ogg" -o -name "*.wav" 2>/dev/null | wc -l | tr -d ' ')
+        # NEW_AUDIO=$(find public/audio -name "*.mp3" -o -name "*.ogg" -o -name "*.wav" 2>/dev/null | wc -l | tr -d ' ')
         
         git commit -m "chore: generate assets via AI pipeline
 
