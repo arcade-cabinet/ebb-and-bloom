@@ -613,4 +613,3 @@ class HapticGestureSystem {
 }
 
 export default HapticGestureSystem;
-export { GestureType, HapticPattern, type GestureEvent, type TouchInteraction, type HapticSequence };

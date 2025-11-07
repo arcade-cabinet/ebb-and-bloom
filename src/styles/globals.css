@@ -1,0 +1,189 @@
+/* Ebb & Bloom Global Styles - 3D Evolutionary Ecosystem Theme */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components; 
+@tailwind utilities;
+
+/* CSS Custom Properties for brand colors */
+:root {
+  --ebb-indigo: #4A5568;
+  --bloom-emerald: #38A169;
+  --trait-gold: #D69E2E;
+  --echo-silver: #A0AEC0;
+  --pollution-red: #E53E3E;
+  --mutation-purple: #805AD5;
+  --haptic-blue: #3182CE;
+  --pure-white: #FFFFFF;
+  --deep-black: #1A202C;
+}
+
+/* Base layer - evolutionary foundation */
+@layer base {
+  body {
+    @apply font-sans antialiased bg-base-100 text-base-content;
+    background: linear-gradient(135deg, var(--ebb-indigo) 0%, var(--bloom-emerald) 100%);
+    background-attachment: fixed;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+  
+  code {
+    @apply font-mono;
+  }
+}
+
+/* Component layer - evolutionary UI patterns */
+@layer components {
+  /* Evolution Event Cards */
+  .evolution-card {
+    @apply bg-base-100/90 backdrop-blur-sm rounded-organic border border-echo-silver-300;
+    @apply p-4 shadow-lg animate-trait-emerge;
+  }
+  
+  .evolution-card--significant {
+    @apply border-trait-gold-400 shadow-trait-gold-400/20;
+  }
+  
+  /* Creature Display */
+  .creature-display {
+    @apply relative rounded-evolution bg-base-200/80 p-3;
+    @apply border border-bloom-emerald-300 animate-organic-breathe;
+  }
+  
+  .creature-name {
+    @apply font-display font-bold text-trait-gold-600;
+    @apply text-shadow-sm;
+  }
+  
+  /* Generation Progress */
+  .generation-counter {
+    @apply font-mono text-echo-silver-600;
+    @apply bg-base-100/70 px-3 py-1 rounded-full;
+    @apply border border-echo-silver-300;
+  }
+  
+  /* Environmental Indicators */
+  .pollution-indicator {
+    @apply bg-pollution-red-100 border-pollution-red-400;
+    @apply text-pollution-red-800 px-2 py-1 rounded-full text-sm;
+    @apply animate-pulse;
+  }
+  
+  .clean-zone-indicator {
+    @apply bg-bloom-emerald-100 border-bloom-emerald-400;
+    @apply text-bloom-emerald-800 px-2 py-1 rounded-full text-sm;
+  }
+  
+  /* Trait Visualization */
+  .trait-bar {
+    @apply h-2 bg-echo-silver-200 rounded-full overflow-hidden;
+  }
+  
+  .trait-fill {
+    @apply h-full bg-trait-gold-500 transition-all duration-1000 ease-out;
+  }
+  
+  .trait-fill--emerging {
+    @apply bg-gradient-to-r from-trait-gold-400 to-mutation-purple-500;
+    @apply animate-data-flow;
+  }
+  
+  /* Interactive Elements */
+  .haptic-button {
+    @apply btn btn-primary transition-all duration-200;
+    @apply active:scale-95 active:shadow-inner;
+  }
+  
+  .haptic-button:active {
+    animation: shock-wave 0.3s ease-out;
+  }
+  
+  /* Data Visualization */
+  .evolution-chart {
+    @apply bg-base-100/80 backdrop-blur-sm rounded-lg p-4;
+    @apply border border-echo-silver-300;
+  }
+  
+  .data-point {
+    @apply w-2 h-2 rounded-full bg-trait-gold-500;
+    @apply animate-evolution-pulse;
+  }
+  
+  /* Mobile-first responsive containers */
+  .evolution-container {
+    @apply container mx-auto px-4 sm:px-6 lg:px-8;
+    @apply max-w-7xl;
+  }
+  
+  .evolution-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4;
+  }
+  
+  .mobile-touch-target {
+    @apply min-h-[44px] min-w-[44px]; /* Apple HIG minimum touch target */
+  }
+}
+
+/* Utilities layer - evolutionary helper classes */
+@layer utilities {
+  /* Text shadows for readability */
+  .text-shadow-sm {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  
+  .text-shadow-md {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Evolutionary glow effects */
+  .glow-trait {
+    box-shadow: 0 0 20px var(--trait-gold);
+  }
+  
+  .glow-evolution {
+    box-shadow: 0 0 30px var(--bloom-emerald);
+  }
+  
+  .glow-mutation {
+    box-shadow: 0 0 25px var(--mutation-purple);
+  }
+  
+  /* Environmental overlays */
+  .pollution-overlay {
+    background: linear-gradient(45deg, 
+      transparent 25%, 
+      rgba(229, 62, 62, 0.1) 25%, 
+      rgba(229, 62, 62, 0.1) 50%, 
+      transparent 50%);
+    background-size: 20px 20px;
+  }
+  
+  .clean-overlay {
+    background: radial-gradient(circle, 
+      rgba(56, 161, 105, 0.1) 0%, 
+      transparent 70%);
+  }
+  
+  /* Organic patterns for backgrounds */
+  .pattern-organic {
+    background-image: 
+      radial-gradient(circle at 25% 25%, var(--bloom-emerald) 2%, transparent 2%),
+      radial-gradient(circle at 75% 75%, var(--ebb-indigo) 2%, transparent 2%);
+    background-size: 40px 40px;
+  }
+  
+  .pattern-evolution {
+    background-image: repeating-conic-gradient(
+      var(--trait-gold) 0deg 15deg,
+      transparent 15deg 30deg
+    );
+    background-size: 60px 60px;
+    opacity: 0.05;
+  }
+}

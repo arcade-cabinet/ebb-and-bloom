@@ -694,4 +694,3 @@ class EnvironmentalPressureSystem {
 }
 
 export default EnvironmentalPressureSystem;
-export { PollutionSource, ShockEvent, type PollutionNode, type BiomeStressState };

@@ -1060,4 +1060,3 @@ class BuildingSystem {
 }
 
 export default BuildingSystem;
-export { BuildingType, RoomType, type BuildingTemplate, type RoomLayout, type DoorSpec, type FurnitureSpec };
