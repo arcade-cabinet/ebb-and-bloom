@@ -49,9 +49,9 @@ export class PackFormationFuzzy {
 
     // Input 1: Resource scarcity (0 = abundant, 1 = scarce)
     this.scarcityVar = new FuzzyVariable();
-    this.scarcityLow = new LeftShoulderFuzzySet(0, 0, 0.3);
+    this.scarcityLow = new LeftShoulderFuzzySet(0, 0.15, 0.3);
     this.scarcityMod = new TriangularFuzzySet(0.2, 0.5, 0.8);
-    this.scarcityHigh = new RightShoulderFuzzySet(0.7, 1, 1);
+    this.scarcityHigh = new RightShoulderFuzzySet(0.7, 0.85, 1);
     this.scarcityVar.add(this.scarcityLow);
     this.scarcityVar.add(this.scarcityMod);
     this.scarcityVar.add(this.scarcityHigh);
@@ -59,46 +59,76 @@ export class PackFormationFuzzy {
 
     // Input 2: Nearby creatures (0 = none, 1 = many)
     this.proximityVar = new FuzzyVariable();
-    this.proximityFew = new LeftShoulderFuzzySet(0, 0, 0.3);
+    this.proximityFew = new LeftShoulderFuzzySet(0, 0.15, 0.3);
     this.proximitySome = new TriangularFuzzySet(0.2, 0.5, 0.8);
-    this.proximityMany = new RightShoulderFuzzySet(0.7, 1, 1);
+    this.proximityMany = new RightShoulderFuzzySet(0.7, 0.85, 1);
     this.proximityVar.add(this.proximityFew);
     this.proximityVar.add(this.proximitySome);
     this.proximityVar.add(this.proximityMany);
     this.fuzzy.addFLV('proximity', this.proximityVar);
 
-    // Output: Pack desirability (0 = no, 1 = yes)
+    // Output: Pack desirability (0-100 scale, like Yuka Soldier example)
     this.desirabilityVar = new FuzzyVariable();
-    this.desirabilityLow = new LeftShoulderFuzzySet(0, 0, 0.4);
-    this.desirabilityMod = new TriangularFuzzySet(0.3, 0.5, 0.7);
-    this.desirabilityHigh = new RightShoulderFuzzySet(0.6, 1, 1);
+    this.desirabilityLow = new LeftShoulderFuzzySet(0, 25, 50);
+    this.desirabilityMod = new TriangularFuzzySet(25, 50, 75);
+    this.desirabilityHigh = new RightShoulderFuzzySet(50, 75, 100);
     this.desirabilityVar.add(this.desirabilityLow);
     this.desirabilityVar.add(this.desirabilityMod);
     this.desirabilityVar.add(this.desirabilityHigh);
     this.fuzzy.addFLV('desirability', this.desirabilityVar);
 
-    // Build REAL FuzzyRule objects
+    // Build REAL FuzzyRule objects (comprehensive coverage like Yuka Soldier example)
     // Rule 1: IF scarcity IS high AND proximity IS many THEN desirability IS high
     this.fuzzy.addRule(new FuzzyRule(
       new FuzzyAND(this.scarcityHigh, this.proximityMany),
       this.desirabilityHigh
     ));
 
-    // Rule 2: IF scarcity IS moderate AND proximity IS some THEN desirability IS moderate
+    // Rule 2: IF scarcity IS high AND proximity IS some THEN desirability IS moderate
+    this.fuzzy.addRule(new FuzzyRule(
+      new FuzzyAND(this.scarcityHigh, this.proximitySome),
+      this.desirabilityMod
+    ));
+
+    // Rule 3: IF scarcity IS high AND proximity IS few THEN desirability IS low
+    this.fuzzy.addRule(new FuzzyRule(
+      new FuzzyAND(this.scarcityHigh, this.proximityFew),
+      this.desirabilityLow
+    ));
+
+    // Rule 4: IF scarcity IS moderate AND proximity IS many THEN desirability IS moderate
+    this.fuzzy.addRule(new FuzzyRule(
+      new FuzzyAND(this.scarcityMod, this.proximityMany),
+      this.desirabilityMod
+    ));
+
+    // Rule 5: IF scarcity IS moderate AND proximity IS some THEN desirability IS moderate
     this.fuzzy.addRule(new FuzzyRule(
       new FuzzyAND(this.scarcityMod, this.proximitySome),
       this.desirabilityMod
     ));
 
-    // Rule 3: IF scarcity IS low THEN desirability IS low
+    // Rule 6: IF scarcity IS moderate AND proximity IS few THEN desirability IS low
     this.fuzzy.addRule(new FuzzyRule(
-      this.scarcityLow,
+      new FuzzyAND(this.scarcityMod, this.proximityFew),
       this.desirabilityLow
     ));
 
-    // Rule 4: IF proximity IS few THEN desirability IS low
+    // Rule 7: IF scarcity IS low AND proximity IS many THEN desirability IS low
     this.fuzzy.addRule(new FuzzyRule(
-      this.proximityFew,
+      new FuzzyAND(this.scarcityLow, this.proximityMany),
+      this.desirabilityLow
+    ));
+
+    // Rule 8: IF scarcity IS low AND proximity IS some THEN desirability IS low
+    this.fuzzy.addRule(new FuzzyRule(
+      new FuzzyAND(this.scarcityLow, this.proximitySome),
+      this.desirabilityLow
+    ));
+
+    // Rule 9: IF scarcity IS low AND proximity IS few THEN desirability IS low
+    this.fuzzy.addRule(new FuzzyRule(
+      new FuzzyAND(this.scarcityLow, this.proximityFew),
       this.desirabilityLow
     ));
   }
@@ -111,11 +141,12 @@ export class PackFormationFuzzy {
     this.fuzzy.fuzzify('scarcity', scarcity);
     this.fuzzy.fuzzify('proximity', proximity);
 
-    const result = this.fuzzy.defuzzify('desirability');
+    const result = this.fuzzy.defuzzify('desirability'); // Returns 0-100
 
     console.log(`[PackFormationFuzzy] scarcity=${scarcity.toFixed(2)}, proximity=${proximity.toFixed(2)} → desirability=${result.toFixed(2)}`);
 
-    return result;
+    // Normalize back to 0-1 for consistency
+    return result / 100;
   }
 }
 
@@ -170,7 +201,7 @@ export class Gen2System {
       // Evaluate pack formation desirability
       const desirability = this.fuzzy.evaluate(scarcity, nearby.length, 10);
 
-      if (desirability > 0.45 && nearby.length >= 2) {
+      if (desirability > 0.1 && nearby.length >= 2) {
         // Form pack!
         const packMembers = [creature, ...nearby.slice(0, 5)]; // Max 6 members initially
         const pack = this.formPack(packMembers);
@@ -181,7 +212,7 @@ export class Gen2System {
           packed.add(member.id);
         }
 
-        console.log(`[GEN2] Pack ${pack.id} formed with ${pack.members.length} members`);
+        console.log(`[GEN2] Pack ${pack.id} formed with ${pack.members.length} members (desirability=${desirability.toFixed(2)})`);
       }
     }
 
@@ -195,8 +226,8 @@ export class Gen2System {
     for (const pack of packs) {
       if (pack.status !== 'stable') continue;
 
-      // Get pack member creatures
-      const members = creatures.filter(c => pack.members.includes(c.id));
+      // Get pack member creatures (alive only!)
+      const members = creatures.filter(c => c.status === 'alive' && pack.members.includes(c.id));
       
       if (members.length === 0) {
         pack.status = 'dispersing';
