@@ -4,9 +4,8 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { useEntities } from 'miniplex-react';
 import { gameClock } from '../systems/GameClock';
-import { useEvolutionDataStore } from '../stores/EvolutionDataStore';
+import { useWorld } from '../contexts/WorldContext';
 import TraitEvolutionDisplay from './TraitEvolutionDisplay';
 import NarrativeDisplay from './NarrativeDisplay';
 import type { EvolutionEvent } from '../systems/GameClock';
@@ -46,25 +45,38 @@ const GenerationDisplay = () => {
 
 // Advanced creature evolution display with Spore-inspired trait visualization
 const CreatureEvolutionDisplay = () => {
-  const creatures = useEntities('creature', 'transform');
+  const { world } = useWorld();
+  const [creatures, setCreatures] = useState<any[]>([]);
   const [selectedCreature, setSelectedCreature] = useState<any>(null);
+  
+  // Query creatures from ECS world
+  useEffect(() => {
+    const updateCreatures = () => {
+      const creatureQuery = world.with('creature', 'transform');
+      setCreatures(Array.from(creatureQuery.entities));
+    };
+    
+    updateCreatures();
+    const interval = setInterval(updateCreatures, 1000);
+    return () => clearInterval(interval);
+  }, [world]);
   
   return (
     <>
       <div className="fixed bottom-20 left-4 z-50 max-w-sm">
         <div className="evolution-card">
           <h3 className="font-display font-bold text-bloom-emerald-600 mb-3">
-            Active Creatures ({creatures.entities.length})
+            Active Creatures ({creatures.length})
           </h3>
           <div className="space-y-3 max-h-80 overflow-y-auto">
-            {creatures.entities.slice(0, 6).map((creature, index) => (
+            {creatures.slice(0, 6).map((creature, index) => (
               <TraitEvolutionDisplay
                 key={index}
                 creature={creature}
                 onSelect={() => setSelectedCreature(creature)}
               />
             ))}
-            {creatures.entities.length === 0 && (
+            {creatures.length === 0 && (
               <div className="text-echo-silver-600 text-sm italic">
                 No creatures detected. Ecosystem initializing...
               </div>
@@ -168,21 +180,36 @@ const EvolutionEventFeed = () => {
 
 // Environmental status display
 const EnvironmentalStatus = () => {
+  const { ecosystem } = useWorld();
   const [ecosystemState, setEcosystemState] = useState<any>(null);
   
-  // Would connect to EnvironmentalPressureSystem in production
   useEffect(() => {
+    if (!ecosystem) return;
+    
     const updateInterval = setInterval(() => {
-      // Simulate environmental data
+      const envSystem = ecosystem.getEnvironmentalSystem();
+      const report = envSystem.getEnvironmentalReport();
+      
       setEcosystemState({
-        globalPollution: Math.random() * 0.3,
-        activeSources: Math.floor(Math.random() * 5),
-        refugeAreas: 3 + Math.floor(Math.random() * 3)
+        globalPollution: report.globalPollution,
+        activeSources: report.activeSources,
+        refugeAreas: report.refugeAreas
       });
-    }, 5000);
+    }, 2000); // Update every 2 seconds
+    
+    // Initial update
+    if (ecosystem) {
+      const envSystem = ecosystem.getEnvironmentalSystem();
+      const report = envSystem.getEnvironmentalReport();
+      setEcosystemState({
+        globalPollution: report.globalPollution,
+        activeSources: report.activeSources,
+        refugeAreas: report.refugeAreas
+      });
+    }
     
     return () => clearInterval(updateInterval);
-  }, []);
+  }, [ecosystem]);
   
   if (!ecosystemState) return null;
   
@@ -219,20 +246,50 @@ const EnvironmentalStatus = () => {
 
 // Pack dynamics visualization
 const PackDynamicsDisplay = () => {
-  // Would integrate with PackSocialSystem in production
+  const { ecosystem } = useWorld();
   const [packData, setPackData] = useState<any[]>([]);
   
   useEffect(() => {
-    // Simulate pack formation data
-    setPackData([
-      { id: 'pack_1', type: 'family_group', members: 4, cohesion: 0.8, territory: 25 },
-      { id: 'pack_2', type: 'hunting_pack', members: 6, cohesion: 0.9, territory: 40 }
-    ]);
-  }, []);
+    if (!ecosystem) return;
+    
+    const updateInterval = setInterval(() => {
+      const packSystem = ecosystem.getPackSocialSystem();
+      const analysis = packSystem.getPackAnalysis();
+      
+      // Convert pack analysis to display format
+      // Note: This is a simplified version - full implementation would query individual packs
+      setPackData([
+        {
+          id: 'pack_summary',
+          type: 'summary',
+          members: Math.round(analysis.averagePackSize),
+          cohesion: 0.8, // Would calculate from actual pack data
+          territory: Math.sqrt(analysis.totalTerritorialCoverage / Math.PI)
+        }
+      ]);
+    }, 3000);
+    
+    // Initial update
+    if (ecosystem) {
+      const packSystem = ecosystem.getPackSocialSystem();
+      const analysis = packSystem.getPackAnalysis();
+      setPackData([
+        {
+          id: 'pack_summary',
+          type: 'summary',
+          members: Math.round(analysis.averagePackSize),
+          cohesion: 0.8,
+          territory: Math.sqrt(analysis.totalTerritorialCoverage / Math.PI)
+        }
+      ]);
+    }
+    
+    return () => clearInterval(updateInterval);
+  }, [ecosystem]);
   
   return (
     <div className="fixed top-20 right-4 z-40 max-w-xs">
-      {packData.map((pack, index) => (
+      {packData.map((pack) => (
         <div key={pack.id} className="evolution-card mb-2 animate-pack-form">
           <div className="font-semibold text-sm text-bloom-emerald-600">
             {pack.type.replace('_', ' ').toUpperCase()}

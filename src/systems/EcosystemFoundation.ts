@@ -266,6 +266,19 @@ class EcosystemFoundation {
     gameClock.resume();
     log.info('Ecosystem simulation resumed');
   }
+
+  // System accessors for React components
+  getNarrativeSystem(): HaikuNarrativeSystem {
+    return this.narrativeSystem;
+  }
+
+  getEnvironmentalSystem(): EnvironmentalPressureSystem {
+    return this.environmentalSystem;
+  }
+
+  getPackSocialSystem(): PackSocialSystem {
+    return this.packSocialSystem;
+  }
 }
 
 export default EcosystemFoundation;

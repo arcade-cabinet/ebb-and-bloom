@@ -5,52 +5,44 @@
 
 import React, { useState, useEffect } from 'react';
 import type { HaikuEntry } from '../systems/HaikuNarrativeSystem';
+import { useWorld } from '../contexts/WorldContext';
 
 const NarrativeDisplay = () => {
+  const { ecosystem } = useWorld();
   const [currentHaiku, setCurrentHaiku] = useState<HaikuEntry | null>(null);
   const [recentHaikus, setRecentHaikus] = useState<HaikuEntry[]>([]);
   const [showJournal, setShowJournal] = useState(false);
   
-  // Simulate haiku generation (would connect to HaikuNarrativeSystem)
+  // Connect to real HaikuNarrativeSystem
   useEffect(() => {
-    const generateTestHaiku = () => {
-      const testHaiku: HaikuEntry = {
-        haiku: [
-          'Small forms gather',
-          'Shared traits echo softly',  
-          'Pack-bonds strengthen'
-        ],
-        context: {
-          eventType: 'pack_formation',
-          primarySubject: 'social_coordination',
-          secondaryElements: ['territory', 'loyalty'],
-          location: 'central_plains',
-          involvedCreatures: ['creature_1', 'creature_2'],
-          traits: [0.3, 0.4, 0.2, 0.9, 0.5],
-          environmentalFactors: []
-        },
-        timestamp: Date.now(),
-        generation: Math.floor(Math.random() * 10) + 1,
-        emotionalTone: 0.6,
-        similarity: 0.1,
-        significance: 0.7
-      };
-      
-      setCurrentHaiku(testHaiku);
-      setRecentHaikus(prev => [...prev.slice(-4), testHaiku]);
-      
-      // Clear current haiku after 8 seconds
-      setTimeout(() => setCurrentHaiku(null), 8000);
-    };
+    if (!ecosystem) return;
     
-    // Generate haiku every 15-30 seconds
-    const interval = setInterval(generateTestHaiku, 15000 + Math.random() * 15000);
+    const narrativeSystem = ecosystem.getNarrativeSystem();
     
-    // Generate first haiku quickly
-    setTimeout(generateTestHaiku, 3000);
+    // Load recent haikus
+    const haikus = narrativeSystem.getRecentHaikus(10);
+    setRecentHaikus(haikus);
     
-    return () => clearInterval(interval);
-  }, []);
+    // Set up listener for new haikus (would need to add event system)
+    // For now, poll every 5 seconds
+    const updateInterval = setInterval(() => {
+      const latestHaikus = narrativeSystem.getRecentHaikus(10);
+      if (latestHaikus.length > 0) {
+        const latest = latestHaikus[0];
+        if (!recentHaikus.find(h => h.timestamp === latest.timestamp)) {
+          setRecentHaikus(latestHaikus);
+          
+          // Show new haiku if significant
+          if (latest.significance > 0.6) {
+            setCurrentHaiku(latest);
+            setTimeout(() => setCurrentHaiku(null), 8000);
+          }
+        }
+      }
+    }, 5000);
+    
+    return () => clearInterval(updateInterval);
+  }, [ecosystem, recentHaikus]);
   
   return (
     <>

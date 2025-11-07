@@ -1,15 +1,15 @@
 import React, { useEffect, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
-// ECS is accessed via getWorld() - no need to import ECS component
-import { Html } from '@react-three/drei';
 import { getWorld, initializeYuka } from './world/ECSWorld';
 import TextureSystem, { TextureContext } from './systems/TextureSystem';
 import EcosystemFoundation from './systems/EcosystemFoundation';
 import { gameClock } from './systems/GameClock';
-import { useEvolutionDataStore, useGenerationLogger } from './stores/EvolutionDataStore';
+import { useGenerationLogger } from './stores/EvolutionDataStore';
 import { log, initializeLogging } from './utils/Logger';
 import { usePlatformEvents } from './hooks/usePlatformEvents';
 import { useResponsiveScene } from './hooks/useResponsiveScene';
+import { WorldProvider } from './contexts/WorldContext';
+import { CreatureCategory } from './systems/CreatureArchetypeSystem';
 import * as THREE from 'three';
 
 // Components
@@ -72,7 +72,7 @@ const Scene: React.FC = () => {
         ecosystem.requestEvolutionTest(
           'tool_use_evolution',
           [0.1, 0.2, 0.8, 0.6, 0.9, 0.3, 0.4, 0.2, 0.5, 0.3], // High manipulation traits
-          'tiny_scavenger',
+          CreatureCategory.SMALL_FORAGER,
           new THREE.Vector3(-50, 2, -50)
         );
         
@@ -80,7 +80,7 @@ const Scene: React.FC = () => {
         ecosystem.requestEvolutionTest(
           'social_evolution',
           [0.3, 0.4, 0.2, 0.9, 0.5, 0.7, 0.8, 0.3, 0.4, 0.6], // High social traits
-          'small_browser',
+          CreatureCategory.MEDIUM_GRAZER,
           new THREE.Vector3(60, 2, 60)
         );
         
@@ -88,7 +88,7 @@ const Scene: React.FC = () => {
         ecosystem.requestEvolutionTest(
           'pollution_resistance',
           [0.5, 0.3, 0.4, 0.2, 0.6, 0.7, 0.8, 0.9, 0.8, 0.4], // High resistance traits
-          'medium_forager',
+          CreatureCategory.SMALL_FORAGER,
           new THREE.Vector3(0, 2, -80)
         );
         
@@ -196,31 +196,33 @@ const App: React.FC = () => {
   
   return (
     <div style={{ width: '100vw', height: '100vh', background: '#000' }}>
-      <TextureContext.Provider value={textureSystem}>
-        <Canvas
-            shadows
-            camera={{ fov: 75, near: 0.1, far: 2000, position: [0, 5, 0] }}
-            gl={{ 
-              antialias: true,
-              powerPreference: 'high-performance',
-              toneMapping: THREE.ACESFilmicToneMapping,
-              toneMappingExposure: 1.2
-            }}
-            onError={(error) => log.error('Canvas error', error)}
-            onCreated={({ gl, scene, camera }) => {
+      <WorldProvider world={world} ecosystem={ecosystem}>
+        <TextureContext.Provider value={textureSystem}>
+          <Canvas
+              shadows
+              camera={{ fov: 75, near: 0.1, far: 2000, position: [0, 5, 0] }}
+              gl={{ 
+                antialias: true,
+                powerPreference: 'high-performance',
+                toneMapping: THREE.ACESFilmicToneMapping,
+                toneMappingExposure: 1.2
+              }}
+              onError={(error) => log.error('Canvas error', error)}
+            onCreated={({ gl, camera }) => {
               log.info('Canvas created successfully', {
                 renderer: gl.info.render,
                 camera: camera.position.toArray()
               });
             }}
-          >
-            <Scene />
-            <EcosystemUpdater />
-          </Canvas>
-          
-          {/* Evolution UI overlay with clean information display */}
-          <EvolutionUI />
-      </TextureContext.Provider>
+            >
+              <Scene />
+              <EcosystemUpdater />
+            </Canvas>
+            
+            {/* Evolution UI overlay with clean information display */}
+            <EvolutionUI />
+        </TextureContext.Provider>
+      </WorldProvider>
     </div>
   );
 };

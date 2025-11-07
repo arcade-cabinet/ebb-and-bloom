@@ -6,7 +6,7 @@ import React, { useEffect } from 'react';
 import { useEntities } from 'miniplex-react';
 import { useThree } from '@react-three/fiber';
 import { log } from '../utils/Logger';
-// No texture imports needed - using basic materials for now
+import { useGroundMaterial } from '../systems/TextureSystem';
 
 const TerrainRenderer: React.FC = () => {
   const { scene } = useThree();
