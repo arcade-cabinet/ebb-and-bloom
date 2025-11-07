@@ -49,7 +49,7 @@ export class PlanetaryComposition {
 
     // Find which layer this radius falls into
     const layer = this.layers.find(
-      (l) => radiusKm >= l.minRadius && radiusKm < l.maxRadius
+      (l) => radiusKm >= l.minRadius && radiusKm <= l.maxRadius
     );
 
     // If outside all layers, return void
