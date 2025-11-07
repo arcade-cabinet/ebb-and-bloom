@@ -496,6 +496,218 @@ Return blueprints that DERIVE FROM planetary conditions (${gen0Data.macro.select
   };
 }
 
+// ============================================================================
+// GEN 2: PACKS WITH VISUAL BLUEPRINTS
+// ============================================================================
+
+export async function generateGen2DataPools(
+  planet: Planet,
+  gen1Data: Awaited<ReturnType<typeof generateGen1DataPools>>,
+  seed: string
+): Promise<{
+  macro: {
+    territorialGeographies: string[];
+    selectedGeography: string;
+    visualBlueprint: VisualBlueprint;
+  };
+  meso: {
+    packSociologies: string[];
+    selectedSociology: string;
+    visualBlueprint: VisualBlueprint;
+  };
+  micro: {
+    individualBehaviors: string[];
+    selectedBehavior: string;
+    visualBlueprint: VisualBlueprint;
+  };
+}> {
+  const { macro, meso, micro } = extractSeedComponents(seed);
+
+  const result = await generateObject({
+    model: openai('gpt-4o'),
+    prompt: `You are creating COMPLETE VISUAL BLUEPRINTS for pack rendering.
+
+CREATURE CONTEXT (from Gen 1):
+- Biome: ${gen1Data.macro.selectedStructure}
+- Creatures can create: ${gen1Data.macro.visualBlueprint.canCreate.join(', ')}
+- Creature colors: ${gen1Data.micro.visualBlueprint.representations.colorPalette.join(', ')}
+
+Generate 5 options for EACH scale with FULL pack rendering instructions:
+
+**MACRO - Territorial Geography:**
+For each territorial pattern, provide:
+- canCreate: ["migration trails", "border markers", "shared hunting grounds"]
+- cannotCreate: ["permanent structures" if nomadic, "isolated behavior" if cooperative]
+- representations.materials: Territory marking visuals (use grass/Grass*.jpg for trails, rock/Rock*.jpg for markers)
+- representations.proceduralRules: "Voronoi cells for territories, edges=contested zones, alpha=pack.cohesion"
+- representations.colorPalette: Territory color overlays
+- compatibleWith: ["tool caches" if fixed territories, "seasonal buildings" if migratory]
+- compositionRules: "Overlay territory heatmap on terrain, blend based on pack activity"
+
+**MESO - Pack Sociology:**
+Focus on:
+- Pack cohesion visual markers (proximity clustering, shared color tints)
+- Leadership hierarchy indicators (size differentials, position in formation)
+- Inter-pack relationship visualization (hostile=red edges, friendly=green)
+
+**MICRO - Individual Pack Behavior:**
+Focus on:
+- Individual role visual cues (scouts=faster animation, defenders=larger size)
+- Pack membership indicators (family groups share color family)
+- Behavioral state visualization (hunting=alert posture, resting=relaxed)
+
+Return blueprints that DERIVE FROM creature capabilities (${gen1Data.macro.visualBlueprint.canCreate.join(', ')} enables pack behaviors).`,
+    schema: {
+      type: 'object',
+      properties: {
+        macro: {
+          type: 'object',
+          properties: {
+            options: {
+              type: 'array',
+              minItems: 5,
+              maxItems: 5,
+              items: {
+                type: 'object',
+                properties: {
+                  name: { type: 'string' },
+                  visualBlueprint: {
+                    type: 'object',
+                    properties: {
+                      description: { type: 'string' },
+                      canCreate: { type: 'array', items: { type: 'string' } },
+                      cannotCreate: { type: 'array', items: { type: 'string' } },
+                      representations: {
+                        type: 'object',
+                        properties: {
+                          materials: { type: 'array', items: { type: 'string' } },
+                          shaders: { type: 'object' },
+                          proceduralRules: { type: 'string' },
+                          colorPalette: { type: 'array', items: { type: 'string' } },
+                        },
+                        required: ['materials', 'shaders', 'proceduralRules', 'colorPalette'],
+                      },
+                      compatibleWith: { type: 'array', items: { type: 'string' } },
+                      incompatibleWith: { type: 'array', items: { type: 'string' } },
+                      compositionRules: { type: 'string' },
+                    },
+                    required: ['description', 'canCreate', 'cannotCreate', 'representations', 'compatibleWith', 'incompatibleWith', 'compositionRules'],
+                  },
+                },
+                required: ['name', 'visualBlueprint'],
+              },
+            },
+          },
+          required: ['options'],
+        },
+        meso: {
+          type: 'object',
+          properties: {
+            options: {
+              type: 'array',
+              minItems: 5,
+              maxItems: 5,
+              items: {
+                type: 'object',
+                properties: {
+                  name: { type: 'string' },
+                  visualBlueprint: {
+                    type: 'object',
+                    properties: {
+                      description: { type: 'string' },
+                      canCreate: { type: 'array', items: { type: 'string' } },
+                      cannotCreate: { type: 'array', items: { type: 'string' } },
+                      representations: {
+                        type: 'object',
+                        properties: {
+                          materials: { type: 'array', items: { type: 'string' } },
+                          shaders: { type: 'object' },
+                          proceduralRules: { type: 'string' },
+                          colorPalette: { type: 'array', items: { type: 'string' } },
+                        },
+                        required: ['materials', 'shaders', 'proceduralRules', 'colorPalette'],
+                      },
+                      compatibleWith: { type: 'array', items: { type: 'string' } },
+                      incompatibleWith: { type: 'array', items: { type: 'string' } },
+                      compositionRules: { type: 'string' },
+                    },
+                    required: ['description', 'canCreate', 'cannotCreate', 'representations', 'compatibleWith', 'incompatibleWith', 'compositionRules'],
+                  },
+                },
+                required: ['name', 'visualBlueprint'],
+              },
+            },
+          },
+          required: ['options'],
+        },
+        micro: {
+          type: 'object',
+          properties: {
+            options: {
+              type: 'array',
+              minItems: 5,
+              maxItems: 5,
+              items: {
+                type: 'object',
+                properties: {
+                  name: { type: 'string' },
+                  visualBlueprint: {
+                    type: 'object',
+                    properties: {
+                      description: { type: 'string' },
+                      canCreate: { type: 'array', items: { type: 'string' } },
+                      cannotCreate: { type: 'array', items: { type: 'string' } },
+                      representations: {
+                        type: 'object',
+                        properties: {
+                          materials: { type: 'array', items: { type: 'string' } },
+                          shaders: { type: 'object' },
+                          proceduralRules: { type: 'string' },
+                          colorPalette: { type: 'array', items: { type: 'string' } },
+                        },
+                        required: ['materials', 'shaders', 'proceduralRules', 'colorPalette'],
+                      },
+                      compatibleWith: { type: 'array', items: { type: 'string' } },
+                      incompatibleWith: { type: 'array', items: { type: 'string' } },
+                      compositionRules: { type: 'string' },
+                    },
+                    required: ['description', 'canCreate', 'cannotCreate', 'representations', 'compatibleWith', 'incompatibleWith', 'compositionRules'],
+                  },
+                },
+                required: ['name', 'visualBlueprint'],
+              },
+            },
+          },
+          required: ['options'],
+        },
+      },
+      required: ['macro', 'meso', 'micro'],
+    },
+  });
+
+  const macroOption = selectFromPool(result.object.macro.options, macro);
+  const mesoOption = selectFromPool(result.object.meso.options, meso);
+  const microOption = selectFromPool(result.object.micro.options, micro);
+
+  return {
+    macro: {
+      territorialGeographies: result.object.macro.options.map(o => o.name),
+      selectedGeography: macroOption.name,
+      visualBlueprint: macroOption.visualBlueprint,
+    },
+    meso: {
+      packSociologies: result.object.meso.options.map(o => o.name),
+      selectedSociology: mesoOption.name,
+      visualBlueprint: mesoOption.visualBlueprint,
+    },
+    micro: {
+      individualBehaviors: result.object.micro.options.map(o => o.name),
+      selectedBehavior: microOption.name,
+      visualBlueprint: microOption.visualBlueprint,
+    },
+  };
+}
+
 /**
  * Master function: Generate complete WARP & WEFT with FULL visual blueprints
  */
@@ -512,11 +724,17 @@ export async function generateCompleteGameData(planet: Planet, seed: string) {
   console.log(`   Biome: ${gen1.macro.selectedStructure}`);
   console.log(`   Can create: ${gen1.macro.visualBlueprint.canCreate.join(', ')}`);
   
-  // TODO: Gen 2-6 (following same pattern)
+  const gen2 = await generateGen2DataPools(planet, gen1, seed);
+  console.log('✅ Gen 2: Pack visual blueprints generated');
+  console.log(`   Territory: ${gen2.macro.selectedGeography}`);
+  console.log(`   Compatible with: ${gen2.macro.visualBlueprint.compatibleWith.join(', ')}`);
+  
+  // TODO: Gen 3-6 (continuing pattern)
   
   return {
     gen0,
     gen1,
-    // gen2, gen3, gen4, gen5, gen6
+    gen2,
+    // gen3, gen4, gen5, gen6
   };
 }
