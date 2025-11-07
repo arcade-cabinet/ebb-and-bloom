@@ -5,25 +5,37 @@
 
 ---
 
-## Core Principle: Procedural Where Possible, Meshy for Props
+## Core Principle: Archetypal Synthesis vs Static Assets
+
+**The Key Distinction**:
+- **Archetypal Forms** (evolve, combine, synthesize) → PROCEDURAL
+- **Inventory Items** (picked up, placed, static) → MESHY
+
+**Why This Matters**:
+Creatures and buildings are **archetypal** - they evolve, recombine traits, and synthesize new forms. This requires **textures over geometric frameworks** for infinite recombination.
+
+Props and inventory items are **static** - they're just picked up or placed. They never join together or evolve. Meshy models work perfectly.
 
 **Ebb & Bloom uses:**
-- **Procedural**: Creatures, buildings (geometry + textures)
-- **Meshy 3D Models**: Props, collectibles, environmental detail
+- **Procedural (textures + geometry)**: Creatures, buildings (archetypal forms)
+- **Meshy 3D Models**: Props, collectibles, inventory (static items)
 - **gpt-image-1**: UI elements
 
 ---
 
 ## Asset Categories
 
-### 1. Creatures - PROCEDURAL
+### 1. Creatures - PROCEDURAL (Archetypal Forms)
 **Method**: Geometric shapes + AmbientCG textures + ECS traits
+
+**Why Procedural**: Creatures are **archetypal** - they evolve and synthesize new forms from trait recombination. Can't do this with static models.
 
 **Generation Process**:
 1. ECS traits define morphology (size, limbs, features)
 2. Procedural geometry builder creates mesh from traits
 3. AmbientCG textures applied based on environment/evolution
-4. Result: Unique creature from trait combinations
+4. Traits recombine → new archetypal forms emerge
+5. Result: Infinite creature variations through synthesis
 
 **Textures Needed**:
 - Skin/fur: `Leather003`, `Fabric020`, `FurPattern001`
@@ -37,14 +49,17 @@
 
 ---
 
-### 2. Buildings - PROCEDURAL
+### 2. Buildings - PROCEDURAL (Archetypal Forms)
 **Method**: Geometric construction + AmbientCG textures + assembly manifests
+
+**Why Procedural**: Buildings are **archetypal** - they evolve through tiers (Windbreak→Hut→Longhouse) and combine materials. Need texture-over-framework synthesis.
 
 **Generation Process**:
 1. Assembly manifest defines structure (posts, beams, cladding)
 2. Procedural builder creates geometry from manifest
 3. AmbientCG textures applied per material type
-4. Result: Buildable structures that evolve in tiers
+4. Archetypes evolve and merge (workshop + shelter = crafting hall)
+5. Result: Buildings synthesize from archetypal components
 
 **Textures Needed** (from manifests):
 - Wood beams: `WoodBeam001-004`
@@ -64,8 +79,10 @@
 
 ---
 
-### 3. Props & Collectibles - MESHY 3D MODELS
+### 3. Props & Collectibles - MESHY 3D MODELS (Static Items)
 **Method**: Meshy text-to-3D → GLB models
+
+**Why Meshy**: Props are **static inventory items** - they're picked up, placed, or held. They NEVER combine into evolved forms. No need for archetypal synthesis.
 
 **Generation Process**:
 1. Define prop in manifest with prompt
@@ -74,13 +91,13 @@
 4. Download GLB to `public/models/`
 5. Result: Game-ready low-poly 3D models
 
-**What Needs Meshy** (too hard to procedurally generate):
-- **Raw materials**: Ore clumps, river rocks, crystal clusters
-- **Environmental detail**: Shrubs, bushes, debris piles, fallen logs
-- **Sign posts**: Directional markers, territory markers
-- **Indoor props**: Furniture, tools, containers, decorative items
-- **Held items**: Tools, weapons, gathered resources
-- **Collectibles**: Unique pickups, artifacts
+**What Needs Meshy** (static items, never synthesize):
+- **Raw materials**: Ore clumps, river rocks, crystal clusters (just picked up)
+- **Environmental detail**: Shrubs, bushes, debris piles, fallen logs (just scenery)
+- **Sign posts**: Directional markers, territory markers (just placed)
+- **Indoor props**: Furniture, tools, containers, decorative items (just objects)
+- **Held items**: Tools, weapons, gathered resources (just equipped)
+- **Collectibles**: Unique pickups, artifacts (just inventory)
 
 **Meshy Specs**:
 - Art style: `sculpture` (cartoon/stylized)
