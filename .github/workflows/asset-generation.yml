@@ -84,7 +84,7 @@ jobs:
         pnpm dev:cli generate-all
         echo "✅ UI asset generation complete"
         
-    # Audio workflow disabled - FREEAUDIO not fully implemented yet
+    # Audio workflow disabled - FREESOUND not fully implemented yet
     # - name: Generate Audio Library (IDEMPOTENT)
     #   if: ${{ github.event.inputs.asset_type == 'all' || github.event.inputs.asset_type == 'audio' }}
     #   timeout-minutes: 30  # 30 minutes for audio downloads
