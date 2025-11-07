@@ -29,7 +29,7 @@ GitHub Copilot will automatically discover these prompts when you:
 ## Format
 
 Prompts use the `.prompt.yml` format as specified in:
-https://docs.github.com/en/github-models/use-github-models/storing-prompts-in-github-repositories
+https://docs.github.com/en/copilot/managing-copilot-in-your-repository/storing-prompts-in-github-repositories
 
 Each prompt includes:
 - `name`: Human-readable name
