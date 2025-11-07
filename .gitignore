@@ -146,9 +146,18 @@ ios/
 # Build outputs
 build/
 
-# Texture assets (downloaded via script, too large for git)
+# Generated assets (AI-generated, downloaded, or built)
 public/textures/
 !public/textures/.gitkeep
+public/splash/
+public/ui/
+public/models/
+public/audio/
+public/creatures/
+
+# Keep manifest files (tracked for reference)
+!public/assets/
+!public/assets/*.json
 
 # Playwright test results (can be large)
 playwright-results/
