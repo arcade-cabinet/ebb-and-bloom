@@ -40,22 +40,19 @@ jobs:
       with:
         lfs: true
       
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 9
+      
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-        
-    - name: Install pnpm
-      run: npm install -g pnpm
+        cache: 'pnpm'
       
     - name: Install dependencies
       run: pnpm install --frozen-lockfile
-      
-    - name: Setup environment variables
-      run: |
-        echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
-        echo "FREESOUND_API_KEY=${{ secrets.FREESOUND_API_KEY }}" >> $GITHUB_ENV
         
     - name: Generate AmbientCG Textures (IDEMPOTENT)
       if: ${{ github.event.inputs.asset_type == 'all' || github.event.inputs.asset_type == 'textures' }}
@@ -68,6 +65,8 @@ jobs:
     - name: Generate Evolutionary Archetypes (IDEMPOTENT)
       if: ${{ github.event.inputs.asset_type == 'all' || github.event.inputs.asset_type == 'creatures' || github.event.inputs.asset_type == 'buildings' }}
       timeout-minutes: 60  # 1 hour for archetype generation (GPT-5 can be slow)
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       run: |
         echo "🧬 Generating evolutionary system archetypes (idempotent - skips existing)..."
         echo "This includes: archetypes → creature specs → building assemblies → visual assets"
@@ -77,6 +76,8 @@ jobs:
     - name: Generate UI Assets (IDEMPOTENT)
       if: ${{ github.event.inputs.asset_type == 'all' || github.event.inputs.asset_type == 'ui' }}
       timeout-minutes: 45  # 45 minutes for UI asset generation (GPT-image-1 can be slow)
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       run: |
         echo "🎨 Generating UI element library (idempotent - skips existing)..."
         echo "This includes: splash screens, panels, transparent elements, backgrounds"
@@ -86,6 +87,8 @@ jobs:
     - name: Generate Audio Library (IDEMPOTENT)
       if: ${{ github.event.inputs.asset_type == 'all' || github.event.inputs.asset_type == 'audio' }}
       timeout-minutes: 30  # 30 minutes for audio downloads
+      env:
+        FREESOUND_API_KEY: ${{ secrets.FREESOUND_API_KEY }}
       run: |
         echo "🔊 Checking audio manifest (idempotent - skips if manifest empty)..."
         if [ -f "public/assets/audio-manifest.json" ]; then
@@ -246,21 +249,23 @@ jobs:
       with:
         lfs: true
       
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-        
     - name: Install pnpm
       uses: pnpm/action-setup@v4
       with:
         version: 9
         
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'pnpm'
+        
     - name: Install dependencies
       run: pnpm install --frozen-lockfile
       
     - name: Verify Idempotency
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       run: |
         echo "🔄 Testing idempotent asset generation..."
         
