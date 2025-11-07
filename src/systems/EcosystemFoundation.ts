@@ -21,6 +21,7 @@ import RawMaterialsSystem from './RawMaterialsSystem';
 import TerrainSystem from './TerrainSystem';
 import TextureSystem from './TextureSystem';
 import YukaSphereCoordinator from './YukaSphereCoordinator';
+import DeconstructionSystem from './DeconstructionSystem';
 
 export interface EcosystemState {
   totalCreatures: number;
@@ -49,6 +50,7 @@ class EcosystemFoundation {
   private narrativeSystem: HaikuNarrativeSystem;
   private gestureSystem: HapticGestureSystem;
   private yukaCoordinator: YukaSphereCoordinator;
+  private deconstructionSystem: DeconstructionSystem;
 
   // System state
   private initialized = false;
@@ -69,7 +71,7 @@ class EcosystemFoundation {
     this.environmentalSystem = new EnvironmentalPressureSystem(world);
     this.narrativeSystem = new HaikuNarrativeSystem();
     this.gestureSystem = new HapticGestureSystem();
-    
+
     // Yuka Sphere Coordinator - THE EVOLUTIONARY ENGINE
     this.yukaCoordinator = new YukaSphereCoordinator(
       world,
@@ -81,8 +83,11 @@ class EcosystemFoundation {
       this.packSocialSystem,
       this.populationSystem
     );
+    
+    // Deconstruction System - Reverse Synthesis
+    this.deconstructionSystem = new DeconstructionSystem(world);
 
-    log.info('EcosystemFoundation created with all systems + YUKA COORDINATOR');
+    log.info('EcosystemFoundation created with all systems + YUKA COORDINATOR + DECONSTRUCTION');
   }
 
   async initialize(): Promise<void> {
@@ -292,6 +297,10 @@ class EcosystemFoundation {
 
   getPackSocialSystem(): PackSocialSystem {
     return this.packSocialSystem;
+  }
+  
+  getDeconstructionSystem(): DeconstructionSystem {
+    return this.deconstructionSystem;
   }
 }
 

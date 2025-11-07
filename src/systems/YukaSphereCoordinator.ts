@@ -331,9 +331,11 @@ class YukaSphereCoordinator {
       });
       
       // CRITICAL: Regenerate visual mesh based on new traits
-      // TODO: Implement mesh regeneration
-      // const newMesh = this.creatureSystem.createEvolutionaryMesh(evolutionData);
-      // entity.render.mesh = newMesh;
+      const newMesh = this.regenerateCreatureMesh(entity, evolutionData);
+      if (newMesh && entity.render) {
+        // Remove old mesh from scene (renderer will handle cleanup)
+        entity.render.mesh = newMesh;
+      }
       
       // Record evolution event
       gameClock.recordEvent({
@@ -405,6 +407,110 @@ class YukaSphereCoordinator {
     // TODO: Implement building construction
     // Would spawn buildings based on creature needs
     log.info('Building construction triggered via Yuka decision', data);
+  }
+  
+  /**
+   * Regenerate creature mesh based on evolved traits
+   */
+  private regenerateCreatureMesh(entity: Entity<WorldSchema>, evolutionData: EvolutionaryCreature): THREE.Group | null {
+    try {
+      // Use GeneticSynthesisSystem to get morphological changes
+      const synthesis = this.geneticsSystem.synthesizeCreatureForm(evolutionData.currentTraits);
+      
+      // Create new procedural mesh
+      const group = new THREE.Group();
+      
+      // Base body from traits
+      const bodySize = 1 + (synthesis.morphology.bodyProportions.height * 0.5);
+      const bodyWidth = 1 + (synthesis.morphology.bodyProportions.width * 0.5);
+      
+      const bodyGeometry = new THREE.SphereGeometry(bodySize, 8, 8);
+      bodyGeometry.scale(bodyWidth, 1, 1);
+      
+      // Color from traits
+      const traitColor = this.generateTraitColor(evolutionData.currentTraits);
+      const bodyMaterial = new THREE.MeshStandardMaterial({ 
+        color: traitColor,
+        roughness: 0.7 + (synthesis.morphology.textureModifiers.roughness * 0.3),
+        metalness: 0.1,
+        emissive: traitColor,
+        emissiveIntensity: synthesis.morphology.textureModifiers.emissiveness * 0.3
+      });
+      
+      const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+      group.add(body);
+      
+      // Add limbs based on traits
+      const limbCount = Math.floor(synthesis.morphology.bodyProportions.limbCount);
+      const limbLength = 0.5 + (synthesis.morphology.bodyProportions.limbLength * 0.5);
+      
+      for (let i = 0; i < limbCount; i++) {
+        const angle = (i / limbCount) * Math.PI * 2;
+        const limbGeometry = new THREE.CylinderGeometry(0.1, 0.1, limbLength, 4);
+        const limb = new THREE.Mesh(limbGeometry, bodyMaterial.clone());
+        
+        limb.position.set(
+          Math.cos(angle) * bodyWidth * 0.7,
+          -limbLength * 0.5,
+          Math.sin(angle) * bodyWidth * 0.7
+        );
+        limb.rotation.x = Math.PI / 2;
+        group.add(limb);
+      }
+      
+      // Add sensory organs if trait is high
+      if (synthesis.morphology.specializations.sensoryOrgans > 0.5) {
+        const eyeGeometry = new THREE.SphereGeometry(0.15, 6, 6);
+        const eyeMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0x4444ff, emissiveIntensity: 0.5 });
+        
+        const eye1 = new THREE.Mesh(eyeGeometry, eyeMaterial);
+        eye1.position.set(bodyWidth * 0.3, bodySize * 0.3, bodySize * 0.8);
+        group.add(eye1);
+        
+        const eye2 = new THREE.Mesh(eyeGeometry, eyeMaterial);
+        eye2.position.set(-bodyWidth * 0.3, bodySize * 0.3, bodySize * 0.8);
+        group.add(eye2);
+      }
+      
+      // Add defensive structures if trait is high
+      if (synthesis.morphology.specializations.defensiveStructures > 0.6) {
+        const spikeCount = Math.floor(synthesis.morphology.specializations.defensiveStructures * 8);
+        const spikeGeometry = new THREE.ConeGeometry(0.1, 0.4, 4);
+        
+        for (let i = 0; i < spikeCount; i++) {
+          const spike = new THREE.Mesh(spikeGeometry, bodyMaterial.clone());
+          const phi = Math.random() * Math.PI;
+          const theta = Math.random() * Math.PI * 2;
+          
+          spike.position.setFromSphericalCoords(bodySize, phi, theta);
+          spike.lookAt(0, 0, 0);
+          spike.rotateX(Math.PI);
+          group.add(spike);
+        }
+      }
+      
+      log.info('Regenerated creature mesh from evolved traits', {
+        bodySize,
+        limbCount,
+        sensoryOrgans: synthesis.morphology.specializations.sensoryOrgans,
+        defensiveStructures: synthesis.morphology.specializations.defensiveStructures
+      });
+      
+      return group;
+      
+    } catch (error) {
+      log.error('Failed to regenerate creature mesh', error);
+      return null;
+    }
+  }
+  
+  private generateTraitColor(traits: number[]): THREE.Color {
+    // Generate color from traits - trait 0 affects hue
+    const hue = traits[0] || 0.5;
+    const saturation = 0.6 + (traits[1] || 0.3) * 0.4;
+    const lightness = 0.4 + (traits[2] || 0.3) * 0.3;
+    
+    return new THREE.Color().setHSL(hue, saturation, lightness);
   }
 }
 
