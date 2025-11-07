@@ -873,4 +873,3 @@ class PackSocialSystem {
 }
 
 export default PackSocialSystem;
-export { PackType, SocialRole, type PackStructure, type PackActivity };

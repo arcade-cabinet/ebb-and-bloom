@@ -1,181 +1,237 @@
 /**
- * Terrain Generation System
- * Handles procedural terrain with three-terrain library
+ * Terrain System - Noise-based heightmaps inspired by Daggerfall Unity
+ * Simple, working terrain generation without broken dependencies
  */
 
 import * as THREE from 'three';
-import * as terrain from 'three-terrain';
 import { SimplexNoise } from 'simplex-noise';
 import { log, measurePerformance } from '../utils/Logger';
 import type { World, Entity } from 'miniplex';
 import type { WorldSchema, TerrainChunk, Transform, RenderData } from '../world/ECSWorld';
 
-export class TerrainSystem {
+interface HeightmapData {
+  samples: Float32Array;
+  dimension: number;
+  averageHeight: number;
+  maxHeight: number;
+  scale: number;
+}
+
+class TerrainSystem {
   private world: World<WorldSchema>;
-  private noise = new SimplexNoise();
-  private heightmapCache = new Map<string, Float32Array>();
+  private noise: SimplexNoise;
+  private heightmapDimension = 256;
+  private maxTerrainHeight = 60;
+  private scale = 1.0;
+  private terrainChunks = new Map<string, Entity<WorldSchema>>();
   
   constructor(world: World<WorldSchema>) {
     this.world = world;
-    log.info('TerrainSystem initialized');
+    this.noise = new SimplexNoise();
+    log.info('TerrainSystem initialized with noise-based heightmaps');
   }
   
-  generateChunk(chunkX: number, chunkZ: number, size: number, resolution: number): Entity<WorldSchema> {
+  /**
+   * Generate terrain chunk using noise-based approach
+   */
+  generateChunk(chunkX: number, chunkZ: number, size: number): Entity<WorldSchema> {
     const perf = measurePerformance(`Terrain Chunk ${chunkX},${chunkZ}`);
     const chunkKey = `${chunkX}_${chunkZ}`;
     
-    log.terrain('Generating terrain chunk', { chunkX, chunkZ, size, resolution });
+    log.terrain('Generating terrain chunk', { 
+      chunkX, chunkZ, size, dimension: this.heightmapDimension 
+    });
     
-    try {
-      // Create geometry
-      const geo = new THREE.PlaneGeometry(size, size, resolution - 1, resolution - 1);
-      geo.rotateX(-Math.PI / 2);
-      
-      // Apply three-terrain algorithms
-      terrain.DiamondSquare(geo, {
-        restoreOnFail: true,
-        frequency: 2.5,
-        seed: chunkX * 1000 + chunkZ // Deterministic per chunk
-      });
-      
-      terrain.Erosion(geo, {
-        iterations: 3,
-        rate: 0.05
-      });
-      
-      // Height-based texturing
-      terrain.HeightTexture(geo, {
-        textureMap: [
-          [0.0, 0x4A90E2], // Water
-          [0.3, 0x7ED321], // Grass
-          [0.7, 0x8B4513], // Dirt
-          [1.0, 0x888888]  // Rock
-        ]
-      });
-      
-      // Extract heightmap
-      const vertices = geo.attributes.position.array as Float32Array;
-      const heightData = new Float32Array(resolution * resolution);
-      
-      for (let i = 0; i < vertices.length; i += 3) {
-        const idx = Math.floor(i / 3);
-        heightData[idx] = vertices[i + 1];
+    // Generate heightmap using noise
+    const heightmapData = this.generateHeightmapSamples(chunkX, chunkZ);
+    
+    // Create Three.js geometry from heightmap
+    const geometry = this.createTerrainGeometry(heightmapData, size);
+    
+    // Apply basic material
+    const material = new THREE.MeshLambertMaterial({ color: 0x228B22 });
+    
+    // Create mesh
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(chunkX * size, 0, chunkZ * size);
+    mesh.receiveShadow = true;
+    mesh.castShadow = true;
+    
+    // Create ECS entity
+    const entity = this.world.add({
+      transform: {
+        position: new THREE.Vector3(chunkX * size, 0, chunkZ * size),
+        rotation: new THREE.Euler(0, 0, 0),
+        scale: new THREE.Vector3(1, 1, 1)
+      },
+      terrain: {
+        chunkX,
+        chunkZ,
+        heightData: heightmapData.samples,
+        geometry,
+        loaded: true
+      },
+      render: {
+        mesh,
+        material,
+        visible: true,
+        castShadow: true,
+        receiveShadow: true
       }
-      
-      this.heightmapCache.set(chunkKey, heightData);
-      
-      // Create material
-      const material = new THREE.MeshLambertMaterial({ 
-        vertexColors: true,
-        map: this.createDetailTexture(chunkX, chunkZ)
-      });
-      
-      // Create mesh
-      const mesh = new THREE.Mesh(geo, material);
-      mesh.receiveShadow = true;
-      mesh.castShadow = true;
-      mesh.position.set(chunkX * size, 0, chunkZ * size);
-      
-      // Create ECS entity
-      const entity = this.world.add({
-        transform: {
-          position: new THREE.Vector3(chunkX * size, 0, chunkZ * size),
-          rotation: new THREE.Euler(0, 0, 0),
-          scale: new THREE.Vector3(1, 1, 1)
-        },
-        terrain: {
-          chunkX,
-          chunkZ,
-          heightData,
-          geometry: geo,
-          loaded: true
-        },
-        render: {
-          mesh,
-          material,
-          visible: true,
-          castShadow: true,
-          receiveShadow: true
+    });
+    
+    this.terrainChunks.set(chunkKey, entity);
+    
+    perf.end();
+    
+    log.terrain('Terrain chunk generated successfully', {
+      chunkX, chunkZ,
+      averageHeight: heightmapData.averageHeight.toFixed(2),
+      maxHeight: heightmapData.maxHeight.toFixed(2),
+      vertices: geometry.attributes.position.count
+    });
+    
+    return entity;
+  }
+  
+  /**
+   * Generate heightmap samples using multi-octave noise
+   */
+  private generateHeightmapSamples(mapPixelX: number, mapPixelY: number): HeightmapData {
+    const samples = new Float32Array(this.heightmapDimension * this.heightmapDimension);
+    
+    let averageHeight = 0;
+    let maxHeight = -Infinity;
+    
+    for (let y = 0; y < this.heightmapDimension; y++) {
+      for (let x = 0; x < this.heightmapDimension; x++) {
+        // Continuous noise function to avoid gaps between tiles
+        const noisex = mapPixelX * (this.heightmapDimension - 1) + x;
+        const noisey = mapPixelY * (this.heightmapDimension - 1) + y;
+        
+        // Multi-octave noise for realistic terrain
+        const height = this.getTerrainNoise(noisex, noisey, 0.01, 0.5, 0.1, 2) * this.scale;
+        
+        samples[y * this.heightmapDimension + x] = height;
+        
+        // Track statistics
+        averageHeight += height;
+        if (height > maxHeight) {
+          maxHeight = height;
         }
-      });
-      
-      perf.end();
-      log.terrain('Terrain chunk generated successfully', { 
-        chunkX, 
-        chunkZ, 
-        vertexCount: vertices.length / 3 
-      });
-      
-      return entity;
-      
-    } catch (error) {
-      log.error('Failed to generate terrain chunk', error, { chunkX, chunkZ });
-      throw error;
-    }
-  }
-  
-  getHeightAt(worldX: number, worldZ: number): number {
-    try {
-      // Determine which chunk this position belongs to
-      const chunkSize = 1024; // Should match WORLD_SIZE
-      const chunkX = Math.floor(worldX / chunkSize);
-      const chunkZ = Math.floor(worldZ / chunkSize);
-      const chunkKey = `${chunkX}_${chunkZ}`;
-      
-      const heightData = this.heightmapCache.get(chunkKey);
-      if (!heightData) {
-        log.warn('No heightmap data for position', { worldX, worldZ, chunkX, chunkZ });
-        return 0;
       }
-      
-      // Sample heightmap
-      const resolution = Math.sqrt(heightData.length);
-      const localX = worldX - (chunkX * chunkSize);
-      const localZ = worldZ - (chunkZ * chunkSize);
-      
-      const hx = Math.floor((localX / chunkSize) * resolution);
-      const hz = Math.floor((localZ / chunkSize) * resolution);
-      const idx = Math.max(0, Math.min(resolution - 1, hz)) * resolution + Math.max(0, Math.min(resolution - 1, hx));
-      
-      return heightData[idx] || 0;
-      
-    } catch (error) {
-      log.error('Error sampling terrain height', error, { worldX, worldZ });
-      return 0;
     }
+    
+    averageHeight /= this.heightmapDimension * this.heightmapDimension;
+    
+    return {
+      samples,
+      dimension: this.heightmapDimension,
+      averageHeight,
+      maxHeight,
+      scale: this.scale
+    };
   }
   
-  private createDetailTexture(chunkX: number, chunkZ: number): THREE.Texture {
-    // Create procedural detail texture for terrain variety
-    const canvas = document.createElement('canvas');
-    canvas.width = canvas.height = 512;
-    const ctx = canvas.getContext('2d')!;
+  /**
+   * Multi-octave noise generation
+   */
+  private getTerrainNoise(
+    x: number, 
+    y: number, 
+    frequency: number, 
+    amplitude: number, 
+    lacunarity: number, 
+    octaves: number
+  ): number {
     
-    // Base grass color with noise variation
-    const baseHue = 120 + (this.noise.noise2D(chunkX, chunkZ) * 20);
-    ctx.fillStyle = `hsl(${baseHue}, 60%, 40%)`;
-    ctx.fillRect(0, 0, 512, 512);
+    let value = 0;
+    let currentAmplitude = amplitude;
+    let currentFrequency = frequency;
     
-    // Add detail noise
-    for (let i = 0; i < 1000; i++) {
-      const x = Math.random() * 512;
-      const y = Math.random() * 512;
-      const size = 1 + Math.random() * 3;
-      
-      ctx.fillStyle = `hsl(${baseHue + (Math.random() - 0.5) * 40}, 70%, 30%)`;
-      ctx.fillRect(x, y, size, size);
+    for (let i = 0; i < octaves; i++) {
+      value += this.noise.noise2D(x * currentFrequency, y * currentFrequency) * currentAmplitude;
+      currentAmplitude *= 0.5;
+      currentFrequency *= lacunarity;
     }
     
-    const texture = new THREE.CanvasTexture(canvas);
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(8, 8);
+    return (value + 1) * 0.5 * this.maxTerrainHeight;
+  }
+  
+  /**
+   * Create Three.js geometry from heightmap data
+   */
+  private createTerrainGeometry(heightmapData: HeightmapData, size: number): THREE.BufferGeometry {
+    const geometry = new THREE.PlaneGeometry(
+      size, 
+      size, 
+      this.heightmapDimension - 1, 
+      this.heightmapDimension - 1
+    );
     
-    return texture;
+    geometry.rotateX(-Math.PI / 2);
+    
+    // Apply height data to vertices
+    const vertices = geometry.attributes.position.array as Float32Array;
+    
+    for (let i = 0; i < vertices.length; i += 3) {
+      const vertexIndex = Math.floor(i / 3);
+      const height = heightmapData.samples[vertexIndex] || 0;
+      vertices[i + 1] = height; // Y coordinate
+    }
+    
+    geometry.attributes.position.needsUpdate = true;
+    geometry.computeVertexNormals();
+    
+    return geometry;
+  }
+  
+  /**
+   * Get height at world position
+   */
+  getHeightAt(worldX: number, worldZ: number): number {
+    const chunkSize = 1024;
+    const chunkX = Math.floor(worldX / chunkSize);
+    const chunkZ = Math.floor(worldZ / chunkSize);
+    const chunkKey = `${chunkX}_${chunkZ}`;
+    
+    const terrainChunk = this.terrainChunks.get(chunkKey);
+    if (!terrainChunk?.terrain) {
+      // Generate chunk on demand
+      this.generateChunk(chunkX, chunkZ, chunkSize);
+      const newChunk = this.terrainChunks.get(chunkKey);
+      if (!newChunk?.terrain) return 15; // Default height
+      
+      return this.sampleHeightFromChunk(newChunk.terrain.heightData, worldX, worldZ, chunkX, chunkZ);
+    }
+    
+    return this.sampleHeightFromChunk(terrainChunk.terrain.heightData, worldX, worldZ, chunkX, chunkZ);
+  }
+  
+  private sampleHeightFromChunk(
+    heightData: Float32Array,
+    worldX: number, 
+    worldZ: number,
+    chunkX: number,
+    chunkZ: number
+  ): number {
+    
+    const chunkSize = 1024;
+    const localX = worldX - (chunkX * chunkSize);
+    const localZ = worldZ - (chunkZ * chunkSize);
+    
+    const hx = Math.floor((localX / chunkSize) * this.heightmapDimension);
+    const hz = Math.floor((localZ / chunkSize) * this.heightmapDimension);
+    
+    const clampedHx = Math.max(0, Math.min(this.heightmapDimension - 1, hx));
+    const clampedHz = Math.max(0, Math.min(this.heightmapDimension - 1, hz));
+    
+    const index = clampedHz * this.heightmapDimension + clampedHx;
+    return heightData[index] || 15;
   }
   
   update(deltaTime: number): void {
-    // Terrain doesn't need regular updates, but could handle streaming here
+    // Terrain doesn't need regular updates
   }
 }
 

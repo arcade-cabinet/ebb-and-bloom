@@ -1,26 +1,88 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="ebb-bloom">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="format-detection" content="telephone=no">
   <meta name="msapplication-tap-highlight" content="no">
-  <title>Ebb and Bloom</title>
+  <meta name="theme-color" content="#38A169">
+  
+  <title>Ebb & Bloom - Shape Worlds. Traits Echo. Legacy Endures.</title>
+  <meta name="description" content="A 3D evolutionary ecosystem where your actions shape creature evolution through trait inheritance and environmental influence.">
+  
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ebb-bloom.app/">
+  <meta property="og:title" content="Ebb & Bloom - Evolutionary Ecosystem Game">
+  <meta property="og:description" content="Shape worlds through evolutionary influence. Watch creatures develop emergent traits based on your interactions.">
+  <meta property="og:image" content="/assets/og-image.png">
+  
+  <!-- Mobile optimizations -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Ebb & Bloom">
+  
+  <!-- Disable default touch behaviors for custom gesture handling -->
   <style>
+    * {
+      touch-action: none;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
     body {
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background: #1a1a1a;
+      background: linear-gradient(135deg, #4A5568 0%, #38A169 100%);
+      background-attachment: fixed;
     }
-    #app {
+    
+    #root {
       width: 100vw;
       height: 100vh;
+      position: relative;
+    }
+    
+    /* Loading state */
+    .evolution-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, #4A5568 0%, #38A169 100%);
+      color: white;
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+    }
+    
+    .evolution-loading::before {
+      content: '';
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top: 3px solid #D69E2E;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 1rem;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
-  <div id="root"></div>
+  <div id="root">
+    <!-- Loading state while React loads -->
+    <div class="evolution-loading">
+      Initializing evolutionary ecosystem...
+    </div>
+  </div>
   <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>

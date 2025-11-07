@@ -35,7 +35,7 @@ class EcosystemFoundation {
   private world: World<WorldSchema>;
   
   // All major systems
-  private terrainSystem: TerrainSystem;
+  private terrainSystem: DaggerfallTerrainSystem;
   private materialsSystem: RawMaterialsSystem;
   private creatureSystem: CreatureArchetypeSystem;
   private geneticsSystem: GeneticSynthesisSystem;
