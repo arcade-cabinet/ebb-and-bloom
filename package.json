@@ -20,7 +20,7 @@
     "dev:ui": "tsx src/dev/GameDevCLI.ts ui",
     "generate:assets": "tsx src/dev/ProductionAssetGenerator.ts",
     "generate:creatures": "tsx -e 'import PAG from \"./src/dev/ProductionAssetGenerator.ts\"; const gen = new PAG.default(); gen.generateCompleteAssetLibrary()'",
-    "generate:buildings": "tsx -e 'import PAG from \"./src/dev/ProductionAssetGenerator.ts\"; const gen = new PAG.default(); console.log(\"Building generation ready\")'""
+    "generate:buildings": "tsx -e 'import PAG from \"./src/dev/ProductionAssetGenerator.ts\"; const gen = new PAG.default(); console.log(\"Building generation ready\")'"
   },
   "dependencies": {
     "@ai-sdk/openai": "^2.0.64",
