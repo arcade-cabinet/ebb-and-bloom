@@ -11,6 +11,7 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import { GameEngine } from './engine/GameEngine.js';
+import { registerPlanetRoutes } from './resources/planet.js';
 
 const fastify = Fastify({
   logger: true,
@@ -19,6 +20,9 @@ const fastify = Fastify({
 await fastify.register(cors, { origin: true });
 
 const games = new Map<string, GameEngine>();
+
+// Register planet routes
+await registerPlanetRoutes(fastify);
 
 fastify.get('/health', async () => {
   return { status: 'ok' };
@@ -71,7 +75,7 @@ fastify.post<{
 
 const start = async () => {
   try {
-    const port = 3001;
+    const port = 3000;
     const host = '0.0.0.0';
     await fastify.listen({ port, host });
     console.log(`Backend running on http://${host}:${port}`);
