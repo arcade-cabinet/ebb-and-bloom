@@ -1,0 +1,202 @@
+import React, { useEffect, useRef } from 'react';
+import { Canvas } from '@react-three/fiber';
+import { ECS } from 'miniplex-react';
+import { Html } from '@react-three/drei';
+import { getWorld, initializeYuka } from './world/ECSWorld';
+import TextureSystem, { TextureContext } from './systems/TextureSystem';
+import EcosystemFoundation from './systems/EcosystemFoundation';
+import { gameClock } from './systems/GameClock';
+import { useEvolutionDataStore, useGenerationLogger } from './stores/EvolutionDataStore';
+import { log, initializeLogging } from './utils/Logger';
+import * as THREE from 'three';
+
+// Components
+import TerrainRenderer from './components/TerrainRenderer';
+import CreatureRenderer from './components/CreatureRenderer';
+import BuildingRenderer from './components/BuildingRenderer';
+import EvolutionObserver from './components/EvolutionObserver';
+
+// Initialize complete ecosystem
+const world = getWorld();
+const textureSystem = new TextureSystem(world);
+const ecosystem = new EcosystemFoundation(world, textureSystem);
+
+// Main Scene with organized systems
+const Scene: React.FC = () => {
+  const initialized = useRef(false);
+  const { logGeneration, logEvent } = useGenerationLogger();
+  
+  useEffect(() => {
+    if (initialized.current) return;
+    initialized.current = true;
+    
+    const initializeWorld = async () => {
+      try {
+        log.info('Initializing complete Ebb & Bloom ecosystem...');
+        
+        // Initialize Yuka first
+        initializeYuka();
+        
+        // Initialize complete ecosystem foundation
+        await ecosystem.initialize();
+        
+        // Start evolution simulation
+        ecosystem.start();
+        
+        // Create some test scenarios
+        log.info('Setting up evolution test scenarios...');
+        
+        // Test 1: Tool-use evolution pressure
+        ecosystem.requestEvolutionTest(
+          'tool_use_evolution',
+          [0.1, 0.2, 0.8, 0.6, 0.9, 0.3, 0.4, 0.2, 0.5, 0.3], // High tool-use traits
+          'tiny_scavenger',
+          new THREE.Vector3(-30, 2, -30)
+        );
+        
+        // Test 2: Social coordination pressure  
+        ecosystem.requestEvolutionTest(
+          'social_evolution',
+          [0.3, 0.4, 0.2, 0.9, 0.5, 0.7, 0.8, 0.3, 0.4, 0.6], // High social traits
+          'small_browser',
+          new THREE.Vector3(40, 2, 40)
+        );
+        
+        log.info('Complete ecosystem initialization finished');
+        
+        // Set up generation logging
+        gameClock.onTimeUpdate((time) => {
+          if (time.generation > 0 && time.generationProgress < 0.1) {
+            // Log generation snapshot to persistent storage
+            const ecosystemState = ecosystem.getCurrentEcosystemState();
+            
+            const snapshot = {
+              generation: time.generation,
+              timestamp: new Date().toISOString(),
+              gameTime: time,
+              ecosystemState,
+              populationStats: { totalPopulation: ecosystemState.totalCreatures, carryingCapacity: 100, birthRate: 0, deathRate: 0, populationPressure: ecosystemState.populationPressure, averageAge: 0, generationTurnover: 0 },
+              creatures: [],  // Would extract from ECS
+              materials: [],  // Would extract from ECS  
+              evolutionEvents: time.evolutionEvents,
+              significantChanges: []
+            };
+            
+            logGeneration(snapshot);
+          }
+        });
+        
+        // Set up evolution event logging
+        gameClock.onEvolutionEvent((event) => {
+          logEvent(event);
+        });
+        
+      } catch (error) {
+        log.error('Ecosystem initialization failed', error);
+      }
+    };
+    
+    initializeWorld();
+  }, []);
+  
+  return (
+    <>
+      {/* Lighting setup */}
+      <ambientLight intensity={0.4} />
+      <directionalLight 
+        position={[100, 200, 50]} 
+        intensity={1}
+        castShadow
+        shadow-mapSize={[2048, 2048]}
+        shadow-camera-far={500}
+        shadow-camera-left={-200}
+        shadow-camera-right={200}
+        shadow-camera-top={200}
+        shadow-camera-bottom={-200}
+      />
+      
+      {/* Atmospheric fog for depth */}
+      <fog attach="fog" args={[0xcccccc, 100, 1500]} />
+      
+      {/* World renderers */}
+      <TerrainRenderer />
+      <CreatureRenderer />
+      <BuildingRenderer />
+      
+      {/* Fixed observation camera - no player controller */}
+      <EvolutionObserver />
+    </>
+  );
+};
+
+// Ecosystem Update Loop
+const EcosystemUpdater: React.FC = () => {
+  useEffect(() => {
+    const updateEcosystem = () => {
+      try {
+        const deltaTime = 1/60; // Fixed timestep
+        
+        // Update complete ecosystem
+        ecosystem.update(deltaTime);
+        
+        requestAnimationFrame(updateEcosystem);
+        
+      } catch (error) {
+        log.error('Ecosystem update failed', error);
+      }
+    };
+    
+    updateEcosystem();
+  }, []);
+  
+  return null;
+};
+
+// Main App with proper architecture
+const App: React.FC = () => {
+  useEffect(() => {
+    initializeLogging();
+    log.info('Ebb & Bloom starting with organized architecture');
+    log.info('React Three Fiber + Miniplex + texture system + creature AI');
+  }, []);
+  
+  return (
+    <div style={{ width: '100vw', height: '100vh', background: '#000' }}>
+      <TextureContext.Provider value={textureSystem}>
+        <ECS world={world}>
+          <Canvas
+            shadows
+            camera={{ fov: 75, near: 0.1, far: 2000, position: [0, 5, 0] }}
+            gl={{ 
+              antialias: true,
+              powerPreference: 'high-performance',
+              toneMapping: THREE.ACESFilmicToneMapping,
+              toneMappingExposure: 1.2
+            }}
+            onError={(error) => log.error('Canvas error', error)}
+            onCreated={({ gl, scene, camera }) => {
+              log.info('Canvas created successfully', {
+                renderer: gl.info.render,
+                camera: camera.position.toArray()
+              });
+            }}
+          >
+            <Scene />
+            <EcosystemUpdater />
+          </Canvas>
+          
+          <Html style={{ position: 'absolute', top: 10, left: 10, color: 'white', zIndex: 100 }}>
+            <div>
+              <p><strong>Ebb & Bloom</strong> - Evolution Simulation</p>
+              <p>Watching ecosystem evolve in accelerated time (10x speed)</p>
+              <p>Generation cycles: 20 seconds each</p>
+              <p>Check console for evolution events and state dumps</p>
+            </div>
+          </Html>
+        </ECS>
+      </TextureContext.Provider>
+    </div>
+  );
+};
+
+export default App;
