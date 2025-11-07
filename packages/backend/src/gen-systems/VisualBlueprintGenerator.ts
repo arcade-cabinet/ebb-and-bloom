@@ -7,6 +7,7 @@
 import { generateObject } from 'ai';
 import { openai } from '@ai-sdk/openai';
 import seedrandom from 'seedrandom';
+import { z } from 'zod';
 import { Planet } from '../schemas/index.js';
 
 /**
@@ -740,17 +741,529 @@ export async function generateCompleteGameData(planet: Planet, seed: string) {
 }
 
 // ============================================================================
-// GEN 3-6: REMAINING VISUAL BLUEPRINTS
-// Using identical structure pattern - implemented in CompleteDataPoolGenerator.ts
-// This file provides the core types and Gen 0-2 as reference implementation
+// GEN 3: TOOL EMERGENCE WITH COMPLETE VISUAL BLUEPRINTS
 // ============================================================================
 
-// NOTE: Gen 3-6 blueprint generators follow same pattern:
-// - 5 options per scale (macro/meso/micro)
-// - Each with full VisualBlueprint structure
-// - Causal derivation from previous generation
-// - Deterministic selection from seed components
-//
-// See CompleteDataPoolGenerator.ts for full Gen 3-6 implementation
-// This keeps file size manageable while maintaining pattern clarity
+export async function generateGen3DataPools(
+  planet: Planet,
+  gen2Data: any,
+  seed: string
+): Promise<{
+  macro: { materialCategories: string[]; selectedCategory: string; visualBlueprint: VisualBlueprint };
+  meso: { craftingMethods: string[]; selectedMethod: string; visualBlueprint: VisualBlueprint };
+  micro: { toolTypesOptions: Array<{name: string; purpose: string; visualBlueprint: VisualBlueprint}>; selectedType: any };
+}> {
+  const { macro, meso, micro } = extractSeedComponents(seed + '-gen3');
 
+  const result = await generateObject({
+    model: openai('gpt-4o'),
+    schema: z.object({
+      macro: z.object({
+        options: z.array(z.object({
+          name: z.string().describe('Material category'),
+          visualBlueprint: z.object({
+            description: z.string(),
+            canCreate: z.array(z.string()),
+            cannotCreate: z.array(z.string()),
+            representations: z.object({
+              materials: z.array(z.string()),
+              shaders: z.object({
+                metallic: z.number().optional(),
+                roughness: z.number().optional(),
+                translucency: z.number().optional(),
+                emissive: z.string().optional(),
+              }),
+              proceduralRules: z.string(),
+              colorPalette: z.array(z.string()),
+            }),
+            compatibleWith: z.array(z.string()),
+            incompatibleWith: z.array(z.string()),
+            compositionRules: z.string(),
+          }),
+        })).length(5),
+      }),
+      meso: z.object({
+        options: z.array(z.object({
+          name: z.string().describe('Crafting method'),
+          visualBlueprint: z.object({
+            description: z.string(),
+            canCreate: z.array(z.string()),
+            cannotCreate: z.array(z.string()),
+            representations: z.object({
+              materials: z.array(z.string()),
+              shaders: z.object({
+                metallic: z.number().optional(),
+                roughness: z.number().optional(),
+                translucency: z.number().optional(),
+                emissive: z.string().optional(),
+              }),
+              proceduralRules: z.string(),
+              colorPalette: z.array(z.string()),
+            }),
+            compatibleWith: z.array(z.string()),
+            incompatibleWith: z.array(z.string()),
+            compositionRules: z.string(),
+          }),
+        })).length(5),
+      }),
+      micro: z.object({
+        options: z.array(z.object({
+          name: z.string().describe('Tool type'),
+          purpose: z.string(),
+          visualBlueprint: z.object({
+            description: z.string(),
+            canCreate: z.array(z.string()),
+            cannotCreate: z.array(z.string()),
+            representations: z.object({
+              materials: z.array(z.string()),
+              shaders: z.object({
+                metallic: z.number().optional(),
+                roughness: z.number().optional(),
+                translucency: z.number().optional(),
+                emissive: z.string().optional(),
+              }),
+              proceduralRules: z.string(),
+              colorPalette: z.array(z.string()),
+            }),
+            compatibleWith: z.array(z.string()),
+            incompatibleWith: z.array(z.string()),
+            compositionRules: z.string(),
+          }),
+        })).length(5),
+      }),
+    }),
+    prompt: `Given pack behaviors: ${gen2Data.macro.selectedGeography}, generate tool emergence options.
+    
+MACRO - Material Categories (5 options):
+Based on planet's crust materials, provide 5 material categories suitable for tool-making.
+For each: complete VisualBlueprint with AmbientCG textures, PBR properties, causal rules.
+
+MESO - Crafting Methods (5 options):
+Based on creature intelligence and available materials, provide 5 crafting techniques.
+For each: complete VisualBlueprint including procedural rules, compatibility.
+
+MICRO - Tool Types (5 options):
+Based on pack problems and material availability, provide 5 specific tool types.
+For each: name, purpose, complete VisualBlueprint.
+
+Use AmbientCG texture paths from ${gen2Data.macro.visualBlueprint.representations.materials.join(', ')}.`,
+  });
+
+  const macroOption = selectFromPool(result.object.macro.options, macro);
+  const mesoOption = selectFromPool(result.object.meso.options, meso);
+  const microOption = selectFromPool(result.object.micro.options, micro);
+
+  return {
+    macro: {
+      materialCategories: result.object.macro.options.map(o => o.name),
+      selectedCategory: macroOption.name,
+      visualBlueprint: macroOption.visualBlueprint,
+    },
+    meso: {
+      craftingMethods: result.object.meso.options.map(o => o.name),
+      selectedMethod: mesoOption.name,
+      visualBlueprint: mesoOption.visualBlueprint,
+    },
+    micro: {
+      toolTypesOptions: result.object.micro.options,
+      selectedType: microOption,
+    },
+  };
+}
+
+// ============================================================================
+// GEN 4: TRIBE FORMATION WITH COMPLETE VISUAL BLUEPRINTS
+// ============================================================================
+
+export async function generateGen4DataPools(
+  planet: Planet,
+  gen3Data: any,
+  seed: string
+): Promise<{
+  macro: { tribalStructures: string[]; selectedStructure: string; visualBlueprint: VisualBlueprint };
+  meso: { governanceTypes: string[]; selectedGovernance: string; visualBlueprint: VisualBlueprint };
+  micro: { tribalTraditions: string[]; selectedTradition: string; visualBlueprint: VisualBlueprint };
+}> {
+  const { macro, meso, micro } = extractSeedComponents(seed + '-gen4');
+
+  const result = await generateObject({
+    model: openai('gpt-4o'),
+    schema: z.object({
+      macro: z.object({
+        options: z.array(z.object({
+          name: z.string().describe('Tribal structure'),
+          visualBlueprint: z.object({
+            description: z.string(),
+            canCreate: z.array(z.string()),
+            cannotCreate: z.array(z.string()),
+            representations: z.object({
+              materials: z.array(z.string()),
+              shaders: z.object({
+                metallic: z.number().optional(),
+                roughness: z.number().optional(),
+                translucency: z.number().optional(),
+                emissive: z.string().optional(),
+              }),
+              proceduralRules: z.string(),
+              colorPalette: z.array(z.string()),
+            }),
+            compatibleWith: z.array(z.string()),
+            incompatibleWith: z.array(z.string()),
+            compositionRules: z.string(),
+          }),
+        })).length(5),
+      }),
+      meso: z.object({
+        options: z.array(z.object({
+          name: z.string().describe('Governance type'),
+          visualBlueprint: z.object({
+            description: z.string(),
+            canCreate: z.array(z.string()),
+            cannotCreate: z.array(z.string()),
+            representations: z.object({
+              materials: z.array(z.string()),
+              shaders: z.object({
+                metallic: z.number().optional(),
+                roughness: z.number().optional(),
+                translucency: z.number().optional(),
+                emissive: z.string().optional(),
+              }),
+              proceduralRules: z.string(),
+              colorPalette: z.array(z.string()),
+            }),
+            compatibleWith: z.array(z.string()),
+            incompatibleWith: z.array(z.string()),
+            compositionRules: z.string(),
+          }),
+        })).length(5),
+      }),
+      micro: z.object({
+        options: z.array(z.object({
+          name: z.string().describe('Tribal tradition'),
+          visualBlueprint: z.object({
+            description: z.string(),
+            canCreate: z.array(z.string()),
+            cannotCreate: z.array(z.string()),
+            representations: z.object({
+              materials: z.array(z.string()),
+              shaders: z.object({
+                metallic: z.number().optional(),
+                roughness: z.number().optional(),
+                translucency: z.number().optional(),
+                emissive: z.string().optional(),
+              }),
+              proceduralRules: z.string(),
+              colorPalette: z.array(z.string()),
+            }),
+            compatibleWith: z.array(z.string()),
+            incompatibleWith: z.array(z.string()),
+            compositionRules: z.string(),
+          }),
+        })).length(5),
+      }),
+    }),
+    prompt: `Given tool use: ${gen3Data.micro.selectedType.name}, generate tribal formation options.
+    
+Provide complete VisualBlueprints for:
+MACRO - Tribal structures (hierarchical, egalitarian, etc)
+MESO - Governance types (elder council, warrior leadership, etc)
+MICRO - Tribal traditions (sharing, competition, etc)`,
+  });
+
+  const macroOption = selectFromPool(result.object.macro.options, macro);
+  const mesoOption = selectFromPool(result.object.meso.options, meso);
+  const microOption = selectFromPool(result.object.micro.options, micro);
+
+  return {
+    macro: {
+      tribalStructures: result.object.macro.options.map(o => o.name),
+      selectedStructure: macroOption.name,
+      visualBlueprint: macroOption.visualBlueprint,
+    },
+    meso: {
+      governanceTypes: result.object.meso.options.map(o => o.name),
+      selectedGovernance: mesoOption.name,
+      visualBlueprint: mesoOption.visualBlueprint,
+    },
+    micro: {
+      tribalTraditions: result.object.micro.options.map(o => o.name),
+      selectedTradition: microOption.name,
+      visualBlueprint: microOption.visualBlueprint,
+    },
+  };
+}
+
+// ============================================================================
+// GEN 5: BUILDING CONSTRUCTION WITH COMPLETE VISUAL BLUEPRINTS
+// ============================================================================
+
+export async function generateGen5DataPools(
+  planet: Planet,
+  gen4Data: any,
+  seed: string
+): Promise<{
+  macro: { buildingStyles: string[]; selectedStyle: string; visualBlueprint: VisualBlueprint };
+  meso: { constructionTechniques: string[]; selectedTechnique: string; visualBlueprint: VisualBlueprint };
+  micro: { buildingTypesOptions: Array<{name: string; purpose: string; visualBlueprint: VisualBlueprint}>; selectedType: any };
+}> {
+  const { macro, meso, micro } = extractSeedComponents(seed + '-gen5');
+
+  const result = await generateObject({
+    model: openai('gpt-4o'),
+    schema: z.object({
+      macro: z.object({
+        options: z.array(z.object({
+          name: z.string().describe('Building style'),
+          visualBlueprint: z.object({
+            description: z.string(),
+            canCreate: z.array(z.string()),
+            cannotCreate: z.array(z.string()),
+            representations: z.object({
+              materials: z.array(z.string()),
+              shaders: z.object({
+                metallic: z.number().optional(),
+                roughness: z.number().optional(),
+                translucency: z.number().optional(),
+                emissive: z.string().optional(),
+              }),
+              proceduralRules: z.string(),
+              colorPalette: z.array(z.string()),
+            }),
+            compatibleWith: z.array(z.string()),
+            incompatibleWith: z.array(z.string()),
+            compositionRules: z.string(),
+          }),
+        })).length(5),
+      }),
+      meso: z.object({
+        options: z.array(z.object({
+          name: z.string().describe('Construction technique'),
+          visualBlueprint: z.object({
+            description: z.string(),
+            canCreate: z.array(z.string()),
+            cannotCreate: z.array(z.string()),
+            representations: z.object({
+              materials: z.array(z.string()),
+              shaders: z.object({
+                metallic: z.number().optional(),
+                roughness: z.number().optional(),
+                translucency: z.number().optional(),
+                emissive: z.string().optional(),
+              }),
+              proceduralRules: z.string(),
+              colorPalette: z.array(z.string()),
+            }),
+            compatibleWith: z.array(z.string()),
+            incompatibleWith: z.array(z.string()),
+            compositionRules: z.string(),
+          }),
+        })).length(5),
+      }),
+      micro: z.object({
+        options: z.array(z.object({
+          name: z.string().describe('Building type'),
+          purpose: z.string(),
+          visualBlueprint: z.object({
+            description: z.string(),
+            canCreate: z.array(z.string()),
+            cannotCreate: z.array(z.string()),
+            representations: z.object({
+              materials: z.array(z.string()),
+              shaders: z.object({
+                metallic: z.number().optional(),
+                roughness: z.number().optional(),
+                translucency: z.number().optional(),
+                emissive: z.string().optional(),
+              }),
+              proceduralRules: z.string(),
+              colorPalette: z.array(z.string()),
+            }),
+            compatibleWith: z.array(z.string()),
+            incompatibleWith: z.array(z.string()),
+            compositionRules: z.string(),
+          }),
+        })).length(5),
+      }),
+    }),
+    prompt: `Given tribal structure: ${gen4Data.macro.selectedStructure}, generate building options.
+    
+Provide complete VisualBlueprints for:
+MACRO - Building styles (organic, geometric, defensive, etc)
+MESO - Construction techniques (stacking, weaving, mortaring, etc)
+MICRO - Building types (shelter, workshop, storage, gathering, etc) with purposes`,
+  });
+
+  const macroOption = selectFromPool(result.object.macro.options, macro);
+  const mesoOption = selectFromPool(result.object.meso.options, meso);
+  const microOption = selectFromPool(result.object.micro.options, micro);
+
+  return {
+    macro: {
+      buildingStyles: result.object.macro.options.map(o => o.name),
+      selectedStyle: macroOption.name,
+      visualBlueprint: macroOption.visualBlueprint,
+    },
+    meso: {
+      constructionTechniques: result.object.meso.options.map(o => o.name),
+      selectedTechnique: mesoOption.name,
+      visualBlueprint: mesoOption.visualBlueprint,
+    },
+    micro: {
+      buildingTypesOptions: result.object.micro.options,
+      selectedType: microOption,
+    },
+  };
+}
+
+// ============================================================================
+// GEN 6: RELIGION & DEMOCRACY WITH COMPLETE VISUAL BLUEPRINTS
+// ============================================================================
+
+export async function generateGen6DataPools(
+  planet: Planet,
+  gen5Data: any,
+  seed: string
+): Promise<{
+  macro: { cosmologies: string[]; selectedCosmology: string; visualBlueprint: VisualBlueprint };
+  meso: { ritualTypes: string[]; selectedRitualType: string; visualBlueprint: VisualBlueprint };
+  micro: { beliefsOptions: Array<{name: string; domain: string; visualBlueprint: VisualBlueprint}>; selectedBelief: any };
+}> {
+  const { macro, meso, micro } = extractSeedComponents(seed + '-gen6');
+
+  const result = await generateObject({
+    model: openai('gpt-4o'),
+    schema: z.object({
+      macro: z.object({
+        options: z.array(z.object({
+          name: z.string().describe('Cosmology type'),
+          visualBlueprint: z.object({
+            description: z.string(),
+            canCreate: z.array(z.string()),
+            cannotCreate: z.array(z.string()),
+            representations: z.object({
+              materials: z.array(z.string()),
+              shaders: z.object({
+                metallic: z.number().optional(),
+                roughness: z.number().optional(),
+                translucency: z.number().optional(),
+                emissive: z.string().optional(),
+              }),
+              proceduralRules: z.string(),
+              colorPalette: z.array(z.string()),
+            }),
+            compatibleWith: z.array(z.string()),
+            incompatibleWith: z.array(z.string()),
+            compositionRules: z.string(),
+          }),
+        })).length(5),
+      }),
+      meso: z.object({
+        options: z.array(z.object({
+          name: z.string().describe('Ritual type'),
+          visualBlueprint: z.object({
+            description: z.string(),
+            canCreate: z.array(z.string()),
+            cannotCreate: z.array(z.string()),
+            representations: z.object({
+              materials: z.array(z.string()),
+              shaders: z.object({
+                metallic: z.number().optional(),
+                roughness: z.number().optional(),
+                translucency: z.number().optional(),
+                emissive: z.string().optional(),
+              }),
+              proceduralRules: z.string(),
+              colorPalette: z.array(z.string()),
+            }),
+            compatibleWith: z.array(z.string()),
+            incompatibleWith: z.array(z.string()),
+            compositionRules: z.string(),
+          }),
+        })).length(5),
+      }),
+      micro: z.object({
+        options: z.array(z.object({
+          name: z.string().describe('Core belief'),
+          domain: z.string(),
+          visualBlueprint: z.object({
+            description: z.string(),
+            canCreate: z.array(z.string()),
+            cannotCreate: z.array(z.string()),
+            representations: z.object({
+              materials: z.array(z.string()),
+              shaders: z.object({
+                metallic: z.number().optional(),
+                roughness: z.number().optional(),
+                translucency: z.number().optional(),
+                emissive: z.string().optional(),
+              }),
+              proceduralRules: z.string(),
+              colorPalette: z.array(z.string()),
+            }),
+            compatibleWith: z.array(z.string()),
+            incompatibleWith: z.array(z.string()),
+            compositionRules: z.string(),
+          }),
+        })).length(5),
+      }),
+    }),
+    prompt: `Given building types: ${gen5Data.micro.selectedType.name}, generate religion/democracy options.
+    
+Provide complete VisualBlueprints for:
+MACRO - Cosmologies (creation myths, cyclical time, etc)
+MESO - Ritual types (seasonal, lifecycle, decision-making, etc)
+MICRO - Core beliefs (afterlife, justice, nature spirits, etc) with domains`,
+  });
+
+  const macroOption = selectFromPool(result.object.macro.options, macro);
+  const mesoOption = selectFromPool(result.object.meso.options, meso);
+  const microOption = selectFromPool(result.object.micro.options, micro);
+
+  return {
+    macro: {
+      cosmologies: result.object.macro.options.map(o => o.name),
+      selectedCosmology: macroOption.name,
+      visualBlueprint: macroOption.visualBlueprint,
+    },
+    meso: {
+      ritualTypes: result.object.meso.options.map(o => o.name),
+      selectedRitualType: mesoOption.name,
+      visualBlueprint: mesoOption.visualBlueprint,
+    },
+    micro: {
+      beliefsOptions: result.object.micro.options,
+      selectedBelief: microOption,
+    },
+  };
+}
+
+// ============================================================================
+// COMPLETE GAME GENERATION (UPDATED WITH ALL 6 GENS)
+// ============================================================================
+
+export async function generateCompleteGameData(planet: Planet, seed: string) {
+  console.log('🎨 Generating complete game data with visual blueprints...');
+  
+  const gen0 = await generateGen0DataPools(seed);
+  console.log('✅ Gen 0: Planet');
+  
+  const gen1 = await generateGen1DataPools(planet, gen0, seed);
+  console.log('✅ Gen 1: Creatures');
+  
+  const gen2 = await generateGen2DataPools(planet, gen1, seed);
+  console.log('✅ Gen 2: Packs');
+  
+  const gen3 = await generateGen3DataPools(planet, gen2, seed);
+  console.log('✅ Gen 3: Tools');
+  
+  const gen4 = await generateGen4DataPools(planet, gen3, seed);
+  console.log('✅ Gen 4: Tribes');
+  
+  const gen5 = await generateGen5DataPools(planet, gen4, seed);
+  console.log('✅ Gen 5: Buildings');
+  
+  const gen6 = await generateGen6DataPools(planet, gen5, seed);
+  console.log('✅ Gen 6: Religion & Democracy');
+  
+  return { gen0, gen1, gen2, gen3, gen4, gen5, gen6 };
+}

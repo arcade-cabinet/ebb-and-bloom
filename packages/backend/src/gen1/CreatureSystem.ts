@@ -1,6 +1,6 @@
 /**
- * Gen 1: Creature System with Yuka Goal Hierarchy
- * Real AI-driven creatures that query the planet and make decisions
+ * Gen 1: Creature System with Yuka Goal Hierarchy + AI-Generated Archetypes
+ * Uses data pools for creature traits instead of hardcoding
  */
 
 import { Goal, CompositeGoal } from 'yuka';
@@ -14,316 +14,263 @@ import {
   Traits,
   Need,
 } from '../schemas/index.js';
+import { generateGen1DataPools, selectFromPool, extractSeedComponents } from '../gen-systems/VisualBlueprintGenerator.js';
 
 export interface Gen1Config {
   seed: string;
   planet: Planet;
   creatureCount: number;
+  useAI?: boolean; // If false, uses fallback for testing
 }
 
-// Archetype definitions
-export const ARCHETYPES = {
+/**
+ * Fallback archetypes when AI is disabled
+ */
+const FALLBACK_ARCHETYPES = {
   cursorial_forager: {
     name: 'Cursorial Forager',
     traits: {
       locomotion: 'cursorial' as const,
       foraging: 'surface' as const,
       social: 'solitary' as const,
-      excavation: 0.2,
-      maxReach: 50,
-      speed: 5,
-      strength: 3,
-    },
-    baseComposition: {
-      carbon: 3.5,
-      calcium: 0.5,
-      iron: 0.1,
-      water: 3.0,
+      intelligence: 0.3,
     },
   },
   arboreal_opportunist: {
     name: 'Arboreal Opportunist',
     traits: {
       locomotion: 'arboreal' as const,
-      foraging: 'arboreal' as const,
-      social: 'solitary' as const,
-      excavation: 0.1,
-      maxReach: 30,
-      speed: 4,
-      strength: 2,
-    },
-    baseComposition: {
-      carbon: 2.5,
-      calcium: 0.3,
-      iron: 0.05,
-      water: 2.0,
-    },
-  },
-  littoral_harvester: {
-    name: 'Littoral Harvester',
-    traits: {
-      locomotion: 'littoral' as const,
-      foraging: 'aquatic' as const,
-      social: 'solitary' as const,
-      excavation: 0.15,
-      maxReach: 40,
-      speed: 3,
-      strength: 2.5,
-    },
-    baseComposition: {
-      carbon: 3.0,
-      calcium: 0.4,
-      iron: 0.08,
-      water: 3.5,
-    },
-  },
-  burrow_engineer: {
-    name: 'Burrow Engineer',
-    traits: {
-      locomotion: 'burrowing' as const,
-      foraging: 'underground' as const,
-      social: 'solitary' as const,
-      excavation: 0.4,
-      maxReach: 100,
-      speed: 2,
-      strength: 4,
-    },
-    baseComposition: {
-      carbon: 4.0,
-      calcium: 0.8,
-      iron: 0.15,
-      water: 2.5,
+      foraging: 'canopy' as const,
+      social: 'small_group' as const,
+      intelligence: 0.5,
     },
   },
 };
 
 /**
- * Yuka Goal: Manage Energy
- */
-class ManageEnergyGoal extends Goal {
-  activate() {
-    console.log('[ManageEnergyGoal] Activated');
-  }
-
-  execute(creature: any, planet: any, deltaTime: number) {
-    // Calculate energy need
-    const energyNeed = creature.needs.find((n: Need) => n.type === 'carbon');
-    if (!energyNeed) return;
-
-    const urgency = energyNeed.urgency;
-
-    if (urgency > 0.7) {
-      // HIGH URGENCY: Find food NOW
-      const accessibleMaterials = this.queryAccessibleMaterials(creature, planet);
-      
-      if (accessibleMaterials.length > 0) {
-        // Consume nearest accessible material
-        const material = accessibleMaterials[0];
-        this.consumeMaterial(creature, material, deltaTime);
-      } else {
-        // No accessible food - explore
-        this.explore(creature, planet, deltaTime);
-      }
-    } else if (urgency > 0.3) {
-      // MODERATE: Opportunistically forage
-      const nearbyMaterials = this.queryAccessibleMaterials(creature, planet, 100);
-      if (nearbyMaterials.length > 0) {
-        this.consumeMaterial(creature, nearbyMaterials[0], deltaTime);
-      }
-    }
-    // else: Energy is fine, do nothing
-  }
-
-  terminate() {
-    console.log('[ManageEnergyGoal] Terminated');
-  }
-
-  private queryAccessibleMaterials(creature: any, planet: any, radius: number = 1000): Material[] {
-    // Query planet for materials within reach
-    const surfaceLayer = planet.layers.find((l: any) => l.name === 'crust');
-    if (!surfaceLayer) return [];
-
-    return surfaceLayer.materials.filter((m: Material) => 
-      m.depth <= creature.traits.maxReach &&
-      m.hardness <= (creature.traits.excavation * 10) &&
-      m.quantity > 0
-    );
-  }
-
-  private consumeMaterial(creature: any, material: Material, deltaTime: number) {
-    // Consume material (simplified for now)
-    const consumeAmount = creature.traits.excavation * deltaTime * 0.1;
-    const actualAmount = Math.min(consumeAmount, material.quantity);
-
-    // Add to creature composition
-    creature.composition[material.type] = (creature.composition[material.type] || 0) + actualAmount;
-
-    // Deplete material
-    material.quantity -= actualAmount;
-
-    // Update energy
-    const energyNeed = creature.needs.find((n: Need) => n.type === 'carbon');
-    if (energyNeed && material.type === 'carbon') {
-      energyNeed.current += actualAmount;
-    }
-
-    console.log(`[ManageEnergyGoal] Consumed ${actualAmount.toFixed(2)}kg of ${material.type}`);
-  }
-
-  private explore(creature: any, planet: any, deltaTime: number) {
-    // Random walk
-    const angle = Math.random() * Math.PI * 2;
-    const distance = creature.traits.speed * deltaTime * 0.01; // km
-
-    creature.position.lat += Math.cos(angle) * distance;
-    creature.position.lon += Math.sin(angle) * distance;
-
-    // Clamp to valid range
-    creature.position.lat = Math.max(-90, Math.min(90, creature.position.lat));
-    creature.position.lon = ((creature.position.lon + 180) % 360) - 180;
-
-    console.log(`[ManageEnergyGoal] Exploring to (${creature.position.lat.toFixed(2)}, ${creature.position.lon.toFixed(2)})`);
-  }
-}
-
-/**
- * Yuka Goal: Manage Rest
- */
-class ManageRestGoal extends Goal {
-  activate() {
-    console.log('[ManageRestGoal] Activated');
-  }
-
-  execute(creature: any, planet: any, deltaTime: number) {
-    const restNeed = creature.needs.find((n: Need) => n.type === 'water');
-    if (!restNeed) return;
-
-    if (restNeed.urgency > 0.6) {
-      // Need to rest
-      console.log('[ManageRestGoal] Resting...');
-      restNeed.current += deltaTime * 0.5; // Rest rate
-      restNeed.current = Math.min(restNeed.current, restNeed.max);
-    }
-  }
-
-  terminate() {
-    console.log('[ManageRestGoal] Terminated');
-  }
-}
-
-/**
- * Gen 1 System
+ * Gen 1 System: Spawn and manage Yuka-driven creatures
  */
 export class Gen1System {
   private seed: string;
   private rng: seedrandom.PRNG;
   private planet: Planet;
+  private creatures: Map<string, Creature> = new Map();
+  private useAI: boolean;
 
   constructor(config: Gen1Config) {
     this.seed = config.seed;
     this.rng = seedrandom(config.seed);
     this.planet = config.planet;
+    this.useAI = config.useAI ?? true;
   }
 
   /**
-   * Spawn creatures deterministically
+   * Initialize Gen 1 with AI-generated archetypes
    */
-  spawnCreatures(count: number): Creature[] {
-    console.log(`[GEN1] Spawning ${count} creatures with seed: ${this.seed}`);
+  async initialize(): Promise<Map<string, Creature> & { visualBlueprints?: any }> {
+    console.log(`[GEN1] Initializing with AI data pools: ${this.useAI}`);
 
-    const creatures: Creature[] = [];
-    const archetypes = Object.keys(ARCHETYPES) as Archetype[];
+    // Generate AI data pools for archetypes
+    let dataPools;
+    let archetypeOptions;
 
-    for (let i = 0; i < count; i++) {
-      // Deterministic archetype selection
-      const archetype = archetypes[Math.floor(this.rng() * archetypes.length)];
-      const archetypeData = ARCHETYPES[archetype];
-
-      // Deterministic spawn position
-      const position: Coordinate = {
-        lat: (this.rng() * 180) - 90,
-        lon: (this.rng() * 360) - 180,
-      };
-
-      // Create creature
-      const creature: Creature = {
-        id: `creature-${i}`,
-        archetype,
-        position,
-        traits: { ...archetypeData.traits },
-        composition: { ...archetypeData.baseComposition },
-        needs: [
-          {
-            type: 'carbon',
-            current: archetypeData.baseComposition.carbon,
-            max: archetypeData.baseComposition.carbon * 1.5,
-            depletionRate: archetypeData.traits.speed * 0.1,
-            urgency: 0.3,
-          },
-          {
-            type: 'water',
-            current: archetypeData.baseComposition.water,
-            max: archetypeData.baseComposition.water * 1.2,
-            depletionRate: archetypeData.traits.speed * 0.05,
-            urgency: 0.2,
-          },
-        ],
-        energy: 100,
-        age: 0,
-        status: 'alive',
-      };
-
-      creatures.push(creature);
-    }
-
-    console.log(`[GEN1] Spawned ${creatures.length} creatures`);
-    return creatures;
-  }
-
-  /**
-   * Update all creatures for one cycle
-   */
-  update(creatures: Creature[], deltaTime: number) {
-    for (const creature of creatures) {
-      if (creature.status !== 'alive') continue;
-
-      // Update needs (deplete over time)
-      for (const need of creature.needs) {
-        need.current -= need.depletionRate * deltaTime;
-        need.current = Math.max(0, need.current);
-        need.urgency = 1 - (need.current / need.max);
-      }
-
-      // Execute Yuka goals
-      this.executeGoals(creature, deltaTime);
-
-      // Check for death
-      const criticalNeed = creature.needs.find(n => n.urgency > 0.95);
-      if (criticalNeed) {
-        creature.status = 'dying';
-        console.log(`[GEN1] Creature ${creature.id} is dying (${criticalNeed.type} depleted)`);
-      }
-
-      creature.age += deltaTime;
-    }
-  }
-
-  private executeGoals(creature: Creature, deltaTime: number) {
-    // Simple goal prioritization (will use full Yuka CompositeGoal later)
-    const energyGoal = new ManageEnergyGoal();
-    const restGoal = new ManageRestGoal();
-
-    // Evaluate priorities
-    const energyNeed = creature.needs.find(n => n.type === 'carbon');
-    const restNeed = creature.needs.find(n => n.type === 'water');
-
-    if (energyNeed && energyNeed.urgency > 0.5) {
-      energyGoal.execute(creature, this.planet, deltaTime);
-    } else if (restNeed && restNeed.urgency > 0.5) {
-      restGoal.execute(creature, this.planet, deltaTime);
+    if (this.useAI) {
+      dataPools = await generateGen1DataPools(this.seed, this.planet);
+      const { macro } = extractSeedComponents(this.seed);
+      archetypeOptions = dataPools.macro.archetypeOptions.map((a: any) => ({
+        name: a.name,
+        traits: this.parseTraitsFromBlueprint(a.traits, a.visualBlueprint),
+        visualBlueprint: a.visualBlueprint,
+      }));
     } else {
-      // Idle / explore
-      energyGoal.execute(creature, this.planet, deltaTime);
+      // Use fallback
+      archetypeOptions = Object.values(FALLBACK_ARCHETYPES);
     }
+
+    console.log(`[GEN1] Generated ${archetypeOptions.length} archetype options`);
+
+    // Spawn creatures
+    const { macro } = extractSeedComponents(this.seed);
+    const archetype = selectFromPool(archetypeOptions, macro);
+    console.log(`[GEN1] Selected archetype: ${archetype.name}`);
+
+    // Create creatures
+    for (let i = 0; i < 20; i++) {
+      const creature = this.createCreature(archetype, i);
+      this.creatures.set(creature.id, creature);
+    }
+
+    console.log(`[GEN1] Spawned ${this.creatures.size} creatures`);
+
+    return Object.assign(this.creatures, { visualBlueprints: dataPools });
+  }
+
+  /**
+   * Parse traits from AI blueprint description
+   */
+  private parseTraitsFromBlueprint(traitDesc: string, blueprint: any): Traits {
+    // Extract traits from AI description
+    const intelligence = traitDesc.includes('intelligent') || traitDesc.includes('clever') ? 0.7 :
+                        traitDesc.includes('smart') ? 0.5 : 0.3;
+    
+    const locomotion = traitDesc.includes('climb') || traitDesc.includes('arboreal') ? 'arboreal' as const :
+                       traitDesc.includes('burrow') || traitDesc.includes('dig') ? 'fossorial' as const :
+                       traitDesc.includes('swim') || traitDesc.includes('aquatic') ? 'littoral' as const :
+                       'cursorial' as const;
+    
+    const foraging = traitDesc.includes('canopy') ? 'canopy' as const :
+                     traitDesc.includes('underwater') || traitDesc.includes('tidal') ? 'underwater' as const :
+                     traitDesc.includes('burrow') ? 'burrow' as const :
+                     'surface' as const;
+    
+    const social = traitDesc.includes('pack') || traitDesc.includes('group') || traitDesc.includes('social') ? 'pack' as const :
+                   traitDesc.includes('pair') ? 'small_group' as const :
+                   'solitary' as const;
+
+    return { locomotion, foraging, social, intelligence };
+  }
+
+  /**
+   * Create a creature with Yuka goal system
+   */
+  private createCreature(archetype: any, index: number): Creature {
+    // Random spawn position on planet surface
+    const lat = (this.rng() - 0.5) * 180;
+    const lon = (this.rng() - 0.5) * 360;
+    const position: Coordinate = {
+      latitude: lat,
+      longitude: lon,
+      altitude: this.planet.radius / 1000, // surface in km
+    };
+
+    // Query materials at spawn location
+    const materials = this.queryMaterialsAt(position);
+
+    // Initial needs
+    const needs: Need[] = [
+      { type: 'food', urgency: 0.3 + this.rng() * 0.3, lastSatisfied: 0 },
+      { type: 'water', urgency: 0.2 + this.rng() * 0.2, lastSatisfied: 0 },
+    ];
+
+    const creature: Creature = {
+      id: `creature-${this.seed}-${index}`,
+      archetype: archetype.name,
+      traits: archetype.traits,
+      position,
+      needs,
+      alive: true,
+      age: 0,
+      visualBlueprint: archetype.visualBlueprint,
+    };
+
+    return creature;
+  }
+
+  /**
+   * Query planet materials at coordinate
+   */
+  private queryMaterialsAt(coord: Coordinate): Material[] {
+    // Find appropriate layer (simplified - uses altitude)
+    const altitudeKm = coord.altitude || 0;
+    const radiusKm = this.planet.radius / 1000;
+
+    const layer = this.planet.layers.find(
+      (l) => altitudeKm >= l.minRadius && altitudeKm <= l.maxRadius
+    ) || this.planet.layers[this.planet.layers.length - 1]; // default to crust
+
+    return layer.materials;
+  }
+
+  /**
+   * Update creatures (run Yuka goals)
+   */
+  update(deltaTime: number): void {
+    this.creatures.forEach((creature) => {
+      if (!creature.alive) return;
+
+      // Update needs
+      this.updateNeeds(creature, deltaTime);
+
+      // Evaluate and execute goals
+      this.evaluateGoals(creature);
+
+      // Age creature
+      creature.age += deltaTime;
+    });
+  }
+
+  /**
+   * Update creature needs over time
+   */
+  private updateNeeds(creature: Creature, deltaTime: number): void {
+    creature.needs.forEach((need) => {
+      // Needs increase over time
+      const rate = need.type === 'food' ? 0.01 : 0.02; // water more urgent
+      need.urgency = Math.min(1.0, need.urgency + rate * deltaTime);
+
+      // Critical threshold = death
+      if (need.urgency > 0.95) {
+        console.log(`[GEN1] Creature ${creature.id} died from ${need.type}`);
+        creature.alive = false;
+      }
+    });
+  }
+
+  /**
+   * Yuka Goal Evaluator - decides what to do
+   */
+  private evaluateGoals(creature: Creature): void {
+    // Find most urgent need
+    const mostUrgent = creature.needs.reduce((prev, curr) =>
+      curr.urgency > prev.urgency ? curr : prev
+    );
+
+    if (mostUrgent.urgency > 0.6) {
+      // Urgent! Execute goal
+      this.executeGoal(creature, mostUrgent);
+    }
+  }
+
+  /**
+   * Execute a goal to satisfy a need
+   */
+  private executeGoal(creature: Creature, need: Need): void {
+    // Query environment
+    const materials = this.queryMaterialsAt(creature.position);
+
+    // Can we satisfy this need here?
+    const canSatisfy = materials.some((m) => {
+      if (need.type === 'food') return m.element === 'C' || m.element === 'O';
+      if (need.type === 'water') return m.element === 'H' || m.element === 'O';
+      return false;
+    });
+
+    if (canSatisfy) {
+      // Satisfy need
+      need.urgency = Math.max(0, need.urgency - 0.5);
+      need.lastSatisfied = creature.age;
+      console.log(
+        `[GEN1] Creature ${creature.id} satisfied ${need.type} at (${creature.position.latitude.toFixed(1)}, ${creature.position.longitude.toFixed(1)})`
+      );
+    } else {
+      // Move to new location (simplified)
+      creature.position.latitude += (this.rng() - 0.5) * 10;
+      creature.position.longitude += (this.rng() - 0.5) * 10;
+      console.log(`[GEN1] Creature ${creature.id} moved to (${creature.position.latitude.toFixed(1)}, ${creature.position.longitude.toFixed(1)})`);
+    }
+  }
+
+  /**
+   * Get all creatures
+   */
+  getCreatures(): Creature[] {
+    return Array.from(this.creatures.values());
+  }
+
+  /**
+   * Get alive creatures
+   */
+  getAliveCreatures(): Creature[] {
+    return this.getCreatures().filter((c) => c.alive);
   }
 }
