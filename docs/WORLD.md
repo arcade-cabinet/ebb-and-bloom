@@ -713,6 +713,548 @@ Every playthrough is unique because:
 
 ---
 
+## Existing Codebase: Critical Audit
+
+### What We Have (Current State)
+
+**17 ECS Systems** operating independently:
+- `YukaSphereCoordinator` - Gen 2+ evolution orchestrator
+- `CreatureArchetypeSystem` - Creature spawning (8 archetypes)
+- `ToolArchetypeSystem` - 8 tool categories (NOT INTEGRATED)
+- `BuildingSystem` - Building templates (NOT INTEGRATED)
+- `RawMaterialsSystem` - Material distribution (HARDCODED Gen 1, no Gen 0)
+- `PackSocialSystem` - Pack formation via Yuka steering
+- `CombatSystem` - Combat mechanics (exists, not triggered)
+- `ConsciousnessSystem` - Player awareness transfer
+- `DeconstructionSystem` - Reverse synthesis
+- `GeneticSynthesisSystem` - Trait blending
+- `EnvironmentalPressureSystem` - Pollution & shocks
+- `PopulationDynamicsSystem` - Population tracking
+- `GameClock` - Time & generation management
+- `HaikuNarrativeSystem` - Procedural storytelling
+- `SporeStyleCameraSystem` - Dynamic camera
+- `HapticGestureSystem` - Touch input
+- `GestureActionMapper` - Gesture → actions
+- `TerrainSystem` - Procedural terrain (FBM noise)
+- `TextureSystem` - Texture loading
+
+**React Three Fiber Rendering**:
+- `CreatureRenderer` - Reads ECS, renders creatures
+- `BuildingRenderer` - Reads ECS, renders buildings
+- `TerrainRenderer` - Reads ECS, renders terrain
+- `MaterialRenderer` - Reads ECS, renders materials
+
+**Yuka Integration** (Current):
+- `yukaManager` (global EntityManager)
+- `yukaTime` (global Time)
+- Creatures have `yukaAgent` component with `Vehicle`
+- Only using **steering behaviors** (Wander, Seek, Flee)
+- NO Goal trees, NO FSM, NO Fuzzy logic, NO Vision, NO Memory, NO MessageDispatcher
+
+**ECS Schema** (`WorldSchema`):
+- `transform`, `movement`, `yukaAgent`, `creature`, `render`, `terrain`, `building`, `resource`, `player`
+- Clean separation: ECS = logic, R3F = rendering
+
+---
+
+### What's BROKEN (Fundamental Flaws)
+
+#### 1. **No Generation 0**
+
+**Problem**: All values hardcoded in Gen 1.
+
+```typescript
+// RawMaterialsSystem.ts - WRONG
+const MATERIAL_ARCHETYPES = {
+  'Copper': { depth: 10, abundance: 30 },  // HARDCODED
+  'Tin': { depth: 30, abundance: 20 },     // HARDCODED
+  'Iron': { depth: 50, abundance: 15 }     // HARDCODED
+};
+```
+
+**Fix Required**:
+- Implement `PlanetaryPhysicsSystem`
+- AI workflow (parent/child) generates manifests from seed
+- Materials, cores, fill properties ALL derived from Gen 0
+
+#### 2. **Yuka Severely Underutilized**
+
+**Problem**: Only 3 of 10+ Yuka systems used.
+
+**Current** (`YukaAgent` component):
+```typescript
+export interface YukaAgent {
+  vehicle: YUKA.Vehicle;
+  behaviorType: 'wander' | 'seek' | 'flee' | 'flock';
+  homePosition: THREE.Vector3;
+  territory: number;
+}
+```
+
+**Missing**:
+- `goals: CompositeGoal[]` - Hierarchical goal trees
+- `fsm: StateMachine` - State-based AI
+- `fuzzy: FuzzyModule` - Fuzzy logic decisions
+- `vision: Vision` - Perception system
+- `memory: MemorySystem` - Short-term memory
+- `triggers: Trigger[]` - Event-driven actions
+- `tasks: TaskQueue` - Sequential task execution
+- `dispatcher: MessageDispatcher` - Entity communication
+
+**Fix Required**:
+- Expand `YukaAgent` component to include ALL Yuka systems
+- Refactor `YukaSphereCoordinator` to use GoalEvaluator, not manual decision loops
+- Add Yuka components to materials, tools, buildings (not just creatures)
+
+#### 3. **Tool Sphere Commented Out**
+
+**Problem**: Tools never emerge.
+
+```typescript
+// YukaSphereCoordinator.ts:110-112
+// Tool Sphere: Should new tool archetypes emerge? (not implemented yet)
+// const toolDecisions = this.toolSphereDecisions(pressure, generation);
+// decisions.push(...toolDecisions);
+```
+
+**Consequence**:
+- Materials beyond surface depth NEVER unlock
+- Material accessibility STATIC (set once in Gen 1)
+- Tool archetypes exist but never spawn
+
+**Fix Required**:
+- Uncomment Tool Sphere
+- Implement `toolSphereDecisions()` using **FuzzyModule**
+- Tools send **MessageDispatcher** signals to `MaterialSphere` when created
+- `MaterialSphere` updates accessibility dynamically
+
+#### 4. **Building Sphere Logs, Doesn't Build**
+
+**Problem**: Buildings never construct.
+
+```typescript
+// YukaSphereCoordinator.ts:425 (approx)
+private buildingSphereDecisions(pressure, generation) {
+  log.info('Building Sphere evaluating...'); // LOGS INTENT
+  return []; // RETURNS EMPTY - DOESN'T BUILD
+}
+```
+
+**Consequence**:
+- Building templates exist
+- BuildingRenderer works
+- Buildings NEVER appear in game
+
+**Fix Required**:
+- Implement building emergence logic using **Yuka GoalEvaluator**
+- Add Trigger system for spatial events ("tribe formed")
+- Buildings send MessageDispatcher signals ("Shelter complete!")
+
+#### 5. **No Inter-Sphere Communication**
+
+**Problem**: Spheres operate in isolation.
+
+**Current**: Each sphere calculates decisions independently. No signals between them.
+
+**Example Missing Flow**:
+```
+Tool created → Signal Material Sphere → Update accessibility
+Tribe formed → Signal Building Sphere → Evaluate shelter need
+Material discovered → Signal Event Log → Notify player
+```
+
+**Fix Required**:
+- Implement `MessageDispatcher` at sphere level
+- Define `MessageTypes` enum (TOOL_CREATED, TRIBE_FORMED, DISCOVERY, etc.)
+- Each sphere `handleMessage()` and reacts to signals
+
+#### 6. **Manual Decision Loops, Not Yuka Goals**
+
+**Problem**: `YukaSphereCoordinator` uses manual if/else logic instead of Yuka's decision systems.
+
+**Current** (`YukaSphereCoordinator.ts:186-210`):
+```typescript
+private creatureSphereDecisions(pressure, generation) {
+  const decisions = [];
+  for (const entity of creatures.entities) {
+    const evolutionProbability = this.calculateEvolutionProbability(...);
+    if (Math.random() < evolutionProbability) {  // MANUAL PROBABILITY
+      decisions.push({ type: 'evolve_creature', ... });
+    }
+  }
+  return decisions;
+}
+```
+
+**Should Be**:
+```typescript
+private creatureSphereDecisions(pressure, generation) {
+  const sphereEntity = this.creatureSphereEntity; // Yuka Entity
+  const goalEvaluator = new GoalEvaluator();
+  
+  // Evaluate goals using Yuka
+  for (const entity of creatures.entities) {
+    const evolveGoal = new EvolveCreatureGoal(entity, pressure);
+    const desirability = goalEvaluator.calculateDesirability(evolveGoal);
+    
+    if (desirability > THRESHOLD) {
+      sphereEntity.setGoal(evolveGoal);
+    }
+  }
+  
+  return sphereEntity.getDecisions(); // Goals converted to decisions
+}
+```
+
+**Fix Required**:
+- Refactor ALL sphere decision functions to use `GoalEvaluator`
+- Spheres themselves are Yuka entities with goal trees
+- Replace manual probability with fuzzy desirability scoring
+
+#### 7. **Procedural Generation Separate from Yuka**
+
+**Problem**: Generation creates static data, then Yuka operates on it.
+
+**Current Flow**:
+```
+TerrainSystem.generateChunk() → Creates heightmap
+MaterialsSystem.initializeArchetypes() → Spawns materials
+CreatureArchetypeSystem.spawnCreatures() → Spawns creatures
+  ↓
+Yuka operates on static entities
+```
+
+**Should Be**:
+```
+Yuka makes generation decisions:
+  MaterialSphere.setGoal(new PlaceMaterialGoal(fuzzyModule))
+  CreatureSphere.setGoal(new SpawnCreatureGoal(goalEvaluator))
+  ↓
+Generation IS behavior
+```
+
+**Fix Required**:
+- Material placement uses `CohesionBehavior` (materials attract/repel)
+- Creature spawning uses `GoalEvaluator` ("Should bears spawn here?")
+- Tool emergence uses `FuzzyModule` ("Is EXTRACTOR needed?")
+
+#### 8. **Rendering Polls ECS**
+
+**Problem**: Renderers poll ECS every frame/500ms.
+
+**Current** (`CreatureRenderer.tsx:20-32`):
+```typescript
+useEffect(() => {
+  const queryCreatures = () => {
+    const creatures = Array.from(world.with('creature', 'render').entities);
+    setCreatureEntities(creatures);
+  };
+  
+  queryCreatures();
+  const interval = setInterval(queryCreatures, 500); // POLLING
+  return () => clearInterval(interval);
+}, [world]);
+```
+
+**Inefficient**: Polling is reactive, not event-driven.
+
+**Better Approach**:
+- Use Miniplex **reactive queries**
+- Or: MessageDispatcher signals renderer when entity added/removed
+
+**Fix Required**:
+- Replace polling with reactive queries
+- Or: Renderer subscribes to ECS entity events
+
+#### 9. **No Event Messaging to Player**
+
+**Problem**: Player has ZERO feedback.
+
+**Current**: All decisions happen silently in ECS. UI shows generation number and basic stats, but:
+- No "Copper discovered!" messages
+- No "Tribe formed!" notifications
+- No "EXTRACTOR emerged!" alerts
+
+**Missing**: Event Log component + MessageDispatcher integration.
+
+**Fix Required**:
+- Create `EventLogEntity` (Yuka entity that receives messages)
+- All spheres send messages to EventLog
+- UIKit `EventLog` component displays messages
+
+#### 10. **No World Score Tracking**
+
+**Problem**: No way to detect endings.
+
+**Current**: Game runs indefinitely. No victory conditions, no ending detection.
+
+**Missing**:
+- World score metrics (speed, violence, harmony, exploitation, innovation)
+- Ending threshold detection (Mutualism, Parasitism, Domination, Transcendence)
+- Ending UI
+
+**Fix Required**:
+- Implement `WorldScoreSystem` (tracks metrics per generation)
+- Implement `EndingDetectionSystem` (evaluates thresholds)
+- Design ending cinematics + haiku integration
+
+---
+
+### What's GOOD (Preserve These)
+
+#### 1. **Clean ECS Architecture**
+
+**Miniplex** is working perfectly:
+- Clear component definitions (`WorldSchema`)
+- Systems query entities cleanly
+- No performance issues
+
+**Keep**: ECS as core architecture.
+
+#### 2. **R3F Rendering Separation**
+
+**React Three Fiber** is ONLY rendering, never writing to ECS:
+- `CreatureRenderer`, `BuildingRenderer`, `TerrainRenderer` read-only
+- Clean separation of concerns
+
+**Keep**: R3F for rendering, ECS for logic.
+
+#### 3. **UIKit Migration Complete**
+
+**All pre-game UI** now uses `@react-three/uikit`:
+- `SplashScreen`, `MainMenu`, `OnboardingFlow`, `CatalystCreator`, `TraitEvolutionDisplay`
+- No DOM elements in Canvas (except legacy HUD components)
+
+**Keep**: UIKit for ALL 3D-aware UI.
+
+#### 4. **Yuka Foundation Exists**
+
+**Yuka is initialized**:
+- `yukaManager` (global EntityManager)
+- `yukaTime` (global Time)
+- Creatures have `yukaAgent` component
+- `PackSocialSystem` uses steering behaviors (Cohesion, Alignment, Separation)
+
+**Keep**: Yuka integration, just EXPAND it massively.
+
+#### 5. **Procedural Systems Work**
+
+**Terrain, textures, archetypes** all generate correctly:
+- `TerrainSystem` uses FBM noise for heightmaps
+- `TextureSystem` loads textures via hooks
+- `CreatureArchetypeSystem` spawns 8 creature types
+- `BuildingSystem` has 4 building templates
+- `ToolArchetypeSystem` defines 8 tool categories
+
+**Keep**: Procedural generation logic, just make it Yuka-driven.
+
+#### 6. **GameClock and Generational Architecture**
+
+**Time management** is solid:
+- `GameClock` tracks generation, ticks
+- `YukaSphereCoordinator` listens to generation changes
+- Generational evolution loop triggers correctly
+
+**Keep**: GameClock, just integrate with Yuka goal trees.
+
+#### 7. **Genetic Synthesis System**
+
+**Trait blending** works:
+- `GeneticSynthesisSystem` blends parent traits
+- 10 traits defined (Mobility, Manipulation, Excavation, etc.)
+- Morphology adapts to trait values
+
+**Keep**: Genetics, just tie to Yuka's GoalEvaluator for trait desirability.
+
+#### 8. **Deconstructi System**
+
+**Reverse synthesis** on death:
+- Creatures decompose into raw materials
+- Materials returned to world
+- Closes the resource loop
+
+**Keep**: Deconstruction, essential for resource race dynamics.
+
+#### 9. **Haiku Narrative System**
+
+**Procedural storytelling** exists:
+- `HaikuNarrativeSystem` generates poems for events
+- Haiku database with templates
+
+**Keep**: Haiku generation, integrate with Event Messaging.
+
+#### 10. **Consciousness System**
+
+**Player awareness transfer**:
+- `ConsciousnessSystem` allows player to "inhabit" creatures
+- First-person perspective shift
+
+**Keep**: Consciousness, unique mechanic for player agency.
+
+---
+
+### The Fundamental Paradigm Shift
+
+**From**:
+```
+ECS Systems → Generate entities → Yuka steers them
+```
+
+**To**:
+```
+Yuka Entities → Make decisions (Goals, Fuzzy, FSM) → ECS executes
+```
+
+**Every system becomes a Yuka entity**:
+- `MaterialSphere` is a Yuka entity with goals ("Distribute materials", "Update accessibility")
+- `CreatureSphere` is a Yuka entity with goals ("Spawn creatures", "Evolve traits")
+- `ToolSphere` is a Yuka entity with goals ("Evaluate tool need", "Spawn archetype")
+- `BuildingSphere` is a Yuka entity with goals ("Assess shelter need", "Construct building")
+
+**Spheres communicate via MessageDispatcher**:
+- Tool created → Signal Material Sphere
+- Tribe formed → Signal Building Sphere
+- Material discovered → Signal Event Log
+
+**Procedural generation IS Yuka**:
+- Material placement uses `CohesionBehavior`
+- Creature spawning uses `GoalEvaluator`
+- Tool emergence uses `FuzzyModule`
+
+---
+
+### Migration Path: How to Get There
+
+#### Phase 0: Gen 0 Foundation (CRITICAL BLOCKER)
+
+**Before ANY refactor, implement Gen 0**:
+
+1. Port Meshy integration from `~/src/otter-river-rush`
+2. Design parent-child AI workflow (Vercel AI SDK)
+3. Creative Director prompt (cores + shared materials + fill material)
+4. Sub-agent spawning (unique materials + creatures per core)
+5. Implement `PlanetaryPhysicsSystem` with Yuka goal trees
+6. Refactor `RawMaterialsSystem` to consume Gen 0 data
+
+**Why First**: Gen 0 defines EVERYTHING. Can't refactor without it.
+
+#### Phase 1: Expand Yuka Components
+
+**Update `YukaAgent` component**:
+
+```typescript
+export interface YukaAgent {
+  vehicle: YUKA.Vehicle;
+  goals?: YUKA.CompositeGoal[];
+  fsm?: YUKA.StateMachine;
+  fuzzy?: YUKA.FuzzyModule;
+  vision?: YUKA.Vision;
+  memory?: YUKA.MemorySystem;
+  triggers?: YUKA.Trigger[];
+  tasks?: YUKA.TaskQueue;
+}
+```
+
+**Add to creatures first** (lowest risk):
+- Implement `CompositeGoal` for hierarchical creature objectives
+- Add `FSM` for creature states (IDLE, FORAGING, FLEEING, FIGHTING)
+- Integrate `Vision`/`Memory` for perception
+
+#### Phase 2: Yuka-fy Materials
+
+**Add `YukaAgent` to material entities**:
+- Implement `CohesionBehavior` for material snapping
+- Add `FuzzyModule` for affinity decisions
+- Integrate `Vision` for proximity detection
+- Refactor `MaterialSphere` to use `GoalEvaluator`
+
+#### Phase 3: Integrate Tool Sphere
+
+**Uncomment Tool Sphere** in `YukaSphereCoordinator`:
+- Implement `toolSphereDecisions()` using `FuzzyModule`
+- Tools signal `MaterialSphere` via `MessageDispatcher`
+- Material accessibility updates dynamically
+
+#### Phase 4: Complete Building Sphere
+
+**Finish Building Sphere** implementation:
+- Add Yuka goal trees for building objectives
+- Implement `Trigger` system for spatial events
+- Buildings signal tribes via `MessageDispatcher`
+- Add FSM for building states (CONSTRUCTION, ACTIVE, DAMAGED, RUINS)
+
+#### Phase 5: Inter-Sphere Communication
+
+**Implement `MessageDispatcher`** at sphere level:
+- Define `MessageTypes` enum
+- Each sphere `handleMessage()` and reacts
+- Event Log subscribes to all messages
+
+#### Phase 6: Refactor Decision Loops
+
+**Replace manual logic** with Yuka:
+- All sphere decision functions use `GoalEvaluator`
+- Spheres themselves are Yuka entities
+- Replace probabilities with fuzzy desirability scoring
+
+#### Phase 7: Procedural Generation as Yuka
+
+**Make generation Yuka-driven**:
+- Material placement via `CohesionBehavior`
+- Creature spawning via `GoalEvaluator`
+- Tool emergence via `FuzzyModule`
+
+#### Phase 8: Event Messaging & Endings
+
+**Player feedback**:
+- Event Log UI component
+- World Score tracking
+- Ending detection + cinematics
+
+---
+
+### Technical Debt
+
+**Files to Refactor**:
+- `src/systems/YukaSphereCoordinator.ts` - Replace manual loops with GoalEvaluator
+- `src/systems/RawMaterialsSystem.ts` - Remove hardcoded values, consume Gen 0
+- `src/systems/ToolArchetypeSystem.ts` - Integrate with YukaSphereCoordinator
+- `src/systems/BuildingSystem.ts` - Complete implementation
+- `src/world/ECSWorld.ts` - Expand `YukaAgent` component
+- `src/components/*Renderer.tsx` - Replace polling with reactive queries
+
+**Files to Create**:
+- `src/systems/PlanetaryPhysicsSystem.ts` - Gen 0 foundation
+- `src/systems/WorldScoreSystem.ts` - Track ending metrics
+- `src/systems/EndingDetectionSystem.ts` - Detect victory conditions
+- `src/systems/EventMessagingSystem.ts` - MessageDispatcher integration
+- `src/config/meshy-models.ts` - AI model generation (port from otter-river-rush)
+- `src/ai/workflows/creative-director.ts` - Parent AI workflow
+- `src/ai/workflows/core-specialist.ts` - Child AI workflows
+
+**Files to Delete**:
+- None. Everything is useful, just needs expansion/refactor.
+
+---
+
+### Summary of Current vs. Target
+
+| System | Current | Target | Change Required |
+|--------|---------|--------|----------------|
+| **Yuka Usage** | Steering behaviors only | ALL 10+ systems | Expand `YukaAgent`, add Goals/FSM/Fuzzy/Vision/Memory/Triggers/Tasks/MessageDispatcher |
+| **Gen 0** | Doesn't exist | AI-generated manifests | Implement `PlanetaryPhysicsSystem` + parent-child AI workflows |
+| **Material System** | Hardcoded values | Gen 0 derived | Refactor `RawMaterialsSystem` to consume Gen 0, add `CohesionBehavior` |
+| **Tool Sphere** | Commented out | Fully integrated | Uncomment, implement `FuzzyModule` decisions, add `MessageDispatcher` |
+| **Building Sphere** | Logs only | Fully functional | Implement emergence logic, add `Trigger` system |
+| **Inter-Sphere Comms** | None | MessageDispatcher | Implement sphere-to-sphere messaging |
+| **Decision Logic** | Manual if/else | Yuka GoalEvaluator | Refactor sphere decision functions |
+| **Procedural Gen** | Static data | Yuka-driven | Make generation use Goals/Fuzzy/Cohesion |
+| **Player Feedback** | None | Event messaging | Implement Event Log + MessageDispatcher |
+| **Endings** | Don't exist | 4 emergent endings | Implement World Score + Ending Detection |
+| **Rendering** | Polling | Reactive | Use Miniplex reactive queries |
+
+---
+
 ## Summary: The Yuka World
 
 This is not a simulation. It's a **living, breathing world** where every entity has desires, makes decisions, and communicates with others. Yuka isn't just AI for creatures—it's the **nervous system of the entire world**.
