@@ -180,13 +180,13 @@ class GameDevCLI {
     const prompt = this.buildCreaturePrompt(emergentName, traits, morphologyDescription);
 
     try {
-      // Generate with GPT-image-1 as specified
+      // Generate with model from constants
       const result = await generateImage({
-        model: openai.image(AI_MODELS.IMAGE_GENERATION), // gpt-image-1
+        model: openai.image(AI_MODELS.IMAGE_GENERATION),
         prompt,
         size: "1024x1024",
         providerOptions: {
-          openai: { quality: 'high' }
+          openai: { quality: 'hd' }
         }
       });
 
@@ -496,25 +496,22 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
 
     try {
       // Determine image size based on dimensions
-      let imageSize: "1024x1024" | "1792x1024" | "1024x1536" = "1024x1024";
+      // Note: AI_MODELS.IMAGE_GENERATION supports: 1024x1024, 1024x1536, 1536x1024
+      let imageSize: "1024x1024" | "1536x1024" | "1024x1536" = "1024x1024";
       if (dimensions[0] > dimensions[1]) {
-        imageSize = "1792x1024"; // Landscape
+        imageSize = "1536x1024"; // Landscape
       } else if (dimensions[1] > dimensions[0]) {
-        imageSize = "1024x1536"; // Portrait (DALL-E only supports 1024x1536, not 1024x1792)
+        imageSize = "1024x1536"; // Portrait
       }
 
-      // Generate with GPT-image-1 as specified
-      // For transparent images, use b64_json format for better transparency support
-      const useB64Json = options?.transparent === true;
-
+      // Generate with model from constants
       const result = await generateImage({
-        model: openai.image(AI_MODELS.IMAGE_GENERATION), // gpt-image-1
+        model: openai.image(AI_MODELS.IMAGE_GENERATION),
         prompt,
         size: imageSize,
         providerOptions: {
           openai: {
-            quality: 'high',
-            ...(useB64Json ? { response_format: 'b64_json' } : {})
+            quality: 'hd'
           }
         }
       });
@@ -558,10 +555,11 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
       }
 
       // POST-PROCESS: Resize to actual target dimensions and verify transparency
+      // This ensures assets match expectedSize from asset-manifest.ts
       const sharp = (await import('sharp')).default;
       let processedImage = sharp(rawImageBuffer);
 
-      // Resize to actual target dimensions (not the 1024+ size from gpt-image-1)
+      // Resize to actual target dimensions (not the 1024+ size from AI_MODELS.IMAGE_GENERATION)
       const [targetWidth, targetHeight] = dimensions;
       processedImage = processedImage.resize(targetWidth, targetHeight, {
         fit: 'contain',
