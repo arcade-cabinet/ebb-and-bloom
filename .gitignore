@@ -153,6 +153,9 @@ public/models/
 public/audio/
 public/creatures/
 
+# Simulation outputs
+simulations/
+
 # Keep manifest files (tracked for reference)
 !public/assets/
 !public/assets/*.json

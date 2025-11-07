@@ -21,6 +21,8 @@ import { generateMockGen0 } from './MockGen0Data';
 import type { GenerationZeroOutput } from '../core/generation-zero-types';
 import seedrandom from 'seedrandom';
 import { createNoise2D } from 'simplex-noise';
+import { useCreatureEvolution } from '../stores/CreatureEvolutionStore';
+import type { CreatureTraits } from '../stores/CreatureEvolutionStore';
 
 /**
  * Game state
@@ -152,6 +154,15 @@ class CLIGame {
       case 'materials':
         this.cmdMaterials();
         break;
+      case 'creatures':
+        this.cmdCreatures();
+        break;
+      case 'evolve':
+        this.cmdEvolve();
+        break;
+      case 'generation':
+        this.cmdGeneration();
+        break;
       case 'help':
         this.cmdHelp();
         break;
@@ -179,6 +190,9 @@ class CLIGame {
     // Build lookup tables
     this.buildLookupTables();
     
+    // Initialize creatures
+    useCreatureEvolution.getState().initializeCreatures(seedPhrase, 5);
+    
     const elapsed = Date.now() - startTime;
     console.log(`✅ Planet generated in ${elapsed}ms\n`);
     console.log(`Planet: ${this.state.planet.planetary.planetaryName}`);
@@ -191,7 +205,8 @@ class CLIGame {
     console.log(`  Permeability: ${this.state.planet.planetary.fillMaterial.permeability}/10`);
     console.log(`\nMaterials: ${this.state.materialTable.size}`);
     console.log(`Layers: ${this.state.layerTable.length}`);
-    console.log(`\nYou are at surface (0, 0, 0). Type "dig <x> <y> <z>" to start digging!`);
+    console.log(`Creatures: 5 (Generation 0)`);
+    console.log(`\nYou are at surface (0, 0, 0). Type "help" for commands!`);
   }
   
   /**
@@ -475,6 +490,96 @@ class CLIGame {
   }
   
   /**
+   * Show creatures
+   */
+  private cmdCreatures() {
+    const creatureState = useCreatureEvolution.getState();
+    const creatures = Array.from(creatureState.creatures.values());
+    
+    if (creatures.length === 0) {
+      console.log('❌ No planet loaded.');
+      return;
+    }
+    
+    console.log(`\n🧬 Creatures (Generation ${creatureState.currentGeneration})\n`);
+    console.log(`Total: ${creatures.length} | Tool users: ${creatures.filter(c => c.canUseTool).length}`);
+    console.log(`Available tools: ${creatureState.availableTools.map(t => t.type).join(', ') || 'none'}\n`);
+    
+    creatures.forEach(c => {
+      console.log(`${c.id} (Gen ${c.generation})`);
+      console.log(`  Taxonomy: ${c.taxonomy.class} / ${c.taxonomy.order} / ${c.taxonomy.family}`);
+      console.log(`  Species: ${c.taxonomy.genus} ${c.taxonomy.species}`);
+      console.log(`  Tool use: ${c.canUseTool ? `✓ (hardness: ${c.toolHardness})` : '✗'}`);
+      console.log(`  Key traits:`);
+      console.log(`    Manipulation: ${(c.traits.manipulation * 100).toFixed(0)}%`);
+      console.log(`    Intelligence: ${(c.traits.intelligence * 100).toFixed(0)}%`);
+      console.log(`    Excavation: ${(c.traits.excavation * 100).toFixed(0)}%`);
+      console.log(`    Social: ${(c.traits.social * 100).toFixed(0)}%`);
+      if (c.evolutionEvents.length > 1) {
+        console.log(`  Evolution: ${c.evolutionEvents[c.evolutionEvents.length - 1]}`);
+      }
+      console.log();
+    });
+  }
+  
+  /**
+   * Evolve creatures
+   */
+  private cmdEvolve() {
+    const creatureState = useCreatureEvolution.getState();
+    
+    if (creatureState.creatures.size === 0) {
+      console.log('❌ No creatures to evolve.');
+      return;
+    }
+    
+    console.log(`\n🧬 Evolution triggered by environmental pressure...\n`);
+    
+    // Set pressure based on game state
+    const depthPressure = this.state.deepestDig / 50; // Normalized
+    const discoveryPressure = this.state.discoveredMaterials.size / this.state.materialTable.size;
+    
+    useCreatureEvolution.setState({
+      materialAccessibilityPressure: Math.min(1, depthPressure + discoveryPressure),
+      populationPressure: 0.3,  // Moderate
+      predationPressure: 0.2,   // Low
+    });
+    
+    // Evolve each creature
+    const creatureIds = Array.from(creatureState.creatures.keys());
+    creatureIds.forEach(id => {
+      creatureState.evolveCreature(id);
+    });
+    
+    // Check for tool emergence
+    creatureState.evaluateToolNeed();
+    
+    console.log(`\n✅ Evolution complete. Type "creatures" to see results.`);
+  }
+  
+  /**
+   * Advance generation
+   */
+  private cmdGeneration() {
+    const creatureState = useCreatureEvolution.getState();
+    
+    if (creatureState.creatures.size === 0) {
+      console.log('❌ No planet loaded.');
+      return;
+    }
+    
+    // Set pressure based on game state
+    const depthPressure = this.state.deepestDig / 50;
+    const discoveryPressure = this.state.discoveredMaterials.size / this.state.materialTable.size;
+    
+    useCreatureEvolution.setState({
+      materialAccessibilityPressure: Math.min(1, depthPressure + discoveryPressure),
+    });
+    
+    creatureState.advanceGeneration();
+  }
+  
+  /**
    * Show help
    */
   private cmdHelp() {
@@ -483,23 +588,35 @@ class CLIGame {
 ║              COMMANDS                     ║
 ╚═══════════════════════════════════════════╝
 
-planet <seed>       Generate planet from seed phrase
-dig <x> <y> <z>     Dig at coordinates (y≤0 is underground)
-scan <depth>        Scan for materials in depth range
-layers              Show planetary layers
-materials           Show all materials
-tools               Show available tools
-status              Show player status
-help                Show this help
-quit                Exit game
+PLANETARY:
+  planet <seed>       Generate planet from seed phrase
+  materials           Show all materials
+  layers              Show planetary layers
+  
+EXPLORATION:
+  dig <x> <y> <z>     Dig at coordinates (y≤0 is underground)
+  scan <depth>        Scan for materials in depth range
+  
+CREATURES:
+  creatures           Show all creatures and their evolution
+  evolve              Trigger evolution (based on pressure)
+  generation          Advance to next generation
+  
+PLAYER:
+  tools               Show available tools
+  status              Show player status
+  help                Show this help
+  quit                Exit game
 
 EXAMPLE SESSION:
-  planet my-world
-  materials
-  dig 0 -5 0        (dig 5m down at origin)
-  dig 10 -15 5      (dig 15m down at x=10, z=5)
-  scan 20           (scan 0-20m depth)
-  status
+  planet volcanic-world
+  creatures           (see base creatures)
+  dig 0 -5 0          (dig 5m down)
+  dig 0 -15 0         (try to dig deeper - might need tools!)
+  evolve              (evolve creatures based on pressure)
+  creatures           (see evolved traits)
+  generation          (advance generation)
+  creatures           (see taxonomical changes)
 `);
   }
 }
