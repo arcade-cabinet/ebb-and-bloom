@@ -521,15 +521,43 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
       });
       
       // Handle both URL and base64 responses
-      let imageBuffer: Buffer;
+      let rawImageBuffer: Buffer;
       if (useB64Json && result.image && typeof result.image === 'object' && 'b64_json' in result.image) {
         // Base64 response for transparent images
-        imageBuffer = Buffer.from((result.image as any).b64_json, 'base64');
+        rawImageBuffer = Buffer.from((result.image as any).b64_json, 'base64');
       } else {
         // URL response
         const imageUrl = typeof result.image === 'string' ? result.image : result.image.url;
         if (!imageUrl) throw new Error('No UI asset generated');
-        imageBuffer = await this.downloadImage(imageUrl);
+        rawImageBuffer = await this.downloadImage(imageUrl);
+      }
+      
+      // POST-PROCESS: Resize to actual target dimensions and verify transparency
+      const sharp = (await import('sharp')).default;
+      let processedImage = sharp(rawImageBuffer);
+      
+      // Resize to actual target dimensions (not the 1024+ size from gpt-image-1)
+      const [targetWidth, targetHeight] = dimensions;
+      processedImage = processedImage.resize(targetWidth, targetHeight, {
+        fit: 'contain',
+        background: options?.transparent ? { r: 0, g: 0, b: 0, alpha: 0 } : { r: 255, g: 255, b: 255, alpha: 1 }
+      });
+      
+      // Ensure PNG format with proper transparency
+      processedImage = processedImage.png({
+        compressionLevel: 9,
+        adaptiveFiltering: true,
+        force: true
+      });
+      
+      const imageBuffer = await processedImage.toBuffer();
+      
+      // Verify transparency if requested
+      if (options?.transparent) {
+        const metadata = await sharp(imageBuffer).metadata();
+        if (!metadata.hasAlpha) {
+          log.warn('Transparency verification failed - no alpha channel', { filePath });
+        }
       }
       
       // Ensure directory exists
