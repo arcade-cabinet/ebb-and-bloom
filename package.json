@@ -23,7 +23,13 @@
     "evolution:validate": "pnpm test && pnpm build",
     "gen0:test": "tsx src/dev/test-gen0.ts",
     "game:cli": "tsx src/dev/cli-game.ts",
-    "game:simulate": "tsx src/dev/simulate-game.ts"
+    "game:simulate": "tsx src/dev/simulate-game.ts",
+    "game:full": "tsx src/dev/comprehensive-game-cli.ts",
+    "game:blocking": "tsx src/dev/comprehensive-game-cli.ts --blocking",
+    "ai:gen0": "tsx src/systems/AIWorkflowRuntime.ts",
+    "test:yuka": "vitest run -t Yuka",
+    "test:integration": "vitest run -t Integration",
+    "test:e2e": "vitest run src/test/ComprehensiveGameSimulation.test.ts"
   },
   "dependencies": {
     "@ai-sdk/openai": "^2.0.64",
