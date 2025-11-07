@@ -418,56 +418,16 @@ export function SporeStyleCamera() {
   useEffect(() => {
     log.info('Spore-style camera component mounted');
     
-    // Set up gesture handlers for mobile
-    const canvas = document.querySelector('canvas');
-    if (canvas) {
-      // Touch gesture handling for camera control
-      let lastTouchDistance = 0;
-      
-      canvas.addEventListener('touchstart', (e) => {
-        if (e.touches.length === 2) {
-          const touch1 = e.touches[0];
-          const touch2 = e.touches[1];
-          lastTouchDistance = Math.sqrt(
-            Math.pow(touch2.clientX - touch1.clientX, 2) + 
-            Math.pow(touch2.clientY - touch1.clientY, 2)
-          );
-        }
-      });
-      
-      canvas.addEventListener('touchmove', (e) => {
-        if (e.touches.length === 2) {
-          e.preventDefault();
-          
-          const touch1 = e.touches[0];
-          const touch2 = e.touches[1];
-          const currentDistance = Math.sqrt(
-            Math.pow(touch2.clientX - touch1.clientX, 2) + 
-            Math.pow(touch2.clientY - touch1.clientY, 2)
-          );
-          
-          const scale = currentDistance / lastTouchDistance;
-          handleGesture('zoom', { x: 0, y: 0, scale });
-          
-          lastTouchDistance = currentDistance;
-        } else if (e.touches.length === 1) {
-          const touch = e.touches[0];
-          const deltaX = touch.clientX - (window.innerWidth / 2);
-          const deltaY = touch.clientY - (window.innerHeight / 2);
-          
-          handleGesture('orbit', { x: deltaX * 0.1, y: deltaY * 0.1 });
-        }
-      });
-      
-      canvas.addEventListener('dblclick', () => {
-        handleGesture('reset', { x: 0, y: 0 });
-      });
-    }
+    // Listen to evolution events for camera reactions
+    const unsubscribe = gameClock.onEvolutionEvent((event: EvolutionEvent) => {
+      if (event.significance > 0.7 && cameraSystem.current) {
+        // Significant event - transition to ecosystem view
+        cameraSystem.current.transitionToPreset('ecosystem');
+      }
+    });
     
-    return () => {
-      // Cleanup event listeners
-    };
-  }, [handleGesture]);
+    return unsubscribe;
+  }, []);
   
   return null; // This component only handles camera logic
 }
