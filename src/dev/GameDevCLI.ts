@@ -519,16 +519,42 @@ Render as: High-quality 3D reference for game asset creation, showing full creat
         }
       });
 
-      // Handle both URL and base64 responses
+      // Handle different response formats from AI SDK
       let rawImageBuffer: Buffer;
-      if (useB64Json && result.image && typeof result.image === 'object' && 'b64_json' in result.image) {
-        // Base64 response for transparent images
-        rawImageBuffer = Buffer.from((result.image as any).b64_json, 'base64');
+      
+      if (!result.image) {
+        log.error('No image in result', { result: JSON.stringify(result, null, 2).substring(0, 500) });
+        throw new Error('No UI asset generated - no image in response');
+      }
+      
+      if (typeof result.image === 'string') {
+        // Direct URL string
+        rawImageBuffer = await this.downloadImage(result.image);
+      } else if (typeof result.image === 'object') {
+        // Object with various possible formats
+        const imageObj = result.image as any;
+        
+        // AI SDK format: base64Data, uint8ArrayData, mediaType
+        if (imageObj.base64Data) {
+          rawImageBuffer = Buffer.from(imageObj.base64Data, 'base64');
+        } else if (imageObj.uint8ArrayData) {
+          rawImageBuffer = Buffer.from(imageObj.uint8ArrayData);
+        } else if (imageObj.b64_json) {
+          // OpenAI b64_json format
+          rawImageBuffer = Buffer.from(imageObj.b64_json, 'base64');
+        } else if (imageObj.url || imageObj.imageUrl) {
+          // URL format
+          rawImageBuffer = await this.downloadImage(imageObj.url || imageObj.imageUrl);
+        } else {
+          log.error('Could not extract image from result object', { 
+            keys: Object.keys(imageObj),
+            result: JSON.stringify(result, null, 2).substring(0, 500)
+          });
+          throw new Error('No UI asset generated - unknown image format');
+        }
       } else {
-        // URL response
-        const imageUrl = typeof result.image === 'string' ? result.image : result.image.url;
-        if (!imageUrl) throw new Error('No UI asset generated');
-        rawImageBuffer = await this.downloadImage(imageUrl);
+        log.error('Unexpected image type', { imageType: typeof result.image });
+        throw new Error('No UI asset generated - unexpected image type');
       }
 
       // POST-PROCESS: Resize to actual target dimensions and verify transparency

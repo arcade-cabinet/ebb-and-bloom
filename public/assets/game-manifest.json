@@ -1,8 +1,31 @@
 {
   "version": "1.0.0",
-  "generated": "2025-01-08T00:00:00.000Z",
+  "generated": "2025-11-07T07:47:01.231Z",
   "textures": [],
   "models": [],
   "audio": [],
-  "ui": []
+  "ui": [
+    {
+      "id": "splash-8ee36901",
+      "name": "Splash screen variant 1: Serene, flowing evolutionary ecosystem with blues and greens, peaceful creatures, symbiotic relationships, organic growth patterns",
+      "category": "splash",
+      "source": {
+        "type": "openai_generated",
+        "prompt": "Create a splash for an evolutionary ecosystem game called \"Ebb & Bloom\".\n\nDescription: Splash screen variant 1: Serene, flowing evolutionary ecosystem with blues and greens, peaceful creatures, symbiotic relationships, organic growth patterns\n\nStyle: Organic, flowing, nature-inspired design with smooth curves and natural patterns\n\nBrand colors: Deep indigo (#4A5568), emerald green (#38A169), trait gold (#D69E2E), echo silver (#A0AEC0)\n\nRequirements: Full-screen splash screen for mobile game, portrait orientation (1080x1920), atmospheric and immersive, suitable for loading screen, brand identity visible\n\n\nIMPORTANT: Full-screen image, optimized for mobile display, portrait orientation"
+      },
+      "files": {
+        "png": "/splash/splash-8ee36901.png"
+      },
+      "metadata": {
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "size": 2711863,
+        "generated": "2025-11-07T07:47:01.231Z",
+        "transparent": false,
+        "fullScreen": true
+      }
+    }
+  ]
 }
