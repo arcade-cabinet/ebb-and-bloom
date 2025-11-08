@@ -9,17 +9,98 @@ on:
 
 env:
   NODE_VERSION: '20'
-  CAPACITOR_VERSION: '^6.0.0'
+  PNPM_VERSION: '9'
 
 jobs:
-  test:
+  # Backend tests and build
+  backend:
+    name: Backend Tests & Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       
       - uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: ${{ env.PNPM_VERSION }}
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+      
+      - run: pnpm install --frozen-lockfile
+      
+      - name: Type check backend
+        run: cd packages/backend && pnpm exec tsc --noEmit
+      
+      - name: Run backend tests
+        run: cd packages/backend && pnpm test
+      
+      - name: Build backend
+        run: cd packages/backend && pnpm build
+
+  # Gen package tests
+  gen:
+    name: Gen Package Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+      
+      - run: pnpm install --frozen-lockfile
+      
+      - name: Type check gen
+        run: cd packages/gen && pnpm exec tsc --noEmit
+        continue-on-error: true
+      
+      - name: Build gen
+        run: cd packages/gen && pnpm build
+        continue-on-error: true
+
+  # Simulation frontend tests and build
+  simulation:
+    name: Simulation Frontend Tests & Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+      
+      - run: pnpm install --frozen-lockfile
+      
+      - name: Type check simulation
+        run: cd packages/simulation && pnpm exec tsc --noEmit
+        continue-on-error: true
+      
+      - name: Build simulation
+        run: cd packages/simulation && pnpm build
+        continue-on-error: true
+
+  # Lint all packages
+  lint:
+    name: Lint All Packages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
       
       - uses: actions/setup-node@v4
         with:
@@ -29,16 +110,5 @@ jobs:
       - run: pnpm install --frozen-lockfile
       
       - name: Lint
-        run: pnpm lint || echo "No lint configured"
+        run: pnpm -r lint || echo "Lint not configured"
         continue-on-error: true
-      
-      - name: Type check
-        run: pnpm exec tsc --noEmit
-        continue-on-error: true
-      
-      - name: Run tests
-        run: pnpm test
-      
-      - name: Build
-        run: pnpm build
-

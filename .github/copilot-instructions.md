@@ -1,15 +1,27 @@
 # GitHub Copilot Instructions
 
-**This extends `.clinerules`**. Read `.clinerules` as primary configuration.
+**This extends `.clinerules`**. Read `.clinerules` first.
 
 ---
 
 ## Memory Bank First
 
-Before suggesting code, mentally reference:
+Read at start of EVERY session (in order):
 1. `memory-bank/agent-permanent-context.md` - Project facts
-2. `memory-bank/activeContext.md` - Current focus
-3. `memory-bank/systemPatterns.md` - Architecture patterns
+2. `memory-bank/agent-collaboration.md` - Multi-agent rules
+3. `memory-bank/activeContext.md` - Current focus
+4. `memory-bank/progress.md` - Status
+
+---
+
+## Project Architecture
+
+**Ebb & Bloom**: Monorepo with 3 packages:
+- `packages/backend/` - REST API + Gen0-Gen6 simulation systems
+- `packages/gen/` - AI archetype generation pipeline
+- `packages/simulation/` - React Three Fiber frontend
+
+**Core Principle**: "Everything is Squirrels" - base archetypes evolve through environmental pressure. NO hardcoded progression.
 
 ---
 
@@ -22,129 +34,173 @@ Before suggesting code, mentally reference:
 - Completing patterns established in file
 - Generating test cases
 - Writing boilerplate
+- React Three Fiber component patterns
 
 ### NOT Used For
 - Architectural decisions (use Claude)
 - Large refactors (use Cline/Cursor)
 - Multi-file changes (use Cursor)
+- AI prompt engineering (use Cline)
 
 ---
 
-## Code Patterns to Follow
+## Package-Specific Patterns
 
-### ECS Systems
+### Backend (`packages/backend/`)
+
+**REST API Endpoints**:
 ```typescript
-class SystemName {
-  private world: World<WorldSchema>;
-  
-  constructor(world: World<WorldSchema>) {
-    this.world = world;
-  }
-  
-  update(deltaTime: number): void {
-    // Query entities
-    const entities = this.world.with('component1', 'component2');
-    
-    // Process each
-    for (const entity of entities.entities) {
-      // Logic here
-    }
-  }
+// Fastify route handler
+fastify.get('/api/game/:gameId', async (request, reply) => {
+  const { gameId } = request.params;
+  const engine = gameEngines.get(gameId);
+  if (!engine) return reply.code(404).send({ error: 'Game not found' });
+  return engine.getState();
+});
+```
+
+**Gen Systems**:
+```typescript
+// Gen0-Gen6 systems use Yuka AI
+import { Gen1System } from '../gen1/CreatureSystem.js';
+
+const system = new Gen1System({
+  seed: 'v1-test-world-world',
+  planet: planet,
+  creatureCount: 20,
+  gen0Data: gen0Data, // WARP flow
+  useAI: true,
+});
+await system.initialize();
+```
+
+**Seed API**:
+```typescript
+// Use seed manager for deterministic generation
+import { validateSeed, getGenerationSeed } from '../seed/seed-manager.js';
+
+const validation = validateSeed('v1-red-blue-green');
+const gen0Seed = getGenerationSeed(validation.seed!, 0);
+```
+
+### Gen Package (`packages/gen/`)
+
+**Archetype Generation**:
+```typescript
+// Use warp-weft-agent for generation
+import { executeWarpWeftGeneration } from './workflows/warp-weft-agent.js';
+
+await executeWarpWeftGeneration({
+  generation: 0,
+  baseSeed: 'v1-test-world-world',
+  previousGenerations: {},
+});
+```
+
+**Quality Assessment**:
+```typescript
+// Check archetype quality
+import { assessQuality } from './tools/quality-assessor.js';
+
+const assessment = await assessQuality('gen0/macro.json');
+if (assessment.score < 0.3) {
+  // Regenerate anemic archetype
 }
 ```
 
-### React Three Fiber Rendering
+### Simulation (`packages/simulation/`)
+
+**React Three Fiber Components**:
 ```typescript
-const Renderer: React.FC = () => {
-  const { world } = useWorld();
-  const { scene } = useThree();
-  const [entities, setEntities] = useState<any[]>([]);
+import { useFrame } from '@react-three/fiber';
+import { useTexture } from '@react-three/drei';
+
+export function Gen0Planet({ planet, visualBlueprint }) {
+  const textures = visualBlueprint.textureReferences.map(id =>
+    useTexture(`/textures/${id}_1K_Color.jpg`)
+  );
   
-  useEffect(() => {
-    // Query ECS once
-    const query = world.with('component', 'render');
-    setEntities(Array.from(query.entities));
-  }, [world]);
+  const material = new MeshStandardMaterial({
+    metalness: visualBlueprint.visualProperties.pbr.metallic,
+    roughness: visualBlueprint.visualProperties.pbr.roughness,
+    map: textures[0],
+  });
   
-  useEffect(() => {
-    // Add meshes to scene
-    for (const entity of entities) {
-      if (entity.render?.mesh) scene.add(entity.render.mesh);
-    }
-    return () => {
-      for (const entity of entities) {
-        if (entity.render?.mesh) scene.remove(entity.render.mesh);
-      }
-    };
-  }, [entities, scene]);
-  
-  return null;
-};
+  return (
+    <mesh material={material}>
+      <sphereGeometry args={[planet.radius / 1000, 64, 64]} />
+    </mesh>
+  );
+}
 ```
 
-### UIKit Components
+**Backend API Integration**:
 ```typescript
-<Card
-  positionType="absolute"
-  positionTop={20}
-  positionRight={20}
-  width={280}
->
-  <CardHeader>
-    <CardTitle><Text>Title</Text></CardTitle>
-  </CardHeader>
-  <CardContent flexDirection="column" gap={8}>
-    {/* Content */}
-  </CardContent>
-</Card>
+// Fetch game state from backend
+const response = await fetch(`http://localhost:3001/api/game/${gameId}`);
+const { planet, gen0Data } = await response.json();
 ```
 
 ---
 
 ## Current Focus
 
-**Phase 0-1: Generation 0 (Planetary Genesis) Implementation**
+**Phase**: Backend Integration Complete → Frontend Rendering
 
-**See**: GitHub Issue #13 and `docs/WORLD.md` lines 1932-1984
+**Priority**: Gen0 planet rendering with visual blueprints
 
-When suggesting code, prioritize:
-- **Seed-driven**: seedrandom for all procedural generation
-- **AI Workflows**: Vercel AI SDK parent-child workflows
-- **Planetary Physics**: No hardcoded values (Copper at 10m is WRONG)
-- **Yuka Integration**: Everything is a Yuka entity with goals
-- **Event Messaging**: MessageDispatcher for player feedback
+**See**: `packages/simulation/COPILOT_SETUP.md` for detailed first-task instructions
 
 ---
 
 ## Architecture Constraints
 
-- ✅ ECS for game logic
-- ✅ React Three Fiber for rendering only
-- ✅ Zustand syncs FROM ECS, never writes
-- ✅ UIKit for ALL UI
-- ❌ NO hardcoded progression
-- ❌ NO game logic in React components
-- ❌ NO DOM-based UI
+- ✅ **Monorepo**: Use workspace dependencies (`workspace:*`)
+- ✅ **Type Safety**: Import types from `@ebb/gen/schemas` and `@ebb/shared/schemas`
+- ✅ **Seed-Driven**: All generation uses deterministic seeds
+- ✅ **WARP/WEFT**: Generations flow causally (WARP) and scales flow hierarchically (WEFT)
+- ✅ **Visual Blueprints**: All archetypes include rendering instructions
+- ❌ **NO hardcoded values**: Calculate from physics/AI generation
+- ❌ **NO game logic in React**: Backend handles all simulation
 
 ---
 
-## Testing
+## Testing Patterns
 
-Suggest test cases for all new systems:
-
+**Backend Tests**:
 ```typescript
-import { describe, test, expect } from 'vitest';
+import { describe, it, expect } from 'vitest';
+import { AccretionSimulation } from '../src/gen0/AccretionSimulation.js';
 
-describe('SystemName', () => {
-  test('should do thing', () => {
-    // Arrange
-    // Act
-    // Assert
+describe('Gen0: Accretion Simulation', () => {
+  it('should generate planet from seed', async () => {
+    const sim = new AccretionSimulation({ seed: 'v1-test-world-world' });
+    const planet = await sim.simulate();
+    expect(planet.radius).toBeGreaterThan(0);
   });
+});
+```
+
+**Frontend Tests** (Playwright):
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('Gen0 planet renders', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('canvas')).toBeVisible();
 });
 ```
 
 ---
 
-**For collaboration rules, see**: `memory-bank/agent-collaboration.md`
+## Key Documentation
 
+- `docs/architecture/README.md` - Master architecture
+- `docs/architecture/generations.md` - Gen0-Gen6 specifications
+- `docs/architecture/api.md` - REST API design
+- `packages/simulation/COPILOT_SETUP.md` - Frontend development guide
+- `memory-bank/activeContext.md` - Current focus
+
+---
+
+**For collaboration rules, see**: `memory-bank/agent-collaboration.md`

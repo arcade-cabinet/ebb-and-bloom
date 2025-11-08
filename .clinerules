@@ -14,13 +14,26 @@ Read at start of EVERY session (in order):
 
 ---
 
+## Project Architecture
+
+**Ebb & Bloom**: Monorepo procedural evolution game
+
+**Packages**:
+- `packages/backend/` - REST API + Gen0-Gen6 simulation (Fastify, Yuka AI)
+- `packages/gen/` - AI archetype generation pipeline (OpenAI workflows)
+- `packages/simulation/` - React Three Fiber frontend (rendering only)
+
+**Core Principle**: "Everything is Squirrels" - base archetypes evolve through environmental pressure. NO hardcoded progression.
+
+---
+
 ## YOLO Mode (Default)
 
 **Autonomous execution is the default**. Execute immediately, iterate until complete.
 
 ### Execution Pattern
 1. Read memory bank
-2. Read relevant docs (docs/ARCHITECTURE.md, docs/core/)
+2. Read relevant docs (`docs/architecture/`, `packages/*/README.md`)
 3. Execute immediately (no planning phase)
 4. Iterate until requirements met
 5. Update memory bank
@@ -54,11 +67,76 @@ Read at start of EVERY session (in order):
 - ❌ "What remains" documents
 
 ### ONLY Write
-- ✅ Current focus (activeContext.md)
-- ✅ What works/broken (progress.md)
-- ✅ Architecture patterns (systemPatterns.md)
+- ✅ Current focus (`activeContext.md`)
+- ✅ What works/broken (`progress.md`)
+- ✅ Architecture patterns (`systemPatterns.md`)
 
 **If it's not needed for next session, don't write it.**
+
+---
+
+## Package-Specific Commands
+
+### Backend
+```bash
+cd packages/backend && pnpm dev          # Start API server
+cd packages/backend && pnpm test         # Run tests
+cd packages/backend && pnpm build       # Build
+```
+
+### Gen
+```bash
+cd packages/gen && pnpm cli archetypes  # Generate all archetypes
+cd packages/gen && pnpm cli quality     # Quality assessment
+cd packages/gen && pnpm cli documentation  # Generate docs
+```
+
+### Simulation
+```bash
+cd packages/simulation && pnpm dev     # Start frontend
+cd packages/simulation && pnpm build    # Build
+```
+
+### Monorepo
+```bash
+pnpm -r test                           # Test all packages
+pnpm -r build                          # Build all packages
+pnpm -r exec tsc --noEmit              # Type check all
+```
+
+---
+
+## Development Workflow
+
+### Before
+1. Read memory bank
+2. Check docs if needed (`docs/architecture/`)
+3. Write tests first (if new feature)
+
+### During
+1. Implement in appropriate package
+2. Use workspace dependencies (`workspace:*`)
+3. Import types from `@ebb/gen/schemas` or `@ebb/shared/schemas`
+4. Run `pnpm test` in package
+
+### After
+1. Update `activeContext.md` if focus changed
+2. Update `progress.md` if status changed
+3. Tests must pass
+4. Semantic commit
+
+---
+
+## Key Architectural Rules
+
+1. **Monorepo Structure**: Each package has single responsibility
+2. **Type Safety**: DRY types from `@ebb/gen/schemas` and `@ebb/shared/schemas`
+3. **Seed-Driven**: All generation uses deterministic seeds (`v1-word-word-word`)
+4. **WARP/WEFT Flow**: Generations flow causally, scales flow hierarchically
+5. **Visual Blueprints**: All archetypes include rendering instructions
+6. **Yuka AI**: Gen0-Gen6 systems use appropriate Yuka systems
+7. **REST API**: Backend exposes simulation via HTTP endpoints
+8. **NO Hardcoded Values**: Calculate from physics/AI generation
 
 ---
 
@@ -70,9 +148,9 @@ Read at start of EVERY session (in order):
 - Pure facts
 
 ### 2. docs/ (permanent, versioned)
-- Architecture specs
+- Architecture specs (`docs/architecture/`)
 - System designs
-- UI/UX specifications
+- Package READMEs
 
 ### 3. NEVER Create
 - Status documents
@@ -81,45 +159,15 @@ Read at start of EVERY session (in order):
 
 ---
 
-## Core Principles
-
-See `memory-bank/agent-permanent-context.md` for:
-- "Everything is Squirrels"
-- Generational architecture (Gen 0 → Gen 1 → Gen 2+)
-- Technology stack
-- Critical architectural rules
-
----
-
-## Development Workflow
-
-### Before
-1. Read memory bank
-2. Check docs if needed
-3. Write tests first
-
-### During
-1. Implement in ECS (if logic)
-2. Update rendering (if visuals)
-3. Run `pnpm test`
-
-### After
-1. Update activeContext.md
-2. Update progress.md
-3. Tests must pass
-4. Semantic commit
-
----
-
 ## CLI Integration
 
 ### Invoke Other Agents
 ```bash
 # Use Claude for architecture analysis
-claude "Analyze planetary physics calculations"
+claude "Analyze Gen0 physics implementation"
 
 # Use process-compose for parallel tasks
-process-compose up dev-server &
+process-compose up dev-backend dev-frontend
 ```
 
 ### YOLO Mode Invocation
@@ -130,6 +178,15 @@ cline "fix bug" --oneshot
 
 ---
 
+## Current Status
+
+**Backend**: ✅ Complete - All Gen0-Gen6 systems integrated with WARP/WEFT data
+**Gen Pipeline**: ✅ Complete - 125 archetypes generated, quality assessed
+**Frontend**: ⏳ Ready for Copilot - Scaffolded, needs Gen0 rendering
+
+**See**: `memory-bank/activeContext.md` for current focus
+
+---
+
 **For collaboration details, see**: `memory-bank/agent-collaboration.md`  
 **For permanent context, see**: `memory-bank/agent-permanent-context.md`
-

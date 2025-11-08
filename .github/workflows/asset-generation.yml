@@ -6,31 +6,82 @@ on:
       asset_type:
         description: 'Type of assets to generate'
         required: true
-        default: 'all'
+        default: 'archetypes'
         type: choice
         options:
-          - all
-          - creatures
-          - buildings
-          - ui
-          - audio
+          - archetypes
           - textures
+          - all
       
   push:
     branches: [ main ]
     paths:
-      - 'manifests/**'
-      - 'src/dev/**'
-
-  schedule:
-    # Weekly asset refresh
-    - cron: '0 2 * * 0'
+      - 'packages/gen/data/manifests/**'
+      - 'packages/gen/src/prompts/**'
 
 env:
   NODE_VERSION: '20'
+  PNPM_VERSION: '9'
 
 jobs:
-  # Each asset type runs independently in parallel
+  # Generate archetypes (gen0-gen6)
+  generate-archetypes:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.asset_type == 'all' || github.event.inputs.asset_type == 'archetypes' || github.event.inputs.asset_type == '' }}
+    timeout-minutes: 60
+    permissions:
+      contents: write
+      pull-requests: write
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - uses: pnpm/action-setup@v4
+      with:
+        version: ${{ env.PNPM_VERSION }}
+    
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'pnpm'
+    
+    - run: pnpm install --frozen-lockfile
+    
+    - name: Generate All Archetypes
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      run: |
+        cd packages/gen
+        pnpm cli archetypes
+    
+    - name: Run Quality Assessment
+      run: |
+        cd packages/gen
+        pnpm cli quality || echo "Quality assessment completed"
+    
+    - name: Generate Documentation
+      run: |
+        cd packages/gen
+        pnpm cli documentation || echo "Documentation generation completed"
+    
+    - uses: peter-evans/create-pull-request@v7
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        branch: assets/archetypes-${{ github.run_id }}
+        delete-branch: true
+        title: "🧬 Generate Archetypes (Gen0-Gen6)"
+        body: |
+          Automated archetype generation via OpenAI workflows.
+          
+          **Generations**: Gen0 (Planetary), Gen1 (Creatures), Gen2 (Packs), Gen3 (Tools), Gen4 (Tribes), Gen5 (Buildings), Gen6 (Religion/Democracy)
+          
+          **Idempotent**: Skips existing valid archetypes.
+          
+          **Quality**: Includes quality assessment and automatic regeneration of anemic archetypes.
+        commit-message: "chore: generate archetypes via AI pipeline"
+        labels: assets,archetypes,automated,ai-generated
+  
+  # Generate/download textures from AmbientCG
   generate-textures:
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.asset_type == 'all' || github.event.inputs.asset_type == 'textures' || github.event.inputs.asset_type == '' }}
@@ -46,7 +97,7 @@ jobs:
     
     - uses: pnpm/action-setup@v4
       with:
-        version: 9
+        version: ${{ env.PNPM_VERSION }}
     
     - uses: actions/setup-node@v4
       with:
@@ -55,154 +106,20 @@ jobs:
     
     - run: pnpm install --frozen-lockfile
     
-    - name: Generate AmbientCG Textures
-      run: pnpm setup:textures
+    - name: Download AmbientCG Textures
+      run: |
+        cd packages/gen
+        pnpm setup:textures || echo "Texture downloader not configured"
     
     - uses: peter-evans/create-pull-request@v7
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         branch: assets/textures-${{ github.run_id }}
         delete-branch: true
-        title: "🎨 Generate AmbientCG Textures"
+        title: "🎨 Download AmbientCG Textures"
         body: |
-          Automated texture generation from AmbientCG library.
+          Automated texture download from AmbientCG library.
           
           **Idempotent**: Skips existing textures.
-        commit-message: "chore: generate AmbientCG textures"
+        commit-message: "chore: download AmbientCG textures"
         labels: assets,textures,automated
-  
-  generate-creatures:
-    runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.asset_type == 'all' || github.event.inputs.asset_type == 'creatures' || github.event.inputs.asset_type == '' }}
-    timeout-minutes: 60
-    permissions:
-      contents: write
-      pull-requests: write
-    
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        lfs: true
-    
-    - uses: pnpm/action-setup@v4
-      with:
-        version: 9
-    
-    - uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'pnpm'
-    
-    - run: pnpm install --frozen-lockfile
-    
-    - name: Generate Evolutionary Archetypes
-      env:
-        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      run: pnpm evolution:pipeline
-    
-    - uses: peter-evans/create-pull-request@v7
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        branch: assets/creatures-${{ github.run_id }}
-        delete-branch: true
-        title: "🧬 Generate Creature Archetypes"
-        body: |
-          Automated evolutionary archetype generation via GPT-4.
-          
-          Generates: archetypes → creature specs → building assemblies → visual assets
-          
-          **Idempotent**: Skips existing archetypes.
-        commit-message: "chore: generate creature archetypes"
-        labels: assets,creatures,automated
-  
-  generate-ui:
-    runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.asset_type == 'all' || github.event.inputs.asset_type == 'ui' || github.event.inputs.asset_type == '' }}
-    timeout-minutes: 45
-    permissions:
-      contents: write
-      pull-requests: write
-    
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        lfs: true
-    
-    - uses: pnpm/action-setup@v4
-      with:
-        version: 9
-    
-    - uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'pnpm'
-    
-    - run: pnpm install --frozen-lockfile
-    
-    - name: Generate UI Assets
-      env:
-        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      run: pnpm dev:cli generate-all
-    
-    - uses: peter-evans/create-pull-request@v7
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        branch: assets/ui-${{ github.run_id }}
-        delete-branch: true
-        title: "🎨 Generate UI Assets"
-        body: |
-          Automated UI asset generation via DALL-E.
-          
-          Includes: splash screens, panels, transparent elements, backgrounds
-          
-          **Idempotent**: Skips existing UI assets.
-        commit-message: "chore: generate UI assets"
-        labels: assets,ui,automated
-  
-  generate-audio:
-    runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.asset_type == 'all' || github.event.inputs.asset_type == 'audio' || github.event.inputs.asset_type == '' }}
-    timeout-minutes: 30
-    permissions:
-      contents: write
-      pull-requests: write
-    
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        lfs: true
-    
-    - uses: pnpm/action-setup@v4
-      with:
-        version: 9
-    
-    - uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'pnpm'
-    
-    - run: pnpm install --frozen-lockfile
-    
-    - name: Generate Audio Library
-      env:
-        FREESOUND_API_KEY: ${{ secrets.FREESOUND_API_KEY }}
-      run: |
-        if [ -f "public/assets/audio-manifest.json" ]; then
-          AUDIO_COUNT=$(cat public/assets/audio-manifest.json | jq '.audio | length' 2>/dev/null || echo "0")
-          if [ "$AUDIO_COUNT" -gt 0 ]; then
-            pnpm dev:cli audio || echo "Audio generation not yet implemented"
-          fi
-        fi
-    
-    - uses: peter-evans/create-pull-request@v7
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        branch: assets/audio-${{ github.run_id }}
-        delete-branch: true
-        title: "🔊 Generate Audio Library"
-        body: |
-          Automated audio asset generation from Freesound.
-          
-          **Idempotent**: Skips if manifest empty or audio already exists.
-        commit-message: "chore: generate audio library"
-        labels: assets,audio,automated

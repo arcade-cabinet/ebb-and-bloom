@@ -18,12 +18,12 @@
 **Modes**: `--print` (non-interactive), `-c` (continue conversation)
 
 ### Cursor
-**Best for**: Interactive development, file editing  
-**Context**: Uses `.cursor/rules/00-loader.mdc`
+**Best for**: Interactive development, file editing, multi-file changes  
+**Context**: Uses `.clinerules` and `.github/copilot-instructions.md`
 
 ### GitHub Copilot
-**Best for**: Code completion, inline suggestions  
-**Context**: Uses `.github/.copilot-instructions.md`
+**Best for**: Code completion, inline suggestions, React Three Fiber components  
+**Context**: Uses `.github/copilot-instructions.md`
 
 ---
 
@@ -31,11 +31,15 @@
 
 ### Backend Implementation
 **Agent**: Cline or Cursor  
-**Why**: ECS systems, Yuka coordination, physics calculations
+**Why**: REST API endpoints, Yuka coordination, physics calculations
 
-### UI Components
-**Agent**: Cursor  
-**Why**: UIKit components need interactive editing
+### Frontend Rendering
+**Agent**: Copilot or Cursor  
+**Why**: React Three Fiber components, visual blueprint implementation
+
+### AI Generation Pipeline
+**Agent**: Cline  
+**Why**: OpenAI workflow orchestration, prompt engineering
 
 ### Architecture Decisions
 **Agent**: Claude  
@@ -49,7 +53,7 @@
 
 ## Process Compose Integration
 
-**File**: `process-compose.yml`
+**File**: `process-compose.yml` (to be created)
 
 **Use for**: Background tasks, parallel execution
 
@@ -57,15 +61,16 @@
 # Start all processes
 process-compose up
 
-# Start specific process
-process-compose up dev-server
+# Start specific processes
+process-compose up dev-backend dev-frontend
 
 # View logs
 process-compose logs
 ```
 
-**Available processes**:
-- `dev-server` - Vite dev server
+**Available processes** (when configured):
+- `dev-backend` - Backend API server
+- `dev-frontend` - Frontend dev server
 - `test-watch` - Test watcher
 - `type-check` - TypeScript validation
 
@@ -76,24 +81,24 @@ process-compose logs
 ### 1. Task Decomposition
 ```bash
 # Use Claude for planning
-claude "Analyze how to implement Gen 0 and break into subtasks"
+claude "Analyze how to implement Gen0 planet rendering and break into subtasks"
 
 # Delegate subtasks to Cline
-cline "Implement PlanetaryPhysicsSystem core types" --yolo
-cline "Refactor RawMaterialsSystem for planetary physics" --yolo
+cline "Implement Gen0Planet component with PBR materials" --yolo
+cline "Create texture loading utility" --yolo
 ```
 
 ### 2. Parallel Execution
 ```bash
 # Use process-compose for parallel work
-process-compose up dev-server &
-cline "Implement Tool Sphere integration" --yolo &
+process-compose up dev-backend &
+cline "Implement backend endpoint for visual blueprints" --yolo &
 ```
 
 ### 3. Review & Integration
 ```bash
 # Use Claude for review
-claude "Review PlanetaryPhysicsSystem implementation for correctness"
+claude "Review Gen0Planet component for correctness and performance"
 ```
 
 ---
@@ -132,7 +137,7 @@ claude "Review PlanetaryPhysicsSystem implementation for correctness"
 
 ### Code
 - TypeScript strict mode
-- TDD (tests first)
+- TDD (tests first, when appropriate)
 - Semantic commits
 - All tests must pass
 
@@ -149,7 +154,29 @@ claude "Review PlanetaryPhysicsSystem implementation for correctness"
 - Audit reports
 - "What remains" documents
 
-**All status info goes in memory bank (activeContext.md, progress.md). All architectural info goes in docs/.**
+**All status info goes in memory bank (`activeContext.md`, `progress.md`). All architectural info goes in `docs/`.**
+
+---
+
+## Package-Specific Guidelines
+
+### Backend (`packages/backend/`)
+- Use Fastify for REST endpoints
+- Import types from `@ebb/gen/schemas` and `@ebb/shared/schemas`
+- Use seed API for deterministic generation
+- Write Vitest tests for all endpoints
+
+### Gen (`packages/gen/`)
+- Use OpenAI SDK for archetype generation
+- Enforce WARP/WEFT flow strictly
+- Run quality assessment after generation
+- Generate documentation automatically
+
+### Simulation (`packages/simulation/`)
+- Use React Three Fiber for rendering only
+- Fetch data from backend API (no direct simulation access)
+- Use visual blueprints for rendering instructions
+- Write Playwright tests for E2E flows
 
 ---
 
@@ -165,5 +192,3 @@ All agents have access to:
 - Test runner
 
 Use them for task decomposition and parallel work.
-
-
