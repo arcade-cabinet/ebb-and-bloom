@@ -29,8 +29,7 @@ test.describe('Gen0 Complete Flow', () => {
       // Wait a bit for BabylonJS to fully initialize
       await page.waitForTimeout(1000);
       
-      // Wait for canvas to be visible
-      const canvas = page.locator('#renderCanvas');
+      // Verify canvas is visible
       await expect(canvas).toBeVisible();
       
       // Take screenshot of main menu
