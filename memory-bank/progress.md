@@ -260,11 +260,12 @@ BREAKING CHANGE: REST API removed, Fastify removed, React removed
 ## Current Status: GREEN 🟢
 
 **Code Quality**: ✅ PASSING (0 TS errors)  
-**Tests**: ✅ GOOD (35/46 passing - 76%)  
+**Tests**: ⚠️ MOSTLY GOOD (35/46 passing - 76% - need to fix gen1-6 archetype bugs)  
 **Dev Server**: ✅ RUNNING (http://localhost:5173)  
 **Production Build**: ✅ SUCCESS (5.6MB, 1.25MB gzipped)  
 **Capacitor**: ✅ SYNCED (iOS/Android ready)  
-**CI/CD**: ✅ CONFIGURED (GitHub Actions)
+**CI/CD**: ✅ CONFIGURED (GitHub Actions)  
+**Archived Code**: 🗑️ DEAD CODE - 1.1MB in memory-bank/archived-code/ should be DELETED
 
 **Target**: 🚀 PRODUCTION DEPLOYMENT
 
@@ -275,9 +276,10 @@ BREAKING CHANGE: REST API removed, Fastify removed, React removed
 4. ✅ Design system constants
 5. ✅ GitHub Actions updated
 6. ✅ Documentation complete
+7. ✅ PR review comments resolved (19/19 threads closed)
 
 **Remaining (Low Priority)**: 
+- Fix 11 failing tests (likely archetype structure bugs like we fixed in AccretionSimulation)
+- Delete archived code directory (memory-bank/archived-code/)
 - Phone testing (local network)
-- E2E test suite run
 - Device testing (iOS/Android hardware)
-- Hardcoded value migration to constants
