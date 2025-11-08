@@ -17,8 +17,12 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:5173',
     trace: 'on-first-retry',
-    video: 'on-first-retry', // Record video on retry
+    video: 'retain-on-failure', // Record video for all tests, keep on failure
     screenshot: 'only-on-failure',
+    // Slow down actions for better visibility
+    actionTimeout: 10000,
+    // Viewport for consistent rendering
+    viewport: { width: 1920, height: 1080 },
   },
   projects: [
     {
