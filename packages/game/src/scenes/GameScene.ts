@@ -25,6 +25,8 @@ import {
 import { loadTexture } from '../utils/textureLoader';
 import type { VisualRepresentation, PBRProperties } from '@ebb/gen/schemas';
 import { GameEngine } from '../engine/GameEngine';
+import { EvolutionHUD } from '../ui/EvolutionHUD';
+import { NarrativeDisplay } from '../ui/NarrativeDisplay';
 
 // Render data from game engine (supports all generations)
 interface GameRenderData {
@@ -59,11 +61,14 @@ export class GameScene {
   private scene: Scene;
   private engine: Engine;
   private gameId: string | null;
+  private gameEngine: GameEngine | null = null;
   private planetMesh: Mesh | null = null;
   private moonMeshes: Mesh[] = [];
   private renderData: GameRenderData | null = null;
   private time: number = 0;
   private infoContent: HTMLElement | null = null;
+  private hud: EvolutionHUD | null = null;
+  private narrative: NarrativeDisplay | null = null;
 
   constructor(scene: Scene, engine: Engine, gameId: string | null) {
     this.scene = scene;
@@ -71,6 +76,7 @@ export class GameScene {
     this.gameId = gameId;
     this.infoContent = document.getElementById('infoContent');
     this.setupScene();
+    this.setupUI();
     this.loadGameData();
     this.startAnimation();
     
@@ -127,6 +133,14 @@ export class GameScene {
     this.scene.fogColor = new Color3(0, 0, 0);
   }
 
+  private setupUI(): void {
+    // Create Evolution HUD
+    this.hud = new EvolutionHUD(this.scene);
+    
+    // Create Narrative Display  
+    this.narrative = new NarrativeDisplay(this.scene);
+  }
+
   private async loadGameData(): Promise<void> {
     if (!this.gameId) {
       this.updateInfo('No game ID provided');
@@ -135,9 +149,9 @@ export class GameScene {
 
     try {
       // Load game data via direct function call (no HTTP)
-      const engine = new GameEngine(this.gameId);
-      const state = engine.getState();
-      const renderData = await engine.getGen0RenderData(this.time);
+      this.gameEngine = new GameEngine(this.gameId);
+      const state = this.gameEngine.getState();
+      const renderData = await this.gameEngine.getGen0RenderData(this.time);
 
       if (!renderData) {
         throw new Error('Failed to load render data');
@@ -156,6 +170,11 @@ export class GameScene {
         tools: state.gen2Data?.tools || [],
         buildings: state.gen3Data?.buildings || [],
       };
+
+      // Update HUD with current generation
+      if (this.hud) {
+        this.hud.updateGeneration(currentGen);
+      }
 
       // Render Gen0 planet (always rendered as base)
       await this.renderGen0();
