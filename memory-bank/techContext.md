@@ -140,22 +140,53 @@ memory-bank/
 
 ---
 
-## Migrated Screens (Ready for Gen1)
+## Renderer Architecture (WARP/WEFT Separation)
 
-All essential UI screens migrated from archived React Three Fiber code to BabylonJS:
+**Critical Design**: Simulation logic is SEPARATE from visual rendering
 
-**Current Scenes** (`packages/game/src/scenes/`):
-- ✅ SplashScreenScene.ts - Initial splash
-- ✅ MainMenuScene.ts - Main menu + seed input
-- ✅ OnboardingScene.ts - 4-step tutorial (NEW)
-- ✅ CatalystCreatorScene.ts - Trait allocation for Gen1 (NEW)
-- ✅ GameScene.ts - 3D planet view
+### Backend (Protobuf + WARP/WEFT)
+GameEngine provides archetype data via Protobuf:
+- **WARP (through-line)**: Evolution over time (planetary cooling, trait changes, tool improvements)
+- **WEFT (horizontal)**: Archetype synthesis (terrestrial+volcanic planet, burrow engineer+social forager hybrid)
 
-**UI Components** (`packages/game/src/ui/`):
-- ✅ EvolutionHUD.ts - In-game overlay (generation, environment, events) (NEW)
-- ✅ NarrativeDisplay.ts - Haiku journal for Gen3+ (NEW)
+### Frontend (Renderers)
+Visual interpretation of archetype data:
 
-All new scenes are working stubs with full BabylonJS GUI structure.
-Ready for Gen1 evolution system implementation.
+```
+packages/game/src/renderers/
+├── gen0/
+│   ├── PlanetRenderer.ts - Macro (planet sphere, PBR materials)
+│   ├── MoonRenderer.ts - Meso (orbital mechanics)
+│   └── LayerRenderer.ts - Micro (hydrosphere, atmosphere) [TODO]
+├── gen1/
+│   └── CreatureRenderer.ts - Interprets trait archetypes as visuals
+├── gen2/ - Pack formations and social structures
+├── gen3/ - Tool visuals from archetype synthesis
+├── gen4/ - Tribe buildings and territory
+├── gen5/ - Advanced structures
+└── gen6/ - Civilization-scale rendering
+```
 
-**Archived Code**: ✅ DELETED - Extracted needed screens, removed 1.1MB dead code
+### Key Principles
+1. **Parameterization**: Visual ranges that Yuka can vary (size, color, roughness)
+2. **WARP Handling**: Visual changes over evolutionary time
+3. **WEFT Handling**: Archetype merging/synthesis as visual combinations
+4. **Separation**: GameScene USES renderers, doesn't implement rendering logic
+
+### Example Flow
+```typescript
+// Backend provides archetype data
+const creatureData = gameEngine.getGen1Creatures();
+
+// Frontend interprets visually
+const renderer = new CreatureRenderer(scene);
+const mesh = renderer.render(creatureData.archetype);
+
+// WARP: Update visuals as traits evolve
+renderer.updateEvolution(creatureId, newTraits);
+
+// WEFT: Synthesize two archetypes
+const hybridVisual = renderer.synthesize(archetype1, archetype2, ratio);
+```
+
+This structure allows Yuka to generate RANGES of variations at each Gen by navigating WARP (evolution) and WEFT (synthesis) dimensions.
