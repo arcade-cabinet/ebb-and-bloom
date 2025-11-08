@@ -180,3 +180,7 @@ packages/gen/public/textures/
 
 # AI cache
 packages/gen/data/cache/
+
+# Reference repositories (temporary clones for learning - NEVER commit these)
+temp-*
+*-reference/

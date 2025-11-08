@@ -1,0 +1,42 @@
+{
+  "version": "1.0.0",
+  "description": "Google Fonts manifest for Ebb & Bloom UI typography",
+  "fonts": [
+    {
+      "id": "lora",
+      "family": "Lora",
+      "category": "serif",
+      "usage": "Titles, headings, poetic text",
+      "weights": [400, 500, 600, 700],
+      "styles": ["normal", "italic"],
+      "subsets": ["latin"],
+      "url": "https://fonts.google.com/specimen/Lora",
+      "description": "Elegant serif for contemplative, meditative titles"
+    },
+    {
+      "id": "inter",
+      "family": "Inter",
+      "category": "sans-serif",
+      "usage": "Body text, UI labels, buttons",
+      "weights": [300, 400, 500, 600],
+      "styles": ["normal"],
+      "subsets": ["latin"],
+      "url": "https://fonts.google.com/specimen/Inter",
+      "description": "Clean, modern sans-serif for UI readability"
+    },
+    {
+      "id": "jetbrains-mono",
+      "family": "JetBrains Mono",
+      "category": "monospace",
+      "usage": "Seed codes, technical data, coordinates",
+      "weights": [400, 500],
+      "styles": ["normal"],
+      "subsets": ["latin"],
+      "url": "https://fonts.google.com/specimen/JetBrains+Mono",
+      "description": "Monospace for seed identifiers and technical UI"
+    }
+  ],
+  "outputFormats": ["woff2", "woff"],
+  "cssOutputPath": "packages/frontend/public/fonts/fonts.css",
+  "fontsOutputPath": "packages/frontend/public/fonts"
+}

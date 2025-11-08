@@ -89,20 +89,34 @@
 
 ### Next Steps
 
-1. **Backend Integration** (IMMEDIATE PRIORITY)
+1. **Frontend UI/UX** (CURRENT FOCUS)
+   - Build main menu with UIKit components (Fullscreen, Container, Button, Text)
+   - Implement seed cookie persistence and initialization flow
+   - Add settings and credits screens
+   - Generate UI assets via `pnpm cli ui-assets` in packages/gen
+   - Set up fonts workflow with google-fonts-helper
+
+2. **Backend Integration** (After frontend)
    - Integrate WARP/WEFT data manifests into backend systems at each generation
    - Ensure all backend systems properly consume generated archetype pools
    - Implement seed-driven deterministic selection with biased selection and parameter interpolation
    - Test Yuka AI integration with formation/synthesis guidance from archetypes
 
-2. **Visual Rendering**: Implement `packages/simulation` React Three Fiber rendering for Gen0 visual blueprints
-3. **Testing**: Full integration testing with seed-driven deterministic selection
-4. **Documentation**: Review and refine `docs/GENERATION_REVIEW.md` for accuracy
+3. **Visual Rendering**: Implement `packages/simulation` React Three Fiber rendering for Gen0 visual blueprints
+4. **Testing**: Full integration testing with seed-driven deterministic selection
+5. **Documentation**: Review and refine `docs/GENERATION_REVIEW.md` for accuracy
 
 ### Files Modified
 
+- `packages/gen/src/config/ai-models.ts` - **NEW** Central constants: GPT-5 (TEXT_MODEL) and GPT-image-1 (IMAGE_MODEL)
+- `packages/gen/src/workflows/ui-asset-generator.ts` - **NEW** Copied from archive, uses IMAGE_MODEL constant
+- `packages/gen/src/workflows/warp-weft-agent.ts` - Updated to use TEXT_MODEL constant
+- `packages/gen/src/generators/archetype-pools.ts` - Updated to use TEXT_MODEL constant
+- `packages/frontend/package.json` - Fixed to use @pmndrs/uikit and @react-three/uikit
+- `packages/gen/data/manifests/ui-asset-manifest.ts` - **NEW** Copied from archive
+- `packages/gen/data/manifests/ui-assets.json` - **NEW** Brand-aligned UI definitions
+- `packages/gen/data/manifests/fonts.json` - **NEW** Google Fonts manifest
 - `packages/gen/src/prompts/generation-prompts.ts` - All prompts updated with WARP/WEFT flow, unlimited generation
-- `packages/gen/src/workflows/warp-weft-agent.ts` - WARP/WEFT flow, retry logic, quality integration
 - `packages/gen/src/workflows/generate-documentation.ts` - Documentation generator with quality section
 - `packages/gen/src/schemas/visual-blueprint-schema.ts` - Universal templates, deconstruction, formation schemas
 - `packages/gen/src/tools/structured-texture-tool.ts` - Texture ID handling

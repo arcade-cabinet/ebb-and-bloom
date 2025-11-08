@@ -2,8 +2,8 @@
  * WARP/WEFT AGENT SYSTEM - PROPERLY USING VERCEL AI
  */
 
-import { openai } from '@ai-sdk/openai';
 import { generateObject } from 'ai';
+import { TEXT_MODEL } from '../config/ai-models';
 import { promises as fs } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
@@ -62,7 +62,7 @@ export class WarpWeftAgent {
 
     try {
       const result = await generateObject({
-        model: openai('gpt-4o'),
+        model: TEXT_MODEL,
         schema: GenerationScaleSchema,
         system: prompts.systemPrompt,
         prompt: `${contextPrompt}

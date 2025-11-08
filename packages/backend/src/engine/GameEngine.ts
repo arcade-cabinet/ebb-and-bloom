@@ -5,7 +5,6 @@
  */
 
 import { EventEmitter } from 'events';
-import { validateSeed, getGenerationSeed } from '../seed/seed-manager.js';
 import { AccretionSimulation } from '../gen0/AccretionSimulation.js';
 import { Gen1System } from '../gen1/CreatureSystem.js';
 import { Gen2System } from '../gen2/PackSystem.js';
@@ -14,6 +13,7 @@ import { Gen4System } from '../gen4/TribeSystem.js';
 import { Gen5System } from '../gen5/BuildingSystem.js';
 import { Gen6System } from '../gen6/ReligionDemocracySystem.js';
 import type { Planet } from '../schemas/index.js';
+import { getGenerationSeed, validateSeed } from '../seed/seed-manager.js';
 
 export interface GameState {
   gameId: string;
@@ -33,7 +33,7 @@ export interface GameState {
 export class GameEngine extends EventEmitter {
   private state: GameState;
   private planet?: Planet;
-  
+
   constructor(gameId: string) {
     super();
     this.state = {
@@ -43,7 +43,7 @@ export class GameEngine extends EventEmitter {
       message: 'Game not initialized',
     };
   }
-  
+
   /**
    * Initialize game with validated seed
    */
@@ -56,10 +56,10 @@ export class GameEngine extends EventEmitter {
 
     this.state.seed = validation.seed!;
     this.state.message = `Game initialized with seed: ${this.state.seed}`;
-    
+
     // Initialize Gen0 (Planetary Formation)
     await this.initializeGen0();
-    
+
     this.emit('initialized', { gameId: this.state.gameId, seed: this.state.seed });
   }
 
@@ -69,10 +69,10 @@ export class GameEngine extends EventEmitter {
   private async initializeGen0(): Promise<void> {
     const gen0Seed = getGenerationSeed(this.state.seed, 0);
     console.log(`[GAME] Initializing Gen0 with seed: ${gen0Seed}`);
-    
+
     const simulation = new AccretionSimulation({ seed: gen0Seed });
     const planet = await simulation.simulate();
-    
+
     // Store planet with moons
     this.planet = planet;
     this.state.planet = planet as any; // Include moons in state
@@ -80,7 +80,7 @@ export class GameEngine extends EventEmitter {
     this.state.generation = 0;
     const moonCount = (planet as any).moons?.length || 0;
     this.state.message = `Gen0 complete: Planet formed (${(planet.radius / 1000).toFixed(0)}km radius, ${moonCount} moon${moonCount !== 1 ? 's' : ''})`;
-    
+
     this.emit('gen0', { planet, gen0Data: this.state.gen0Data });
   }
 
@@ -95,7 +95,7 @@ export class GameEngine extends EventEmitter {
 
     const nextGen = this.state.generation + 1;
     const genSeed = getGenerationSeed(this.state.seed, nextGen);
-    
+
     console.log(`[GAME] Advancing to Gen${nextGen} with seed: ${genSeed}`);
 
     switch (nextGen) {
@@ -142,7 +142,7 @@ export class GameEngine extends EventEmitter {
     const creatures = await gen1System.initialize();
     this.state.gen1Data = creatures.visualBlueprints;
     this.state.message = `Gen1 complete: ${creatures.size} creatures spawned`;
-    
+
     this.emit('gen1', { creatures, gen1Data: this.state.gen1Data });
   }
 
@@ -163,7 +163,7 @@ export class GameEngine extends EventEmitter {
     await gen2System.initialize();
     this.state.gen2Data = { initialized: true };
     this.state.message = 'Gen2 complete: Pack system initialized';
-    
+
     this.emit('gen2', { gen2Data: this.state.gen2Data });
   }
 
@@ -177,12 +177,12 @@ export class GameEngine extends EventEmitter {
 
     const gen3Seed = getGenerationSeed(this.state.seed, 3);
     const gen3System = new Gen3System(this.state.planet, gen3Seed);
-    
+
     // Pass base seed to Gen3 (it will extract from planet.seed)
     await gen3System.initialize(this.state.gen2Data);
     this.state.gen3Data = { initialized: true };
     this.state.message = 'Gen3 complete: Tool system initialized';
-    
+
     this.emit('gen3', { gen3Data: this.state.gen3Data });
   }
 
@@ -196,11 +196,11 @@ export class GameEngine extends EventEmitter {
 
     const gen4Seed = getGenerationSeed(this.state.seed, 4);
     const gen4System = new Gen4System(this.state.planet, gen4Seed);
-    
+
     await gen4System.initialize(this.state.gen3Data);
     this.state.gen4Data = { initialized: true };
     this.state.message = 'Gen4 complete: Tribe system initialized';
-    
+
     this.emit('gen4', { gen4Data: this.state.gen4Data });
   }
 
@@ -214,11 +214,11 @@ export class GameEngine extends EventEmitter {
 
     const gen5Seed = getGenerationSeed(this.state.seed, 5);
     const gen5System = new Gen5System(this.state.planet, gen5Seed);
-    
+
     await gen5System.initialize(this.state.gen4Data);
     this.state.gen5Data = { initialized: true };
     this.state.message = 'Gen5 complete: Building system initialized';
-    
+
     this.emit('gen5', { gen5Data: this.state.gen5Data });
   }
 
@@ -232,14 +232,14 @@ export class GameEngine extends EventEmitter {
 
     const gen6Seed = getGenerationSeed(this.state.seed, 6);
     const gen6System = new Gen6System(this.state.planet, gen6Seed);
-    
+
     await gen6System.initialize(this.state.gen5Data);
     this.state.gen6Data = { initialized: true };
     this.state.message = 'Gen6 complete: Religion & Democracy system initialized';
-    
+
     this.emit('gen6', { gen6Data: this.state.gen6Data });
   }
-  
+
   getState(): Readonly<GameState> {
     return { ...this.state };
   }

@@ -51,7 +51,7 @@ export class ArchetypePoolGenerator {
   
   private async createArchetypesForScale(genKey: string, genName: string, scale: string): Promise<any> {
     const { generateObject } = await import('ai');
-    const { openai } = await import('@ai-sdk/openai');
+    const { TEXT_MODEL } = await import('../config/ai-models');
     const { GenerationScaleSchema } = await import('../schemas/visual-blueprint-schema.js');
     const { getGenerationPrompt } = await import('../prompts/generation-prompts.js');
     
@@ -59,7 +59,7 @@ export class ArchetypePoolGenerator {
       const prompts = getGenerationPrompt(genKey, scale as 'macro' | 'meso' | 'micro');
       
       const result = await generateObject({
-        model: openai('gpt-4o'),
+        model: TEXT_MODEL,
         schema: GenerationScaleSchema,
         system: prompts.systemPrompt,
         prompt: prompts.userPrompt,

@@ -8,14 +8,14 @@
  * That's IT.
  */
 
-import Fastify from 'fastify';
-import cors from '@fastify/cors';
 import cookie from '@fastify/cookie';
+import cors from '@fastify/cors';
+import Fastify from 'fastify';
 import { GameEngine } from './engine/GameEngine.js';
-import { registerPlanetRoutes } from './resources/planet.js';
 import { registerGen0RenderRoutes } from './resources/gen0-render.js';
+import { registerPlanetRoutes } from './resources/planet.js';
+import { extractSeedFromRequest } from './seed/seed-middleware.js';
 import { registerSeedRoutes } from './seed/seed-routes.js';
-import { seedMiddleware, extractSeedFromRequest } from './seed/seed-middleware.js';
 
 const fastify = Fastify({
   logger: true,
@@ -46,7 +46,7 @@ fastify.post<{
 }>('/api/game/create', async (request, reply) => {
   // Extract seed from header/cookie/query/body (seed middleware priority)
   const seed = extractSeedFromRequest(request) || request.body.seed || request.body.seedPhrase;
-  
+
   if (!seed) {
     return reply.code(400).send({
       error: 'Seed required',
@@ -59,12 +59,12 @@ fastify.post<{
       },
     });
   }
-  
+
   const gameId = `game-${Date.now()}`;
   const engine = new GameEngine(gameId);
   await engine.initialize(seed);
   games.set(gameId, engine);
-  
+
   return {
     gameId,
     seed,
@@ -78,12 +78,12 @@ fastify.get<{
 }>('/api/game/:id', async (request, reply) => {
   const { id } = request.params;
   const game = games.get(id);
-  
+
   if (!game) {
     reply.code(404);
     return { error: 'Game not found' };
   }
-  
+
   return { state: game.getState() };
 });
 
@@ -92,12 +92,12 @@ fastify.post<{
 }>('/api/game/:id/generation', async (request, reply) => {
   const { id } = request.params;
   const game = games.get(id);
-  
+
   if (!game) {
     reply.code(404);
     return { error: 'Game not found' };
   }
-  
+
   await game.advanceGeneration();
   return { state: game.getState() };
 });

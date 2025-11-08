@@ -2,7 +2,7 @@
 
 **Last Updated**: 2025-01-09
 
-## Current Focus: Backend Integration - WARP/WEFT Data into Yuka Systems
+## Current Focus: Frontend UI/UX Setup - Main Menu with UIKit
 
 ### What We Just Completed
 
@@ -34,33 +34,49 @@
    - Deconstruction annotations (how archetypes break down, by what, into what)
    - Formation/synthesis guidance for Yuka AI (step-by-step formation processes)
 
-### IMMEDIATE PRIORITY: Backend Integration
+### IMMEDIATE PRIORITY: Frontend UI/UX Setup
 
-The generation pipeline is complete and operational with high-quality archetypes. The critical next task is integrating WARP/WEFT data manifests into backend systems for Yuka AI:
+The generation pipeline is complete. Current focus is building the main menu UI/UX in `packages/frontend`:
 
-1. **Backend System Integration** (STARTING NOW)
-   - Ensure all backend systems (`AccretionSimulation`, `CreatureSystem`, `PackSystem`, etc.) properly consume generated archetype pools
-   - Implement seed-driven deterministic selection using `selectFromPoolBiased()` from `loadGenData.ts`
-   - Implement parameter interpolation using `interpolateParameter()` for universal templates
-   - Integrate formation/synthesis guidance into Yuka AI decision-making
-   - Test deconstruction system with compatibility checks
+1. **UIKit Setup** ✅ COMPLETE
+   - Fixed package.json to use `@pmndrs/uikit` (NOT @react-three/uikit)
+   - Using `@react-three/uikit` wrapper around `@pmndrs/uikit`
+   - Dependencies: `@pmndrs/uikit`, `@react-three/uikit`, `@react-three/uikit-default`, `@react-three/uikit-lucide`
+   - Canvas must have `gl={{ localClippingEnabled: true }}` for scrolling/clipping
+   - Responsive design using Tailwind-style breakpoints (sm, md, lg, xl, 2xl)
 
-2. **Yuka AI Integration Points**
-   - Gen 0: Use stellar system contexts, accretion dynamics, element distributions for planetary formation
-   - Gen 1: Use ecological niches, population dynamics, physiology for creature evolution
-   - Gen 2: Use territorial geography, pack sociology, behavior for pack formation
-   - Gen 3: Use tool ecosystems, categories, properties for tool emergence
-   - Gen 4: Use inter-tribal networks, governance, roles for tribe formation
-   - Gen 5: Use settlement patterns, building types, properties for construction
-   - Gen 6: Use ideological frameworks, institutions, beliefs for abstract systems
+2. **Central AI Model Constants** ✅ COMPLETE
+   - Created `packages/gen/src/config/ai-models.ts` with single source of truth
+   - `TEXT_MODEL = openai('gpt-5')` - Used by ALL text generation workflows
+   - `IMAGE_MODEL = openai.image('gpt-image-1')` - Used by ALL image generation workflows
+   - ALL workflows updated: `warp-weft-agent.ts`, `ui-asset-generator.ts`, `archetype-pools.ts`
+   - NO hardcoded model names anywhere - all use constants
 
-3. **Visual Rendering** (After backend integration)
-   - Implement React Three Fiber rendering for Gen0 visual blueprints
-   - Use PBR properties, color palettes, and texture IDs from generated data
-   - Create satisfying celestial sphere views
+3. **UI Asset Generator** ✅ COMPLETE
+   - Copied from `memory-bank/archived-code/dev-tools/dev/ProductionAssetGenerator.ts`
+   - Uses Vercel AI SDK `generateImage()` with `IMAGE_MODEL` constant
+   - Uses Vercel AI SDK `generateObject()` with `TEXT_MODEL` constant
+   - Outputs to `packages/frontend/public/`
+   - Idempotent - skips existing assets
+
+4. **UI Manifests** ✅ COMPLETE
+   - `packages/gen/data/manifests/ui-asset-manifest.ts` - Copied from archive
+   - `packages/gen/data/manifests/ui-assets.json` - Brand-aligned UI definitions
+   - `packages/gen/data/manifests/fonts.json` - Google Fonts manifest (Lora, Inter, JetBrains Mono)
+
+5. **Next Steps** (TODO)
+   - Build main menu with UIKit components (Fullscreen, Container, Button, Text)
+   - Implement seed cookie persistence
+   - Add settings and credits screens
+   - Generate UI assets via `pnpm cli ui-assets` in packages/gen
+   - Set up fonts workflow with google-fonts-helper
 
 ### Key Files
 
+- **AI Model Constants**: `packages/gen/src/config/ai-models.ts` - SINGLE SOURCE OF TRUTH for GPT-5 and GPT-image-1
+- **UI Asset Generator**: `packages/gen/src/workflows/ui-asset-generator.ts` - Uses IMAGE_MODEL constant
+- **UI Manifests**: `packages/gen/data/manifests/ui-asset-manifest.ts`, `ui-assets.json`, `fonts.json`
+- **Frontend Package**: `packages/frontend/` - Main menu UI/UX with UIKit
 - **Generation Data**: `packages/gen/data/archetypes/gen0-6/` (125 archetypes)
 - **Quality Report**: `packages/gen/data/manifests/quality-assessment.json`
 - **Documentation**: `docs/GENERATION_REVIEW.md` (comprehensive review with quality metrics)
