@@ -24,7 +24,10 @@ import { EvolutionHUD } from '../ui/EvolutionHUD';
 import { NarrativeDisplay } from '../ui/NarrativeDisplay';
 import { PlanetRenderer, MoonRenderer } from '../renderers/gen0';
 import { CreatureRenderer, ResourceNodeRenderer } from '../renderers/gen1';
+import { PackFormationRenderer, InteractionVisualizer } from '../renderers/gen2';
 import { CreatureBehaviorSystem, type CreatureBehaviorState, type ResourceNode } from '../systems/CreatureBehaviorSystem';
+import { PackFormationSystem, type PackFormation } from '../systems/PackFormationSystem';
+import { CreatureInteractionSystem, type Interaction } from '../systems/CreatureInteractionSystem';
 
 // Render data from game engine (supports all generations)
 interface GameRenderData {
@@ -73,11 +76,17 @@ export class GameScene {
   private moonRenderer: MoonRenderer | null = null;
   private creatureRenderer: CreatureRenderer | null = null;
   private resourceRenderer: ResourceNodeRenderer | null = null;
+  private packRenderer: PackFormationRenderer | null = null;
+  private interactionVisualizer: InteractionVisualizer | null = null;
   
   // Systems
   private behaviorSystem: CreatureBehaviorSystem | null = null;
+  private packSystem: PackFormationSystem | null = null;
+  private interactionSystem: CreatureInteractionSystem | null = null;
   private creatureBehaviors: Map<string, CreatureBehaviorState> = new Map();
   private resources: ResourceNode[] = [];
+  private packs: PackFormation[] = [];
+  private interactions: Interaction[] = [];
 
   constructor(scene: Scene, engine: Engine, gameId: string | null) {
     this.scene = scene;
@@ -158,9 +167,13 @@ export class GameScene {
     this.moonRenderer = new MoonRenderer(this.scene);
     this.creatureRenderer = new CreatureRenderer(this.scene);
     this.resourceRenderer = new ResourceNodeRenderer(this.scene);
+    this.packRenderer = new PackFormationRenderer(this.scene);
+    this.interactionVisualizer = new InteractionVisualizer(this.scene);
     
-    // Initialize behavior system
+    // Initialize systems
     this.behaviorSystem = new CreatureBehaviorSystem(5); // Planet radius = 5
+    this.packSystem = new PackFormationSystem();
+    this.interactionSystem = new CreatureInteractionSystem();
     
     // Spawn some initial resources for testing
     this.spawnTestResources();
@@ -334,6 +347,16 @@ export class GameScene {
       // Update creature behaviors
       if (this.behaviorSystem && this.renderData?.creatures) {
         this.updateCreatureBehaviors(deltaTime);
+        
+        // Update pack formations
+        if (this.packSystem) {
+          this.updatePackFormations();
+        }
+        
+        // Update creature interactions
+        if (this.interactionSystem) {
+          this.updateCreatureInteractions();
+        }
       }
       
       // Update creature LOD based on camera distance
@@ -362,6 +385,24 @@ export class GameScene {
       // Update resource rendering
       if (this.resourceRenderer && this.resources.length > 0) {
         this.resourceRenderer.render(this.resources);
+      }
+      
+      // Update pack formation rendering
+      if (this.packRenderer && this.packs.length > 0) {
+        const creaturePositions = new Map<string, { lat: number; lon: number }>();
+        for (const [id, behavior] of this.creatureBehaviors) {
+          creaturePositions.set(id, { lat: behavior.position.lat, lon: behavior.position.lon });
+        }
+        this.packRenderer.render(this.packs, creaturePositions);
+      }
+      
+      // Update interaction rendering
+      if (this.interactionVisualizer && this.interactions.length > 0) {
+        const creaturePositions = new Map<string, { lat: number; lon: number }>();
+        for (const [id, behavior] of this.creatureBehaviors) {
+          creaturePositions.set(id, { lat: behavior.position.lat, lon: behavior.position.lon });
+        }
+        this.interactionVisualizer.render(this.interactions, creaturePositions);
       }
     });
   }
@@ -397,6 +438,8 @@ export class GameScene {
     this.moonRenderer?.dispose();
     this.creatureRenderer?.dispose();
     this.resourceRenderer?.dispose();
+    this.packRenderer?.dispose();
+    this.interactionVisualizer?.dispose();
     this.hud?.dispose();
     this.narrative?.dispose();
   }
@@ -462,6 +505,48 @@ export class GameScene {
         }
       }
     }
+  }
+
+  /**
+   * Update pack formations
+   */
+  private updatePackFormations(): void {
+    if (!this.packSystem || !this.renderData?.creatures) return;
+    
+    // Build traits map
+    const traits = new Map<string, { social?: string; strength?: number; intelligence?: number }>();
+    for (const creature of this.renderData.creatures) {
+      traits.set(creature.id, creature.traits || {});
+    }
+    
+    // Update pack system
+    const packs = this.packSystem.update(this.creatureBehaviors, traits);
+    this.packs = Array.from(packs.values());
+  }
+
+  /**
+   * Update creature interactions
+   */
+  private updateCreatureInteractions(): void {
+    if (!this.interactionSystem || !this.renderData?.creatures) return;
+    
+    // Build creature state map with traits
+    const creatureStates = new Map();
+    for (const [id, behavior] of this.creatureBehaviors) {
+      const creature = this.renderData.creatures.find(c => c.id === id);
+      if (creature) {
+        creatureStates.set(id, {
+          position: behavior.position,
+          traits: creature.traits,
+          energy: behavior.energy,
+          fear: behavior.fear
+        });
+      }
+    }
+    
+    // Update interaction system
+    const interactions = this.interactionSystem.update(creatureStates);
+    this.interactions = Array.from(interactions.values());
   }
 
   /**
