@@ -32,7 +32,7 @@ export default defineConfig({
       name: 'chromium',
       use: { 
         ...devices['Desktop Chrome'],
-        headless: false, // Visual browser for verification
+        headless: true, // Headless for CI/screenshot capture
       },
     },
   ],

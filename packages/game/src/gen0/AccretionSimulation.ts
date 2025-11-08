@@ -65,7 +65,9 @@ export class AccretionSimulation {
       const baseSeed = this.seed.replace(/-gen\d+$/, '');
       dataPools = await generateGen0DataPools(baseSeed);
       console.log(`[ACCRETION] Stellar context: ${dataPools.macro.selectedContext}`);
-      console.log(`[ACCRETION] Materials: ${dataPools.micro.visualBlueprint.representations.materials.join(', ')}`);
+      // Access correct archetype structure: visualProperties.primaryTextures instead of visualBlueprint.representations.materials
+      const textures = dataPools.micro.visualProperties?.primaryTextures || [];
+      console.log(`[ACCRETION] Primary textures: ${textures.join(', ')}`);
     }
 
     // STEP 2: Create debris field based on AI-generated element distribution
