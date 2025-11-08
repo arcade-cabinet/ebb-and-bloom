@@ -201,11 +201,24 @@ export class GameEngine extends EventEmitter {
       gen0Data: this.state.gen0Data,
     });
 
-    const creatures = await gen1System.initialize();
-    this.state.gen1Data = creatures.visualBlueprints;
-    this.state.message = `Gen1 complete: ${creatures.size} creatures spawned`;
+    const creaturesWithBlueprints = await gen1System.initialize();
+    
+    // Extract creatures array for rendering
+    const creatureArray = Array.from(creaturesWithBlueprints.values()).map(creature => ({
+      id: creature.id,
+      position: creature.position,
+      lineageColor: '#00ff00', // Default player lineage (green)
+      vitality: 1.0,
+      traits: creature.traits,
+    }));
+    
+    this.state.gen1Data = {
+      creatures: creatureArray,
+      visualBlueprints: (creaturesWithBlueprints as any).visualBlueprints,
+    };
+    this.state.message = `Gen1 complete: ${creatureArray.length} creatures spawned`;
 
-    this.emit('gen1', { creatures, gen1Data: this.state.gen1Data });
+    this.emit('gen1', { creatures: creaturesWithBlueprints, gen1Data: this.state.gen1Data });
   }
 
   /**
