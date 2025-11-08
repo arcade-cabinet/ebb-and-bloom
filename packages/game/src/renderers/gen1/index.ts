@@ -1,6 +1,7 @@
 /**
- * Gen1 Renderer - Main Entry Point
+ * Gen1 Renderers
+ * Exports all Gen1 rendering components
  */
 
-export { CreatureRenderer } from './CreatureRenderer';
-export type { CreatureArchetype } from './CreatureRenderer';
+export { CreatureRenderer } from './CreatureRenderer.js';
+export { ResourceNodeRenderer } from './ResourceNodeRenderer.js';

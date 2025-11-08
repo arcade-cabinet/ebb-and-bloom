@@ -23,7 +23,8 @@ import { GameEngine } from '../engine/GameEngine';
 import { EvolutionHUD } from '../ui/EvolutionHUD';
 import { NarrativeDisplay } from '../ui/NarrativeDisplay';
 import { PlanetRenderer, MoonRenderer } from '../renderers/gen0';
-import { CreatureRenderer } from '../renderers/gen1';
+import { CreatureRenderer, ResourceNodeRenderer } from '../renderers/gen1';
+import { CreatureBehaviorSystem, type CreatureBehaviorState, type ResourceNode } from '../systems/CreatureBehaviorSystem';
 
 // Render data from game engine (supports all generations)
 interface GameRenderData {
@@ -71,6 +72,12 @@ export class GameScene {
   private planetRenderer: PlanetRenderer | null = null;
   private moonRenderer: MoonRenderer | null = null;
   private creatureRenderer: CreatureRenderer | null = null;
+  private resourceRenderer: ResourceNodeRenderer | null = null;
+  
+  // Systems
+  private behaviorSystem: CreatureBehaviorSystem | null = null;
+  private creatureBehaviors: Map<string, CreatureBehaviorState> = new Map();
+  private resources: ResourceNode[] = [];
 
   constructor(scene: Scene, engine: Engine, gameId: string | null) {
     this.scene = scene;
@@ -150,6 +157,13 @@ export class GameScene {
     this.planetRenderer = new PlanetRenderer(this.scene);
     this.moonRenderer = new MoonRenderer(this.scene);
     this.creatureRenderer = new CreatureRenderer(this.scene);
+    this.resourceRenderer = new ResourceNodeRenderer(this.scene);
+    
+    // Initialize behavior system
+    this.behaviorSystem = new CreatureBehaviorSystem(5); // Planet radius = 5
+    
+    // Spawn some initial resources for testing
+    this.spawnTestResources();
   }
 
   /**
@@ -291,6 +305,9 @@ export class GameScene {
     // LOD handled in animation loop based on camera distance
     if (generation >= 1 && creatures && creatures.length > 0) {
       console.log(`✅ ${creatures.length} creatures ready (will render as lights/meshes based on zoom)`);
+      
+      // Initialize behavior system for creatures
+      this.initializeCreatureBehaviors();
     }
 
     // TODO: Gen2+ renderers
@@ -299,13 +316,24 @@ export class GameScene {
   }
 
   private startAnimation(): void {
+    let lastTime = Date.now();
+    
     // Update time for orbital mechanics and LOD
     this.scene.registerBeforeRender(() => {
-      this.time += this.engine.getDeltaTime() / 1000;
+      const now = Date.now();
+      const deltaTime = (now - lastTime) / 1000; // seconds
+      lastTime = now;
+      
+      this.time += deltaTime;
       
       // Update moon positions based on time
       if (this.moonRenderer) {
         this.moonRenderer.updateOrbitalPositions(this.time);
+      }
+      
+      // Update creature behaviors
+      if (this.behaviorSystem && this.renderData?.creatures) {
+        this.updateCreatureBehaviors(deltaTime);
       }
       
       // Update creature LOD based on camera distance
@@ -313,8 +341,27 @@ export class GameScene {
         const camera = this.scene.activeCamera;
         if (camera) {
           const cameraDistance = Vector3.Distance(camera.position, Vector3.Zero());
-          this.creatureRenderer.render(this.renderData.creatures, cameraDistance);
+          
+          // Convert behavior states to creature data for rendering
+          const creaturesForRender = this.renderData.creatures.map(c => {
+            const behavior = this.creatureBehaviors.get(c.id);
+            if (behavior) {
+              // Use updated position from behavior system
+              return {
+                ...c,
+                position: behavior.position
+              };
+            }
+            return c;
+          });
+          
+          this.creatureRenderer.render(creaturesForRender, cameraDistance);
         }
+      }
+      
+      // Update resource rendering
+      if (this.resourceRenderer && this.resources.length > 0) {
+        this.resourceRenderer.render(this.resources);
       }
     });
   }
@@ -349,7 +396,108 @@ export class GameScene {
     this.planetRenderer?.dispose();
     this.moonRenderer?.dispose();
     this.creatureRenderer?.dispose();
+    this.resourceRenderer?.dispose();
     this.hud?.dispose();
     this.narrative?.dispose();
+  }
+
+  /**
+   * Initialize creature behavior states
+   */
+  private initializeCreatureBehaviors(): void {
+    if (!this.renderData?.creatures) return;
+    
+    this.creatureBehaviors.clear();
+    
+    for (const creature of this.renderData.creatures) {
+      // Convert creature data to behavior state
+      const position = 'lat' in creature.position 
+        ? creature.position 
+        : this.vector3ToLatLon(creature.position);
+      
+      const behaviorState: CreatureBehaviorState = {
+        id: creature.id,
+        position: {
+          lat: position.lat,
+          lon: position.lon,
+          alt: position.alt || 0.2
+        },
+        velocity: { lat: 0, lon: 0 },
+        currentGoal: 'idle',
+        energy: 1.0,
+        hunger: 0.3,
+        fear: 0.0
+      };
+      
+      this.creatureBehaviors.set(creature.id, behaviorState);
+    }
+  }
+
+  /**
+   * Update all creature behaviors
+   */
+  private updateCreatureBehaviors(deltaTime: number): void {
+    if (!this.behaviorSystem) return;
+    
+    for (const [id, behavior] of this.creatureBehaviors) {
+      const creature = this.renderData!.creatures!.find(c => c.id === id);
+      if (!creature) continue;
+      
+      // Update behavior
+      const updated = this.behaviorSystem.update(
+        behavior,
+        deltaTime,
+        creature.traits || {}
+      );
+      
+      this.creatureBehaviors.set(id, updated);
+      
+      // Update animation state based on behavior
+      if (this.creatureRenderer) {
+        const speed = this.behaviorSystem.getSpeed(updated);
+        if (speed > 0.1) {
+          this.creatureRenderer.setAnimationState(id, 'walk', speed * 2);
+        } else {
+          this.creatureRenderer.setAnimationState(id, 'idle');
+        }
+      }
+    }
+  }
+
+  /**
+   * Spawn test resources for Gen1
+   */
+  private spawnTestResources(): void {
+    // Create 10 food sources scattered around planet
+    for (let i = 0; i < 10; i++) {
+      const lat = (Math.random() - 0.5) * 160; // -80 to 80
+      const lon = (Math.random() - 0.5) * 360; // -180 to 180
+      
+      this.resources.push({
+        id: `food-${i}`,
+        type: 'food',
+        position: { lat, lon },
+        amount: 0.8 + Math.random() * 0.2 // 0.8 to 1.0
+      });
+    }
+    
+    // Add resources to behavior system
+    for (const resource of this.resources) {
+      this.behaviorSystem?.addResource(resource);
+    }
+  }
+
+  /**
+   * Convert Vector3 to lat/lon
+   */
+  private vector3ToLatLon(pos: { x: number; y: number; z: number }): { lat: number; lon: number; alt: number } {
+    const vec = new Vector3(pos.x, pos.y, pos.z);
+    const radius = vec.length();
+    const alt = radius - 5; // Planet radius = 5
+    
+    const lat = 90 - Math.acos(pos.y / radius) * (180 / Math.PI);
+    const lon = Math.atan2(pos.z, pos.x) * (180 / Math.PI) - 180;
+    
+    return { lat, lon, alt };
   }
 }

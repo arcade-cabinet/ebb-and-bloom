@@ -169,6 +169,10 @@ export class CreatureRenderer {
         // Create creature mesh based on archetype
         root = this.createCreatureMesh(creature);
         this.meshes.set(creature.id, root);
+        
+        // Add walk animation
+        const locomotion = creature.traits?.locomotion || 'cursorial';
+        this.addWalkAnimation(root, locomotion);
       }
       
       // Update position and orientation
@@ -491,6 +495,66 @@ export class CreatureRenderer {
     root.animations = [anim];
     
     this.scene.beginAnimation(root, 0, frameRate * 2, true);
+  }
+
+  /**
+   * Add walking animation (leg movement)
+   */
+  private addWalkAnimation(root: TransformNode, locomotion: string): void {
+    // Get all legs
+    const legs = root.getChildren().filter(c => c.name.includes('-leg'));
+    if (legs.length === 0) return;
+    
+    const frameRate = 30;
+    const walkSpeed = 1.0; // Animation speed multiplier
+    
+    // Alternating leg movement
+    legs.forEach((leg, i) => {
+      const anim = new Animation(
+        `${leg.name}-walk`,
+        'rotation.x',
+        frameRate,
+        Animation.ANIMATIONTYPE_FLOAT,
+        Animation.ANIMATIONLOOPMODE_CYCLE
+      );
+      
+      // Offset phase for each leg
+      const phase = (i % 2) * Math.PI;
+      
+      const keys = [
+        { frame: 0, value: Math.sin(phase) * 0.3 },
+        { frame: frameRate / 2, value: Math.sin(phase + Math.PI) * 0.3 },
+        { frame: frameRate, value: Math.sin(phase + Math.PI * 2) * 0.3 }
+      ];
+      
+      anim.setKeys(keys);
+      
+      if (!leg.animations) leg.animations = [];
+      leg.animations.push(anim);
+    });
+  }
+
+  /**
+   * Set creature animation state
+   */
+  setAnimationState(creatureId: string, state: 'idle' | 'walk' | 'run', speed: number = 1.0): void {
+    const root = this.meshes.get(creatureId);
+    if (!root) return;
+    
+    // Stop all animations
+    this.scene.stopAnimation(root);
+    root.getChildren().forEach(c => this.scene.stopAnimation(c));
+    
+    if (state === 'idle') {
+      this.scene.beginAnimation(root, 0, 60, true);
+    } else {
+      // Play walk animation on legs
+      root.getChildren()
+        .filter(c => c.name.includes('-leg'))
+        .forEach(leg => {
+          this.scene.beginAnimation(leg, 0, 30, true, speed);
+        });
+    }
   }
 
   /**
