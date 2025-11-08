@@ -163,6 +163,13 @@ public/creatures/
 # Playwright test results (can be large)
 playwright-results/
 playwright-report/
+test-results/
+*.png
+*.mp4
+*.webm
+# But keep config files
+!playwright.config.ts
+!vite.config.ts
 # Database files
 *.db
 *.db-*
