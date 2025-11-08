@@ -31,21 +31,19 @@ export function registerGen0RenderRoutes(fastify: FastifyInstance) {
     const time = parseFloat(request.query.time || '0'); // seconds since epoch
     
     // Get moons from planet (stored during simulation)
-    const moons = (planet as any).moons || [];
+    let moons = (planet as any).moons || [];
     
     // If no moons in planet object, check game state
-    if (moons.length === 0 && state.gen0Data) {
-      // Moons might be stored elsewhere - check game engine
+    if (!moons || moons.length === 0) {
       const gamePlanet = game.getState().planet as any;
       if (gamePlanet?.moons) {
-        return {
-          ...result,
-          moons: gamePlanet.moons.map((moon: any) => ({
-            ...moon,
-            position: calculateMoonPosition(moon, planet.radius, time),
-          })),
-        };
+        moons = gamePlanet.moons;
       }
+    }
+    
+    // Ensure moons is always an array
+    if (!Array.isArray(moons)) {
+      moons = [];
     }
     
     // Calculate current moon positions
@@ -66,7 +64,7 @@ export function registerGen0RenderRoutes(fastify: FastifyInstance) {
         rotationPeriod: planet.rotationPeriod,
         layers: planet.layers,
       },
-      moons: moonPositions,
+      moons: moonPositions, // Always return array, even if empty
       visualBlueprint: {
         textureReferences: visualBlueprint?.textureReferences || [],
         visualProperties: visualBlueprint?.visualProperties || {},

@@ -87,7 +87,10 @@ test.describe('Backend API Integration', () => {
     const response0 = await request.get(`${API_BASE}/api/game/${testGameId}/gen0/render?time=0`);
     const data0 = await response0.json();
 
-    if (data0.moons.length > 0) {
+    expect(data0.moons).toBeDefined();
+    expect(Array.isArray(data0.moons)).toBe(true);
+
+    if (data0.moons && data0.moons.length > 0) {
       const initialPosition = data0.moons[0].position;
 
       // Get render data at later time

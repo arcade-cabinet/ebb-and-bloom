@@ -10,6 +10,7 @@ export default defineConfig({
     },
   },
   server: {
+    host: '0.0.0.0', // Bind to all interfaces for phone access
     port: 5173,
     proxy: {
       '/api': {
