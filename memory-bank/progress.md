@@ -1,148 +1,79 @@
 # Progress Tracking
 
-## CRITICAL FIX COMPLETED (2025-11-07)
+**Last Updated**: 2025-01-09
 
-❌ **PROBLEM IDENTIFIED**: Data pool generators were completely orphaned!
-- VisualBlueprintGenerator.ts existed but was NEVER CALLED
-- All Gen 0-6 systems were using HARDCODED values
-- Gen 0 was still using "SIMPLIFIED" placeholder
-- User caught this: "gen 0 looks like its still us9gn the simplified version. Def8nitrly not using th3 data pools"
+## Current Status: Generation Pipeline Complete ✅
 
-✅ **SOLUTION IMPLEMENTED**: Complete integration overhaul
-1. **Gen 0 AccretionSimulation.ts**:
-   - Replaced simplified version with REAL Yuka CohesionBehavior physics
-   - Integrated generateGen0DataPools() 
-   - 1000 debris particles with actual collision/accretion
-   - AI-generated element distributions now used
-   - Material stratification by density
+### Completed Work
 
-2. **Gen 1 CreatureSystem.ts**:
-   - Now calls generateGen1DataPools()
-   - AI-generated archetypes replace hardcoded ARCHETYPES
-   - Visual blueprints attached to creatures
-   - Traits parsed from AI descriptions
+1. **Prompt Engineering** ✅
+   - All generations (gen0-gen6) have comprehensive prompts with:
+     - CRITICAL WARP FLOW sections (causal inheritance from previous generations)
+     - CRITICAL WEFT FLOW sections (macro → meso → micro within each generation)
+     - SCALE DEFINITION sections for clarity
+     - CRITICAL VISUAL REQUIREMENTS for rendering-ready output
+   - Fixed gen0 MACRO to correctly describe STELLAR SYSTEM CONTEXT (not planet descriptions)
+   - Removed references to non-existent queryTextures tool, replaced with texture ID examples
 
-3. **Gen 2 PackSystem.ts**:
-   - Now calls generateGen2DataPools()
-   - AI-generated pack types replace hardcoded fallbacks
-   - Visual blueprints attached to packs
-   - Still uses Yuka FuzzyModule (preserved)
+2. **WARP/WEFT Flow Implementation** ✅
+   - Strict MACRO → MESO → MICRO generation order enforced
+   - Each scale receives context from completed scales (WEFT flow)
+   - Each generation receives context from previous generations (WARP flow)
+   - Immediate validation after each scale generation
+   - Generation stops if any scale fails validation
 
-4. **Gen 3 ToolSystem.ts**:
-   - Now calls generateGen3DataPools()
-   - AI-generated tool types with purposes
-   - Material selection from planet crust
-   - Visual blueprints for all tools
+3. **Idempotency** ✅
+   - Checks for existing generation files
+   - Validates internal structure (not just file existence)
+   - Skips regeneration if all scales are valid
+   - Regenerates if structure is invalid (e.g., old TOML-like strings)
 
-5. **Gen 4 TribeSystem.ts**:
-   - Now calls generateGen4DataPools()
-   - AI-generated tribal structures/governance
-   - Visual blueprints for tribes
+4. **Schema Validation** ✅
+   - Proper nested JSON structures (not TOML strings)
+   - Visual properties with PBR materials, color palettes, procedural rules
+   - Texture IDs (not file paths) from AmbientCG manifest
+   - Retry logic with exponential backoff for transient AI failures
 
-6. **Gen 5 BuildingSystem.ts**:
-   - Now calls generateGen5DataPools()
-   - AI-generated building types/styles
-   - Visual blueprints for all buildings
+5. **Documentation Generation** ✅
+   - Comprehensive markdown document at `docs/GENERATION_REVIEW.md`
+   - Documents all generations (gen0-gen6) with WARP/WEFT flow
+   - Shows all scales (macro, meso, micro) for each generation
+   - Includes texture references with scaled-down images (200px width)
+   - Collects all unique textures organized by category (150px thumbnails)
+   - Generated automatically at end of pipeline
 
-7. **Gen 6 ReligionDemocracySystem.ts**:
-   - Now calls generateGen6DataPools()
-   - AI-generated cosmologies/rituals/beliefs
-   - Visual blueprints for religions
+6. **All Generations Generated** ✅
+   - Gen 0: Planetary Genesis (stellar contexts, accretion dynamics, element distributions)
+   - Gen 1: ECS Archetypes (ecological niches, population dynamics, individual physiology)
+   - Gen 2: Pack Dynamics (territorial geography, pack sociology, individual behavior)
+   - Gen 3: Tool Systems (tool ecosystems, tool categories, tool properties)
+   - Gen 4: Tribe Formation (inter-tribal networks, tribal governance, individual roles)
+   - Gen 5: Building Systems (settlement patterns, building types, building properties)
+   - Gen 6: Religion & Democracy (abstract organizing principles, institutional structures, individual psychological states)
 
-8. **VisualBlueprintGenerator.ts**:
-   - Added missing Gen 3-6 generators
-   - Added `z` (Zod) import that was missing
-   - Updated generateCompleteGameData() to call all 6 gens
-   - All generators now return complete visual blueprints
+### Technical Improvements
 
-## Current Status
+- **Retry Logic**: Added exponential backoff retry (up to 2 retries) for transient AI SDK failures
+- **Error Handling**: Better error messages and validation feedback
+- **TypeScript Fixes**: Properly typed `generationData.scales` to prevent type errors
+- **Path Fixes**: Corrected documentation output path to root `docs/` directory
 
-### ✅ COMPLETE: Full WARP/WEFT Architecture
-- **WARP (Vertical)**: Each Gen causally influences next via data pool prompts
-- **WEFT (Horizontal)**: Each Gen has Macro/Meso/Micro scales with 5 AI options
-- **Integration**: All 6 systems now USE the data pools (not orphaned!)
-- **Visual Blueprints**: Every entity has complete rendering instructions
+### Next Steps
 
-### 🔧 REMAINING WORK
+1. **Backend Integration**: Ensure `packages/backend` properly consumes generated data pools
+2. **Visual Rendering**: Implement `packages/simulation` React Three Fiber rendering for Gen0 visual blueprints
+3. **Testing**: Full integration testing with seed-driven deterministic selection
+4. **Documentation**: Review and refine `docs/GENERATION_REVIEW.md` for accuracy
 
-1. **Testing**:
-   - Run existing Gen 0-2 tests with new AI integration
-   - Add Gen 3-6 comprehensive tests
-   - Integration tests for full Gen 0→6 pipeline
-   - May need to add `useAI: false` flag to tests to avoid OpenAI calls
+### Files Modified
 
-2. **SQLite Persistence** (ID: 9):
-   - Drizzle ORM setup
-   - Schema migrations
-   - Time-series storage
+- `packages/gen/src/prompts/generation-prompts.ts` - All prompts updated with WARP/WEFT flow
+- `packages/gen/src/workflows/warp-weft-agent.ts` - WARP/WEFT flow implementation, retry logic
+- `packages/gen/src/workflows/generate-documentation.ts` - Documentation generator
+- `packages/gen/src/schemas/visual-blueprint-schema.ts` - Proper nested JSON schemas
+- `packages/gen/src/tools/structured-texture-tool.ts` - Texture ID handling
 
-3. **REST API Endpoints**:
-   - `/api/game/new` - Start new game with seed
-   - `/api/game/{id}/state` - Get current state
-   - `/api/game/{id}/coordinate` - Query specific point
-   - `/api/game/{id}/active-points` - Get activity map
+### Generated Files
 
-4. **Frontend** (Simple 3D Sphere):
-   - React Three Fiber sphere
-   - Texture from Gen 0 visual blueprints
-   - Activity points overlay
-   - Rotation/zoom controls
-
-## Key Architecture Achievements
-
-### AI-Sourced Data (Not Random!)
-- Every generation uses OpenAI to generate OPTIONS
-- Deterministic seed selects from these options
-- Grounded in previous generation's context
-- Complete causal chain from Gen 0 → Gen 6
-
-### Yuka Integration (Real Physics!)
-- Gen 0: CohesionBehavior for planetary accretion
-- Gen 1: Goal hierarchy for creature decisions
-- Gen 2: FuzzyModule + Flocking for pack formation
-- Gen 3: FuzzyModule for tool emergence
-- Gen 4-6: Goal system for complex behaviors
-
-### Visual Blueprints (Rendering-Ready!)
-Every entity now includes:
-```typescript
-visualBlueprint: {
-  description: string;
-  canCreate: string[];
-  cannotCreate: string[];
-  representations: {
-    materials: string[];  // AmbientCG paths
-    shaders: { metallic, roughness, translucency, emissive };
-    proceduralRules: string;
-    colorPalette: string[];
-  };
-  compatibleWith: string[];
-  incompatibleWith: string[];
-  compositionRules: string;
-}
-```
-
-## Statistics
-
-- **Lines of Code**: ~5,000+ backend
-- **Generations Implemented**: 6/6 (ALL)
-- **Data Pool Generators**: 6/6 (Gen 0-6)
-- **System Integration**: 6/6 (ALL now USE data pools)
-- **Visual Blueprints**: Complete for all generations
-- **Yuka Systems**: AccretionSim, CreatureGoals, PackFuzzy, ToolFuzzy
-- **Tests Written**: Gen 0-2 (Gen 3-6 pending)
-- **Commits**: 10+ in this session alone
-
-## Next Session Plan
-
-1. Run `npm test` to check existing tests
-2. Add `useAI: false` flags to tests if OpenAI calls fail
-3. Write Gen 3-6 tests following Gen 0-2 patterns
-4. Integration test: Gen 0 → 1 → 2 → 3 → 4 → 5 → 6
-5. Begin SQLite + Drizzle setup
-6. Create first REST API endpoint
-
----
-
-**Last Updated**: 2025-11-07 (Integration Fix Session)
-**Status**: 🟢 GREEN - All systems integrated and committed
+- `packages/gen/data/archetypes/gen0-6/{macro,meso,micro}.json` - All generation data
+- `docs/GENERATION_REVIEW.md` - Comprehensive documentation (155KB, 4904 lines)

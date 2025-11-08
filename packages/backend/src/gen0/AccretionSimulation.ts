@@ -6,7 +6,7 @@
 import { Vehicle, CohesionBehavior, Vector3 } from 'yuka';
 import seedrandom from 'seedrandom';
 import { Planet, MaterialComposition, PlanetaryLayer, AccretionEvent } from '../schemas/index.js';
-import { generateGen0DataPools, type VisualBlueprint } from '../gen-systems/VisualBlueprintGenerator.js';
+import { generateGen0DataPools, type VisualBlueprint } from '../gen-systems/loadGenData.js';
 
 export interface AccretionConfig {
   seed: string;

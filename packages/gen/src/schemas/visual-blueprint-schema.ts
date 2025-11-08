@@ -4,6 +4,7 @@
 
 import { z } from 'zod';
 
+// PBR Properties for rendering (used by both VisualBlueprintSchema and ArchetypeSchema)
 export const PBRPropertiesSchema = z.object({
   baseColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
   roughness: z.number().min(0).max(1),
@@ -20,13 +21,13 @@ export const VisualBlueprintSchema = z.object({
   description: z.string(),
   generation: z.number().int().min(0).max(6),
   scale: z.enum(['macro', 'meso', 'micro']),
-  
+
   // Causal relationships
   canCreate: z.array(z.string()),
   cannotCreate: z.array(z.string()),
   compatibleWith: z.array(z.string()),
   incompatibleWith: z.array(z.string()),
-  
+
   // Visual representation
   representations: z.object({
     primaryTextures: z.array(z.string()), // Actual texture paths
@@ -34,11 +35,11 @@ export const VisualBlueprintSchema = z.object({
     pbrProperties: PBRPropertiesSchema,
     proceduralRules: z.string(),
   }),
-  
+
   // Composition
   compositionRules: z.string(),
   layeringOrder: z.number().int(),
-  
+
   // Metadata
   createdAt: z.string().datetime(),
   version: z.string(),
@@ -54,15 +55,26 @@ export const ArchetypeWithBlueprintSchema = z.object({
   properties: z.record(z.string(), z.any()),
 });
 
-export const SimpleArchetypeSchema = z.object({
+// Visual representation structure
+export const VisualRepresentationSchema = z.object({
+  primaryTextures: z.array(z.string()), // Texture IDs from manifest
+  colorPalette: z.array(z.string().regex(/^#[0-9A-Fa-f]{6}$/)), // Hex colors
+  pbrProperties: PBRPropertiesSchema,
+  proceduralRules: z.string(), // How surface features vary
+});
+
+// Complete archetype schema with nested JSON structures
+export const ArchetypeSchema = z.object({
   id: z.string(),
   name: z.string(),
-  description: z.string(),
-  textureReferences: z.array(z.string()),
+  description: z.string(), // Narrative description
+  parameters: z.record(z.string(), z.number()), // Numerical parameters (stellarMass, metallicity, etc.)
+  visualProperties: VisualRepresentationSchema, // NESTED JSON, not TOML string!
+  textureReferences: z.array(z.string()), // Texture IDs (like "Metal049A", "Rock025")
 });
 
 export const GenerationScaleSchema = z.object({
-  archetypes: z.array(SimpleArchetypeSchema),
+  archetypes: z.array(ArchetypeSchema),
 });
 
 export type VisualBlueprint = z.infer<typeof VisualBlueprintSchema>;

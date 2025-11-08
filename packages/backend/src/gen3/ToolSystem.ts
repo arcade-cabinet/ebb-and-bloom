@@ -14,7 +14,7 @@ import {
 } from 'yuka';
 import seedrandom from 'seedrandom';
 import { Tool, Creature, Pack, Planet, Material } from '../schemas/index.js';
-import { generateGen3DataPools, selectFromPool, extractSeedComponents } from '../gen-systems/VisualBlueprintGenerator.js';
+import { generateGen3DataPools, selectFromPool, extractSeedComponents } from '../gen-systems/loadGenData.js';
 
 /**
  * Fuzzy Logic: When does a tool emerge?

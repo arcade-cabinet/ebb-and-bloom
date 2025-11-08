@@ -6,7 +6,7 @@
 import { Goal } from 'yuka';
 import seedrandom from 'seedrandom';
 import { Tribe, Pack, Creature, Tool, Planet, Coordinate, Territory } from '../schemas/index.js';
-import { generateGen4DataPools, selectFromPool, extractSeedComponents } from '../gen-systems/VisualBlueprintGenerator.js';
+import { generateGen4DataPools, selectFromPool, extractSeedComponents } from '../gen-systems/loadGenData.js';
 
 /**
  * Tribe Formation Goal

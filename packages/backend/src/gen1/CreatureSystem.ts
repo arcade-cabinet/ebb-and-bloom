@@ -14,7 +14,7 @@ import {
   Traits,
   Need,
 } from '../schemas/index.js';
-import { generateGen1DataPools, selectFromPool, extractSeedComponents } from '../gen-systems/VisualBlueprintGenerator.js';
+import { generateGen1DataPools, selectFromPool, extractSeedComponents } from '../gen-systems/loadGenData.js';
 
 export interface Gen1Config {
   seed: string;

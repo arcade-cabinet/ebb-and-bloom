@@ -19,7 +19,7 @@ import {
 } from 'yuka';
 import seedrandom from 'seedrandom';
 import { Creature, Pack, Coordinate } from '../schemas/index.js';
-import { generateGen2DataPools, selectFromPool, extractSeedComponents } from '../gen-systems/VisualBlueprintGenerator.js';
+import { generateGen2DataPools, selectFromPool, extractSeedComponents } from '../gen-systems/loadGenData.js';
 
 export interface Gen2Config {
   seed: string;

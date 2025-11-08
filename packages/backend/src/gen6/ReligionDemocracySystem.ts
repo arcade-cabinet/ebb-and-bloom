@@ -6,7 +6,7 @@
 import { Goal } from 'yuka';
 import seedrandom from 'seedrandom';
 import { Religion, Myth, Ritual, Tribe, Building, Creature, Planet } from '../schemas/index.js';
-import { generateGen6DataPools, selectFromPool, extractSeedComponents } from '../gen-systems/VisualBlueprintGenerator.js';
+import { generateGen6DataPools, selectFromPool, extractSeedComponents } from '../gen-systems/loadGenData.js';
 
 /**
  * Religious Practice Goal

@@ -6,7 +6,7 @@
 import { Goal } from 'yuka';
 import seedrandom from 'seedrandom';
 import { Building, Tribe, Pack, Creature, Tool, Planet, Coordinate } from '../schemas/index.js';
-import { generateGen5DataPools, selectFromPool, extractSeedComponents } from '../gen-systems/VisualBlueprintGenerator.js';
+import { generateGen5DataPools, selectFromPool, extractSeedComponents } from '../gen-systems/loadGenData.js';
 
 /**
  * Construction Goal
