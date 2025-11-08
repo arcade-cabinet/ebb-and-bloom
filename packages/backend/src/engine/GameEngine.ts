@@ -73,11 +73,13 @@ export class GameEngine extends EventEmitter {
     const simulation = new AccretionSimulation({ seed: gen0Seed });
     const planet = await simulation.simulate();
     
+    // Store planet with moons
     this.planet = planet;
-    this.state.planet = planet;
+    this.state.planet = planet as any; // Include moons in state
     this.state.gen0Data = planet.visualBlueprints;
     this.state.generation = 0;
-    this.state.message = `Gen0 complete: Planet formed (${(planet.radius / 1000).toFixed(0)}km radius)`;
+    const moonCount = (planet as any).moons?.length || 0;
+    this.state.message = `Gen0 complete: Planet formed (${(planet.radius / 1000).toFixed(0)}km radius, ${moonCount} moon${moonCount !== 1 ? 's' : ''})`;
     
     this.emit('gen0', { planet, gen0Data: this.state.gen0Data });
   }

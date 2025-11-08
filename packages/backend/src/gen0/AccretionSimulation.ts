@@ -7,6 +7,7 @@ import seedrandom from 'seedrandom';
 import { CohesionBehavior, SeparationBehavior, Vector3, Vehicle } from 'yuka';
 import { generateGen0DataPools } from '../gen-systems/loadGenData.js';
 import { AccretionEvent, MaterialType, Planet, PlanetaryLayer } from '../schemas/index.js';
+import { calculateMoons, type Moon } from './MoonCalculation.js';
 
 export interface AccretionConfig {
   seed: string;
@@ -100,15 +101,20 @@ export class AccretionSimulation {
       status: 'formed',
     };
 
+    // Calculate moons based on accretion physics
+    const moons = calculateMoons(planet, baseSeed);
+
     console.log(`[ACCRETION] Planet formed!`);
     console.log(`   Radius: ${(radius / 1000).toFixed(0)}km`);
     console.log(`   Mass: ${mass.toExponential(2)}kg`);
     console.log(`   Rotation: ${(rotationPeriod / 3600).toFixed(1)}h`);
     console.log(`   Layers: ${layers.length}`);
+    console.log(`   Moons: ${moons.length}`);
 
     return {
       ...planet,
       visualBlueprints: dataPools,
+      moons, // Include moons in return
     };
   }
 

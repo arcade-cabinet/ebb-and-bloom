@@ -13,6 +13,7 @@ import cors from '@fastify/cors';
 import cookie from '@fastify/cookie';
 import { GameEngine } from './engine/GameEngine.js';
 import { registerPlanetRoutes } from './resources/planet.js';
+import { registerGen0RenderRoutes } from './resources/gen0-render.js';
 import { registerSeedRoutes } from './seed/seed-routes.js';
 import { seedMiddleware, extractSeedFromRequest } from './seed/seed-middleware.js';
 
@@ -24,12 +25,17 @@ await fastify.register(cors, { origin: true });
 await fastify.register(cookie);
 
 const games = new Map<string, GameEngine>();
+// Attach games map to fastify instance for route handlers
+(fastify as any).games = games;
 
 // Register seed routes (must be before other routes)
 await registerSeedRoutes(fastify);
 
 // Register planet routes
 await registerPlanetRoutes(fastify);
+
+// Register Gen0 rendering routes
+await registerGen0RenderRoutes(fastify);
 
 fastify.get('/health', async () => {
   return { status: 'ok' };
@@ -98,7 +104,7 @@ fastify.post<{
 
 const start = async () => {
   try {
-    const port = 3000;
+    const port = 3001; // Changed from 3000 to avoid conflict with frontend
     const host = '0.0.0.0';
     await fastify.listen({ port, host });
     console.log(`Backend running on http://${host}:${port}`);
