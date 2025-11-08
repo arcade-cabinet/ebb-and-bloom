@@ -140,18 +140,22 @@ memory-bank/
 
 ---
 
-## Archived Code (DEAD - DELETE IT)
+## Migrated Screens (Ready for Gen1)
 
-**Location**: `memory-bank/archived-code/` (1.1MB)
+All essential UI screens migrated from archived React Three Fiber code to BabylonJS:
 
-**What**: Old React Three Fiber frontend from previous architectural iteration
-- 57 tests (for OLD architecture, not current)
-- React + R3F + ECS-for-logic approach
-- Completely replaced by BabylonJS + GameEngine
+**Current Scenes** (`packages/game/src/scenes/`):
+- ✅ SplashScreenScene.ts - Initial splash
+- ✅ MainMenuScene.ts - Main menu + seed input
+- ✅ OnboardingScene.ts - 4-step tutorial (NEW)
+- ✅ CatalystCreatorScene.ts - Trait allocation for Gen1 (NEW)
+- ✅ GameScene.ts - 3D planet view
 
-**Status**: DEAD CODE - Should be deleted (it's in Git history if ever needed)
+**UI Components** (`packages/game/src/ui/`):
+- ✅ EvolutionHUD.ts - In-game overlay (generation, environment, events) (NEW)
+- ✅ NarrativeDisplay.ts - Haiku journal for Gen3+ (NEW)
 
-**DO NOT**:
-- Import anything from archived-code/
-- Reference its tests or documentation
-- Try to "migrate" it - it's fundamentally incompatible with current architecture
+All new scenes are working stubs with full BabylonJS GUI structure.
+Ready for Gen1 evolution system implementation.
+
+**Archived Code**: ✅ DELETED - Extracted needed screens, removed 1.1MB dead code

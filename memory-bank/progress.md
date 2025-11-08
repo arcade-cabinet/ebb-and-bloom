@@ -265,7 +265,7 @@ BREAKING CHANGE: REST API removed, Fastify removed, React removed
 **Production Build**: ✅ SUCCESS (5.6MB, 1.25MB gzipped)  
 **Capacitor**: ✅ SYNCED (iOS/Android ready)  
 **CI/CD**: ✅ CONFIGURED (GitHub Actions)  
-**Archived Code**: 🗑️ DEAD CODE - 1.1MB in memory-bank/archived-code/ should be DELETED
+**Archived Code**: ✅ DELETED (migrated Gen1+ screens first, removed 1.1MB dead code)
 
 **Target**: 🚀 PRODUCTION DEPLOYMENT
 
@@ -278,9 +278,10 @@ BREAKING CHANGE: REST API removed, Fastify removed, React removed
 6. ✅ Documentation complete
 7. ✅ PR review comments resolved (19/19 threads closed)
 8. ✅ **Fixed CI/CD workflows** - Removed pnpm version conflict (all workflows were failing)
+9. ✅ **Migrated Gen1+ screens** - Extracted OnboardingScene, CatalystCreatorScene, EvolutionHUD, NarrativeDisplay from archived code
+10. ✅ **Deleted archived code** - Removed 1.1MB of dead React Three Fiber code (87 files)
 
 **Remaining (Low Priority)**: 
 - Fix 11 failing tests (likely archetype structure bugs like we fixed in AccretionSimulation)
-- Delete archived code directory (memory-bank/archived-code/)
 - Phone testing (local network)
 - Device testing (iOS/Android hardware)
