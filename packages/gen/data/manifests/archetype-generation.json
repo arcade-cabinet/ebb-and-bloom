@@ -1,31 +1,50 @@
 {
   "version": "1.0.0",
-  "description": "Universal archetype generation configuration - creates pools for seedrandom selection",
-  "lastUpdated": "2025-11-07",
+  "description": "Universal archetype generation configuration - creates pools for seedrandom selection. Set generateCount to 0 for unlimited (AI-determined) generation. Prompts are defined in packages/gen/src/prompts/generation-prompts.ts",
+  "lastUpdated": "2025-01-09",
   "archetypeGeneration": {
     "gen0": {
       "name": "Planetary Formation",
       "question": "How does matter organize itself under gravity?",
       "macro": {
-        "type": "Stellar system context", 
-        "examples": ["Population I/II star", "binary systems", "post-supernova enrichment"],
-        "generateCount": 20,
-        "textureCategories": ["metal", "rock"],
-        "aiPrompt": "Generate 20 universal stellar system contexts that could affect any planetary formation. Include different star types, metallicity levels, and environmental factors."
+        "type": "Stellar system context",
+        "examples": [
+          "Population I/II star",
+          "binary systems",
+          "post-supernova enrichment"
+        ],
+        "generateCount": 0,
+        "textureCategories": [
+          "metal",
+          "rock"
+        ]
       },
       "meso": {
         "type": "Accretion dynamics",
-        "examples": ["hot/cold zones", "giant impacts", "bombardment phases"],
-        "generateCount": 15,
-        "textureCategories": ["rock", "metal"],
-        "aiPrompt": "Generate 15 universal accretion process patterns. Different ways matter can come together to form planets."
+        "examples": [
+          "hot/cold zones",
+          "giant impacts",
+          "bombardment phases"
+        ],
+        "generateCount": 0,
+        "textureCategories": [
+          "rock",
+          "metal"
+        ]
       },
       "micro": {
         "type": "Element distributions",
-        "examples": ["metal-rich", "carbon-rich", "volatile abundance", "rare earths"],
-        "generateCount": 25,
-        "textureCategories": ["metal", "rock"],
-        "aiPrompt": "Generate 25 universal elemental composition patterns. Different ways elements can be distributed in planetary formation."
+        "examples": [
+          "metal-rich",
+          "carbon-rich",
+          "volatile abundance",
+          "rare earths"
+        ],
+        "generateCount": 0,
+        "textureCategories": [
+          "metal",
+          "rock"
+        ]
       }
     },
     "gen1": {
@@ -33,24 +52,44 @@
       "question": "How does chemistry become biology?",
       "macro": {
         "type": "Ecological niches",
-        "examples": ["predator/prey ratios", "biome structure", "environmental roles"],
-        "generateCount": 20,
-        "textureCategories": ["fabric", "leather", "wood"],
-        "aiPrompt": "Generate 20 universal ecological niche archetypes. Different roles life can play in any ecosystem."
+        "examples": [
+          "predator/prey ratios",
+          "biome structure",
+          "environmental roles"
+        ],
+        "generateCount": 0,
+        "textureCategories": [
+          "fabric",
+          "leather",
+          "wood"
+        ]
       },
       "meso": {
-        "type": "Population dynamics", 
-        "examples": ["carrying capacity", "generational turnover", "migration patterns"],
-        "generateCount": 15,
-        "textureCategories": ["fabric", "grass"],
-        "aiPrompt": "Generate 15 universal population organization patterns. Different ways creatures can organize socially."
+        "type": "Population dynamics",
+        "examples": [
+          "carrying capacity",
+          "generational turnover",
+          "migration patterns"
+        ],
+        "generateCount": 0,
+        "textureCategories": [
+          "fabric",
+          "grass"
+        ]
       },
       "micro": {
         "type": "Individual physiology",
-        "examples": ["metabolism", "lifespan", "sensory capabilities", "morphology"], 
-        "generateCount": 30,
-        "textureCategories": ["leather", "fabric"],
-        "aiPrompt": "Generate 30 universal physiological adaptation archetypes. Different body plans and metabolic strategies."
+        "examples": [
+          "metabolism",
+          "lifespan",
+          "sensory capabilities",
+          "morphology"
+        ],
+        "generateCount": 0,
+        "textureCategories": [
+          "leather",
+          "fabric"
+        ]
       }
     },
     "gen2": {
@@ -58,49 +97,90 @@
       "question": "When is cooperation more advantageous than competition?",
       "macro": {
         "type": "Territorial geography",
-        "examples": ["migration corridors", "resource hotspots", "boundaries"],
-        "generateCount": 15,
-        "textureCategories": ["stone", "grass"],
-        "aiPrompt": "Generate 15 universal territorial organization patterns. Different ways groups can claim and use space."
+        "examples": [
+          "migration corridors",
+          "resource hotspots",
+          "boundaries"
+        ],
+        "generateCount": 0,
+        "textureCategories": [
+          "stone",
+          "grass"
+        ]
       },
       "meso": {
         "type": "Pack sociology",
-        "examples": ["formation triggers", "size distributions", "inter-pack relations"],
-        "generateCount": 20,
-        "textureCategories": ["fabric", "grass"],
-        "aiPrompt": "Generate 20 universal pack formation archetypes. Different social triggers and group dynamics."
+        "examples": [
+          "formation triggers",
+          "size distributions",
+          "inter-pack relations"
+        ],
+        "generateCount": 0,
+        "textureCategories": [
+          "fabric",
+          "grass"
+        ]
       },
       "micro": {
         "type": "Individual behavior",
-        "examples": ["dominance hierarchies", "communication methods", "specialization"],
-        "generateCount": 25,
-        "textureCategories": ["fabric", "leather"],
-        "aiPrompt": "Generate 25 universal individual pack behavior patterns. Different roles within cooperative groups."
+        "examples": [
+          "dominance hierarchies",
+          "communication methods",
+          "specialization"
+        ],
+        "generateCount": 0,
+        "textureCategories": [
+          "fabric",
+          "leather"
+        ]
       }
     },
     "gen3": {
-      "name": "Tools", 
+      "name": "Tools",
       "question": "How does intelligence overcome physical limitations?",
       "macro": {
         "type": "Tool ecosystems",
-        "examples": ["problem domains", "transmission networks", "innovation patterns"],
-        "generateCount": 15,
-        "textureCategories": ["metal", "wood", "stone"],
-        "aiPrompt": "Generate 15 universal tool ecosystem archetypes. Different technological development patterns."
+        "examples": [
+          "problem domains",
+          "transmission networks",
+          "innovation patterns"
+        ],
+        "generateCount": 0,
+        "textureCategories": [
+          "metal",
+          "wood",
+          "stone"
+        ]
       },
       "meso": {
         "type": "Tool categories",
-        "examples": ["extraction", "processing", "construction", "weapons", "transport"],
-        "generateCount": 25,
-        "textureCategories": ["metal", "wood"],
-        "aiPrompt": "Generate 25 universal tool category archetypes. Different functional tool types."
+        "examples": [
+          "extraction",
+          "processing",
+          "construction",
+          "weapons",
+          "transport"
+        ],
+        "generateCount": 0,
+        "textureCategories": [
+          "metal",
+          "wood"
+        ]
       },
       "micro": {
         "type": "Tool properties",
-        "examples": ["materials", "durability", "effectiveness", "complexity", "maintenance"],
-        "generateCount": 30,
-        "textureCategories": ["metal", "stone"],
-        "aiPrompt": "Generate 30 universal tool property archetypes. Different tool characteristics and behaviors."
+        "examples": [
+          "materials",
+          "durability",
+          "effectiveness",
+          "complexity",
+          "maintenance"
+        ],
+        "generateCount": 0,
+        "textureCategories": [
+          "metal",
+          "stone"
+        ]
       }
     },
     "gen4": {
@@ -108,74 +188,147 @@
       "question": "How do competitive groups learn to cooperate?",
       "macro": {
         "type": "Inter-tribal networks",
-        "examples": ["alliances", "trade routes", "conflict zones", "cultural exchange"],
-        "generateCount": 20,
-        "textureCategories": ["fabric", "stone"],
-        "aiPrompt": "Generate 20 universal inter-tribal relationship archetypes. Different ways tribes can interact."
+        "examples": [
+          "alliances",
+          "trade routes",
+          "conflict zones",
+          "cultural exchange"
+        ],
+        "generateCount": 0,
+        "textureCategories": [
+          "fabric",
+          "stone"
+        ]
       },
       "meso": {
         "type": "Tribal structure",
-        "examples": ["governance systems", "resource distribution", "social hierarchies"],
-        "generateCount": 15,
-        "textureCategories": ["stone", "fabric"],
-        "aiPrompt": "Generate 15 universal tribal organization archetypes. Different internal tribal structures."
+        "examples": [
+          "governance systems",
+          "resource distribution",
+          "social hierarchies"
+        ],
+        "generateCount": 0,
+        "textureCategories": [
+          "stone",
+          "fabric"
+        ]
       },
       "micro": {
         "type": "Individual roles",
-        "examples": ["status", "obligations", "skills", "relationships", "specialization"],
-        "generateCount": 25,
-        "textureCategories": ["fabric", "leather"],
-        "aiPrompt": "Generate 25 universal individual tribal role archetypes. Different specialized positions in tribes."
+        "examples": [
+          "status",
+          "obligations",
+          "skills",
+          "relationships",
+          "specialization"
+        ],
+        "generateCount": 0,
+        "textureCategories": [
+          "fabric",
+          "leather"
+        ]
       }
     },
     "gen5": {
       "name": "Buildings",
       "question": "How does intelligence reshape the physical world?",
       "macro": {
-        "type": "Settlement patterns", 
-        "examples": ["urban centers", "rural networks", "infrastructure systems", "trade hubs"],
-        "generateCount": 15,
-        "textureCategories": ["stone", "wood", "bricks"],
-        "aiPrompt": "Generate 15 universal settlement pattern archetypes. Different ways civilizations can organize space."
+        "type": "Settlement patterns",
+        "examples": [
+          "urban centers",
+          "rural networks",
+          "infrastructure systems",
+          "trade hubs"
+        ],
+        "generateCount": 0,
+        "textureCategories": [
+          "stone",
+          "wood",
+          "bricks"
+        ]
       },
       "meso": {
         "type": "Building types",
-        "examples": ["residential", "industrial", "religious", "administrative", "defensive", "markets"],
-        "generateCount": 20,
-        "textureCategories": ["wood", "stone", "bricks"],
-        "aiPrompt": "Generate 20 universal building function archetypes. Different purposes buildings can serve."
+        "examples": [
+          "residential",
+          "industrial",
+          "religious",
+          "administrative",
+          "defensive",
+          "markets"
+        ],
+        "generateCount": 0,
+        "textureCategories": [
+          "wood",
+          "stone",
+          "bricks"
+        ]
       },
       "micro": {
         "type": "Building properties",
-        "examples": ["materials", "size", "function", "durability", "aesthetics", "capacity"],
-        "generateCount": 25,
-        "textureCategories": ["wood", "stone", "concrete"],
-        "aiPrompt": "Generate 25 universal building characteristic archetypes. Different construction approaches and properties."
+        "examples": [
+          "materials",
+          "size",
+          "function",
+          "durability",
+          "aesthetics",
+          "capacity"
+        ],
+        "generateCount": 0,
+        "textureCategories": [
+          "wood",
+          "stone",
+          "concrete"
+        ]
       }
     },
     "gen6": {
-      "name": "Abstract Social Systems", 
+      "name": "Abstract Social Systems",
       "question": "What happens when there's nothing left to physically manipulate?",
       "macro": {
         "type": "Abstract organizing principles",
-        "examples": ["worldviews", "ideologies", "belief systems", "social movements", "mass psychology"],
-        "generateCount": 20,
-        "textureCategories": ["fabric", "stone"],
-        "aiPrompt": "Generate 20 universal abstract organizing principle archetypes. Different ways societies can organize around ideas."
+        "examples": [
+          "worldviews",
+          "ideologies",
+          "belief systems",
+          "social movements",
+          "mass psychology"
+        ],
+        "generateCount": 0,
+        "textureCategories": [
+          "fabric",
+          "stone"
+        ]
       },
       "meso": {
         "type": "Institutional structures",
-        "examples": ["organizations", "hierarchies", "ritual systems", "communication networks", "authority patterns"],
-        "generateCount": 15,
-        "textureCategories": ["stone", "fabric"],
-        "aiPrompt": "Generate 15 universal institutional structure archetypes. Different organizational frameworks for abstract systems."
+        "examples": [
+          "organizations",
+          "hierarchies",
+          "ritual systems",
+          "communication networks",
+          "authority patterns"
+        ],
+        "generateCount": 0,
+        "textureCategories": [
+          "stone",
+          "fabric"
+        ]
       },
       "micro": {
         "type": "Individual psychological states",
-        "examples": ["belief intensity", "social identity", "participation levels", "devotional practices", "ideological commitment"],
-        "generateCount": 25,
-        "textureCategories": ["fabric", "leather"],
-        "aiPrompt": "Generate 25 universal individual belief pattern archetypes. Different ways individuals can engage with abstract systems."
+        "examples": [
+          "belief intensity",
+          "social identity",
+          "participation levels",
+          "devotional practices",
+          "ideological commitment"
+        ],
+        "generateCount": 0,
+        "textureCategories": [
+          "fabric",
+          "leather"
+        ]
       }
     }
   }

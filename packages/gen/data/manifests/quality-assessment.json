@@ -1,0 +1,363 @@
+{
+  "generatedAt": "2025-11-08T04:10:08.806Z",
+  "reports": [
+    {
+      "generation": "gen0",
+      "scale": "macro",
+      "totalArchetypes": 7,
+      "averageScore": 0.9000000000000001,
+      "medianScore": 0.9,
+      "anemicThreshold": 0.8999999999999999,
+      "anemicArchetypes": [],
+      "standoutArchetypes": [],
+      "qualityDistribution": {
+        "excellent": 7,
+        "good": 0,
+        "fair": 0,
+        "poor": 0,
+        "anemic": 0
+      }
+    },
+    {
+      "generation": "gen0",
+      "scale": "meso",
+      "totalArchetypes": 5,
+      "averageScore": 0.9,
+      "medianScore": 0.9,
+      "anemicThreshold": 0.9,
+      "anemicArchetypes": [],
+      "standoutArchetypes": [],
+      "qualityDistribution": {
+        "excellent": 5,
+        "good": 0,
+        "fair": 0,
+        "poor": 0,
+        "anemic": 0
+      }
+    },
+    {
+      "generation": "gen0",
+      "scale": "micro",
+      "totalArchetypes": 8,
+      "averageScore": 0.9000000000000001,
+      "medianScore": 0.9,
+      "anemicThreshold": 0.8999999999999999,
+      "anemicArchetypes": [],
+      "standoutArchetypes": [],
+      "qualityDistribution": {
+        "excellent": 8,
+        "good": 0,
+        "fair": 0,
+        "poor": 0,
+        "anemic": 0
+      }
+    },
+    {
+      "generation": "gen1",
+      "scale": "macro",
+      "totalArchetypes": 5,
+      "averageScore": 0.9,
+      "medianScore": 0.9,
+      "anemicThreshold": 0.9,
+      "anemicArchetypes": [],
+      "standoutArchetypes": [],
+      "qualityDistribution": {
+        "excellent": 5,
+        "good": 0,
+        "fair": 0,
+        "poor": 0,
+        "anemic": 0
+      }
+    },
+    {
+      "generation": "gen1",
+      "scale": "meso",
+      "totalArchetypes": 6,
+      "averageScore": 0.9,
+      "medianScore": 0.9,
+      "anemicThreshold": 0.9,
+      "anemicArchetypes": [],
+      "standoutArchetypes": [],
+      "qualityDistribution": {
+        "excellent": 6,
+        "good": 0,
+        "fair": 0,
+        "poor": 0,
+        "anemic": 0
+      }
+    },
+    {
+      "generation": "gen1",
+      "scale": "micro",
+      "totalArchetypes": 5,
+      "averageScore": 0.9,
+      "medianScore": 0.9,
+      "anemicThreshold": 0.9,
+      "anemicArchetypes": [],
+      "standoutArchetypes": [],
+      "qualityDistribution": {
+        "excellent": 5,
+        "good": 0,
+        "fair": 0,
+        "poor": 0,
+        "anemic": 0
+      }
+    },
+    {
+      "generation": "gen2",
+      "scale": "macro",
+      "totalArchetypes": 10,
+      "averageScore": 0.9000000000000001,
+      "medianScore": 0.9,
+      "anemicThreshold": 0.8999999999999999,
+      "anemicArchetypes": [],
+      "standoutArchetypes": [],
+      "qualityDistribution": {
+        "excellent": 10,
+        "good": 0,
+        "fair": 0,
+        "poor": 0,
+        "anemic": 0
+      }
+    },
+    {
+      "generation": "gen2",
+      "scale": "meso",
+      "totalArchetypes": 6,
+      "averageScore": 0.9,
+      "medianScore": 0.9,
+      "anemicThreshold": 0.9,
+      "anemicArchetypes": [],
+      "standoutArchetypes": [],
+      "qualityDistribution": {
+        "excellent": 6,
+        "good": 0,
+        "fair": 0,
+        "poor": 0,
+        "anemic": 0
+      }
+    },
+    {
+      "generation": "gen2",
+      "scale": "micro",
+      "totalArchetypes": 8,
+      "averageScore": 0.9000000000000001,
+      "medianScore": 0.9,
+      "anemicThreshold": 0.8999999999999999,
+      "anemicArchetypes": [],
+      "standoutArchetypes": [],
+      "qualityDistribution": {
+        "excellent": 8,
+        "good": 0,
+        "fair": 0,
+        "poor": 0,
+        "anemic": 0
+      }
+    },
+    {
+      "generation": "gen3",
+      "scale": "macro",
+      "totalArchetypes": 8,
+      "averageScore": 0.9000000000000001,
+      "medianScore": 0.9,
+      "anemicThreshold": 0.8999999999999999,
+      "anemicArchetypes": [],
+      "standoutArchetypes": [],
+      "qualityDistribution": {
+        "excellent": 8,
+        "good": 0,
+        "fair": 0,
+        "poor": 0,
+        "anemic": 0
+      }
+    },
+    {
+      "generation": "gen3",
+      "scale": "meso",
+      "totalArchetypes": 5,
+      "averageScore": 0.9,
+      "medianScore": 0.9,
+      "anemicThreshold": 0.9,
+      "anemicArchetypes": [],
+      "standoutArchetypes": [],
+      "qualityDistribution": {
+        "excellent": 5,
+        "good": 0,
+        "fair": 0,
+        "poor": 0,
+        "anemic": 0
+      }
+    },
+    {
+      "generation": "gen3",
+      "scale": "micro",
+      "totalArchetypes": 7,
+      "averageScore": 0.7999999999999999,
+      "medianScore": 0.8,
+      "anemicThreshold": 0.7999999999999998,
+      "anemicArchetypes": [],
+      "standoutArchetypes": [],
+      "qualityDistribution": {
+        "excellent": 0,
+        "good": 7,
+        "fair": 0,
+        "poor": 0,
+        "anemic": 0
+      }
+    },
+    {
+      "generation": "gen4",
+      "scale": "macro",
+      "totalArchetypes": 5,
+      "averageScore": 0.9,
+      "medianScore": 0.9,
+      "anemicThreshold": 0.9,
+      "anemicArchetypes": [],
+      "standoutArchetypes": [],
+      "qualityDistribution": {
+        "excellent": 5,
+        "good": 0,
+        "fair": 0,
+        "poor": 0,
+        "anemic": 0
+      }
+    },
+    {
+      "generation": "gen4",
+      "scale": "meso",
+      "totalArchetypes": 8,
+      "averageScore": 0.9000000000000001,
+      "medianScore": 0.9,
+      "anemicThreshold": 0.8999999999999999,
+      "anemicArchetypes": [],
+      "standoutArchetypes": [],
+      "qualityDistribution": {
+        "excellent": 8,
+        "good": 0,
+        "fair": 0,
+        "poor": 0,
+        "anemic": 0
+      }
+    },
+    {
+      "generation": "gen4",
+      "scale": "micro",
+      "totalArchetypes": 6,
+      "averageScore": 0.9,
+      "medianScore": 0.9,
+      "anemicThreshold": 0.9,
+      "anemicArchetypes": [],
+      "standoutArchetypes": [],
+      "qualityDistribution": {
+        "excellent": 6,
+        "good": 0,
+        "fair": 0,
+        "poor": 0,
+        "anemic": 0
+      }
+    },
+    {
+      "generation": "gen5",
+      "scale": "macro",
+      "totalArchetypes": 4,
+      "averageScore": 0.9,
+      "medianScore": 0.9,
+      "anemicThreshold": 0.9,
+      "anemicArchetypes": [],
+      "standoutArchetypes": [],
+      "qualityDistribution": {
+        "excellent": 4,
+        "good": 0,
+        "fair": 0,
+        "poor": 0,
+        "anemic": 0
+      }
+    },
+    {
+      "generation": "gen5",
+      "scale": "meso",
+      "totalArchetypes": 4,
+      "averageScore": 0.9,
+      "medianScore": 0.9,
+      "anemicThreshold": 0.9,
+      "anemicArchetypes": [],
+      "standoutArchetypes": [],
+      "qualityDistribution": {
+        "excellent": 4,
+        "good": 0,
+        "fair": 0,
+        "poor": 0,
+        "anemic": 0
+      }
+    },
+    {
+      "generation": "gen5",
+      "scale": "micro",
+      "totalArchetypes": 6,
+      "averageScore": 0.9,
+      "medianScore": 0.9,
+      "anemicThreshold": 0.9,
+      "anemicArchetypes": [],
+      "standoutArchetypes": [],
+      "qualityDistribution": {
+        "excellent": 6,
+        "good": 0,
+        "fair": 0,
+        "poor": 0,
+        "anemic": 0
+      }
+    },
+    {
+      "generation": "gen6",
+      "scale": "macro",
+      "totalArchetypes": 3,
+      "averageScore": 0.9,
+      "medianScore": 0.9,
+      "anemicThreshold": 0.9,
+      "anemicArchetypes": [],
+      "standoutArchetypes": [],
+      "qualityDistribution": {
+        "excellent": 3,
+        "good": 0,
+        "fair": 0,
+        "poor": 0,
+        "anemic": 0
+      }
+    },
+    {
+      "generation": "gen6",
+      "scale": "meso",
+      "totalArchetypes": 4,
+      "averageScore": 0.9,
+      "medianScore": 0.9,
+      "anemicThreshold": 0.9,
+      "anemicArchetypes": [],
+      "standoutArchetypes": [],
+      "qualityDistribution": {
+        "excellent": 4,
+        "good": 0,
+        "fair": 0,
+        "poor": 0,
+        "anemic": 0
+      }
+    },
+    {
+      "generation": "gen6",
+      "scale": "micro",
+      "totalArchetypes": 5,
+      "averageScore": 0.9,
+      "medianScore": 0.9,
+      "anemicThreshold": 0.9,
+      "anemicArchetypes": [],
+      "standoutArchetypes": [],
+      "qualityDistribution": {
+        "excellent": 5,
+        "good": 0,
+        "fair": 0,
+        "poor": 0,
+        "anemic": 0
+      }
+    }
+  ],
+  "anemicArchetypes": []
+}

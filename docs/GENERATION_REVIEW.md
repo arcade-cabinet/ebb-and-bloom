@@ -1,6 +1,6 @@
 # Generation Review: WARP & WEFT Flow
 
-**Generated:** 2025-11-08T02:40:02.016Z
+**Generated:** 2025-11-08T03:53:48.721Z
 
 This document presents all generations (Gen 0-6) with their WARP (vertical causal flow) and WEFT (horizontal scale flow) relationships.
 
@@ -27,220 +27,418 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 
 ### MACRO: System-level context and foundational patterns
 
-**Total Archetypes:** 5
+**Total Archetypes:** 7
 
-#### Metal-Rich Forge (`stellar_type_1`)
+#### Population I Star System (`population_i_star_system`)
 
-**Description:** Young, metal-rich stars that have recently formed from previous generations of supernova-enriched material.
+**Description:** A young, metal-rich star supporting diverse planetary formations characterized by metal-rich environments and vibrant, dynamic surfaces.
 
 **Parameters:**
 ```json
 {
-  "stellarMass": 1.2,
-  "metallicity": 0.8,
-  "age": 2.5,
-  "orbitalDistance": 1
+  "stellarMass": {
+    "min": 0.8,
+    "max": 1.5,
+    "default": 1.2
+  },
+  "metallicity": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.85
+  },
+  "age": {
+    "min": 1,
+    "max": 5,
+    "default": 3
+  },
+  "orbitalDistance": {
+    "min": 0.5,
+    "max": 3,
+    "default": 1.5
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #6C6E70; padding: 2px 8px; border-radius: 3px;">#6C6E70</span>
-- <span style="background-color: #8B8C89; padding: 2px 8px; border-radius: 3px;">#8B8C89</span>
-- <span style="background-color: #989CA1; padding: 2px 8px; border-radius: 3px;">#989CA1</span>
-- <span style="background-color: #BCBFC2; padding: 2px 8px; border-radius: 3px;">#BCBFC2</span>
-- <span style="background-color: #D4D7D9; padding: 2px 8px; border-radius: 3px;">#D4D7D9</span>
+- <span style="background-color: #FFBB33; padding: 2px 8px; border-radius: 3px;">#FFBB33</span>
+- <span style="background-color: #FF6633; padding: 2px 8px; border-radius: 3px;">#FF6633</span>
+- <span style="background-color: #FFC300; padding: 2px 8px; border-radius: 3px;">#FFC300</span>
+- <span style="background-color: #FF5733; padding: 2px 8px; border-radius: 3px;">#FF5733</span>
+- <span style="background-color: #E91E63; padding: 2px 8px; border-radius: 3px;">#E91E63</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#6C6E70",
-  "roughness": 0.6,
+  "baseColor": "#FFBB33",
+  "roughness": 0.4,
   "metallic": 0.8,
-  "normalStrength": 1,
-  "aoStrength": 0.7,
-  "heightScale": 0.04,
-  "emissive": "#8B8C89"
+  "normalStrength": 1.3,
+  "aoStrength": 0.9,
+  "heightScale": 0.02,
+  "emissive": "#FF5733"
 }
 ```
 
 **Procedural Rules:**
-> Planets in metal-rich systems often show metallic surface features with high industrial potential, scattered mineral deposits, and metallic plains.
+> Planets show rich metallic patterns and bright contrasting colors, with active geological features.
 
 **Textures:**
 - **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
-- **Rock025** (unknown): `Rock025` (not found in manifest)
+- **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
 
 ---
 
-#### Ancient Calm (`stellar_type_2`)
+#### Population II Star System (`population_ii_star_system`)
 
-**Description:** Old, metal-poor stars. Typical of Population II stars, these form carbon and silicate-rich planetary environments.
+**Description:** An ancient, metal-poor star offering stable and carbon/silicate-rich planetary formations with subtle and muted color schemes.
 
 **Parameters:**
 ```json
 {
-  "stellarMass": 0.7,
-  "metallicity": 0.2,
-  "age": 10,
-  "orbitalDistance": 1.5
+  "stellarMass": {
+    "min": 0.5,
+    "max": 1,
+    "default": 0.7
+  },
+  "metallicity": {
+    "min": 0,
+    "max": 0.3,
+    "default": 0.1
+  },
+  "age": {
+    "min": 8,
+    "max": 13,
+    "default": 10
+  },
+  "orbitalDistance": {
+    "min": 1,
+    "max": 5,
+    "default": 2.5
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #3A3A3B; padding: 2px 8px; border-radius: 3px;">#3A3A3B</span>
-- <span style="background-color: #5B5E61; padding: 2px 8px; border-radius: 3px;">#5B5E61</span>
-- <span style="background-color: #75787A; padding: 2px 8px; border-radius: 3px;">#75787A</span>
-- <span style="background-color: #9DA0A3; padding: 2px 8px; border-radius: 3px;">#9DA0A3</span>
-- <span style="background-color: #C8C9CB; padding: 2px 8px; border-radius: 3px;">#C8C9CB</span>
+- <span style="background-color: #B2BEB5; padding: 2px 8px; border-radius: 3px;">#B2BEB5</span>
+- <span style="background-color: #8A8D8E; padding: 2px 8px; border-radius: 3px;">#8A8D8E</span>
+- <span style="background-color: #737373; padding: 2px 8px; border-radius: 3px;">#737373</span>
+- <span style="background-color: #495867; padding: 2px 8px; border-radius: 3px;">#495867</span>
+- <span style="background-color: #98A886; padding: 2px 8px; border-radius: 3px;">#98A886</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#3A3A3B",
-  "roughness": 0.9,
-  "metallic": 0.2,
-  "normalStrength": 1.3,
-  "aoStrength": 0.6,
-  "heightScale": 0.03,
-  "emissive": "#9DA0A3"
+  "baseColor": "#B2BEB5",
+  "roughness": 0.8,
+  "metallic": 0.05,
+  "normalStrength": 1.1,
+  "aoStrength": 0.9,
+  "heightScale": 0.04,
+  "emissive": "#737373"
 }
 ```
 
 **Procedural Rules:**
-> Surfaces exhibit silicate bonds, with calmer geological activity, leading to rocky plains and sporadic mountain ranges.
+> Planets exhibit muted tones and weathered surface textures, emphasizing silicate formations.
 
 **Textures:**
 - **Rock025** (unknown): `Rock025` (not found in manifest)
-- **Rock034** (unknown): `Rock034` (not found in manifest)
+- **Clay02** (unknown): `Clay02` (not found in manifest)
 
 ---
 
-#### Double Sunscape (`stellar_type_3`)
+#### Binary Star System (`binary_star_system`)
 
-**Description:** A binary star system where tidal forces create intense temperature and geological variations on nearby planets.
+**Description:** A dual star system providing complex gravitational dynamics, influencing planetary orbits and creating unique temperature zones.
 
 **Parameters:**
 ```json
 {
-  "stellarMass": 1,
-  "metallicity": 0.5,
-  "age": 5,
-  "orbitalDistance": 2
+  "stellarMass": {
+    "min": 0.8,
+    "max": 2,
+    "default": 1.5
+  },
+  "metallicity": {
+    "min": 0.3,
+    "max": 0.9,
+    "default": 0.6
+  },
+  "age": {
+    "min": 2,
+    "max": 10,
+    "default": 6
+  },
+  "orbitalDistance": {
+    "min": 0.2,
+    "max": 2,
+    "default": 1
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #726159; padding: 2px 8px; border-radius: 3px;">#726159</span>
-- <span style="background-color: #A89D94; padding: 2px 8px; border-radius: 3px;">#A89D94</span>
-- <span style="background-color: #CBC1B8; padding: 2px 8px; border-radius: 3px;">#CBC1B8</span>
-- <span style="background-color: #ADA8A6; padding: 2px 8px; border-radius: 3px;">#ADA8A6</span>
-- <span style="background-color: #EAE3DF; padding: 2px 8px; border-radius: 3px;">#EAE3DF</span>
+- <span style="background-color: #FFD700; padding: 2px 8px; border-radius: 3px;">#FFD700</span>
+- <span style="background-color: #E8A066; padding: 2px 8px; border-radius: 3px;">#E8A066</span>
+- <span style="background-color: #7C4A33; padding: 2px 8px; border-radius: 3px;">#7C4A33</span>
+- <span style="background-color: #C0C0C0; padding: 2px 8px; border-radius: 3px;">#C0C0C0</span>
+- <span style="background-color: #2F4F4F; padding: 2px 8px; border-radius: 3px;">#2F4F4F</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#726159",
-  "roughness": 0.4,
-  "metallic": 0.3,
+  "baseColor": "#FFD700",
+  "roughness": 0.3,
+  "metallic": 0.6,
+  "normalStrength": 1.7,
+  "aoStrength": 0.8,
+  "heightScale": 0.03,
+  "emissive": "#E8A066"
+}
+```
+
+**Procedural Rules:**
+> Planets have pronounced tidal features, with temperature variations causing distinct surface patterns.
+
+**Textures:**
+- **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
+- **Metal050** (unknown): `Metal050` (not found in manifest)
+
+---
+
+#### Post-Supernova Enrichment Zone (`post_supernova_enrichment_zone`)
+
+**Description:** A system enriched by supernova events, containing rare heavy elements that enable planet formation with rare materials and unique chemical properties.
+
+**Parameters:**
+```json
+{
+  "stellarMass": {
+    "min": 1,
+    "max": 3,
+    "default": 2.2
+  },
+  "metallicity": {
+    "min": 0.6,
+    "max": 1,
+    "default": 0.9
+  },
+  "age": {
+    "min": 1,
+    "max": 5,
+    "default": 3
+  },
+  "orbitalDistance": {
+    "min": 0.8,
+    "max": 4,
+    "default": 2
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #FFC107; padding: 2px 8px; border-radius: 3px;">#FFC107</span>
+- <span style="background-color: #6B4226; padding: 2px 8px; border-radius: 3px;">#6B4226</span>
+- <span style="background-color: #8B0000; padding: 2px 8px; border-radius: 3px;">#8B0000</span>
+- <span style="background-color: #4682B4; padding: 2px 8px; border-radius: 3px;">#4682B4</span>
+- <span style="background-color: #EE82EE; padding: 2px 8px; border-radius: 3px;">#EE82EE</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#FFC107",
+  "roughness": 0.5,
+  "metallic": 0.7,
   "normalStrength": 1.2,
   "aoStrength": 0.9,
-  "heightScale": 0.06,
-  "emissive": "#A89D94"
+  "heightScale": 0.05,
+  "emissive": "#EE82EE"
 }
 ```
 
 **Procedural Rules:**
-> Planets here might showcase hot and cold bands across surfaces, with dynamic geological and temperature-driven designs.
+> Enriched elements result in volatile surface conditions and visually dynamic landscapes.
 
 **Textures:**
-- **Rock034** (unknown): `Rock034` (not found in manifest)
-- **Ice012** (unknown): `Ice012` (not found in manifest)
+- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
+- **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
 
 ---
 
-#### Warrior's Remnants (`stellar_type_4`)
+#### Protoplanetary Disk Disruption (`protoplanetary_disk_disruption`)
 
-**Description:** System formed in post-supernova zones where complex and heavy elements are abundant, leading to rich planetary composition.
+**Description:** A star born from a disrupted protoplanetary disk, leading to eccentric planetary orbits and diverse surface patterns on celestial bodies.
 
 **Parameters:**
 ```json
 {
-  "stellarMass": 1.1,
-  "metallicity": 1,
-  "age": 3.5,
-  "orbitalDistance": 1.8
+  "stellarMass": {
+    "min": 0.7,
+    "max": 1.4,
+    "default": 1
+  },
+  "metallicity": {
+    "min": 0.2,
+    "max": 0.8,
+    "default": 0.5
+  },
+  "age": {
+    "min": 0.5,
+    "max": 5,
+    "default": 2
+  },
+  "orbitalDistance": {
+    "min": 1.5,
+    "max": 5,
+    "default": 3
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #484A4D; padding: 2px 8px; border-radius: 3px;">#484A4D</span>
-- <span style="background-color: #686B6E; padding: 2px 8px; border-radius: 3px;">#686B6E</span>
-- <span style="background-color: #85898B; padding: 2px 8px; border-radius: 3px;">#85898B</span>
-- <span style="background-color: #A6A8AA; padding: 2px 8px; border-radius: 3px;">#A6A8AA</span>
-- <span style="background-color: #D2D5D6; padding: 2px 8px; border-radius: 3px;">#D2D5D6</span>
+- <span style="background-color: #8C8C8C; padding: 2px 8px; border-radius: 3px;">#8C8C8C</span>
+- <span style="background-color: #D3D3D3; padding: 2px 8px; border-radius: 3px;">#D3D3D3</span>
+- <span style="background-color: #B0C4DE; padding: 2px 8px; border-radius: 3px;">#B0C4DE</span>
+- <span style="background-color: #FFFACD; padding: 2px 8px; border-radius: 3px;">#FFFACD</span>
+- <span style="background-color: #C0C0C0; padding: 2px 8px; border-radius: 3px;">#C0C0C0</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#484A4D",
-  "roughness": 0.5,
+  "baseColor": "#8C8C8C",
+  "roughness": 0.7,
+  "metallic": 0.3,
+  "normalStrength": 1.4,
+  "aoStrength": 0.8,
+  "heightScale": 0.06,
+  "emissive": "#FFFACD"
+}
+```
+
+**Procedural Rules:**
+> Planets have distinctive rings and chaotic surface cracking due to varying orbital influences.
+
+**Textures:**
+- **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
+- **Gravel012** (unknown): `Gravel012` (not found in manifest)
+
+---
+
+#### Multigenerational Nursery System (`multigenerational_nursery_system`)
+
+**Description:** A star system formed over multiple stellar generations, providing varied elemental compositions and complex planetary forms.
+
+**Parameters:**
+```json
+{
+  "stellarMass": {
+    "min": 0.9,
+    "max": 2.5,
+    "default": 1.8
+  },
+  "metallicity": {
+    "min": 0.4,
+    "max": 0.9,
+    "default": 0.65
+  },
+  "age": {
+    "min": 5,
+    "max": 10,
+    "default": 8
+  },
+  "orbitalDistance": {
+    "min": 1,
+    "max": 4,
+    "default": 2.5
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #FF8C00; padding: 2px 8px; border-radius: 3px;">#FF8C00</span>
+- <span style="background-color: #2E8B57; padding: 2px 8px; border-radius: 3px;">#2E8B57</span>
+- <span style="background-color: #DAA520; padding: 2px 8px; border-radius: 3px;">#DAA520</span>
+- <span style="background-color: #4682B4; padding: 2px 8px; border-radius: 3px;">#4682B4</span>
+- <span style="background-color: #DC143C; padding: 2px 8px; border-radius: 3px;">#DC143C</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#FF8C00",
+  "roughness": 0.6,
   "metallic": 0.7,
   "normalStrength": 1.5,
   "aoStrength": 0.8,
-  "heightScale": 0.05,
-  "emissive": "#686B6E"
+  "heightScale": 0.04,
+  "emissive": "#DAA520"
 }
 ```
 
 **Procedural Rules:**
-> Planets display a rich variety of ores and minerals, with rugged and resource-abundant landscapes.
+> Diverse mixes of geological and metallic surfaces reflect the rich history of material accumulation.
 
 **Textures:**
-- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
-- **Rock045** (unknown): `Rock045` (not found in manifest)
+- **Metal050** (unknown): `Metal050` (not found in manifest)
+- **Rock025** (unknown): `Rock025` (not found in manifest)
 
 ---
 
-#### Chaotic Beginnings (`stellar_type_5`)
+#### Nucleosynthesis Cloud System (`nucleosynthesis_cloud_system`)
 
-**Description:** A star system with disrupted protoplanetary disks due to nearby stellar bodies, leading to eccentric planetary orbits and surface band patterns.
+**Description:** A system formed from primordial nucleosynthesis clouds, offering a pure element balance conducive to diverse elemental chemistry on planets.
 
 **Parameters:**
 ```json
 {
-  "stellarMass": 0.9,
-  "metallicity": 0.4,
-  "age": 4,
-  "orbitalDistance": 3
+  "stellarMass": {
+    "min": 1,
+    "max": 1.8,
+    "default": 1.4
+  },
+  "metallicity": {
+    "min": 0.1,
+    "max": 0.5,
+    "default": 0.3
+  },
+  "age": {
+    "min": 5,
+    "max": 12,
+    "default": 8
+  },
+  "orbitalDistance": {
+    "min": 0.5,
+    "max": 3.5,
+    "default": 2
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #5E4848; padding: 2px 8px; border-radius: 3px;">#5E4848</span>
-- <span style="background-color: #826C6C; padding: 2px 8px; border-radius: 3px;">#826C6C</span>
-- <span style="background-color: #B49A9A; padding: 2px 8px; border-radius: 3px;">#B49A9A</span>
-- <span style="background-color: #D1BDBD; padding: 2px 8px; border-radius: 3px;">#D1BDBD</span>
-- <span style="background-color: #F0DDDD; padding: 2px 8px; border-radius: 3px;">#F0DDDD</span>
+- <span style="background-color: #D2B48C; padding: 2px 8px; border-radius: 3px;">#D2B48C</span>
+- <span style="background-color: #556B2F; padding: 2px 8px; border-radius: 3px;">#556B2F</span>
+- <span style="background-color: #8B4513; padding: 2px 8px; border-radius: 3px;">#8B4513</span>
+- <span style="background-color: #DEB887; padding: 2px 8px; border-radius: 3px;">#DEB887</span>
+- <span style="background-color: #6B8E23; padding: 2px 8px; border-radius: 3px;">#6B8E23</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#5E4848",
+  "baseColor": "#D2B48C",
   "roughness": 0.7,
   "metallic": 0.2,
-  "normalStrength": 1.4,
-  "aoStrength": 0.7,
-  "heightScale": 0.04,
-  "emissive": "#826C6C"
+  "normalStrength": 1.3,
+  "aoStrength": 0.8,
+  "heightScale": 0.05,
+  "emissive": "#6B8E23"
 }
 ```
 
 **Procedural Rules:**
-> Unstable orbits result in planets with significant equatorial temperature variations and stripy surface features.
+> Planets display smooth, elemental transitions often leading to varied surface mineralogies.
 
 **Textures:**
-- **Rock034** (unknown): `Rock034` (not found in manifest)
-- **Ice012** (unknown): `Ice012` (not found in manifest)
+- **Rock025** (unknown): `Rock025` (not found in manifest)
+- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
 
 ---
 
@@ -248,271 +446,298 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 ### MESO: Intermediate dynamics and structural relationships
 
 **WEFT Flow:** Building on MACRO scale archetypes:
-- "Metal-Rich Forge", "Ancient Calm", "Double Sunscape"...
+- "Population I Star System", "Population II Star System", "Binary Star System"...
 
 **Total Archetypes:** 5
 
-#### Molten Glassworks (`archetype_1`)
+#### Hot Accretion Zone (`hot_accretion_zone`)
 
-**Description:** A planet formed in a hot accretion zone. Its surface is covered in smooth, glassy plains with flowing orange lava streams that cool into obsidian-like textures.
-
-**Parameters:**
-```json
-{
-  "accretionRate": 3,
-  "peakTemperature": 2500,
-  "differentiationTime": 1.5,
-  "impactFrequency": 5
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #AA4400; padding: 2px 8px; border-radius: 3px;">#AA4400</span>
-- <span style="background-color: #FF6600; padding: 2px 8px; border-radius: 3px;">#FF6600</span>
-- <span style="background-color: #330000; padding: 2px 8px; border-radius: 3px;">#330000</span>
-- <span style="background-color: #66433A; padding: 2px 8px; border-radius: 3px;">#66433A</span>
-- <span style="background-color: #FFDD99; padding: 2px 8px; border-radius: 3px;">#FFDD99</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#AA4400",
-  "roughness": 0.2,
-  "metallic": 0.3,
-  "normalStrength": 1,
-  "aoStrength": 0.5,
-  "heightScale": 0.05,
-  "emissive": "#FF6600"
-}
-```
-
-**Procedural Rules:**
-> Lava flows are predominant, forming glassy plains with occasional cooling cracks and lava pools.
-
-**Textures:**
-- **Rock006** (unknown): `Rock006` (not found in manifest)
-- **Rock020** (Rock): <img src="../../packages/gen/public/textures/rock/Rock020_bundle_2K.jpg" alt="Rock 020" width="200" />
-
----
-
-#### Icy Cathedral (`archetype_2`)
-
-**Description:** A planet in a cold accretion zone, featuring bright, icy surfaces with a crystalline structure that sparkles under any light source.
+**Description:** Molten surfaces creating smooth and glassy appearances with cooling orange/red lava cracks visible from space. Formed in high-temperature regions of young star systems.
 
 **Parameters:**
 ```json
 {
-  "accretionRate": 1,
-  "peakTemperature": -200,
-  "differentiationTime": 2,
-  "impactFrequency": 2
+  "stellarMass": {
+    "min": 1.1,
+    "max": 1.5,
+    "default": 1.3
+  },
+  "temperature": {
+    "min": 1500,
+    "max": 2000,
+    "default": 1750
+  },
+  "accretionRate": {
+    "min": 2,
+    "max": 5,
+    "default": 3.5
+  },
+  "orbitalDistance": {
+    "min": 0.1,
+    "max": 0.5,
+    "default": 0.3
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #73ABFF; padding: 2px 8px; border-radius: 3px;">#73ABFF</span>
-- <span style="background-color: #CCEFFF; padding: 2px 8px; border-radius: 3px;">#CCEFFF</span>
-- <span style="background-color: #5599FF; padding: 2px 8px; border-radius: 3px;">#5599FF</span>
-- <span style="background-color: #DDEEFF; padding: 2px 8px; border-radius: 3px;">#DDEEFF</span>
-- <span style="background-color: #A3CFFF; padding: 2px 8px; border-radius: 3px;">#A3CFFF</span>
+- <span style="background-color: #331A1A; padding: 2px 8px; border-radius: 3px;">#331A1A</span>
+- <span style="background-color: #AA3311; padding: 2px 8px; border-radius: 3px;">#AA3311</span>
+- <span style="background-color: #FF3300; padding: 2px 8px; border-radius: 3px;">#FF3300</span>
+- <span style="background-color: #FF5500; padding: 2px 8px; border-radius: 3px;">#FF5500</span>
+- <span style="background-color: #A6674D; padding: 2px 8px; border-radius: 3px;">#A6674D</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#73ABFF",
-  "roughness": 0.3,
-  "metallic": 0,
-  "normalStrength": 1.5,
-  "aoStrength": 1,
-  "heightScale": 0.03,
-  "emissive": "#CCEFFF"
-}
-```
-
-**Procedural Rules:**
-> Crystal formations dominate, with pockets of transparent ice and reflective surfaces across the landscape.
-
-**Textures:**
-- **Metal037** (unknown): `Metal037` (not found in manifest)
-- **Metal050** (unknown): `Metal050` (not found in manifest)
-
----
-
-#### Impact Basin (`archetype_3`)
-
-**Description:** Resulting from a giant impact phase, this planet has a cratered surface with multi-toned terrain and massive impact basins.
-
-**Parameters:**
-```json
-{
-  "accretionRate": 2.5,
-  "peakTemperature": 1500,
-  "differentiationTime": 0.8,
-  "impactFrequency": 10
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #8B572A; padding: 2px 8px; border-radius: 3px;">#8B572A</span>
-- <span style="background-color: #4A3833; padding: 2px 8px; border-radius: 3px;">#4A3833</span>
-- <span style="background-color: #BC8A5F; padding: 2px 8px; border-radius: 3px;">#BC8A5F</span>
-- <span style="background-color: #E5C19E; padding: 2px 8px; border-radius: 3px;">#E5C19E</span>
-- <span style="background-color: #49281C; padding: 2px 8px; border-radius: 3px;">#49281C</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#8B572A",
-  "roughness": 0.9,
-  "metallic": 0.1,
-  "normalStrength": 1.8,
-  "aoStrength": 0.6,
-  "heightScale": 0.08,
-  "emissive": "#4A3833"
-}
-```
-
-**Procedural Rules:**
-> Numerous craters per km² with larger impact basins occurring at irregular intervals.
-
-**Textures:**
-- **Rock027** (unknown): `Rock027` (not found in manifest)
-- **Rock029** (Rock): <img src="../../packages/gen/public/textures/rock/Rock029_bundle_2K.jpg" alt="Rock 029" width="200" />
-
----
-
-#### Volatile Patchwork (`archetype_4`)
-
-**Description:** A planet affected by late heavy bombardment, leading to a patchwork surface of volatile deposits, resulting in varied textures and dark impact scars.
-
-**Parameters:**
-```json
-{
-  "accretionRate": 1.8,
-  "peakTemperature": 1000,
-  "differentiationTime": 2.5,
-  "impactFrequency": 15
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #332E1F; padding: 2px 8px; border-radius: 3px;">#332E1F</span>
-- <span style="background-color: #9C8A61; padding: 2px 8px; border-radius: 3px;">#9C8A61</span>
-- <span style="background-color: #484230; padding: 2px 8px; border-radius: 3px;">#484230</span>
-- <span style="background-color: #A8A299; padding: 2px 8px; border-radius: 3px;">#A8A299</span>
-- <span style="background-color: #5B523F; padding: 2px 8px; border-radius: 3px;">#5B523F</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#332E1F",
-  "roughness": 0.7,
-  "metallic": 0.2,
-  "normalStrength": 1.4,
-  "aoStrength": 0.7,
-  "heightScale": 0.07,
-  "emissive": "#9C8A61"
-}
-```
-
-**Procedural Rules:**
-> Mottled surface with volatile outgassing sites and scattered dark scars from recent impacts.
-
-**Textures:**
-- **Rock038** (unknown): `Rock038` (not found in manifest)
-- **Rock045** (unknown): `Rock045` (not found in manifest)
-
----
-
-#### Stratified Splendor (`archetype_5`)
-
-**Description:** Formed by gravitational differentiation, the planet features banded, stratified surfaces with distinct color zones and geological strata visible from space.
-
-**Parameters:**
-```json
-{
-  "accretionRate": 2.2,
-  "peakTemperature": 1200,
-  "differentiationTime": 3,
-  "impactFrequency": 3
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #6B4226; padding: 2px 8px; border-radius: 3px;">#6B4226</span>
-- <span style="background-color: #A38157; padding: 2px 8px; border-radius: 3px;">#A38157</span>
-- <span style="background-color: #C5A982; padding: 2px 8px; border-radius: 3px;">#C5A982</span>
-- <span style="background-color: #DCCCBB; padding: 2px 8px; border-radius: 3px;">#DCCCBB</span>
-- <span style="background-color: #5D3B2E; padding: 2px 8px; border-radius: 3px;">#5D3B2E</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#6B4226",
+  "baseColor": "#FF5500",
   "roughness": 0.8,
-  "metallic": 0,
+  "metallic": 0.2,
   "normalStrength": 1.2,
   "aoStrength": 0.9,
-  "heightScale": 0.06,
-  "emissive": "#A38157"
+  "heightScale": 0.07,
+  "emissive": "#FF3300"
 }
 ```
 
 **Procedural Rules:**
-> Distinct bands and stratified layers create visual diversity and complex geological patterns.
+> Sparse large craters, dense small cooling cracks, lava flow channels.
 
 **Textures:**
-- **Rock012** (unknown): `Rock012` (not found in manifest)
-- **Rock019** (unknown): `Rock019` (not found in manifest)
+- **Rock025** (unknown): `Rock025` (not found in manifest)
+- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
 
 ---
 
+#### Cold Accretion Zone (`cold_accretion_zone`)
 
-### MICRO: Fine-grained details and specific implementations
-
-**WEFT Flow:** Building on MACRO and MESO scales:
-- MACRO: "Metal-Rich Forge", "Ancient Calm"...
-- MESO: "Molten Glassworks", "Icy Cathedral"...
-
-**Total Archetypes:** 5
-
-#### Elemental Forge (`elemental_forge_001`)
-
-**Description:** A planet forged from metallic cores with rich iron and nickel components. It features dark, reflective surfaces interspersed with rust-red oxidation regions, conveying a rough, industrial aesthetic.
+**Description:** Icy accumulation resulting in bright, reflective white and blue surfaces. Formations have crystalline structures and are primarily found in cooler outer regions or older star systems.
 
 **Parameters:**
 ```json
 {
-  "ironContent": 0.7,
-  "carbonContent": 0.1,
-  "volatileContent": 0.05,
-  "rareEarthContent": 0.05,
-  "silicateContent": 0.1
+  "stellarMass": {
+    "min": 0.8,
+    "max": 1.2,
+    "default": 1
+  },
+  "temperature": {
+    "min": -200,
+    "max": -100,
+    "default": -150
+  },
+  "accretionRate": {
+    "min": 0.5,
+    "max": 1.5,
+    "default": 1
+  },
+  "orbitalDistance": {
+    "min": 1.5,
+    "max": 3,
+    "default": 2.5
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #2B2B2B; padding: 2px 8px; border-radius: 3px;">#2B2B2B</span>
-- <span style="background-color: #FF4500; padding: 2px 8px; border-radius: 3px;">#FF4500</span>
-- <span style="background-color: #8B0000; padding: 2px 8px; border-radius: 3px;">#8B0000</span>
-- <span style="background-color: #696969; padding: 2px 8px; border-radius: 3px;">#696969</span>
+- <span style="background-color: #88BBFF; padding: 2px 8px; border-radius: 3px;">#88BBFF</span>
+- <span style="background-color: #E0F7FA; padding: 2px 8px; border-radius: 3px;">#E0F7FA</span>
+- <span style="background-color: #BFEFFF; padding: 2px 8px; border-radius: 3px;">#BFEFFF</span>
+- <span style="background-color: #70A0FF; padding: 2px 8px; border-radius: 3px;">#70A0FF</span>
 - <span style="background-color: #FFFFFF; padding: 2px 8px; border-radius: 3px;">#FFFFFF</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#2B2B2B",
-  "roughness": 0.8,
-  "metallic": 0.9,
-  "normalStrength": 1.2,
-  "aoStrength": 0.6,
-  "heightScale": 0.08,
-  "emissive": "#FF4500"
+  "baseColor": "#E0F7FA",
+  "roughness": 0.15,
+  "metallic": 0.1,
+  "normalStrength": 0.8,
+  "aoStrength": 0.5,
+  "heightScale": 0.03,
+  "emissive": "#FFFFFF"
 }
 ```
 
 **Procedural Rules:**
-> Surface features vary procedurally with rust patches and oxidized zones scattered throughout.
+> Crystalline patches dominate, sparse dark rock patches, scattered ice layers.
+
+**Textures:**
+- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
+- **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
+
+---
+
+#### Giant Impact Phase (`giant_impact_phase`)
+
+**Description:** Characterized by large, surface-altering impacts that create multi-toned, cratered terrains with prominent basins visible from space.
+
+**Parameters:**
+```json
+{
+  "stellarMass": {
+    "min": 0.9,
+    "max": 1.4,
+    "default": 1.1
+  },
+  "temperature": {
+    "min": 300,
+    "max": 1500,
+    "default": 900
+  },
+  "impactFrequency": {
+    "min": 3,
+    "max": 8,
+    "default": 5.5
+  },
+  "orbitalDistance": {
+    "min": 0.8,
+    "max": 1.8,
+    "default": 1.3
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #3A3A47; padding: 2px 8px; border-radius: 3px;">#3A3A47</span>
+- <span style="background-color: #606070; padding: 2px 8px; border-radius: 3px;">#606070</span>
+- <span style="background-color: #848498; padding: 2px 8px; border-radius: 3px;">#848498</span>
+- <span style="background-color: #AA9999; padding: 2px 8px; border-radius: 3px;">#AA9999</span>
+- <span style="background-color: #27272C; padding: 2px 8px; border-radius: 3px;">#27272C</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#3A3A47",
+  "roughness": 0.65,
+  "metallic": 0.25,
+  "normalStrength": 1.3,
+  "aoStrength": 1,
+  "heightScale": 0.08,
+  "emissive": "#606070"
+}
+```
+
+**Procedural Rules:**
+> Large craters dominate, with layered basins and ejecta blankets.
+
+**Textures:**
+- **Rock025** (unknown): `Rock025` (not found in manifest)
+- **Metal050** (unknown): `Metal050` (not found in manifest)
+
+---
+
+#### Late Heavy Bombardment (`late_heavy_bombardment`)
+
+**Description:** Frequent small- to medium-sized impacts distribute volatiles, resulting in mottled, variable surfaces with dark impact scars.
+
+**Parameters:**
+```json
+{
+  "stellarMass": {
+    "min": 1,
+    "max": 1.5,
+    "default": 1.2
+  },
+  "impactFrequency": {
+    "min": 8,
+    "max": 15,
+    "default": 10.5
+  },
+  "temperature": {
+    "min": 500,
+    "max": 1000,
+    "default": 750
+  },
+  "orbitalDistance": {
+    "min": 0.7,
+    "max": 2,
+    "default": 1.4
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #5C5E5C; padding: 2px 8px; border-radius: 3px;">#5C5E5C</span>
+- <span style="background-color: #6D6E72; padding: 2px 8px; border-radius: 3px;">#6D6E72</span>
+- <span style="background-color: #7C807F; padding: 2px 8px; border-radius: 3px;">#7C807F</span>
+- <span style="background-color: #A9A8A3; padding: 2px 8px; border-radius: 3px;">#A9A8A3</span>
+- <span style="background-color: #272827; padding: 2px 8px; border-radius: 3px;">#272827</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#5C5E5C",
+  "roughness": 0.75,
+  "metallic": 0.15,
+  "normalStrength": 1.4,
+  "aoStrength": 0.6,
+  "heightScale": 0.06,
+  "emissive": "#6D6E72"
+}
+```
+
+**Procedural Rules:**
+> Dense small craters with few large impacts, varying terrain textures.
+
+**Textures:**
+- **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
+- **Metal050** (unknown): `Metal050` (not found in manifest)
+
+---
+
+#### Gravitational Differentiation (`gravitational_differentiation`)
+
+**Description:** Internal heating and pressure cause materials to stratify into distinct bands, creating structured and colored surface zones.
+
+**Parameters:**
+```json
+{
+  "stellarMass": {
+    "min": 0.9,
+    "max": 1.3,
+    "default": 1.1
+  },
+  "differentiationTime": {
+    "min": 3,
+    "max": 6,
+    "default": 4.5
+  },
+  "temperature": {
+    "min": 800,
+    "max": 1400,
+    "default": 1100
+  },
+  "orbitalDistance": {
+    "min": 0.6,
+    "max": 2.4,
+    "default": 1.5
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #664D3C; padding: 2px 8px; border-radius: 3px;">#664D3C</span>
+- <span style="background-color: #998675; padding: 2px 8px; border-radius: 3px;">#998675</span>
+- <span style="background-color: #B0A297; padding: 2px 8px; border-radius: 3px;">#B0A297</span>
+- <span style="background-color: #F4DED7; padding: 2px 8px; border-radius: 3px;">#F4DED7</span>
+- <span style="background-color: #27221C; padding: 2px 8px; border-radius: 3px;">#27221C</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#998675",
+  "roughness": 0.55,
+  "metallic": 0.35,
+  "normalStrength": 1.1,
+  "aoStrength": 0.4,
+  "heightScale": 0.04,
+  "emissive": "#B0A297"
+}
+```
+
+**Procedural Rules:**
+> Banded layers with varying chemistry, visible stratification patterns.
 
 **Textures:**
 - **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
@@ -520,179 +745,530 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 
 ---
 
-#### Diamond Mantle (`diamond_mantle_002`)
 
-**Description:** A shimmering world with a mantle rich in carbon. Glossy diamond surfaces reflect light brilliantly, creating sparkling vistas and dark graphite patches that add contrast.
+### MICRO: Fine-grained details and specific implementations
+
+**WEFT Flow:** Building on MACRO and MESO scales:
+- MACRO: "Population I Star System", "Population II Star System"...
+- MESO: "Hot Accretion Zone", "Cold Accretion Zone"...
+
+**Total Archetypes:** 8
+
+#### Iron-Nickel Core Dominance (`micro_001`)
+
+**Description:** A metal-rich planetary core resulting in a planet with stark, metallic surface features, manifesting as dark grays with reflective highlights and rusty oxidation areas.
 
 **Parameters:**
 ```json
 {
-  "ironContent": 0.05,
-  "carbonContent": 0.7,
-  "volatileContent": 0.1,
-  "rareEarthContent": 0.1,
-  "silicateContent": 0.05
+  "ironContent": {
+    "min": 0.5,
+    "max": 1,
+    "default": 0.8
+  },
+  "carbonContent": {
+    "min": 0.1,
+    "max": 0.4,
+    "default": 0.2
+  },
+  "volatileContent": {
+    "min": 0,
+    "max": 0.3,
+    "default": 0.1
+  },
+  "rareEarthContent": {
+    "min": 0,
+    "max": 0.1,
+    "default": 0.05
+  },
+  "silicateContent": {
+    "min": 0.2,
+    "max": 0.6,
+    "default": 0.4
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #FFFFFF; padding: 2px 8px; border-radius: 3px;">#FFFFFF</span>
-- <span style="background-color: #1C1C1C; padding: 2px 8px; border-radius: 3px;">#1C1C1C</span>
-- <span style="background-color: #A9A9A9; padding: 2px 8px; border-radius: 3px;">#A9A9A9</span>
-- <span style="background-color: #FFD700; padding: 2px 8px; border-radius: 3px;">#FFD700</span>
-- <span style="background-color: #000000; padding: 2px 8px; border-radius: 3px;">#000000</span>
+- <span style="background-color: #2E2E2E; padding: 2px 8px; border-radius: 3px;">#2E2E2E</span>
+- <span style="background-color: #5B5B5B; padding: 2px 8px; border-radius: 3px;">#5B5B5B</span>
+- <span style="background-color: #964B00; padding: 2px 8px; border-radius: 3px;">#964B00</span>
+- <span style="background-color: #B87333; padding: 2px 8px; border-radius: 3px;">#B87333</span>
+- <span style="background-color: #ECECEC; padding: 2px 8px; border-radius: 3px;">#ECECEC</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#FFFFFF",
-  "roughness": 0.2,
-  "metallic": 0.3,
-  "normalStrength": 1.5,
-  "aoStrength": 0.7,
-  "heightScale": 0.03,
-  "emissive": "#FFD700"
+  "baseColor": "#2E2E2E",
+  "roughness": 0.3,
+  "metallic": 0.9,
+  "normalStrength": 1,
+  "aoStrength": 0.8,
+  "heightScale": 0.1,
+  "emissive": "#000000"
 }
 ```
 
 **Procedural Rules:**
-> Diamond surfaces interspersed with darker graphite regions, exhibiting high reflectivity.
+> Metals accumulate towards core with oxidized veins spread across surface.
 
 **Textures:**
-- **Metal050A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal050A_bundle_2K.jpg" alt="Metal 050 A" width="200" />
-- **Rock027** (unknown): `Rock027` (not found in manifest)
+- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
+- **Metal050** (unknown): `Metal050` (not found in manifest)
 
 ---
 
-#### Volatile Oceanic (`volatile_oceanic_003`)
+#### Carbon Mantle Shimmer (`micro_002`)
 
-**Description:** A world dominated by water and atmospheric compounds, featuring vast blue oceans with swirling white cloud patterns and icy polar caps.
+**Description:** A planet with a carbon-rich mantle, revealing a dark, shiny surface featuring graphite textures and sparkling diamond-like features in certain regions.
 
 **Parameters:**
 ```json
 {
-  "ironContent": 0.1,
-  "carbonContent": 0.05,
-  "volatileContent": 0.8,
-  "rareEarthContent": 0.01,
-  "silicateContent": 0.04
+  "ironContent": {
+    "min": 0.1,
+    "max": 0.3,
+    "default": 0.2
+  },
+  "carbonContent": {
+    "min": 0.5,
+    "max": 1,
+    "default": 0.8
+  },
+  "volatileContent": {
+    "min": 0,
+    "max": 0.2,
+    "default": 0.1
+  },
+  "rareEarthContent": {
+    "min": 0,
+    "max": 0.2,
+    "default": 0.1
+  },
+  "silicateContent": {
+    "min": 0.2,
+    "max": 0.4,
+    "default": 0.3
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #1E90FF; padding: 2px 8px; border-radius: 3px;">#1E90FF</span>
-- <span style="background-color: #ADD8E6; padding: 2px 8px; border-radius: 3px;">#ADD8E6</span>
+- <span style="background-color: #1C1C1C; padding: 2px 8px; border-radius: 3px;">#1C1C1C</span>
+- <span style="background-color: #8A8A8A; padding: 2px 8px; border-radius: 3px;">#8A8A8A</span>
 - <span style="background-color: #FFFFFF; padding: 2px 8px; border-radius: 3px;">#FFFFFF</span>
-- <span style="background-color: #00FFFF; padding: 2px 8px; border-radius: 3px;">#00FFFF</span>
-- <span style="background-color: #4682B4; padding: 2px 8px; border-radius: 3px;">#4682B4</span>
+- <span style="background-color: #333333; padding: 2px 8px; border-radius: 3px;">#333333</span>
+- <span style="background-color: #3C3C3C; padding: 2px 8px; border-radius: 3px;">#3C3C3C</span>
+- <span style="background-color: #DCDCDC; padding: 2px 8px; border-radius: 3px;">#DCDCDC</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#1E90FF",
-  "roughness": 0.1,
+  "baseColor": "#1C1C1C",
+  "roughness": 0.4,
+  "metallic": 0,
+  "normalStrength": 1.2,
+  "aoStrength": 0.7,
+  "heightScale": 0.05,
+  "emissive": "#FFFFFF"
+}
+```
+
+**Procedural Rules:**
+> Carbon stratification forms shiny patches and reflective veins.
+
+**Textures:**
+- **Rock025** (unknown): `Rock025` (not found in manifest)
+- **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
+
+---
+
+#### Volatile Surface Waters (`micro_003`)
+
+**Description:** Planets with high volatile content showing lush blue surfaces with visible water bodies and frozen caps, surrounded by contrasting clouds.
+
+**Parameters:**
+```json
+{
+  "ironContent": {
+    "min": 0,
+    "max": 0.3,
+    "default": 0.1
+  },
+  "carbonContent": {
+    "min": 0.1,
+    "max": 0.3,
+    "default": 0.2
+  },
+  "volatileContent": {
+    "min": 0.5,
+    "max": 1,
+    "default": 0.8
+  },
+  "rareEarthContent": {
+    "min": 0,
+    "max": 0.1,
+    "default": 0.04
+  },
+  "silicateContent": {
+    "min": 0.1,
+    "max": 0.3,
+    "default": 0.2
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #0050D4; padding: 2px 8px; border-radius: 3px;">#0050D4</span>
+- <span style="background-color: #A1CDEC; padding: 2px 8px; border-radius: 3px;">#A1CDEC</span>
+- <span style="background-color: #FFFFFF; padding: 2px 8px; border-radius: 3px;">#FFFFFF</span>
+- <span style="background-color: #66B3FF; padding: 2px 8px; border-radius: 3px;">#66B3FF</span>
+- <span style="background-color: #5E83BA; padding: 2px 8px; border-radius: 3px;">#5E83BA</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#0050D4",
+  "roughness": 0.2,
   "metallic": 0,
   "normalStrength": 1,
-  "aoStrength": 0.4,
+  "aoStrength": 0.6,
   "heightScale": 0.02,
-  "emissive": "#00FFFF"
+  "emissive": "#66B3FF"
 }
 ```
 
 **Procedural Rules:**
-> Oceans with swirling clouds, featuring polar ice caps and dynamic weather systems.
+> Volatile distribution leads to open water expanses with icy polar caps.
 
 **Textures:**
-- **Water012** (unknown): `Water012` (not found in manifest)
-- **Ice014** (unknown): `Ice014` (not found in manifest)
+- **Water008** (unknown): `Water008` (not found in manifest)
+- **Ice004** (unknown): `Ice004` (not found in manifest)
 
 ---
 
-#### Iridescent Terra (`iridescent_terra_004`)
+#### Silicate Plateau (`micro_004`)
 
-**Description:** A planet rich in rare earth elements with an iridescent surface. Shifting hues create mesmerizing patterns, reflecting sunlight in a spectrum of colors.
+**Description:** A predominantly silicate-based planet exhibiting traditional rocky surfaces in shades of brown, beige, and gray with mineral veins.
 
 **Parameters:**
 ```json
 {
-  "ironContent": 0.1,
-  "carbonContent": 0.1,
-  "volatileContent": 0.1,
-  "rareEarthContent": 0.6,
-  "silicateContent": 0.1
+  "ironContent": {
+    "min": 0.1,
+    "max": 0.2,
+    "default": 0.15
+  },
+  "carbonContent": {
+    "min": 0,
+    "max": 0.1,
+    "default": 0.05
+  },
+  "volatileContent": {
+    "min": 0.1,
+    "max": 0.2,
+    "default": 0.15
+  },
+  "rareEarthContent": {
+    "min": 0,
+    "max": 0.1,
+    "default": 0.03
+  },
+  "silicateContent": {
+    "min": 0.6,
+    "max": 1,
+    "default": 0.8
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #9400D3; padding: 2px 8px; border-radius: 3px;">#9400D3</span>
-- <span style="background-color: #FF69B4; padding: 2px 8px; border-radius: 3px;">#FF69B4</span>
-- <span style="background-color: #BA55D3; padding: 2px 8px; border-radius: 3px;">#BA55D3</span>
-- <span style="background-color: #8B008B; padding: 2px 8px; border-radius: 3px;">#8B008B</span>
-- <span style="background-color: #4B0082; padding: 2px 8px; border-radius: 3px;">#4B0082</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#9400D3",
-  "roughness": 0.6,
-  "metallic": 0.5,
-  "normalStrength": 1.6,
-  "aoStrength": 0.5,
-  "heightScale": 0.05,
-  "emissive": "#FF69B4"
-}
-```
-
-**Procedural Rules:**
-> Color-shifting surfaces with iridescent glow, exhibiting dynamic visual patterns under light.
-
-**Textures:**
-- **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
-- **Metal051** (unknown): `Metal051` (not found in manifest)
-
----
-
-#### Silicate Earth (`silicate_earth_005`)
-
-**Description:** A classic rocky planet with thick silicate crusts, browns, grays, and tans. Mineral veins and rocky outcrops give a traditional terrestrial appearance.
-
-**Parameters:**
-```json
-{
-  "ironContent": 0.1,
-  "carbonContent": 0.05,
-  "volatileContent": 0.05,
-  "rareEarthContent": 0.05,
-  "silicateContent": 0.75
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #A52A2A; padding: 2px 8px; border-radius: 3px;">#A52A2A</span>
-- <span style="background-color: #CD853F; padding: 2px 8px; border-radius: 3px;">#CD853F</span>
-- <span style="background-color: #D2B48C; padding: 2px 8px; border-radius: 3px;">#D2B48C</span>
+- <span style="background-color: #8B8378; padding: 2px 8px; border-radius: 3px;">#8B8378</span>
+- <span style="background-color: #7F7F7F; padding: 2px 8px; border-radius: 3px;">#7F7F7F</span>
+- <span style="background-color: #BDB76B; padding: 2px 8px; border-radius: 3px;">#BDB76B</span>
+- <span style="background-color: #D3D3D3; padding: 2px 8px; border-radius: 3px;">#D3D3D3</span>
 - <span style="background-color: #8B4513; padding: 2px 8px; border-radius: 3px;">#8B4513</span>
-- <span style="background-color: #708090; padding: 2px 8px; border-radius: 3px;">#708090</span>
+- <span style="background-color: #696969; padding: 2px 8px; border-radius: 3px;">#696969</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#A52A2A",
+  "baseColor": "#8B8378",
   "roughness": 0.9,
   "metallic": 0,
-  "normalStrength": 1.3,
+  "normalStrength": 1.5,
   "aoStrength": 0.8,
-  "heightScale": 0.04,
+  "heightScale": 0.1,
+  "emissive": "#000000"
+}
+```
+
+**Procedural Rules:**
+> Material compaction leads to layered, textured rocky surfaces.
+
+**Textures:**
+- **Rock038** (unknown): `Rock038` (not found in manifest)
+- **Rock050** (Rock): <img src="../../packages/gen/public/textures/rock/Rock050_bundle_2K.jpg" alt="Rock 050" width="200" />
+
+---
+
+#### Rare Earth Iridescence (`micro_005`)
+
+**Description:** Rare earth concentration gives rise to iridescent planets with shifting color surfaces, appearing multi-hued from varying light angles.
+
+**Parameters:**
+```json
+{
+  "ironContent": {
+    "min": 0,
+    "max": 0.1,
+    "default": 0.05
+  },
+  "carbonContent": {
+    "min": 0,
+    "max": 0.1,
+    "default": 0.05
+  },
+  "volatileContent": {
+    "min": 0,
+    "max": 0.3,
+    "default": 0.1
+  },
+  "rareEarthContent": {
+    "min": 0.5,
+    "max": 1,
+    "default": 0.8
+  },
+  "silicateContent": {
+    "min": 0.1,
+    "max": 0.3,
+    "default": 0.2
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #FFD700; padding: 2px 8px; border-radius: 3px;">#FFD700</span>
+- <span style="background-color: #DAA520; padding: 2px 8px; border-radius: 3px;">#DAA520</span>
+- <span style="background-color: #C0C0C0; padding: 2px 8px; border-radius: 3px;">#C0C0C0</span>
+- <span style="background-color: #E5E4E2; padding: 2px 8px; border-radius: 3px;">#E5E4E2</span>
+- <span style="background-color: #B8860B; padding: 2px 8px; border-radius: 3px;">#B8860B</span>
+- <span style="background-color: #FF4500; padding: 2px 8px; border-radius: 3px;">#FF4500</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#FFD700",
+  "roughness": 0.2,
+  "metallic": 0.8,
+  "normalStrength": 1.3,
+  "aoStrength": 0.7,
+  "heightScale": 0.03,
+  "emissive": "#E5E4E2"
+}
+```
+
+**Procedural Rules:**
+> Iridescent hues fluctuate with mineral density and light exposure.
+
+**Textures:**
+- **Metal051** (unknown): `Metal051` (not found in manifest)
+- **Metal052** (unknown): `Metal052` (not found in manifest)
+
+---
+
+#### Silicon-Oxygen Hardstone (`micro_006`)
+
+**Description:** A robust, silicate-dominated structure perfect for detailed surface inspection, providing varied shades of tan and gray with visible grain.
+
+**Parameters:**
+```json
+{
+  "ironContent": {
+    "min": 0.1,
+    "max": 0.2,
+    "default": 0.15
+  },
+  "carbonContent": {
+    "min": 0,
+    "max": 0.1,
+    "default": 0.05
+  },
+  "volatileContent": {
+    "min": 0.1,
+    "max": 0.3,
+    "default": 0.2
+  },
+  "rareEarthContent": {
+    "min": 0,
+    "max": 0.1,
+    "default": 0.02
+  },
+  "silicateContent": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.9
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #A0522D; padding: 2px 8px; border-radius: 3px;">#A0522D</span>
+- <span style="background-color: #DAA520; padding: 2px 8px; border-radius: 3px;">#DAA520</span>
+- <span style="background-color: #D2B48C; padding: 2px 8px; border-radius: 3px;">#D2B48C</span>
+- <span style="background-color: #A9A9A9; padding: 2px 8px; border-radius: 3px;">#A9A9A9</span>
+- <span style="background-color: #C0C0C0; padding: 2px 8px; border-radius: 3px;">#C0C0C0</span>
+- <span style="background-color: #808080; padding: 2px 8px; border-radius: 3px;">#808080</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#D2B48C",
+  "roughness": 0.8,
+  "metallic": 0,
+  "normalStrength": 1.6,
+  "aoStrength": 0.9,
+  "heightScale": 0.08,
+  "emissive": "#808080"
+}
+```
+
+**Procedural Rules:**
+> Variations in rock densities create distinguishable bands and hardstone aggregates.
+
+**Textures:**
+- **Rock045** (unknown): `Rock045` (not found in manifest)
+- **Rock046** (unknown): `Rock046` (not found in manifest)
+
+---
+
+#### Calcium-Magnesium Formation (`micro_007`)
+
+**Description:** Planets with extensive calcareous and magnesium-rich vistas offering yellow-brown hues with rugged models including visible striations.
+
+**Parameters:**
+```json
+{
+  "ironContent": {
+    "min": 0.1,
+    "max": 0.2,
+    "default": 0.15
+  },
+  "carbonContent": {
+    "min": 0.1,
+    "max": 0.3,
+    "default": 0.2
+  },
+  "volatileContent": {
+    "min": 0,
+    "max": 0.2,
+    "default": 0.1
+  },
+  "rareEarthContent": {
+    "min": 0,
+    "max": 0.2,
+    "default": 0.05
+  },
+  "silicateContent": {
+    "min": 0.5,
+    "max": 0.7,
+    "default": 0.6
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #FFD700; padding: 2px 8px; border-radius: 3px;">#FFD700</span>
+- <span style="background-color: #F0E68C; padding: 2px 8px; border-radius: 3px;">#F0E68C</span>
+- <span style="background-color: #FFFAF0; padding: 2px 8px; border-radius: 3px;">#FFFAF0</span>
+- <span style="background-color: #8B4513; padding: 2px 8px; border-radius: 3px;">#8B4513</span>
+- <span style="background-color: #CD853F; padding: 2px 8px; border-radius: 3px;">#CD853F</span>
+- <span style="background-color: #BC8F8F; padding: 2px 8px; border-radius: 3px;">#BC8F8F</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#FFD700",
+  "roughness": 0.5,
+  "metallic": 0,
+  "normalStrength": 1.2,
+  "aoStrength": 0.8,
+  "heightScale": 0.06,
   "emissive": "#8B4513"
 }
 ```
 
 **Procedural Rules:**
-> Rocky surfaces with mineral veins, exhibiting classic terrestrial textures and colors.
+> Calcium seams are irregular, and magnesium formations alternate in complexity by temperature.
+
+**Textures:**
+- **Rock028** (Rock): <img src="../../packages/gen/public/textures/rock/Rock028_bundle_2K.jpg" alt="Rock 028" width="200" />
+- **Concrete023** (Concrete): <img src="../../packages/gen/public/textures/concrete/Concrete023_bundle_2K.jpg" alt="Concrete 023" width="200" />
+
+---
+
+#### Hydrothermal Vent Regions (`micro_008`)
+
+**Description:** Regions marked by volcanic and hydrothermal interaction, presenting dark surfaces with hints of red and bubbly textures due to escape gases.
+
+**Parameters:**
+```json
+{
+  "ironContent": {
+    "min": 0.1,
+    "max": 0.3,
+    "default": 0.2
+  },
+  "carbonContent": {
+    "min": 0.2,
+    "max": 0.4,
+    "default": 0.3
+  },
+  "volatileContent": {
+    "min": 0.3,
+    "max": 0.5,
+    "default": 0.4
+  },
+  "rareEarthContent": {
+    "min": 0.1,
+    "max": 0.3,
+    "default": 0.2
+  },
+  "silicateContent": {
+    "min": 0.2,
+    "max": 0.4,
+    "default": 0.3
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #1F1F1F; padding: 2px 8px; border-radius: 3px;">#1F1F1F</span>
+- <span style="background-color: #D2691E; padding: 2px 8px; border-radius: 3px;">#D2691E</span>
+- <span style="background-color: #8B4513; padding: 2px 8px; border-radius: 3px;">#8B4513</span>
+- <span style="background-color: #B22222; padding: 2px 8px; border-radius: 3px;">#B22222</span>
+- <span style="background-color: #532C1C; padding: 2px 8px; border-radius: 3px;">#532C1C</span>
+- <span style="background-color: #3A3A3A; padding: 2px 8px; border-radius: 3px;">#3A3A3A</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#1F1F1F",
+  "roughness": 0.55,
+  "metallic": 0.1,
+  "normalStrength": 1.4,
+  "aoStrength": 0.75,
+  "heightScale": 0.07,
+  "emissive": "#D2691E"
+}
+```
+
+**Procedural Rules:**
+> Escape gases form surface bubbles and uneven color shifts, red glow visible from cracks.
 
 **Textures:**
 - **Rock035** (Rock): <img src="../../packages/gen/public/textures/rock/Rock035_bundle_2K.jpg" alt="Rock 035" width="200" />
-- **Rock045** (unknown): `Rock045` (not found in manifest)
+- **Metal060** (unknown): `Metal060` (not found in manifest)
 
 ---
 
@@ -703,8 +1279,8 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 
 **WARP Flow:** Inheriting knowledge from previous generation:
 - **Gen 0: Planetary Genesis** provided:
-  - "Metal-Rich Forge", "Ancient Calm", "Double Sunscape", "Warrior's Remnants", "Chaotic Beginnings"...
-  - Total: 15 archetypes across all scales
+  - "Population I Star System", "Population II Star System", "Binary Star System", "Post-Supernova Enrichment Zone", "Protoplanetary Disk Disruption"...
+  - Total: 20 archetypes across all scales
 
 ---
 
@@ -712,238 +1288,298 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 
 **Total Archetypes:** 5
 
-#### Forge Predator (`forge_predator`)
+#### Chromatic Cartographer (`macro_archetype_001`)
 
-**Description:** The Forge Predator is a powerful carnivorous entity evolved to dominate the rust-red plains. Sleek and metallic in appearance, it exudes an aura of relentless pursuit with its streamlined body and reflective surfaces.
+**Description:** A nomadic creature adapted to metal-rich environments, utilizing advanced sensory arrays to map the dynamic landscapes.
 
 **Parameters:**
 ```json
 {
-  "mobility": 0.9,
-  "manipulation": 0.3,
-  "excavation": 0.2,
-  "combat": 0.95,
-  "social": 0.4,
-  "sensory": 0.7,
-  "cognitive": 0.6,
-  "resilience": 0.8,
-  "efficiency": 0.6,
-  "reproduction": 0.5
+  "stellarMass": {
+    "min": 0.9,
+    "max": 1.4,
+    "default": 1.1
+  },
+  "metallicity": {
+    "min": 0.5,
+    "max": 1,
+    "default": 0.8
+  },
+  "age": {
+    "min": 1,
+    "max": 5,
+    "default": 3
+  },
+  "orbitalDistance": {
+    "min": 0.7,
+    "max": 2.5,
+    "default": 1.5
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #AA4A44; padding: 2px 8px; border-radius: 3px;">#AA4A44</span>
-- <span style="background-color: #7F3330; padding: 2px 8px; border-radius: 3px;">#7F3330</span>
-- <span style="background-color: #FFD700; padding: 2px 8px; border-radius: 3px;">#FFD700</span>
+- <span style="background-color: #6A5ACD; padding: 2px 8px; border-radius: 3px;">#6A5ACD</span>
+- <span style="background-color: #8B4513; padding: 2px 8px; border-radius: 3px;">#8B4513</span>
+- <span style="background-color: #C0C0C0; padding: 2px 8px; border-radius: 3px;">#C0C0C0</span>
+- <span style="background-color: #FFFFFF; padding: 2px 8px; border-radius: 3px;">#FFFFFF</span>
+- <span style="background-color: #1E90FF; padding: 2px 8px; border-radius: 3px;">#1E90FF</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#AA4A44",
-  "roughness": 0.3,
-  "metallic": 0.8,
+  "baseColor": "#6A5ACD",
+  "roughness": 0.6,
+  "metallic": 0.4,
   "normalStrength": 1.2,
   "aoStrength": 0.7,
   "heightScale": 0.03,
-  "emissive": "#7F3330"
+  "emissive": "#1E90FF"
 }
 ```
 
 **Procedural Rules:**
-> Streamlined metallic scales shift in the light, enhancing speed and intimidation.
+> Varies optically to detect and map metal formations using polarized reflections.
 
 **Textures:**
 - **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
-- **Leather015** (unknown): `Leather015` (not found in manifest)
+- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
 
 ---
 
-#### Sapphire Artisan (`sapphire_artisan`)
+#### Silk Weaver (`macro_archetype_002`)
 
-**Description:** These highly intelligent creatures build intricate nest structures on the sapphire hills, using their dexterous limbs to shape the world around them.
+**Description:** Creature capable of producing strong silk-like structures, adapted to construct functional nests in both arid and humid climates.
 
 **Parameters:**
 ```json
 {
-  "mobility": 0.6,
-  "manipulation": 0.9,
-  "excavation": 0.5,
-  "combat": 0.4,
-  "social": 0.9,
-  "sensory": 0.7,
-  "cognitive": 0.95,
-  "resilience": 0.7,
-  "efficiency": 0.6,
-  "reproduction": 0.5
+  "stellarMass": {
+    "min": 1,
+    "max": 1.5,
+    "default": 1.3
+  },
+  "metallicity": {
+    "min": 0.4,
+    "max": 0.8,
+    "default": 0.6
+  },
+  "age": {
+    "min": 1,
+    "max": 8,
+    "default": 4
+  },
+  "orbitalDistance": {
+    "min": 0.6,
+    "max": 2,
+    "default": 1.2
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #005B96; padding: 2px 8px; border-radius: 3px;">#005B96</span>
-- <span style="background-color: #89CFF0; padding: 2px 8px; border-radius: 3px;">#89CFF0</span>
-- <span style="background-color: #F0E68C; padding: 2px 8px; border-radius: 3px;">#F0E68C</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#005B96",
-  "roughness": 0.8,
-  "metallic": 0.2,
-  "normalStrength": 1,
-  "aoStrength": 0.9,
-  "heightScale": 0.02,
-  "emissive": "#F0E68C"
-}
-```
-
-**Procedural Rules:**
-> The surface displays intricate carvings, reflecting the social sophistication of its builders.
-
-**Textures:**
-- **Wood094** (Wood): <img src="../../packages/gen/public/textures/wood/Wood094_bundle_2K.jpg" alt="Wood 094" width="200" />
-- **Fabric020** (unknown): `Fabric020` (not found in manifest)
-
----
-
-#### Ember Smelter (`ember_smelter`)
-
-**Description:** Thick-skinned and heat-resistant, the Ember Smelters thrive in volcanic areas, absorbing geothermal heat to power their biological processes.
-
-**Parameters:**
-```json
-{
-  "mobility": 0.3,
-  "manipulation": 0.5,
-  "excavation": 0.6,
-  "combat": 0.7,
-  "social": 0.3,
-  "sensory": 0.4,
-  "cognitive": 0.4,
-  "resilience": 0.95,
-  "efficiency": 0.8,
-  "reproduction": 0.4
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #D2691E; padding: 2px 8px; border-radius: 3px;">#D2691E</span>
+- <span style="background-color: #A0522D; padding: 2px 8px; border-radius: 3px;">#A0522D</span>
+- <span style="background-color: #FAEBD7; padding: 2px 8px; border-radius: 3px;">#FAEBD7</span>
+- <span style="background-color: #D2B48C; padding: 2px 8px; border-radius: 3px;">#D2B48C</span>
 - <span style="background-color: #8B4513; padding: 2px 8px; border-radius: 3px;">#8B4513</span>
 - <span style="background-color: #FFD700; padding: 2px 8px; border-radius: 3px;">#FFD700</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#D2691E",
-  "roughness": 0.9,
-  "metallic": 0.3,
-  "normalStrength": 1.4,
-  "aoStrength": 0.8,
-  "heightScale": 0.04,
+  "baseColor": "#A0522D",
+  "roughness": 0.7,
+  "metallic": 0,
+  "normalStrength": 1,
+  "aoStrength": 0.6,
+  "heightScale": 0.02,
   "emissive": "#FFD700"
 }
 ```
 
 **Procedural Rules:**
-> Craggy skin interspersed with glowing veins mimics molten lava flow.
+> Silk strands vary in thickness and strength, adapting to environmental demands.
 
 **Textures:**
-- **Rock025** (unknown): `Rock025` (not found in manifest)
-- **Leather036** (unknown): `Leather036` (not found in manifest)
+- **Fabric023** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric023_bundle_2K.jpg" alt="Fabric 023" width="200" />
+- **Leather011** (Leather): <img src="../../packages/gen/public/textures/leather/Leather011_bundle_2K.jpg" alt="Leather 011" width="200" />
 
 ---
 
-#### Crystal Hydroforager (`crystal_hydroforager`)
+#### Herbal Forager (`macro_archetype_003`)
 
-**Description:** Living within the crystalline expanses, these creatures filter and extract water from mineral deposits using specialized appendages.
+**Description:** Adapted to exploit the rich organic matter of wood and grasses, this creature specializes in sustainable foraging.
 
 **Parameters:**
 ```json
 {
-  "mobility": 0.5,
-  "manipulation": 0.6,
-  "excavation": 0.3,
-  "combat": 0.3,
-  "social": 0.5,
-  "sensory": 0.8,
-  "cognitive": 0.6,
-  "resilience": 0.7,
-  "efficiency": 0.9,
-  "reproduction": 0.6
+  "stellarMass": {
+    "min": 1,
+    "max": 1.3,
+    "default": 1.15
+  },
+  "metallicity": {
+    "min": 0.3,
+    "max": 0.6,
+    "default": 0.5
+  },
+  "age": {
+    "min": 1,
+    "max": 7,
+    "default": 3.5
+  },
+  "orbitalDistance": {
+    "min": 1,
+    "max": 2.5,
+    "default": 1.5
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #00CED1; padding: 2px 8px; border-radius: 3px;">#00CED1</span>
-- <span style="background-color: #7FFFD4; padding: 2px 8px; border-radius: 3px;">#7FFFD4</span>
-- <span style="background-color: #4682B4; padding: 2px 8px; border-radius: 3px;">#4682B4</span>
+- <span style="background-color: #3CB371; padding: 2px 8px; border-radius: 3px;">#3CB371</span>
+- <span style="background-color: #556B2F; padding: 2px 8px; border-radius: 3px;">#556B2F</span>
+- <span style="background-color: #8B4513; padding: 2px 8px; border-radius: 3px;">#8B4513</span>
+- <span style="background-color: #F5DEB3; padding: 2px 8px; border-radius: 3px;">#F5DEB3</span>
+- <span style="background-color: #9ACD32; padding: 2px 8px; border-radius: 3px;">#9ACD32</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#00CED1",
-  "roughness": 0.4,
-  "metallic": 0.1,
-  "normalStrength": 1.3,
-  "aoStrength": 0.5,
-  "heightScale": 0.02,
-  "emissive": "#7FFFD4"
+  "baseColor": "#3CB371",
+  "roughness": 0.5,
+  "metallic": 0,
+  "normalStrength": 1,
+  "aoStrength": 0.8,
+  "heightScale": 0.03,
+  "emissive": "#9ACD32"
 }
 ```
 
 **Procedural Rules:**
-> Translucent layers over an opaque core mimic mineral filtering structures.
+> Grass and wood textures combine to create a camouflaged exterior.
 
 **Textures:**
-- **Crystal032** (unknown): `Crystal032` (not found in manifest)
-- **Leather012** (Leather): <img src="../../packages/gen/public/textures/leather/Leather012_bundle_2K.jpg" alt="Leather 012" width="200" />
+- **Wood051** (Wood): <img src="../../packages/gen/public/textures/wood/Wood051_bundle_2K.jpg" alt="Wood 051" width="200" />
+- **Grass001** (Grass): <img src="../../packages/gen/public/textures/grass/Grass001_bundle_2K.jpg" alt="Grass 001" width="200" />
 
 ---
 
-#### Crater Scout (`crater_scout`)
+#### Arid Engineers (`macro_archetype_004`)
 
-**Description:** Agile and vigilant, these creatures navigate cratered landscapes, using clinging abilities to explore and avoid predators.
+**Description:** Using readily available materials such as sandstone and grass, these creatures build networks of complex habitats in arid environments.
 
 **Parameters:**
 ```json
 {
-  "mobility": 0.8,
-  "manipulation": 0.4,
-  "excavation": 0.5,
-  "combat": 0.4,
-  "social": 0.6,
-  "sensory": 0.9,
-  "cognitive": 0.6,
-  "resilience": 0.6,
-  "efficiency": 0.7,
-  "reproduction": 0.7
+  "stellarMass": {
+    "min": 0.8,
+    "max": 1.3,
+    "default": 1
+  },
+  "metallicity": {
+    "min": 0.3,
+    "max": 0.7,
+    "default": 0.5
+  },
+  "age": {
+    "min": 1,
+    "max": 5,
+    "default": 2.5
+  },
+  "orbitalDistance": {
+    "min": 1.2,
+    "max": 3,
+    "default": 2
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #8B0000; padding: 2px 8px; border-radius: 3px;">#8B0000</span>
-- <span style="background-color: #556B2F; padding: 2px 8px; border-radius: 3px;">#556B2F</span>
+- <span style="background-color: #C2B280; padding: 2px 8px; border-radius: 3px;">#C2B280</span>
+- <span style="background-color: #D2B48C; padding: 2px 8px; border-radius: 3px;">#D2B48C</span>
+- <span style="background-color: #8B4513; padding: 2px 8px; border-radius: 3px;">#8B4513</span>
+- <span style="background-color: #F5F5DC; padding: 2px 8px; border-radius: 3px;">#F5F5DC</span>
 - <span style="background-color: #A0522D; padding: 2px 8px; border-radius: 3px;">#A0522D</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#8B0000",
-  "roughness": 0.5,
-  "metallic": 0.05,
-  "normalStrength": 1.1,
-  "aoStrength": 0.6,
-  "heightScale": 0.03,
-  "emissive": "#556B2F"
+  "baseColor": "#C2B280",
+  "roughness": 0.7,
+  "metallic": 0.1,
+  "normalStrength": 1.5,
+  "aoStrength": 1,
+  "heightScale": 0.04,
+  "emissive": "#F5F5DC"
 }
 ```
 
 **Procedural Rules:**
-> Surface patterns resemble geological features, enhancing camouflage in rugged terrains.
+> Variations in habitat structures reflect environmental adaptation.
 
 **Textures:**
-- **Fabric055** (unknown): `Fabric055` (not found in manifest)
-- **Wood062** (unknown): `Wood062` (not found in manifest)
+- **Rock025** (unknown): `Rock025` (not found in manifest)
+- **Grass002** (Grass): <img src="../../packages/gen/public/textures/grass/Grass002_bundle_2K.jpg" alt="Grass 002" width="200" />
+
+---
+
+#### Nocturnal Chaser (`macro_archetype_005`)
+
+**Description:** Predatory creatures that adapted to low-light environments using advanced sensory navigation and speed.
+
+**Parameters:**
+```json
+{
+  "stellarMass": {
+    "min": 1.1,
+    "max": 1.4,
+    "default": 1.25
+  },
+  "metallicity": {
+    "min": 0.3,
+    "max": 0.8,
+    "default": 0.5
+  },
+  "age": {
+    "min": 1,
+    "max": 6,
+    "default": 3
+  },
+  "orbitalDistance": {
+    "min": 0.8,
+    "max": 2.2,
+    "default": 1.6
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #2F4F4F; padding: 2px 8px; border-radius: 3px;">#2F4F4F</span>
+- <span style="background-color: #708090; padding: 2px 8px; border-radius: 3px;">#708090</span>
+- <span style="background-color: #C0C0C0; padding: 2px 8px; border-radius: 3px;">#C0C0C0</span>
+- <span style="background-color: #000000; padding: 2px 8px; border-radius: 3px;">#000000</span>
+- <span style="background-color: #8B0000; padding: 2px 8px; border-radius: 3px;">#8B0000</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#2F4F4F",
+  "roughness": 0.6,
+  "metallic": 0.2,
+  "normalStrength": 1.1,
+  "aoStrength": 0.9,
+  "heightScale": 0.03,
+  "emissive": "#8B0000"
+}
+```
+
+**Procedural Rules:**
+> Skin texture shifts enable stealth and concealment in dark landscapes.
+
+**Textures:**
+- **Leather012** (Leather): <img src="../../packages/gen/public/textures/leather/Leather012_bundle_2K.jpg" alt="Leather 012" width="200" />
+- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
 
 ---
 
@@ -951,222 +1587,361 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 ### MESO: Intermediate dynamics and structural relationships
 
 **WEFT Flow:** Building on MACRO scale archetypes:
-- "Forge Predator", "Sapphire Artisan", "Ember Smelter"...
+- "Chromatic Cartographer", "Silk Weaver", "Herbal Forager"...
 
-**Total Archetypes:** 5
+**Total Archetypes:** 6
 
-#### Solitary Reaver (`archetype_1`)
+#### Solo Vigilant (`archetype_solo_vigilant`)
 
-**Description:** The Solitary Reaver thrives as a lone hunter in the vibrant rust-red terrains. It is a master of stealth and dexterous movement, utilizing the metal-rich environment for camouflage and ambush hunting.
+**Description:** A solitary creature with acute senses, adapted to traverse and patrol metal-rich territories, remaining resilient and elusive in its environment.
 
 **Parameters:**
 ```json
 {
-  "stellarMass": 1.2,
-  "metallicity": 1,
-  "age": 3.5,
-  "orbitalDistance": 0.95
+  "stellarMass": {
+    "min": 0.8,
+    "max": 1.5,
+    "default": 1.2
+  },
+  "metallicity": {
+    "min": 0.3,
+    "max": 1,
+    "default": 0.8
+  },
+  "age": {
+    "min": 1,
+    "max": 10,
+    "default": 5
+  },
+  "orbitalDistance": {
+    "min": 0.5,
+    "max": 3,
+    "default": 1.5
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #8B0000; padding: 2px 8px; border-radius: 3px;">#8B0000</span>
-- <span style="background-color: #FF4500; padding: 2px 8px; border-radius: 3px;">#FF4500</span>
-- <span style="background-color: #CD853F; padding: 2px 8px; border-radius: 3px;">#CD853F</span>
-- <span style="background-color: #2E2E2E; padding: 2px 8px; border-radius: 3px;">#2E2E2E</span>
-- <span style="background-color: #FFE4B5; padding: 2px 8px; border-radius: 3px;">#FFE4B5</span>
+- <span style="background-color: #4E535E; padding: 2px 8px; border-radius: 3px;">#4E535E</span>
+- <span style="background-color: #7395AE; padding: 2px 8px; border-radius: 3px;">#7395AE</span>
+- <span style="background-color: #557A95; padding: 2px 8px; border-radius: 3px;">#557A95</span>
+- <span style="background-color: #B1A296; padding: 2px 8px; border-radius: 3px;">#B1A296</span>
+- <span style="background-color: #495867; padding: 2px 8px; border-radius: 3px;">#495867</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#8B0000",
-  "roughness": 0.2,
-  "metallic": 0.8,
-  "normalStrength": 1.2,
-  "aoStrength": 0.7,
-  "heightScale": 0.08,
-  "emissive": "#FF4500"
+  "baseColor": "#4E535E",
+  "roughness": 0.7,
+  "metallic": 0.2,
+  "normalStrength": 1,
+  "aoStrength": 0.6,
+  "heightScale": 0.1,
+  "emissive": "#7395AE"
 }
 ```
 
 **Procedural Rules:**
-> Surface features include a camouflaging rust pattern with metallic undertones to blend with the environment.
+> Colors shift depending on ambient source lighting and surface contact consistency, creating an almost chameleon-like appearance in metal-heavy environments.
 
 **Textures:**
 - **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
-- **Rust010** (unknown): `Rust010` (not found in manifest)
+- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
 
 ---
 
-#### Pack Conclave (`archetype_2`)
+#### Fabric Conclave (`archetype_fabric_conclave`)
 
-**Description:** The Pack Conclave operates in coordinated groups, utilizing social structures to hunt efficiently in the metal-coated landscapes. Their success relies on smooth communication and shared intelligence through intricate calls and gestures.
+**Description:** A community of creatures forming intricate fabric-like nests for communal living and resource sharing, thriving on synergy in semi-organic environments.
 
 **Parameters:**
 ```json
 {
-  "stellarMass": 1.2,
-  "metallicity": 0.9,
-  "age": 4,
-  "orbitalDistance": 1.1
+  "stellarMass": {
+    "min": 0.9,
+    "max": 1.4,
+    "default": 1.1
+  },
+  "metallicity": {
+    "min": 0.4,
+    "max": 0.9,
+    "default": 0.7
+  },
+  "age": {
+    "min": 2,
+    "max": 8,
+    "default": 4.5
+  },
+  "orbitalDistance": {
+    "min": 0.8,
+    "max": 2.5,
+    "default": 1.2
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #800000; padding: 2px 8px; border-radius: 3px;">#800000</span>
-- <span style="background-color: #FFD700; padding: 2px 8px; border-radius: 3px;">#FFD700</span>
-- <span style="background-color: #DC143C; padding: 2px 8px; border-radius: 3px;">#DC143C</span>
-- <span style="background-color: #B22222; padding: 2px 8px; border-radius: 3px;">#B22222</span>
-- <span style="background-color: #FFFFF0; padding: 2px 8px; border-radius: 3px;">#FFFFF0</span>
+- <span style="background-color: #BFB8A5; padding: 2px 8px; border-radius: 3px;">#BFB8A5</span>
+- <span style="background-color: #D9BF77; padding: 2px 8px; border-radius: 3px;">#D9BF77</span>
+- <span style="background-color: #C1839F; padding: 2px 8px; border-radius: 3px;">#C1839F</span>
+- <span style="background-color: #6D9DC5; padding: 2px 8px; border-radius: 3px;">#6D9DC5</span>
+- <span style="background-color: #94BFA7; padding: 2px 8px; border-radius: 3px;">#94BFA7</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#800000",
-  "roughness": 0.3,
-  "metallic": 0.5,
-  "normalStrength": 1.3,
-  "aoStrength": 0.8,
-  "heightScale": 0.06,
-  "emissive": "#DC143C"
+  "baseColor": "#BFB8A5",
+  "roughness": 0.5,
+  "metallic": 0.1,
+  "normalStrength": 1.2,
+  "aoStrength": 0.7,
+  "heightScale": 0.08,
+  "emissive": "#D9BF77"
 }
 ```
 
 **Procedural Rules:**
-> Interwoven patterns symbolize unity, with a fabric-like appearance for seamless interaction.
+> Color patterns dynamically adjust to the season, utilizing available fabric and grass textures to build adaptive habitats.
 
 **Textures:**
-- **Fabric035** (unknown): `Fabric035` (not found in manifest)
-- **Grass024** (unknown): `Grass024` (not found in manifest)
+- **Fabric023** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric023_bundle_2K.jpg" alt="Fabric 023" width="200" />
+- **Grass002** (Grass): <img src="../../packages/gen/public/textures/grass/Grass002_bundle_2K.jpg" alt="Grass 002" width="200" />
 
 ---
 
-#### Herd Glacier (`archetype_3`)
+#### Swarm Collective (`archetype_swarm_collective`)
 
-**Description:** The Herd Glacier traverses the rust and metal terrains in large quantities, grazing on mineral-heavy resources. Their massive numbers provide protection and resilience, adapting to the harsh climates through efficient resource sharing.
+**Description:** A highly organized group demonstrating swarm intelligence, effectively managing resources and efficiently navigating through volatile environments.
 
 **Parameters:**
 ```json
 {
-  "stellarMass": 1.2,
-  "metallicity": 1,
-  "age": 5,
-  "orbitalDistance": 1.3
+  "stellarMass": {
+    "min": 1,
+    "max": 1.3,
+    "default": 1.2
+  },
+  "metallicity": {
+    "min": 0.5,
+    "max": 0.8,
+    "default": 0.6
+  },
+  "age": {
+    "min": 3,
+    "max": 9,
+    "default": 5.5
+  },
+  "orbitalDistance": {
+    "min": 1,
+    "max": 2,
+    "default": 1.4
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #A0522D; padding: 2px 8px; border-radius: 3px;">#A0522D</span>
-- <span style="background-color: #8B4513; padding: 2px 8px; border-radius: 3px;">#8B4513</span>
-- <span style="background-color: #2F4F4F; padding: 2px 8px; border-radius: 3px;">#2F4F4F</span>
-- <span style="background-color: #DAA520; padding: 2px 8px; border-radius: 3px;">#DAA520</span>
-- <span style="background-color: #F0E68C; padding: 2px 8px; border-radius: 3px;">#F0E68C</span>
+- <span style="background-color: #6F4E37; padding: 2px 8px; border-radius: 3px;">#6F4E37</span>
+- <span style="background-color: #D9A673; padding: 2px 8px; border-radius: 3px;">#D9A673</span>
+- <span style="background-color: #B86B77; padding: 2px 8px; border-radius: 3px;">#B86B77</span>
+- <span style="background-color: #C1C6C8; padding: 2px 8px; border-radius: 3px;">#C1C6C8</span>
+- <span style="background-color: #A393BF; padding: 2px 8px; border-radius: 3px;">#A393BF</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#A0522D",
-  "roughness": 0.5,
-  "metallic": 0.3,
+  "baseColor": "#6F4E37",
+  "roughness": 0.6,
+  "metallic": 0.2,
+  "normalStrength": 1.3,
+  "aoStrength": 0.8,
+  "heightScale": 0.1,
+  "emissive": "#A393BF"
+}
+```
+
+**Procedural Rules:**
+> Emitting colors blend into their background, serving both as camouflage and communication across the swarm.
+
+**Textures:**
+- **Leather011** (Leather): <img src="../../packages/gen/public/textures/leather/Leather011_bundle_2K.jpg" alt="Leather 011" width="200" />
+- **Grass001** (Grass): <img src="../../packages/gen/public/textures/grass/Grass001_bundle_2K.jpg" alt="Grass 001" width="200" />
+
+---
+
+#### Herd Nomads (`archetype_herd_nomads`)
+
+**Description:** A large and cohesive group traveling together across dynamic landscapes, sharing resources effectively and providing mutual protection.
+
+**Parameters:**
+```json
+{
+  "stellarMass": {
+    "min": 1.1,
+    "max": 1.5,
+    "default": 1.3
+  },
+  "metallicity": {
+    "min": 0.4,
+    "max": 0.9,
+    "default": 0.7
+  },
+  "age": {
+    "min": 1.5,
+    "max": 8,
+    "default": 4
+  },
+  "orbitalDistance": {
+    "min": 0.7,
+    "max": 1.8,
+    "default": 1.3
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #BC986A; padding: 2px 8px; border-radius: 3px;">#BC986A</span>
+- <span style="background-color: #8B786D; padding: 2px 8px; border-radius: 3px;">#8B786D</span>
+- <span style="background-color: #ADA397; padding: 2px 8px; border-radius: 3px;">#ADA397</span>
+- <span style="background-color: #650000; padding: 2px 8px; border-radius: 3px;">#650000</span>
+- <span style="background-color: #FF38A1; padding: 2px 8px; border-radius: 3px;">#FF38A1</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#BC986A",
+  "roughness": 0.6,
+  "metallic": 0.1,
+  "normalStrength": 1,
+  "aoStrength": 0.7,
+  "heightScale": 0.07,
+  "emissive": "#FF38A1"
+}
+```
+
+**Procedural Rules:**
+> Coloration and texture mimic the moving landscape, adjusting mottling patterns as they migrate.
+
+**Textures:**
+- **Leather012** (Leather): <img src="../../packages/gen/public/textures/leather/Leather012_bundle_2K.jpg" alt="Leather 012" width="200" />
+- **Grass002** (Grass): <img src="../../packages/gen/public/textures/grass/Grass002_bundle_2K.jpg" alt="Grass 002" width="200" />
+
+---
+
+#### Territorial Pair (`archetype_territorial_pair`)
+
+**Description:** A pair-bound system where two creatures claim and defend a specific area, effectively utilizing resources and maintaining local biodiversity.
+
+**Parameters:**
+```json
+{
+  "stellarMass": {
+    "min": 1,
+    "max": 1.3,
+    "default": 1.1
+  },
+  "metallicity": {
+    "min": 0.3,
+    "max": 0.7,
+    "default": 0.5
+  },
+  "age": {
+    "min": 1.5,
+    "max": 7,
+    "default": 3
+  },
+  "orbitalDistance": {
+    "min": 0.6,
+    "max": 1.5,
+    "default": 1
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #2C5F2D; padding: 2px 8px; border-radius: 3px;">#2C5F2D</span>
+- <span style="background-color: #97BC62; padding: 2px 8px; border-radius: 3px;">#97BC62</span>
+- <span style="background-color: #D9BF77; padding: 2px 8px; border-radius: 3px;">#D9BF77</span>
+- <span style="background-color: #DAA520; padding: 2px 8px; border-radius: 3px;">#DAA520</span>
+- <span style="background-color: #8A7F80; padding: 2px 8px; border-radius: 3px;">#8A7F80</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#2C5F2D",
+  "roughness": 0.8,
+  "metallic": 0.05,
   "normalStrength": 1.1,
   "aoStrength": 0.9,
-  "heightScale": 0.04,
+  "heightScale": 0.05,
   "emissive": "#DAA520"
 }
 ```
 
 **Procedural Rules:**
-> Layered textures depict continual movement, with earthy tones reflecting mineral absorption.
+> Territory-specific coloration that not only marks boundaries but also reflects emotional states.
 
 **Textures:**
-- **Grass005** (Grass): <img src="../../packages/gen/public/textures/grass/Grass005_bundle_2K.jpg" alt="Grass 005" width="200" />
-- **Dirt003** (unknown): `Dirt003` (not found in manifest)
+- **Wood051** (Wood): <img src="../../packages/gen/public/textures/wood/Wood051_bundle_2K.jpg" alt="Wood 051" width="200" />
+- **Grass001** (Grass): <img src="../../packages/gen/public/textures/grass/Grass001_bundle_2K.jpg" alt="Grass 001" width="200" />
 
 ---
 
-#### Swarm Architect (`archetype_4`)
+#### Pack Hunters (`archetype_pack_hunters`)
 
-**Description:** The Swarm Architect is a colony of small, unified creatures that construct intricate, metallic structures, resembling hives. They utilize shared cognition and distributed workload among millions of individuals.
+**Description:** Coordinated predator group exploiting social structures to efficiently hunt and consume prey, dynamic leadership adaptability being key.
 
 **Parameters:**
 ```json
 {
-  "stellarMass": 1.2,
-  "metallicity": 1.1,
-  "age": 4.5,
-  "orbitalDistance": 1
+  "stellarMass": {
+    "min": 1.2,
+    "max": 1.4,
+    "default": 1.3
+  },
+  "metallicity": {
+    "min": 0.6,
+    "max": 1,
+    "default": 0.8
+  },
+  "age": {
+    "min": 2,
+    "max": 9,
+    "default": 6
+  },
+  "orbitalDistance": {
+    "min": 0.9,
+    "max": 2,
+    "default": 1.3
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #FFD700; padding: 2px 8px; border-radius: 3px;">#FFD700</span>
-- <span style="background-color: #C0C0C0; padding: 2px 8px; border-radius: 3px;">#C0C0C0</span>
-- <span style="background-color: #708090; padding: 2px 8px; border-radius: 3px;">#708090</span>
-- <span style="background-color: #8B0000; padding: 2px 8px; border-radius: 3px;">#8B0000</span>
-- <span style="background-color: #FFFFFF; padding: 2px 8px; border-radius: 3px;">#FFFFFF</span>
+- <span style="background-color: #4B3832; padding: 2px 8px; border-radius: 3px;">#4B3832</span>
+- <span style="background-color: #854442; padding: 2px 8px; border-radius: 3px;">#854442</span>
+- <span style="background-color: #7E9181; padding: 2px 8px; border-radius: 3px;">#7E9181</span>
+- <span style="background-color: #B1B1B1; padding: 2px 8px; border-radius: 3px;">#B1B1B1</span>
+- <span style="background-color: #3B3A36; padding: 2px 8px; border-radius: 3px;">#3B3A36</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#C0C0C0",
-  "roughness": 0.6,
-  "metallic": 0.9,
+  "baseColor": "#4B3832",
+  "roughness": 0.4,
+  "metallic": 0.15,
   "normalStrength": 1.4,
-  "aoStrength": 0.6,
-  "heightScale": 0.02,
-  "emissive": "#FFD700"
+  "aoStrength": 0.9,
+  "heightScale": 0.06,
+  "emissive": "#854442"
 }
 ```
 
 **Procedural Rules:**
-> Swarm formations create complex metallic structures reminiscent of hives with reflective surfaces.
+> Fractal patterning reflective of group hierarchy and hunting success, emitted in luminescent bursts during night pursuits.
 
 **Textures:**
-- **Metal030** (unknown): `Metal030` (not found in manifest)
-- **Rust015** (unknown): `Rust015` (not found in manifest)
-
----
-
-#### Territorial Sentinel (`archetype_5`)
-
-**Description:** The Territorial Sentinel is an expert defender of defined land sections within the rusted and rocky areas. It stands its ground with formidable resilience, capable of formidable combat when its domain is threatened.
-
-**Parameters:**
-```json
-{
-  "stellarMass": 1.2,
-  "metallicity": 0.8,
-  "age": 3,
-  "orbitalDistance": 1.2
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #4B0082; padding: 2px 8px; border-radius: 3px;">#4B0082</span>
-- <span style="background-color: #FF8C00; padding: 2px 8px; border-radius: 3px;">#FF8C00</span>
-- <span style="background-color: #2E8B57; padding: 2px 8px; border-radius: 3px;">#2E8B57</span>
-- <span style="background-color: #4682B4; padding: 2px 8px; border-radius: 3px;">#4682B4</span>
-- <span style="background-color: #F0FFF0; padding: 2px 8px; border-radius: 3px;">#F0FFF0</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#4B0082",
-  "roughness": 0.7,
-  "metallic": 0.4,
-  "normalStrength": 1.5,
-  "aoStrength": 0.5,
-  "heightScale": 0.07,
-  "emissive": "#FF8C00"
-}
-```
-
-**Procedural Rules:**
-> Rugged, impenetrable surfaces mimic natural defenses, with rocky textures providing camouflage and resilience.
-
-**Textures:**
-- **Rock014** (unknown): `Rock014` (not found in manifest)
-- **Metal021** (unknown): `Metal021` (not found in manifest)
+- **Bricks051** (Bricks): <img src="../../packages/gen/public/textures/bricks/Bricks051_bundle_2K.jpg" alt="Bricks 051" width="200" />
+- **Leather011** (Leather): <img src="../../packages/gen/public/textures/leather/Leather011_bundle_2K.jpg" alt="Leather 011" width="200" />
 
 ---
 
@@ -1174,223 +1949,328 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 ### MICRO: Fine-grained details and specific implementations
 
 **WEFT Flow:** Building on MACRO and MESO scales:
-- MACRO: "Forge Predator", "Sapphire Artisan"...
-- MESO: "Solitary Reaver", "Pack Conclave"...
+- MACRO: "Chromatic Cartographer", "Silk Weaver"...
+- MESO: "Solo Vigilant", "Fabric Conclave"...
 
 **Total Archetypes:** 5
 
-#### Ironclad Metabolician (`unique_id_1`)
+#### Pulse Predator (`pulse_predator`)
 
-**Description:** Specialized in high-efficiency metabolism within a metal-rich environment. The Ironclad Metabolician thrives on minimal resources, efficiently extracting energy from metallic compounds. Its appearance is sleek and metallic, reflecting the surfaces of its habitat.
-
-**Parameters:**
-```json
-{
-  "stellarMass": 1.2,
-  "metallicity": 0.8,
-  "age": 5.1,
-  "orbitalDistance": 1.3
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #B7410E; padding: 2px 8px; border-radius: 3px;">#B7410E</span>
-- <span style="background-color: #8B4513; padding: 2px 8px; border-radius: 3px;">#8B4513</span>
-- <span style="background-color: #3C2F2F; padding: 2px 8px; border-radius: 3px;">#3C2F2F</span>
-- <span style="background-color: #708090; padding: 2px 8px; border-radius: 3px;">#708090</span>
-- <span style="background-color: #C0C0C0; padding: 2px 8px; border-radius: 3px;">#C0C0C0</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#B7410E",
-  "roughness": 0.3,
-  "metallic": 0.8,
-  "normalStrength": 0.9,
-  "aoStrength": 0.7,
-  "heightScale": 0.04,
-  "emissive": "#8B4513"
-}
-```
-
-**Procedural Rules:**
-> Tightly packed scales provide both armor and energy-efficient heat retention.
-
-**Textures:**
-- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
-- **Leather013** (unknown): `Leather013` (not found in manifest)
-
----
-
-#### Sapphire Sensorial (`unique_id_2`)
-
-**Description:** Evolved for astonishing sensory perception, these creatures navigate through the vibrant and crystal-like landscapes with precision. Their bodies shimmer like ancient sapphires, aiding in communication and environmental awareness.
+**Description:** A dynamic creature with rapid metabolic cycles, adapted for intense bursts of activity. Its physiology is optimized for hunting and swift responses in metal-rich environments.
 
 **Parameters:**
 ```json
 {
-  "stellarMass": 1.1,
-  "metallicity": 0.6,
-  "age": 4.9,
-  "orbitalDistance": 1.4
+  "metabolicRate": {
+    "min": 1.5,
+    "max": 2.5,
+    "default": 2
+  },
+  "sensoryRange": {
+    "min": 1.2,
+    "max": 2,
+    "default": 1.6
+  },
+  "immuneStrength": {
+    "min": 0.7,
+    "max": 1.2,
+    "default": 0.9
+  },
+  "reproductiveRate": {
+    "min": 0.6,
+    "max": 1.2,
+    "default": 0.9
+  },
+  "energyEfficiency": {
+    "min": 0.5,
+    "max": 0.8,
+    "default": 0.65
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #0F52BA; padding: 2px 8px; border-radius: 3px;">#0F52BA</span>
-- <span style="background-color: #4682B4; padding: 2px 8px; border-radius: 3px;">#4682B4</span>
-- <span style="background-color: #1C1C1C; padding: 2px 8px; border-radius: 3px;">#1C1C1C</span>
-- <span style="background-color: #5F9EA0; padding: 2px 8px; border-radius: 3px;">#5F9EA0</span>
-- <span style="background-color: #B0E0E6; padding: 2px 8px; border-radius: 3px;">#B0E0E6</span>
+- <span style="background-color: #1F1A10; padding: 2px 8px; border-radius: 3px;">#1F1A10</span>
+- <span style="background-color: #535652; padding: 2px 8px; border-radius: 3px;">#535652</span>
+- <span style="background-color: #90928F; padding: 2px 8px; border-radius: 3px;">#90928F</span>
+- <span style="background-color: #7A5C39; padding: 2px 8px; border-radius: 3px;">#7A5C39</span>
+- <span style="background-color: #CAC3BD; padding: 2px 8px; border-radius: 3px;">#CAC3BD</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#4682B4",
-  "roughness": 0.5,
+  "baseColor": "#535652",
+  "roughness": 0.7,
   "metallic": 0.2,
   "normalStrength": 1,
-  "aoStrength": 0.5,
-  "heightScale": 0.06,
-  "emissive": "#0F52BA"
-}
-```
-
-**Procedural Rules:**
-> Crystalline structures grow in fractal patterns enhancing sensory input.
-
-**Textures:**
-- **Crystal017** (unknown): `Crystal017` (not found in manifest)
-- **Leather007** (unknown): `Leather007` (not found in manifest)
-
----
-
-#### Volcanic Hardy (`unique_id_3`)
-
-**Description:** Built to withstand extreme heat and volcanic activity, these creatures possess a resilient outer shell and efficient cooling systems. The Volcanic Hardy's exterior bears volcanic rock patterns, ensuring survival in hot environments.
-
-**Parameters:**
-```json
-{
-  "stellarMass": 1.3,
-  "metallicity": 0.7,
-  "age": 5.2,
-  "orbitalDistance": 1.1
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #8B0000; padding: 2px 8px; border-radius: 3px;">#8B0000</span>
-- <span style="background-color: #FF4500; padding: 2px 8px; border-radius: 3px;">#FF4500</span>
-- <span style="background-color: #2F4F4F; padding: 2px 8px; border-radius: 3px;">#2F4F4F</span>
-- <span style="background-color: #696969; padding: 2px 8px; border-radius: 3px;">#696969</span>
-- <span style="background-color: #FF6347; padding: 2px 8px; border-radius: 3px;">#FF6347</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#8B0000",
-  "roughness": 0.7,
-  "metallic": 0.1,
-  "normalStrength": 1.2,
-  "aoStrength": 0.9,
-  "heightScale": 0.03,
-  "emissive": "#FF4500"
-}
-```
-
-**Procedural Rules:**
-> Layered, heat-resistant surfaces with sporadic volcanic streaks.
-
-**Textures:**
-- **Rock039** (unknown): `Rock039` (not found in manifest)
-- **Leather021** (unknown): `Leather021` (not found in manifest)
-
----
-
-#### Radiant Reproducer (`unique_id_4`)
-
-**Description:** Optimized for rapid reproduction, these creatures display vibrant, radiant colors to attract mates. Their lifecycle revolves around swift growth and extensive progeny. They adapt rapidly to environmental changes.
-
-**Parameters:**
-```json
-{
-  "stellarMass": 1.4,
-  "metallicity": 0.5,
-  "age": 4.8,
-  "orbitalDistance": 1.5
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #FFD700; padding: 2px 8px; border-radius: 3px;">#FFD700</span>
-- <span style="background-color: #FF8C00; padding: 2px 8px; border-radius: 3px;">#FF8C00</span>
-- <span style="background-color: #B22222; padding: 2px 8px; border-radius: 3px;">#B22222</span>
-- <span style="background-color: #8B0000; padding: 2px 8px; border-radius: 3px;">#8B0000</span>
-- <span style="background-color: #FF4500; padding: 2px 8px; border-radius: 3px;">#FF4500</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#FFD700",
-  "roughness": 0.2,
-  "metallic": 0.3,
-  "normalStrength": 0.8,
   "aoStrength": 0.6,
-  "heightScale": 0.02,
-  "emissive": "#FF8C00"
+  "heightScale": 0.1,
+  "emissive": "#7A5C39"
 }
 ```
 
 **Procedural Rules:**
-> Bright, luminescent patterns used for communication and mate attraction.
+> Coloration changes based on temperature and proximity to prey.
 
 **Textures:**
-- **Leather045** (unknown): `Leather045` (not found in manifest)
-- **Fabric020** (unknown): `Fabric020` (not found in manifest)
+- **Leather011** (Leather): <img src="../../packages/gen/public/textures/leather/Leather011_bundle_2K.jpg" alt="Leather 011" width="200" />
+- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
 
 ---
 
-#### Malleable Manipulator (`unique_id_5`)
+#### Sand Sculptor (`sand_sculptor`)
 
-**Description:** With a body built for dexterity and manipulation in complex environments, these creatures exhibit flexible limb structures. Their skin possesses fabric-like textures for enhanced grip and tactile sensitivity.
+**Description:** A creature adept at reshaping sandy and rocky environments using adapted appendages, forming intricate structures and nests.
 
 **Parameters:**
 ```json
 {
-  "stellarMass": 1.2,
-  "metallicity": 0.9,
-  "age": 5.3,
-  "orbitalDistance": 1.2
+  "metabolicRate": {
+    "min": 0.8,
+    "max": 1.2,
+    "default": 1
+  },
+  "sensoryRange": {
+    "min": 1,
+    "max": 1.5,
+    "default": 1.25
+  },
+  "immuneStrength": {
+    "min": 1,
+    "max": 1.5,
+    "default": 1.25
+  },
+  "reproductiveRate": {
+    "min": 0.7,
+    "max": 1.3,
+    "default": 1
+  },
+  "energyEfficiency": {
+    "min": 1,
+    "max": 1.5,
+    "default": 1.25
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #4B0082; padding: 2px 8px; border-radius: 3px;">#4B0082</span>
-- <span style="background-color: #8A2BE2; padding: 2px 8px; border-radius: 3px;">#8A2BE2</span>
-- <span style="background-color: #D3D3D3; padding: 2px 8px; border-radius: 3px;">#D3D3D3</span>
-- <span style="background-color: #6A5ACD; padding: 2px 8px; border-radius: 3px;">#6A5ACD</span>
-- <span style="background-color: #9370DB; padding: 2px 8px; border-radius: 3px;">#9370DB</span>
+- <span style="background-color: #F4E8C1; padding: 2px 8px; border-radius: 3px;">#F4E8C1</span>
+- <span style="background-color: #C2A477; padding: 2px 8px; border-radius: 3px;">#C2A477</span>
+- <span style="background-color: #8F746C; padding: 2px 8px; border-radius: 3px;">#8F746C</span>
+- <span style="background-color: #B49768; padding: 2px 8px; border-radius: 3px;">#B49768</span>
+- <span style="background-color: #DECBA4; padding: 2px 8px; border-radius: 3px;">#DECBA4</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#4B0082",
-  "roughness": 0.4,
-  "metallic": 0.05,
-  "normalStrength": 1.1,
-  "aoStrength": 0.4,
-  "heightScale": 0.05,
-  "emissive": "#8A2BE2"
+  "baseColor": "#B49768",
+  "roughness": 0.9,
+  "metallic": 0.2,
+  "normalStrength": 1.2,
+  "aoStrength": 0.7,
+  "heightScale": 0.02,
+  "emissive": "#C2A477"
 }
 ```
 
 **Procedural Rules:**
-> Elastic, fabric-like surfaces facilitate adaptation and manipulation.
+> Surface patterns vary with humidity and temperature.
 
 **Textures:**
-- **Fabric032** (unknown): `Fabric032` (not found in manifest)
 - **Leather012** (Leather): <img src="../../packages/gen/public/textures/leather/Leather012_bundle_2K.jpg" alt="Leather 012" width="200" />
+- **Fabric023** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric023_bundle_2K.jpg" alt="Fabric 023" width="200" />
+
+---
+
+#### Fiber Forager (`fiber_forager`)
+
+**Description:** A herbivorous creature specialized in digesting high-fiber diets extracted from wood-like materials, supporting efficient community dynamics.
+
+**Parameters:**
+```json
+{
+  "metabolicRate": {
+    "min": 1.2,
+    "max": 1.5,
+    "default": 1.35
+  },
+  "sensoryRange": {
+    "min": 0.8,
+    "max": 1.2,
+    "default": 1
+  },
+  "immuneStrength": {
+    "min": 1.2,
+    "max": 1.8,
+    "default": 1.5
+  },
+  "reproductiveRate": {
+    "min": 1,
+    "max": 1.5,
+    "default": 1.25
+  },
+  "energyEfficiency": {
+    "min": 1,
+    "max": 1.5,
+    "default": 1.25
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #897D68; padding: 2px 8px; border-radius: 3px;">#897D68</span>
+- <span style="background-color: #D2CCA1; padding: 2px 8px; border-radius: 3px;">#D2CCA1</span>
+- <span style="background-color: #A79956; padding: 2px 8px; border-radius: 3px;">#A79956</span>
+- <span style="background-color: #AC8D6F; padding: 2px 8px; border-radius: 3px;">#AC8D6F</span>
+- <span style="background-color: #766C5B; padding: 2px 8px; border-radius: 3px;">#766C5B</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#897D68",
+  "roughness": 0.85,
+  "metallic": 0.1,
+  "normalStrength": 1.1,
+  "aoStrength": 0.7,
+  "heightScale": 0.04,
+  "emissive": "#D2CCA1"
+}
+```
+
+**Procedural Rules:**
+> Fibrous textures evolve with age, reflecting the maturity of individual's diet.
+
+**Textures:**
+- **Fabric023** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric023_bundle_2K.jpg" alt="Fabric 023" width="200" />
+- **Leather011** (Leather): <img src="../../packages/gen/public/textures/leather/Leather011_bundle_2K.jpg" alt="Leather 011" width="200" />
+
+---
+
+#### Resilient Rambler (`resilient_rambler`)
+
+**Description:** Designed for long-distance travel across diverse terrains, this creature's physiology allows for minimal energy usage during migration.
+
+**Parameters:**
+```json
+{
+  "metabolicRate": {
+    "min": 0.5,
+    "max": 0.8,
+    "default": 0.65
+  },
+  "sensoryRange": {
+    "min": 1,
+    "max": 1.4,
+    "default": 1.2
+  },
+  "immuneStrength": {
+    "min": 1.4,
+    "max": 2,
+    "default": 1.7
+  },
+  "reproductiveRate": {
+    "min": 0.6,
+    "max": 1.1,
+    "default": 0.85
+  },
+  "energyEfficiency": {
+    "min": 1.5,
+    "max": 2,
+    "default": 1.75
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #A39485; padding: 2px 8px; border-radius: 3px;">#A39485</span>
+- <span style="background-color: #675B45; padding: 2px 8px; border-radius: 3px;">#675B45</span>
+- <span style="background-color: #3C3C3A; padding: 2px 8px; border-radius: 3px;">#3C3C3A</span>
+- <span style="background-color: #B9B8AB; padding: 2px 8px; border-radius: 3px;">#B9B8AB</span>
+- <span style="background-color: #8F827D; padding: 2px 8px; border-radius: 3px;">#8F827D</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#675B45",
+  "roughness": 0.88,
+  "metallic": 0.15,
+  "normalStrength": 0.7,
+  "aoStrength": 0.5,
+  "heightScale": 0.03,
+  "emissive": "#8F827D"
+}
+```
+
+**Procedural Rules:**
+> Visual patterns alter with their extensive travel across varied terrains.
+
+**Textures:**
+- **Leather012** (Leather): <img src="../../packages/gen/public/textures/leather/Leather012_bundle_2K.jpg" alt="Leather 012" width="200" />
+- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
+
+---
+
+#### Covert Cloaker (`covert_cloaker`)
+
+**Description:** Possesses advanced systems for camouflage, integrating sophisticated hormonal responses controlling skin and fur textures and colors.
+
+**Parameters:**
+```json
+{
+  "metabolicRate": {
+    "min": 0.9,
+    "max": 1.3,
+    "default": 1.1
+  },
+  "sensoryRange": {
+    "min": 1.5,
+    "max": 2,
+    "default": 1.75
+  },
+  "immuneStrength": {
+    "min": 0.8,
+    "max": 1.3,
+    "default": 1.05
+  },
+  "reproductiveRate": {
+    "min": 0.7,
+    "max": 1.2,
+    "default": 0.95
+  },
+  "energyEfficiency": {
+    "min": 1.2,
+    "max": 1.8,
+    "default": 1.5
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #2E2E28; padding: 2px 8px; border-radius: 3px;">#2E2E28</span>
+- <span style="background-color: #4C4C47; padding: 2px 8px; border-radius: 3px;">#4C4C47</span>
+- <span style="background-color: #6B6B60; padding: 2px 8px; border-radius: 3px;">#6B6B60</span>
+- <span style="background-color: #EFEDEB; padding: 2px 8px; border-radius: 3px;">#EFEDEB</span>
+- <span style="background-color: #D2D0CA; padding: 2px 8px; border-radius: 3px;">#D2D0CA</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#6B6B60",
+  "roughness": 0.92,
+  "metallic": 0.05,
+  "normalStrength": 1.3,
+  "aoStrength": 0.8,
+  "heightScale": 0.05,
+  "emissive": "#EFEDEB"
+}
+```
+
+**Procedural Rules:**
+> Color and texture adaptation occurs via local hormonal modulation based on threat level.
+
+**Textures:**
+- **Leather011** (Leather): <img src="../../packages/gen/public/textures/leather/Leather011_bundle_2K.jpg" alt="Leather 011" width="200" />
+- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
 
 ---
 
@@ -1401,180 +2281,185 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 
 **WARP Flow:** Inheriting knowledge from previous generation:
 - **Gen 1: ECS Archetypes** provided:
-  - "Forge Predator", "Sapphire Artisan", "Ember Smelter", "Crystal Hydroforager", "Crater Scout"...
-  - Total: 15 archetypes across all scales
+  - "Chromatic Cartographer", "Silk Weaver", "Herbal Forager", "Arid Engineers", "Nocturnal Chaser"...
+  - Total: 16 archetypes across all scales
 
 ---
 
 ### MACRO: System-level context and foundational patterns
 
-**Total Archetypes:** 5
+**Total Archetypes:** 10
 
-#### Metallic Nexus Cluster (`territory_001`)
+#### Iron Vein Enclave (`archetype_001`)
 
-**Description:** A magnetic field-rich zone where metal resources peak, drawing packs to form centralized hubs. These clusters resemble interconnected nodes on a glistening network.
+**Description:** Territories organized around dense deposits of metal-rich veins, these enclaves are structurally fortified by naturally occurring iron-rich geology.
 
 **Parameters:**
 ```json
 {
-  "territorySize": 75,
-  "resourceDensity": 0.85,
-  "defensiveValue": 0.7,
-  "migrationPattern": 0.3
+  "territorySize": {
+    "min": 1,
+    "max": 5,
+    "default": 3.5
+  },
+  "resourceDensity": {
+    "min": 0.6,
+    "max": 1,
+    "default": 0.85
+  },
+  "defensiveValue": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.9
+  },
+  "migrationPattern": {
+    "min": 0.4,
+    "max": 0.8,
+    "default": 0.6
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #606060; padding: 2px 8px; border-radius: 3px;">#606060</span>
-- <span style="background-color: #A8A8A8; padding: 2px 8px; border-radius: 3px;">#A8A8A8</span>
-- <span style="background-color: #D1D1E0; padding: 2px 8px; border-radius: 3px;">#D1D1E0</span>
-- <span style="background-color: #E6E6E6; padding: 2px 8px; border-radius: 3px;">#E6E6E6</span>
-- <span style="background-color: #FFFFFF; padding: 2px 8px; border-radius: 3px;">#FFFFFF</span>
+- <span style="background-color: #5A5F60; padding: 2px 8px; border-radius: 3px;">#5A5F60</span>
+- <span style="background-color: #2C3E50; padding: 2px 8px; border-radius: 3px;">#2C3E50</span>
+- <span style="background-color: #7F8C8D; padding: 2px 8px; border-radius: 3px;">#7F8C8D</span>
+- <span style="background-color: #BDC3C7; padding: 2px 8px; border-radius: 3px;">#BDC3C7</span>
+- <span style="background-color: #95A5A6; padding: 2px 8px; border-radius: 3px;">#95A5A6</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#A8A8A8",
-  "roughness": 0.4,
-  "metallic": 0.9,
+  "baseColor": "#5A5F60",
+  "roughness": 0.85,
+  "metallic": 0.7,
   "normalStrength": 1,
   "aoStrength": 0.8,
-  "heightScale": 0.02,
-  "emissive": "#FFFFFF"
+  "heightScale": 0.04,
+  "emissive": "#95A5A6"
 }
 ```
 
 **Procedural Rules:**
-> Clusters exhibit varying node sizes and interlinking paths, resulting in a network-like terrain.
+> Metallic expansions occur around high-density nodes, generating reflective patches on surfaces.
 
 **Textures:**
 - **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
-- **Rock025** (unknown): `Rock025` (not found in manifest)
-
----
-
-#### Icy Crest Corridors (`territory_002`)
-
-**Description:** High mountain ridges sculpted by glacial flows offer strategic pathways and observation points. Packs control these passes, using them for migration and resource exchange.
-
-**Parameters:**
-```json
-{
-  "territorySize": 90,
-  "resourceDensity": 0.6,
-  "defensiveValue": 0.9,
-  "migrationPattern": 0.75
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #D8F0FA; padding: 2px 8px; border-radius: 3px;">#D8F0FA</span>
-- <span style="background-color: #A2C5E8; padding: 2px 8px; border-radius: 3px;">#A2C5E8</span>
-- <span style="background-color: #6A8FBF; padding: 2px 8px; border-radius: 3px;">#6A8FBF</span>
-- <span style="background-color: #3A5370; padding: 2px 8px; border-radius: 3px;">#3A5370</span>
-- <span style="background-color: #2C3D4A; padding: 2px 8px; border-radius: 3px;">#2C3D4A</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#D8F0FA",
-  "roughness": 0.9,
-  "metallic": 0,
-  "normalStrength": 1.3,
-  "aoStrength": 1,
-  "heightScale": 0.1,
-  "emissive": "#A2C5E8"
-}
-```
-
-**Procedural Rules:**
-> Corridors feature varying widths, with elevations providing layers of defense and migration pathways.
-
-**Textures:**
 - **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
-- **Grass001** (Grass): <img src="../../packages/gen/public/textures/grass/Grass001_bundle_2K.jpg" alt="Grass 001" width="200" />
 
 ---
 
-#### Volcanic Basin Enclaves (`territory_003`)
+#### Aqua Carrara Cluster (`archetype_002`)
 
-**Description:** Sheltered enclaves form within cooled molten basins surrounded by lush vegetation. Packs thrive by exploiting geothermal energy and fertile grounds.
+**Description:** Packs cluster around vital water sources, forming lush, vibrant biomes essential for hydration-dependent species.
 
 **Parameters:**
 ```json
 {
-  "territorySize": 65,
-  "resourceDensity": 0.95,
-  "defensiveValue": 0.6,
-  "migrationPattern": 0.5
+  "territorySize": {
+    "min": 2,
+    "max": 10,
+    "default": 6
+  },
+  "resourceDensity": {
+    "min": 0.8,
+    "max": 1,
+    "default": 0.95
+  },
+  "defensiveValue": {
+    "min": 0.3,
+    "max": 0.7,
+    "default": 0.5
+  },
+  "migrationPattern": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.85
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #4B2E2E; padding: 2px 8px; border-radius: 3px;">#4B2E2E</span>
-- <span style="background-color: #784B46; padding: 2px 8px; border-radius: 3px;">#784B46</span>
-- <span style="background-color: #A87D42; padding: 2px 8px; border-radius: 3px;">#A87D42</span>
-- <span style="background-color: #D4B182; padding: 2px 8px; border-radius: 3px;">#D4B182</span>
-- <span style="background-color: #FFE4B5; padding: 2px 8px; border-radius: 3px;">#FFE4B5</span>
+- <span style="background-color: #69B34C; padding: 2px 8px; border-radius: 3px;">#69B34C</span>
+- <span style="background-color: #A9DFBF; padding: 2px 8px; border-radius: 3px;">#A9DFBF</span>
+- <span style="background-color: #2ECC71; padding: 2px 8px; border-radius: 3px;">#2ECC71</span>
+- <span style="background-color: #58D68D; padding: 2px 8px; border-radius: 3px;">#58D68D</span>
+- <span style="background-color: #239B56; padding: 2px 8px; border-radius: 3px;">#239B56</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#4B2E2E",
-  "roughness": 0.7,
-  "metallic": 0.2,
+  "baseColor": "#69B34C",
+  "roughness": 0.65,
+  "metallic": 0,
   "normalStrength": 1.2,
-  "aoStrength": 0.9,
-  "heightScale": 0.05,
-  "emissive": "#FFA500"
+  "aoStrength": 0.7,
+  "heightScale": 0.03,
+  "emissive": "#A9DFBF"
 }
 ```
 
 **Procedural Rules:**
-> Enclaves appear within basins with steamy grasses and hardened volcanic paths.
+> Grass coverage varies with water access, allowing lush growth near springs.
 
 **Textures:**
+- **Grass001** (Grass): <img src="../../packages/gen/public/textures/grass/Grass001_bundle_2K.jpg" alt="Grass 001" width="200" />
 - **Rock025** (unknown): `Rock025` (not found in manifest)
-- **Grass002** (Grass): <img src="../../packages/gen/public/textures/grass/Grass002_bundle_2K.jpg" alt="Grass 002" width="200" />
 
 ---
 
-#### Lunar Drift Plains (`territory_004`)
+#### Crystalline Basin Territory (`archetype_004`)
 
-**Description:** Flat expanses of fine dust offering minimal resistance where speed-oriented packs compete for wide territories and scattered resource pockets.
+**Description:** These territories form within crystalline basins rich in reflective minerals, providing both resources and concealment.
 
 **Parameters:**
 ```json
 {
-  "territorySize": 120,
-  "resourceDensity": 0.4,
-  "defensiveValue": 0.2,
-  "migrationPattern": 1
+  "territorySize": {
+    "min": 1.2,
+    "max": 3.8,
+    "default": 2.5
+  },
+  "resourceDensity": {
+    "min": 0.65,
+    "max": 0.9,
+    "default": 0.75
+  },
+  "defensiveValue": {
+    "min": 0.6,
+    "max": 0.85,
+    "default": 0.75
+  },
+  "migrationPattern": {
+    "min": 0.5,
+    "max": 0.9,
+    "default": 0.7
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #CBCBCB; padding: 2px 8px; border-radius: 3px;">#CBCBCB</span>
-- <span style="background-color: #A9A9A9; padding: 2px 8px; border-radius: 3px;">#A9A9A9</span>
-- <span style="background-color: #7E7E7E; padding: 2px 8px; border-radius: 3px;">#7E7E7E</span>
-- <span style="background-color: #5D5D5D; padding: 2px 8px; border-radius: 3px;">#5D5D5D</span>
-- <span style="background-color: #3B3B3B; padding: 2px 8px; border-radius: 3px;">#3B3B3B</span>
+- <span style="background-color: #FFFFFF; padding: 2px 8px; border-radius: 3px;">#FFFFFF</span>
+- <span style="background-color: #E0E0E0; padding: 2px 8px; border-radius: 3px;">#E0E0E0</span>
+- <span style="background-color: #B3B6B7; padding: 2px 8px; border-radius: 3px;">#B3B6B7</span>
+- <span style="background-color: #A6ACAF; padding: 2px 8px; border-radius: 3px;">#A6ACAF</span>
+- <span style="background-color: #DAE0E2; padding: 2px 8px; border-radius: 3px;">#DAE0E2</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#CBCBCB",
-  "roughness": 0.85,
-  "metallic": 0.05,
-  "normalStrength": 0.8,
+  "baseColor": "#FFFFFF",
+  "roughness": 0.5,
+  "metallic": 0.3,
+  "normalStrength": 1.5,
   "aoStrength": 0.6,
-  "heightScale": 0.01,
-  "emissive": "#FFFFFF"
+  "heightScale": 0.04,
+  "emissive": "#E0E0E0"
 }
 ```
 
 **Procedural Rules:**
-> Vast plains of smooth surfaces interrupted occasionally by metallic-rich dust nodules.
+> Crystals reflect sunlight creating shifting light patterns across the terrain.
 
 **Textures:**
 - **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
@@ -1582,46 +2467,416 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 
 ---
 
-#### Starlight Oasis Outposts (`territory_005`)
+#### Luminous Meadow Nest (`archetype_005`)
 
-**Description:** Near-stellar bodies where solar energy is abundant, these oasis-like outposts serve as safe refuges and trading posts. Packs gather resources efficiently and share solar advantages.
+**Description:** Bright, open meadows that rely on exposure to sunlight, serving as nesting grounds for visually oriented species.
 
 **Parameters:**
 ```json
 {
-  "territorySize": 50,
-  "resourceDensity": 0.8,
-  "defensiveValue": 0.8,
-  "migrationPattern": 0.25
+  "territorySize": {
+    "min": 3,
+    "max": 8,
+    "default": 5
+  },
+  "resourceDensity": {
+    "min": 0.4,
+    "max": 0.7,
+    "default": 0.6
+  },
+  "defensiveValue": {
+    "min": 0.2,
+    "max": 0.5,
+    "default": 0.35
+  },
+  "migrationPattern": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.85
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #FFD700; padding: 2px 8px; border-radius: 3px;">#FFD700</span>
-- <span style="background-color: #FFA500; padding: 2px 8px; border-radius: 3px;">#FFA500</span>
-- <span style="background-color: #FF8C00; padding: 2px 8px; border-radius: 3px;">#FF8C00</span>
-- <span style="background-color: #FF4500; padding: 2px 8px; border-radius: 3px;">#FF4500</span>
-- <span style="background-color: #DC143C; padding: 2px 8px; border-radius: 3px;">#DC143C</span>
+- <span style="background-color: #B3E5FC; padding: 2px 8px; border-radius: 3px;">#B3E5FC</span>
+- <span style="background-color: #81D4FA; padding: 2px 8px; border-radius: 3px;">#81D4FA</span>
+- <span style="background-color: #4FC3F7; padding: 2px 8px; border-radius: 3px;">#4FC3F7</span>
+- <span style="background-color: #29B6F6; padding: 2px 8px; border-radius: 3px;">#29B6F6</span>
+- <span style="background-color: #039BE5; padding: 2px 8px; border-radius: 3px;">#039BE5</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#FFD700",
-  "roughness": 0.3,
-  "metallic": 0.6,
-  "normalStrength": 1.4,
-  "aoStrength": 1,
+  "baseColor": "#B3E5FC",
+  "roughness": 0.55,
+  "metallic": 0,
+  "normalStrength": 1,
+  "aoStrength": 0.4,
   "heightScale": 0.03,
-  "emissive": "#FFFFFF"
+  "emissive": "#81D4FA"
 }
 ```
 
 **Procedural Rules:**
-> Terrains are clustered near energy-intense areas with reflective surfaces optimizing solar gain.
+> Meadow blooms are regulated by sunlight availability producing varied greens and yellows.
+
+**Textures:**
+- **Grass001** (Grass): <img src="../../packages/gen/public/textures/grass/Grass001_bundle_2K.jpg" alt="Grass 001" width="200" />
+- **Rock025** (unknown): `Rock025` (not found in manifest)
+
+---
+
+#### Thermal Vent Haven (`archetype_007`)
+
+**Description:** Territories centered on geothermal vents providing warmth and essential minerals for thermally-adapted species.
+
+**Parameters:**
+```json
+{
+  "territorySize": {
+    "min": 1,
+    "max": 3,
+    "default": 2
+  },
+  "resourceDensity": {
+    "min": 0.9,
+    "max": 1,
+    "default": 0.95
+  },
+  "defensiveValue": {
+    "min": 0.4,
+    "max": 0.6,
+    "default": 0.5
+  },
+  "migrationPattern": {
+    "min": 0.3,
+    "max": 0.6,
+    "default": 0.45
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #D35400; padding: 2px 8px; border-radius: 3px;">#D35400</span>
+- <span style="background-color: #E59866; padding: 2px 8px; border-radius: 3px;">#E59866</span>
+- <span style="background-color: #F8C471; padding: 2px 8px; border-radius: 3px;">#F8C471</span>
+- <span style="background-color: #F39C12; padding: 2px 8px; border-radius: 3px;">#F39C12</span>
+- <span style="background-color: #D68910; padding: 2px 8px; border-radius: 3px;">#D68910</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#D35400",
+  "roughness": 0.7,
+  "metallic": 0.2,
+  "normalStrength": 1.3,
+  "aoStrength": 0.75,
+  "heightScale": 0.02,
+  "emissive": "#F39C12"
+}
+```
+
+**Procedural Rules:**
+> Heat distortion effects create a shimmering landscape above prominent vents.
+
+**Textures:**
+- **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
+- **Metal050** (unknown): `Metal050` (not found in manifest)
+
+---
+
+#### Iron Valley Fortress (`iron_valley_fortress`)
+
+**Description:** A fortified valley surrounded by naturally occurring iron-rich geological formations, providing both defense and abundant resources.
+
+**Parameters:**
+```json
+{
+  "territorySize": {
+    "min": 20,
+    "max": 50,
+    "default": 35
+  },
+  "resourceDensity": {
+    "min": 0.6,
+    "max": 0.9,
+    "default": 0.75
+  },
+  "defensiveValue": {
+    "min": 0.7,
+    "max": 0.95,
+    "default": 0.85
+  },
+  "migrationPattern": {
+    "min": 0.1,
+    "max": 0.2,
+    "default": 0.15
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #3C3C42; padding: 2px 8px; border-radius: 3px;">#3C3C42</span>
+- <span style="background-color: #8C9BA5; padding: 2px 8px; border-radius: 3px;">#8C9BA5</span>
+- <span style="background-color: #5E7A7D; padding: 2px 8px; border-radius: 3px;">#5E7A7D</span>
+- <span style="background-color: #9AA2AA; padding: 2px 8px; border-radius: 3px;">#9AA2AA</span>
+- <span style="background-color: #D7DDE1; padding: 2px 8px; border-radius: 3px;">#D7DDE1</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#3C3C42",
+  "roughness": 0.88,
+  "metallic": 0.65,
+  "normalStrength": 1.4,
+  "aoStrength": 0.9,
+  "heightScale": 0.08,
+  "emissive": "#5E7A7D"
+}
+```
+
+**Procedural Rules:**
+> Iron formations and stone features vary with local tectonic activity, creating a naturally fortified terrain.
+
+**Textures:**
+- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
+- **Rock025** (unknown): `Rock025` (not found in manifest)
+
+---
+
+#### Sunken Thermal Cluster (`sunken_thermal_cluster`)
+
+**Description:** A cluster of valley territories warmed by geothermal activity, providing ideal conditions for creatures seeking warmth and metallic resources.
+
+**Parameters:**
+```json
+{
+  "territorySize": {
+    "min": 15,
+    "max": 40,
+    "default": 30
+  },
+  "resourceDensity": {
+    "min": 0.5,
+    "max": 0.8,
+    "default": 0.65
+  },
+  "defensiveValue": {
+    "min": 0.3,
+    "max": 0.7,
+    "default": 0.5
+  },
+  "migrationPattern": {
+    "min": 0.2,
+    "max": 0.4,
+    "default": 0.3
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #2A2E35; padding: 2px 8px; border-radius: 3px;">#2A2E35</span>
+- <span style="background-color: #545C66; padding: 2px 8px; border-radius: 3px;">#545C66</span>
+- <span style="background-color: #BEC4C9; padding: 2px 8px; border-radius: 3px;">#BEC4C9</span>
+- <span style="background-color: #758998; padding: 2px 8px; border-radius: 3px;">#758998</span>
+- <span style="background-color: #E1E5EA; padding: 2px 8px; border-radius: 3px;">#E1E5EA</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#2A2E35",
+  "roughness": 0.85,
+  "metallic": 0.5,
+  "normalStrength": 1.2,
+  "aoStrength": 0.75,
+  "heightScale": 0.06,
+  "emissive": "#758998"
+}
+```
+
+**Procedural Rules:**
+> Geothermal activity creates patchy warmth patterns on the surface, altering snow and vegetation cover.
+
+**Textures:**
+- **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
+- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
+
+---
+
+#### Waterfall Oasis Collective (`waterfall_oasis_collective`)
+
+**Description:** A series of lush areas formed around waterfalls, providing hydration, visual cover, and a gathering point for diverse pack integrations.
+
+**Parameters:**
+```json
+{
+  "territorySize": {
+    "min": 10,
+    "max": 25,
+    "default": 18
+  },
+  "resourceDensity": {
+    "min": 0.7,
+    "max": 0.95,
+    "default": 0.85
+  },
+  "defensiveValue": {
+    "min": 0.4,
+    "max": 0.8,
+    "default": 0.6
+  },
+  "migrationPattern": {
+    "min": 0.35,
+    "max": 0.6,
+    "default": 0.5
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #D2E0E2; padding: 2px 8px; border-radius: 3px;">#D2E0E2</span>
+- <span style="background-color: #90A9A8; padding: 2px 8px; border-radius: 3px;">#90A9A8</span>
+- <span style="background-color: #54A387; padding: 2px 8px; border-radius: 3px;">#54A387</span>
+- <span style="background-color: #D1E6C4; padding: 2px 8px; border-radius: 3px;">#D1E6C4</span>
+- <span style="background-color: #F2F7F2; padding: 2px 8px; border-radius: 3px;">#F2F7F2</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#D2E0E2",
+  "roughness": 0.55,
+  "metallic": 0.2,
+  "normalStrength": 1,
+  "aoStrength": 0.65,
+  "heightScale": 0.04,
+  "emissive": "#54A387"
+}
+```
+
+**Procedural Rules:**
+> Vegetation density varies with proximity to water sources, while stone formations provide natural barriers.
+
+**Textures:**
+- **Grass001** (Grass): <img src="../../packages/gen/public/textures/grass/Grass001_bundle_2K.jpg" alt="Grass 001" width="200" />
+- **Rock025** (unknown): `Rock025` (not found in manifest)
+
+---
+
+#### Elevated Watch Point (`elevated_watch_point`)
+
+**Description:** High ground formations offering strategic viewpoints, utilized by packs for observation and early detection of resources or threats.
+
+**Parameters:**
+```json
+{
+  "territorySize": {
+    "min": 5,
+    "max": 15,
+    "default": 10
+  },
+  "resourceDensity": {
+    "min": 0.2,
+    "max": 0.5,
+    "default": 0.35
+  },
+  "defensiveValue": {
+    "min": 0.5,
+    "max": 0.9,
+    "default": 0.75
+  },
+  "migrationPattern": {
+    "min": 0.05,
+    "max": 0.15,
+    "default": 0.1
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #5D6D58; padding: 2px 8px; border-radius: 3px;">#5D6D58</span>
+- <span style="background-color: #A9B9A6; padding: 2px 8px; border-radius: 3px;">#A9B9A6</span>
+- <span style="background-color: #D4DBD6; padding: 2px 8px; border-radius: 3px;">#D4DBD6</span>
+- <span style="background-color: #32412A; padding: 2px 8px; border-radius: 3px;">#32412A</span>
+- <span style="background-color: #C5CEC8; padding: 2px 8px; border-radius: 3px;">#C5CEC8</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#5D6D58",
+  "roughness": 0.92,
+  "metallic": 0.1,
+  "normalStrength": 1.3,
+  "aoStrength": 0.7,
+  "heightScale": 0.07,
+  "emissive": "#A9B9A6"
+}
+```
+
+**Procedural Rules:**
+> Steep inclines with rocky outcrops serve as natural lookouts; vegetation sparse.
 
 **Textures:**
 - **Rock025** (unknown): `Rock025` (not found in manifest)
-- **Grass001** (Grass): <img src="../../packages/gen/public/textures/grass/Grass001_bundle_2K.jpg" alt="Grass 001" width="200" />
+- **Grass002** (Grass): <img src="../../packages/gen/public/textures/grass/Grass002_bundle_2K.jpg" alt="Grass 002" width="200" />
+
+---
+
+#### Underground Network Hub (`underground_network_hub`)
+
+**Description:** Subterranean ecosystems interconnected by vast networks of tunnels, facilitating resource transfer and concealed migratory paths.
+
+**Parameters:**
+```json
+{
+  "territorySize": {
+    "min": 10,
+    "max": 30,
+    "default": 20
+  },
+  "resourceDensity": {
+    "min": 0.8,
+    "max": 1,
+    "default": 0.9
+  },
+  "defensiveValue": {
+    "min": 0.65,
+    "max": 0.85,
+    "default": 0.75
+  },
+  "migrationPattern": {
+    "min": 0.3,
+    "max": 0.55,
+    "default": 0.45
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #353D46; padding: 2px 8px; border-radius: 3px;">#353D46</span>
+- <span style="background-color: #696F73; padding: 2px 8px; border-radius: 3px;">#696F73</span>
+- <span style="background-color: #A2A8AC; padding: 2px 8px; border-radius: 3px;">#A2A8AC</span>
+- <span style="background-color: #4B5157; padding: 2px 8px; border-radius: 3px;">#4B5157</span>
+- <span style="background-color: #CACFD1; padding: 2px 8px; border-radius: 3px;">#CACFD1</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#353D46",
+  "roughness": 0.9,
+  "metallic": 0.4,
+  "normalStrength": 1.5,
+  "aoStrength": 0.85,
+  "heightScale": 0.09,
+  "emissive": "#4B5157"
+}
+```
+
+**Procedural Rules:**
+> Complex tunnel systems vary with depth, creating interwoven pathways reinforced by metallic veins.
+
+**Textures:**
+- **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
+- **Metal050** (unknown): `Metal050` (not found in manifest)
 
 ---
 
@@ -1629,89 +2884,180 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 ### MESO: Intermediate dynamics and structural relationships
 
 **WEFT Flow:** Building on MACRO scale archetypes:
-- "Metallic Nexus Cluster", "Icy Crest Corridors", "Volcanic Basin Enclaves"...
+- "Iron Vein Enclave", "Aqua Carrara Cluster", "Crystalline Basin Territory"...
 
-**Total Archetypes:** 5
+**Total Archetypes:** 6
 
-#### Resilient Conclave (`meso_001`)
+#### Kinship Tribe (`kinship_tribe_001`)
 
-**Description:** A community where members form tightly-knit groups based on mutual survival and resilience, thriving in harsh environments like the Volcanic Basin Enclaves.
+**Description:** A family-based pack structure where leadership is inherited through bloodlines. This structure is prominent among creatures that value heredity and ancestral wisdom.
 
 **Parameters:**
 ```json
 {
-  "packSize": 50,
-  "hierarchyDepth": 3,
-  "roleSpecialization": 4,
-  "decisionMakingStyle": 2
+  "packSize": {
+    "min": 5,
+    "max": 50,
+    "default": 20
+  },
+  "hierarchyDepth": {
+    "min": 1,
+    "max": 4,
+    "default": 2
+  },
+  "roleSpecialization": {
+    "min": 0.1,
+    "max": 0.5,
+    "default": 0.3
+  },
+  "decisionMakingStyle": {
+    "min": 0.3,
+    "max": 0.7,
+    "default": 0.5
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #3A2E2C; padding: 2px 8px; border-radius: 3px;">#3A2E2C</span>
-- <span style="background-color: #806B57; padding: 2px 8px; border-radius: 3px;">#806B57</span>
-- <span style="background-color: #D4B79A; padding: 2px 8px; border-radius: 3px;">#D4B79A</span>
-- <span style="background-color: #A86A5A; padding: 2px 8px; border-radius: 3px;">#A86A5A</span>
-- <span style="background-color: #5A4329; padding: 2px 8px; border-radius: 3px;">#5A4329</span>
+- <span style="background-color: #925639; padding: 2px 8px; border-radius: 3px;">#925639</span>
+- <span style="background-color: #D1B982; padding: 2px 8px; border-radius: 3px;">#D1B982</span>
+- <span style="background-color: #7A503E; padding: 2px 8px; border-radius: 3px;">#7A503E</span>
+- <span style="background-color: #3A1F00; padding: 2px 8px; border-radius: 3px;">#3A1F00</span>
+- <span style="background-color: #FFE5B4; padding: 2px 8px; border-radius: 3px;">#FFE5B4</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#806B57",
-  "roughness": 0.7,
-  "metallic": 0.2,
-  "normalStrength": 0.9,
-  "aoStrength": 0.8,
-  "heightScale": 0.05,
-  "emissive": "#5A4329"
+  "baseColor": "#7A503E",
+  "roughness": 0.5,
+  "metallic": 0,
+  "normalStrength": 0.6,
+  "aoStrength": 0.7,
+  "heightScale": 0.04,
+  "emissive": "#925639"
 }
 ```
 
 **Procedural Rules:**
-> Adaptive clothing patterns based on environmental stressors; fabric textures convey toughness.
+> Cloth-like patterns interwoven with vegetation motifs, symbolizing familial ties.
 
 **Textures:**
-- **Rock025** (unknown): `Rock025` (not found in manifest)
 - **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
+- **Grass001** (Grass): <img src="../../packages/gen/public/textures/grass/Grass001_bundle_2K.jpg" alt="Grass 001" width="200" />
 
 ---
 
-#### Hierarchical Watchers (`meso_002`)
+#### Skill Specialists (`skill_specialists_002`)
 
-**Description:** Packs adopt structured hierarchies to maintain patrols in vast expanses like the Lunar Drift Plains, emphasizing roles differentiated by age and experience.
+**Description:** Structured around roles based on individual abilities, these packs excel in task-specific efficiency. Each member specializes in a particular skill to enhance the collective's survival.
 
 **Parameters:**
 ```json
 {
-  "packSize": 30,
-  "hierarchyDepth": 5,
-  "roleSpecialization": 6,
-  "decisionMakingStyle": 3
+  "packSize": {
+    "min": 10,
+    "max": 30,
+    "default": 15
+  },
+  "hierarchyDepth": {
+    "min": 0.5,
+    "max": 1.5,
+    "default": 1
+  },
+  "roleSpecialization": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.8
+  },
+  "decisionMakingStyle": {
+    "min": 0.3,
+    "max": 0.4,
+    "default": 0.35
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #1E1D20; padding: 2px 8px; border-radius: 3px;">#1E1D20</span>
-- <span style="background-color: #5C5C58; padding: 2px 8px; border-radius: 3px;">#5C5C58</span>
-- <span style="background-color: #898E8C; padding: 2px 8px; border-radius: 3px;">#898E8C</span>
-- <span style="background-color: #C4C7C5; padding: 2px 8px; border-radius: 3px;">#C4C7C5</span>
-- <span style="background-color: #D8DAD8; padding: 2px 8px; border-radius: 3px;">#D8DAD8</span>
+- <span style="background-color: #C28668; padding: 2px 8px; border-radius: 3px;">#C28668</span>
+- <span style="background-color: #DDA15E; padding: 2px 8px; border-radius: 3px;">#DDA15E</span>
+- <span style="background-color: #BC6C25; padding: 2px 8px; border-radius: 3px;">#BC6C25</span>
+- <span style="background-color: #8C4C04; padding: 2px 8px; border-radius: 3px;">#8C4C04</span>
+- <span style="background-color: #F7C59F; padding: 2px 8px; border-radius: 3px;">#F7C59F</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#5C5C58",
-  "roughness": 0.8,
+  "baseColor": "#BC6C25",
+  "roughness": 0.7,
   "metallic": 0.1,
-  "normalStrength": 1,
-  "aoStrength": 0.7,
-  "heightScale": 0.07,
-  "emissive": "#898E8C"
+  "normalStrength": 0.8,
+  "aoStrength": 0.6,
+  "heightScale": 0.03,
+  "emissive": "#C28668"
 }
 ```
 
 **Procedural Rules:**
-> Roles indicated through distinct fabric accessories, with subtle grass textures for flexibility.
+> Patchwork of leather and natural textures, indicating task-oriented roles.
+
+**Textures:**
+- **Leather011** (Leather): <img src="../../packages/gen/public/textures/leather/Leather011_bundle_2K.jpg" alt="Leather 011" width="200" />
+- **Grass002** (Grass): <img src="../../packages/gen/public/textures/grass/Grass002_bundle_2K.jpg" alt="Grass 002" width="200" />
+
+---
+
+#### Age Hierarchy (`age_hierarchy_003`)
+
+**Description:** Leadership is based on age and experience, with older individuals guiding younger ones through wisdom accumulated over time.
+
+**Parameters:**
+```json
+{
+  "packSize": {
+    "min": 8,
+    "max": 40,
+    "default": 25
+  },
+  "hierarchyDepth": {
+    "min": 1,
+    "max": 3,
+    "default": 2
+  },
+  "roleSpecialization": {
+    "min": 0.2,
+    "max": 0.6,
+    "default": 0.4
+  },
+  "decisionMakingStyle": {
+    "min": 0.6,
+    "max": 0.9,
+    "default": 0.75
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #6B4226; padding: 2px 8px; border-radius: 3px;">#6B4226</span>
+- <span style="background-color: #C3A995; padding: 2px 8px; border-radius: 3px;">#C3A995</span>
+- <span style="background-color: #A6793E; padding: 2px 8px; border-radius: 3px;">#A6793E</span>
+- <span style="background-color: #42210B; padding: 2px 8px; border-radius: 3px;">#42210B</span>
+- <span style="background-color: #FFD8A9; padding: 2px 8px; border-radius: 3px;">#FFD8A9</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#6B4226",
+  "roughness": 0.6,
+  "metallic": 0,
+  "normalStrength": 0.7,
+  "aoStrength": 0.8,
+  "heightScale": 0.02,
+  "emissive": "#FFD8A9"
+}
+```
+
+**Procedural Rules:**
+> Patterns of layered fabric dyed in subdued tones, indicating lineage and wisdom.
 
 **Textures:**
 - **Fabric023** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric023_bundle_2K.jpg" alt="Fabric 023" width="200" />
@@ -1719,85 +3065,58 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 
 ---
 
-#### Scholarly Guild (`meso_003`)
+#### Meritocracy Ring (`meritocracy_ring_004`)
 
-**Description:** A merit-based pack structure focused on expertise and knowledge, flourishing in regions like the Starlight Oasis Outposts, where solar energy is utilized for advanced learning.
-
-**Parameters:**
-```json
-{
-  "packSize": 20,
-  "hierarchyDepth": 2,
-  "roleSpecialization": 8,
-  "decisionMakingStyle": 4
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #6E8984; padding: 2px 8px; border-radius: 3px;">#6E8984</span>
-- <span style="background-color: #447364; padding: 2px 8px; border-radius: 3px;">#447364</span>
-- <span style="background-color: #A8C7B4; padding: 2px 8px; border-radius: 3px;">#A8C7B4</span>
-- <span style="background-color: #C2D9D4; padding: 2px 8px; border-radius: 3px;">#C2D9D4</span>
-- <span style="background-color: #D9EDEA; padding: 2px 8px; border-radius: 3px;">#D9EDEA</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#A8C7B4",
-  "roughness": 0.9,
-  "metallic": 0.05,
-  "normalStrength": 1.1,
-  "aoStrength": 0.9,
-  "heightScale": 0.03,
-  "emissive": "#447364"
-}
-```
-
-**Procedural Rules:**
-> Symbolic leather markings denoting knowledge realms; light-absorbing surfaces for energy efficiency.
-
-**Textures:**
-- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
-- **Leather011** (Leather): <img src="../../packages/gen/public/textures/leather/Leather011_bundle_2K.jpg" alt="Leather 011" width="200" />
-
----
-
-#### Egalitarian Tribe (`meso_004`)
-
-**Description:** A community with shared decision-making, optimized for the Icy Crest Corridors where cooperation ensures survival against the elements.
+**Description:** Members gain status and leadership roles based on individual achievement and ability, fostering a competitive environment where merit decides hierarchy.
 
 **Parameters:**
 ```json
 {
-  "packSize": 40,
-  "hierarchyDepth": 1,
-  "roleSpecialization": 3,
-  "decisionMakingStyle": 1
+  "packSize": {
+    "min": 5,
+    "max": 20,
+    "default": 12
+  },
+  "hierarchyDepth": {
+    "min": 0.5,
+    "max": 2.5,
+    "default": 1.5
+  },
+  "roleSpecialization": {
+    "min": 0.6,
+    "max": 1,
+    "default": 0.7
+  },
+  "decisionMakingStyle": {
+    "min": 0.4,
+    "max": 0.6,
+    "default": 0.5
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #9AC3CC; padding: 2px 8px; border-radius: 3px;">#9AC3CC</span>
-- <span style="background-color: #5D8BA6; padding: 2px 8px; border-radius: 3px;">#5D8BA6</span>
-- <span style="background-color: #3B6787; padding: 2px 8px; border-radius: 3px;">#3B6787</span>
-- <span style="background-color: #25535C; padding: 2px 8px; border-radius: 3px;">#25535C</span>
-- <span style="background-color: #112F3F; padding: 2px 8px; border-radius: 3px;">#112F3F</span>
+- <span style="background-color: #D4A73F; padding: 2px 8px; border-radius: 3px;">#D4A73F</span>
+- <span style="background-color: #998A2F; padding: 2px 8px; border-radius: 3px;">#998A2F</span>
+- <span style="background-color: #73661A; padding: 2px 8px; border-radius: 3px;">#73661A</span>
+- <span style="background-color: #443D1B; padding: 2px 8px; border-radius: 3px;">#443D1B</span>
+- <span style="background-color: #FFE788; padding: 2px 8px; border-radius: 3px;">#FFE788</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#3B6787",
-  "roughness": 0.85,
-  "metallic": 0.25,
-  "normalStrength": 1.2,
-  "aoStrength": 0.95,
-  "heightScale": 0.04,
-  "emissive": "#25535C"
+  "baseColor": "#998A2F",
+  "roughness": 0.5,
+  "metallic": 0.4,
+  "normalStrength": 0.9,
+  "aoStrength": 0.6,
+  "heightScale": 0.06,
+  "emissive": "#D4A73F"
 }
 ```
 
 **Procedural Rules:**
-> Reflective surfaces symbolize transparency; adaptive grass integration for mobility on ice.
+> Circular metal motifs encompassed by grass textures, symbolizing agility and talent.
 
 **Textures:**
 - **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
@@ -1805,46 +3124,121 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 
 ---
 
-#### Nomadic Union (`meso_005`)
+#### Egalitarian Swarm (`egalitarian_swarm_005`)
 
-**Description:** Dynamic, skill-specialized groups adapting quickly to changing environments of the Metallic Nexus Cluster, thriving on resource mobility and trade.
+**Description:** A cooperative structure emphasizing shared leadership and collective decision-making, maximizing the group's overall cohesion and adaptability.
 
 **Parameters:**
 ```json
 {
-  "packSize": 60,
-  "hierarchyDepth": 4,
-  "roleSpecialization": 7,
-  "decisionMakingStyle": 3
+  "packSize": {
+    "min": 15,
+    "max": 60,
+    "default": 30
+  },
+  "hierarchyDepth": {
+    "min": 0.1,
+    "max": 1,
+    "default": 0.5
+  },
+  "roleSpecialization": {
+    "min": 0.3,
+    "max": 0.7,
+    "default": 0.5
+  },
+  "decisionMakingStyle": {
+    "min": 0.7,
+    "max": 0.9,
+    "default": 0.8
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #AF5C63; padding: 2px 8px; border-radius: 3px;">#AF5C63</span>
-- <span style="background-color: #D97A7A; padding: 2px 8px; border-radius: 3px;">#D97A7A</span>
-- <span style="background-color: #F2A5A5; padding: 2px 8px; border-radius: 3px;">#F2A5A5</span>
-- <span style="background-color: #CC3E63; padding: 2px 8px; border-radius: 3px;">#CC3E63</span>
-- <span style="background-color: #922D4F; padding: 2px 8px; border-radius: 3px;">#922D4F</span>
+- <span style="background-color: #A8D0DB; padding: 2px 8px; border-radius: 3px;">#A8D0DB</span>
+- <span style="background-color: #70A1A1; padding: 2px 8px; border-radius: 3px;">#70A1A1</span>
+- <span style="background-color: #505955; padding: 2px 8px; border-radius: 3px;">#505955</span>
+- <span style="background-color: #324E58; padding: 2px 8px; border-radius: 3px;">#324E58</span>
+- <span style="background-color: #DCF3EF; padding: 2px 8px; border-radius: 3px;">#DCF3EF</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#AF5C63",
-  "roughness": 0.6,
-  "metallic": 0.3,
-  "normalStrength": 1.4,
-  "aoStrength": 0.85,
-  "heightScale": 0.06,
-  "emissive": "#F2A5A5"
+  "baseColor": "#70A1A1",
+  "roughness": 0.8,
+  "metallic": 0,
+  "normalStrength": 0.5,
+  "aoStrength": 0.9,
+  "heightScale": 0.01,
+  "emissive": "#A8D0DB"
 }
 ```
 
 **Procedural Rules:**
-> Interchangeable skill markers on garments; rock-inspired textures for territorial integration.
+> Natural textures blend into one another, showcasing unity and adaptability.
 
 **Textures:**
-- **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
-- **Fabric023** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric023_bundle_2K.jpg" alt="Fabric 023" width="200" />
+- **Rock025** (unknown): `Rock025` (not found in manifest)
+- **Grass001** (Grass): <img src="../../packages/gen/public/textures/grass/Grass001_bundle_2K.jpg" alt="Grass 001" width="200" />
+
+---
+
+#### Loner Alliance (`loner_alliance_006`)
+
+**Description:** A temporary and loose organization of individually-minded creatures who come together for mutual benefit when solitary existence becomes unsustainable.
+
+**Parameters:**
+```json
+{
+  "packSize": {
+    "min": 3,
+    "max": 10,
+    "default": 5
+  },
+  "hierarchyDepth": {
+    "min": 0,
+    "max": 0.2,
+    "default": 0.1
+  },
+  "roleSpecialization": {
+    "min": 0.1,
+    "max": 0.2,
+    "default": 0.15
+  },
+  "decisionMakingStyle": {
+    "min": 0.3,
+    "max": 0.4,
+    "default": 0.35
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #5F6E78; padding: 2px 8px; border-radius: 3px;">#5F6E78</span>
+- <span style="background-color: #9DA7B1; padding: 2px 8px; border-radius: 3px;">#9DA7B1</span>
+- <span style="background-color: #B3BAC2; padding: 2px 8px; border-radius: 3px;">#B3BAC2</span>
+- <span style="background-color: #CACED2; padding: 2px 8px; border-radius: 3px;">#CACED2</span>
+- <span style="background-color: #DDE4EA; padding: 2px 8px; border-radius: 3px;">#DDE4EA</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#9DA7B1",
+  "roughness": 0.9,
+  "metallic": 0,
+  "normalStrength": 0.4,
+  "aoStrength": 0.8,
+  "heightScale": 0.02,
+  "emissive": "#5F6E78"
+}
+```
+
+**Procedural Rules:**
+> Fragmented and rough textures suggesting temporary stitches and alliances.
+
+**Textures:**
+- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
+- **Rock025** (unknown): `Rock025` (not found in manifest)
 
 ---
 
@@ -1852,176 +3246,358 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 ### MICRO: Fine-grained details and specific implementations
 
 **WEFT Flow:** Building on MACRO and MESO scales:
-- MACRO: "Metallic Nexus Cluster", "Icy Crest Corridors"...
-- MESO: "Resilient Conclave", "Hierarchical Watchers"...
+- MACRO: "Iron Vein Enclave", "Aqua Carrara Cluster"...
+- MESO: "Kinship Tribe", "Skill Specialists"...
 
-**Total Archetypes:** 5
+**Total Archetypes:** 8
 
-#### Alpha Coordinator (`al001`)
+#### Alpha Coordinator (`alpha_coordinator`)
 
-**Description:** The Alpha Coordinator leads the pack with strategic intelligence, using magnetic fields to navigate territories and delegate roles, ensuring effective coordination.
+**Description:** An individual who takes on the leadership role within the pack, utilizing advanced problem-solving skills and adaptive communication to steer the pack's direction effectively.
 
 **Parameters:**
 ```json
 {
-  "leadershipStyle": 0.9,
-  "communicationComplexity": 0.7,
-  "coordinationEfficiency": 0.95,
-  "conflictResolution": 0.8
+  "leadershipPresence": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.9
+  },
+  "communicationComplexity": {
+    "min": 0.8,
+    "max": 1,
+    "default": 0.9
+  },
+  "strategicVision": {
+    "min": 0.6,
+    "max": 1,
+    "default": 0.8
+  },
+  "empathy": {
+    "min": 0.5,
+    "max": 0.9,
+    "default": 0.7
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #4B6E55; padding: 2px 8px; border-radius: 3px;">#4B6E55</span>
-- <span style="background-color: #88A999; padding: 2px 8px; border-radius: 3px;">#88A999</span>
-- <span style="background-color: #C3D1B3; padding: 2px 8px; border-radius: 3px;">#C3D1B3</span>
-- <span style="background-color: #8B5E34; padding: 2px 8px; border-radius: 3px;">#8B5E34</span>
-- <span style="background-color: #5B4A2F; padding: 2px 8px; border-radius: 3px;">#5B4A2F</span>
+- <span style="background-color: #3A3A3A; padding: 2px 8px; border-radius: 3px;">#3A3A3A</span>
+- <span style="background-color: #D1BEB0; padding: 2px 8px; border-radius: 3px;">#D1BEB0</span>
+- <span style="background-color: #F2E8C9; padding: 2px 8px; border-radius: 3px;">#F2E8C9</span>
+- <span style="background-color: #88624F; padding: 2px 8px; border-radius: 3px;">#88624F</span>
+- <span style="background-color: #362C28; padding: 2px 8px; border-radius: 3px;">#362C28</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#4B6E55",
-  "roughness": 0.6,
-  "metallic": 0.3,
-  "normalStrength": 1.2,
-  "aoStrength": 0.7,
-  "heightScale": 0.03,
-  "emissive": "#88A999"
+  "baseColor": "#3A3A3A",
+  "roughness": 0.5,
+  "metallic": 0,
+  "normalStrength": 1,
+  "aoStrength": 0.9,
+  "heightScale": 0.05,
+  "emissive": "#D1BEB0"
 }
 ```
 
 **Procedural Rules:**
-> Use fractal maps to create random terrain features symbolizing territory range.
+> Variations in leadership markings are more pronounced, with accents highlighting dominance.
 
 **Textures:**
 - **Leather011** (Leather): <img src="../../packages/gen/public/textures/leather/Leather011_bundle_2K.jpg" alt="Leather 011" width="200" />
-- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
+- **Fabric023** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric023_bundle_2K.jpg" alt="Fabric 023" width="200" />
 
 ---
 
-#### Communal Resolver (`cr002`)
+#### Resource Allocator (`resource_allocator`)
 
-**Description:** Specializes in resolving intra-pack conflicts with empathy and tactics, using community-driven solutions within the lush, volcanic enclave territories.
+**Description:** An individual responsible for the management and distribution of resources within the pack, ensuring equitable access and strategic reserves.
 
 **Parameters:**
 ```json
 {
-  "leadershipStyle": 0.7,
-  "communicationComplexity": 0.9,
-  "coordinationEfficiency": 0.85,
-  "conflictResolution": 0.95
+  "resourceManagement": {
+    "min": 0.6,
+    "max": 1,
+    "default": 0.8
+  },
+  "communicationComplexity": {
+    "min": 0.6,
+    "max": 0.9,
+    "default": 0.75
+  },
+  "observationSkills": {
+    "min": 0.5,
+    "max": 0.9,
+    "default": 0.7
+  },
+  "fairness": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.85
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #5E5240; padding: 2px 8px; border-radius: 3px;">#5E5240</span>
-- <span style="background-color: #D9C1B6; padding: 2px 8px; border-radius: 3px;">#D9C1B6</span>
-- <span style="background-color: #F8EAD8; padding: 2px 8px; border-radius: 3px;">#F8EAD8</span>
-- <span style="background-color: #8D7752; padding: 2px 8px; border-radius: 3px;">#8D7752</span>
-- <span style="background-color: #6C5E4C; padding: 2px 8px; border-radius: 3px;">#6C5E4C</span>
+- <span style="background-color: #5B8B6C; padding: 2px 8px; border-radius: 3px;">#5B8B6C</span>
+- <span style="background-color: #99C5B5; padding: 2px 8px; border-radius: 3px;">#99C5B5</span>
+- <span style="background-color: #E6A57E; padding: 2px 8px; border-radius: 3px;">#E6A57E</span>
+- <span style="background-color: #846747; padding: 2px 8px; border-radius: 3px;">#846747</span>
+- <span style="background-color: #B9CBB6; padding: 2px 8px; border-radius: 3px;">#B9CBB6</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#5E5240",
-  "roughness": 0.4,
-  "metallic": 0.2,
-  "normalStrength": 0.9,
-  "aoStrength": 0.6,
-  "heightScale": 0.02,
-  "emissive": "#D9C1B6"
+  "baseColor": "#5B8B6C",
+  "roughness": 0.6,
+  "metallic": 0,
+  "normalStrength": 1,
+  "aoStrength": 0.8,
+  "heightScale": 0.04,
+  "emissive": "#99C5B5"
 }
 ```
 
 **Procedural Rules:**
-> Layered random formations to simulate negotiation pathways and communal hubs.
+> Subtle variations in texture indicate resource-specific roles.
 
 **Textures:**
-- **Fabric023** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric023_bundle_2K.jpg" alt="Fabric 023" width="200" />
+- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
 - **Leather012** (Leather): <img src="../../packages/gen/public/textures/leather/Leather012_bundle_2K.jpg" alt="Leather 012" width="200" />
 
 ---
 
-#### Guardian Vantage (`gv003`)
+#### Empathy Signalers (`empathy_signalers`)
 
-**Description:** Stationed at high vantage points across the Icy Crest Corridors, these individuals monitor and signal for dangers, using heightened sensory abilities.
+**Description:** Individuals engaging in communicating emotional and cognitive states between pack members, enhancing coordination and cohesion.
 
 **Parameters:**
 ```json
 {
-  "leadershipStyle": 0.5,
-  "communicationComplexity": 0.85,
-  "coordinationEfficiency": 0.9,
-  "conflictResolution": 0.7
+  "empathy": {
+    "min": 0.8,
+    "max": 1,
+    "default": 0.9
+  },
+  "communicationComplexity": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.85
+  },
+  "sensitivity": {
+    "min": 0.6,
+    "max": 0.9,
+    "default": 0.75
+  },
+  "synchronization": {
+    "min": 0.5,
+    "max": 0.8,
+    "default": 0.65
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #28393A; padding: 2px 8px; border-radius: 3px;">#28393A</span>
-- <span style="background-color: #A8DADC; padding: 2px 8px; border-radius: 3px;">#A8DADC</span>
-- <span style="background-color: #457B9D; padding: 2px 8px; border-radius: 3px;">#457B9D</span>
-- <span style="background-color: #1D3557; padding: 2px 8px; border-radius: 3px;">#1D3557</span>
-- <span style="background-color: #F1FAEE; padding: 2px 8px; border-radius: 3px;">#F1FAEE</span>
+- <span style="background-color: #A69076; padding: 2px 8px; border-radius: 3px;">#A69076</span>
+- <span style="background-color: #FFDDC1; padding: 2px 8px; border-radius: 3px;">#FFDDC1</span>
+- <span style="background-color: #FBD4B4; padding: 2px 8px; border-radius: 3px;">#FBD4B4</span>
+- <span style="background-color: #F7BFA7; padding: 2px 8px; border-radius: 3px;">#F7BFA7</span>
+- <span style="background-color: #CE796B; padding: 2px 8px; border-radius: 3px;">#CE796B</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#28393A",
-  "roughness": 0.5,
+  "baseColor": "#A69076",
+  "roughness": 0.7,
+  "metallic": 0,
+  "normalStrength": 0.8,
+  "aoStrength": 0.6,
+  "heightScale": 0.03,
+  "emissive": "#FBD4B4"
+}
+```
+
+**Procedural Rules:**
+> Texture blends and color gradients reflect emotional states.
+
+**Textures:**
+- **Fabric023** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric023_bundle_2K.jpg" alt="Fabric 023" width="200" />
+- **Leather011** (Leather): <img src="../../packages/gen/public/textures/leather/Leather011_bundle_2K.jpg" alt="Leather 011" width="200" />
+
+---
+
+#### Tactical Hunter (`tactical_hunter`)
+
+**Description:** Individuals specialized in strategic prey handling and hunting coordination, using keen senses and adaptive tactics.
+
+**Parameters:**
+```json
+{
+  "predatorySkills": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.85
+  },
+  "stealth": {
+    "min": 0.6,
+    "max": 0.9,
+    "default": 0.75
+  },
+  "teamCoordination": {
+    "min": 0.5,
+    "max": 0.8,
+    "default": 0.7
+  },
+  "adaptiveThinking": {
+    "min": 0.5,
+    "max": 0.9,
+    "default": 0.7
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #6B4C3A; padding: 2px 8px; border-radius: 3px;">#6B4C3A</span>
+- <span style="background-color: #A07E5E; padding: 2px 8px; border-radius: 3px;">#A07E5E</span>
+- <span style="background-color: #D9C8B2; padding: 2px 8px; border-radius: 3px;">#D9C8B2</span>
+- <span style="background-color: #402218; padding: 2px 8px; border-radius: 3px;">#402218</span>
+- <span style="background-color: #7B6D62; padding: 2px 8px; border-radius: 3px;">#7B6D62</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#6B4C3A",
+  "roughness": 0.8,
+  "metallic": 0,
+  "normalStrength": 1.3,
+  "aoStrength": 0.85,
+  "heightScale": 0.06,
+  "emissive": "#A07E5E"
+}
+```
+
+**Procedural Rules:**
+> Camouflage variations align with environmental textures for optimum concealment.
+
+**Textures:**
+- **Leather012** (Leather): <img src="../../packages/gen/public/textures/leather/Leather012_bundle_2K.jpg" alt="Leather 012" width="200" />
+- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
+
+---
+
+#### Herbal Healer (`herbal_healer`)
+
+**Description:** Individuals specializing in the identification and use of plants for medicinal purposes, supporting overall pack health.
+
+**Parameters:**
+```json
+{
+  "botanicalKnowledge": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.85
+  },
+  "healingAbility": {
+    "min": 0.6,
+    "max": 1,
+    "default": 0.8
+  },
+  "communicationComplexity": {
+    "min": 0.5,
+    "max": 0.8,
+    "default": 0.7
+  },
+  "agility": {
+    "min": 0.5,
+    "max": 0.8,
+    "default": 0.65
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #A3B18A; padding: 2px 8px; border-radius: 3px;">#A3B18A</span>
+- <span style="background-color: #DAD7CD; padding: 2px 8px; border-radius: 3px;">#DAD7CD</span>
+- <span style="background-color: #F6F0E6; padding: 2px 8px; border-radius: 3px;">#F6F0E6</span>
+- <span style="background-color: #C2C5BB; padding: 2px 8px; border-radius: 3px;">#C2C5BB</span>
+- <span style="background-color: #828C74; padding: 2px 8px; border-radius: 3px;">#828C74</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#A3B18A",
+  "roughness": 0.9,
+  "metallic": 0,
+  "normalStrength": 0.7,
+  "aoStrength": 0.8,
+  "heightScale": 0.04,
+  "emissive": "#DAD7CD"
+}
+```
+
+**Procedural Rules:**
+> Herb outlines and medicinal patterns vary with regional plant diversity.
+
+**Textures:**
+- **Leather011** (Leather): <img src="../../packages/gen/public/textures/leather/Leather011_bundle_2K.jpg" alt="Leather 011" width="200" />
+- **Fabric023** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric023_bundle_2K.jpg" alt="Fabric 023" width="200" />
+
+---
+
+#### Defensive Guardian (`defensive_guardian`)
+
+**Description:** Individuals focused on protecting pack territory and ensuring safety from external threats, using physical prowess and strategic barriers.
+
+**Parameters:**
+```json
+{
+  "strength": {
+    "min": 0.8,
+    "max": 1,
+    "default": 0.9
+  },
+  "awareness": {
+    "min": 0.6,
+    "max": 0.9,
+    "default": 0.75
+  },
+  "territorialInstinct": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.85
+  },
+  "decisionMaking": {
+    "min": 0.5,
+    "max": 0.8,
+    "default": 0.65
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #506266; padding: 2px 8px; border-radius: 3px;">#506266</span>
+- <span style="background-color: #A7BBC7; padding: 2px 8px; border-radius: 3px;">#A7BBC7</span>
+- <span style="background-color: #C3D3E1; padding: 2px 8px; border-radius: 3px;">#C3D3E1</span>
+- <span style="background-color: #798A99; padding: 2px 8px; border-radius: 3px;">#798A99</span>
+- <span style="background-color: #3D4C54; padding: 2px 8px; border-radius: 3px;">#3D4C54</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#506266",
+  "roughness": 0.9,
   "metallic": 0.1,
   "normalStrength": 1.4,
-  "aoStrength": 0.7,
-  "heightScale": 0.04,
-  "emissive": "#457B9D"
+  "aoStrength": 0.9,
+  "heightScale": 0.07,
+  "emissive": "#A7BBC7"
 }
 ```
 
 **Procedural Rules:**
-> Simulate natural lookouts by varying elevations and texture mapping based on perimeter importance.
-
-**Textures:**
-- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
-- **Leather011** (Leather): <img src="../../packages/gen/public/textures/leather/Leather011_bundle_2K.jpg" alt="Leather 011" width="200" />
-
----
-
-#### Resource Strategist (`rs004`)
-
-**Description:** Efficiently allocates resources within the starlit oases, optimizing energy use and resource distribution among pack members with strategic deployment.
-
-**Parameters:**
-```json
-{
-  "leadershipStyle": 0.6,
-  "communicationComplexity": 0.8,
-  "coordinationEfficiency": 0.9,
-  "conflictResolution": 0.7
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #6B705C; padding: 2px 8px; border-radius: 3px;">#6B705C</span>
-- <span style="background-color: #FFE8D6; padding: 2px 8px; border-radius: 3px;">#FFE8D6</span>
-- <span style="background-color: #CB997E; padding: 2px 8px; border-radius: 3px;">#CB997E</span>
-- <span style="background-color: #B7B7A4; padding: 2px 8px; border-radius: 3px;">#B7B7A4</span>
-- <span style="background-color: #A5A58D; padding: 2px 8px; border-radius: 3px;">#A5A58D</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#6B705C",
-  "roughness": 0.7,
-  "metallic": 0.2,
-  "normalStrength": 1,
-  "aoStrength": 0.6,
-  "heightScale": 0.03,
-  "emissive": "#FFE8D6"
-}
-```
-
-**Procedural Rules:**
-> Rotate textures within oases zones according to resource distribution patterns.
+> Defensive markings emphasize deterrence through illusionary displays.
 
 **Textures:**
 - **Leather012** (Leather): <img src="../../packages/gen/public/textures/leather/Leather012_bundle_2K.jpg" alt="Leather 012" width="200" />
@@ -2029,42 +3605,117 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 
 ---
 
-#### Hunter Pathfinder (`hp005`)
+#### Exploratory Tracker (`exploratory_tracker`)
 
-**Description:** Navigators of the Lunar Drift Plains, using speed and precision to guide packs across flat terrains, capitalizing on low resistance for efficient travel.
+**Description:** Individuals devoted to exploring new terrains and gathering information about unfamiliar territories, paving the way for pack expansion.
 
 **Parameters:**
 ```json
 {
-  "leadershipStyle": 0.4,
-  "communicationComplexity": 0.6,
-  "coordinationEfficiency": 0.95,
-  "conflictResolution": 0.6
+  "explorationSkills": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.85
+  },
+  "navigation": {
+    "min": 0.6,
+    "max": 0.9,
+    "default": 0.75
+  },
+  "resourceDiscovery": {
+    "min": 0.6,
+    "max": 0.9,
+    "default": 0.75
+  },
+  "endurance": {
+    "min": 0.5,
+    "max": 0.8,
+    "default": 0.7
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #101820; padding: 2px 8px; border-radius: 3px;">#101820</span>
-- <span style="background-color: #F2AA4C; padding: 2px 8px; border-radius: 3px;">#F2AA4C</span>
-- <span style="background-color: #D5C6B6; padding: 2px 8px; border-radius: 3px;">#D5C6B6</span>
-- <span style="background-color: #95A5A6; padding: 2px 8px; border-radius: 3px;">#95A5A6</span>
-- <span style="background-color: #6C7587; padding: 2px 8px; border-radius: 3px;">#6C7587</span>
+- <span style="background-color: #2E3A44; padding: 2px 8px; border-radius: 3px;">#2E3A44</span>
+- <span style="background-color: #687D8B; padding: 2px 8px; border-radius: 3px;">#687D8B</span>
+- <span style="background-color: #8FA6B8; padding: 2px 8px; border-radius: 3px;">#8FA6B8</span>
+- <span style="background-color: #B1C3D0; padding: 2px 8px; border-radius: 3px;">#B1C3D0</span>
+- <span style="background-color: #405C67; padding: 2px 8px; border-radius: 3px;">#405C67</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#101820",
-  "roughness": 0.4,
-  "metallic": 0.3,
+  "baseColor": "#2E3A44",
+  "roughness": 0.7,
+  "metallic": 0,
   "normalStrength": 1.1,
-  "aoStrength": 0.5,
-  "heightScale": 0.02,
-  "emissive": "#F2AA4C"
+  "aoStrength": 0.8,
+  "heightScale": 0.05,
+  "emissive": "#8FA6B8"
 }
 ```
 
 **Procedural Rules:**
-> Utilize linear gradients to show path markings and directional flows across the plains.
+> Explorer patterns mimic movement shadows and geographical textures.
+
+**Textures:**
+- **Leather011** (Leather): <img src="../../packages/gen/public/textures/leather/Leather011_bundle_2K.jpg" alt="Leather 011" width="200" />
+- **Fabric023** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric023_bundle_2K.jpg" alt="Fabric 023" width="200" />
+
+---
+
+#### Conflict Mediator (`conflict_mediator`)
+
+**Description:** Individuals skilled in resolving disputes within the pack, aiding in maintaining harmony and cooperative functionality.
+
+**Parameters:**
+```json
+{
+  "mediationSkills": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.85
+  },
+  "emotionalIntelligence": {
+    "min": 0.6,
+    "max": 1,
+    "default": 0.8
+  },
+  "communicationComplexity": {
+    "min": 0.5,
+    "max": 0.9,
+    "default": 0.75
+  },
+  "persuasion": {
+    "min": 0.5,
+    "max": 0.9,
+    "default": 0.7
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #775A4D; padding: 2px 8px; border-radius: 3px;">#775A4D</span>
+- <span style="background-color: #B79D87; padding: 2px 8px; border-radius: 3px;">#B79D87</span>
+- <span style="background-color: #DAC3AC; padding: 2px 8px; border-radius: 3px;">#DAC3AC</span>
+- <span style="background-color: #ECE2D0; padding: 2px 8px; border-radius: 3px;">#ECE2D0</span>
+- <span style="background-color: #947264; padding: 2px 8px; border-radius: 3px;">#947264</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#775A4D",
+  "roughness": 0.8,
+  "metallic": 0,
+  "normalStrength": 0.9,
+  "aoStrength": 0.7,
+  "heightScale": 0.04,
+  "emissive": "#DAC3AC"
+}
+```
+
+**Procedural Rules:**
+> Patterns highlight diplomatic markings and communication focus points.
 
 **Textures:**
 - **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
@@ -2079,227 +3730,486 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 
 **WARP Flow:** Inheriting knowledge from previous generation:
 - **Gen 2: Pack Dynamics** provided:
-  - "Metallic Nexus Cluster", "Icy Crest Corridors", "Volcanic Basin Enclaves", "Lunar Drift Plains", "Starlight Oasis Outposts"...
-  - Total: 15 archetypes across all scales
+  - "Iron Vein Enclave", "Aqua Carrara Cluster", "Crystalline Basin Territory", "Luminous Meadow Nest", "Thermal Vent Haven"...
+  - Total: 24 archetypes across all scales
 
 ---
 
 ### MACRO: System-level context and foundational patterns
 
-**Total Archetypes:** 5
+**Total Archetypes:** 8
 
-#### Titanium Vein Network (`archetype_001`)
+#### Deep Vein Network (`macro_1`)
 
-**Description:** A comprehensive network of titanium veins, allowing deep excavation and access to previously unreachable metal-rich layers in the planet's crust. The network interconnects with natural geothermal hotspots, facilitating material processing and transport.
+**Description:** A comprehensive mining system engineered to access deep iron-nickel cores, unlocking vital metallic resources previously unreachable by standard excavation methods.
 
 **Parameters:**
 ```json
 {
-  "materialAccessDepth": 12.5,
-  "materialsUnlocked": 7,
-  "emergenceThreshold": 0.85,
-  "knowledgeTransferRate": 1
+  "stellarMass": {
+    "min": 0.9,
+    "max": 1.2,
+    "default": 1
+  },
+  "metallicity": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.85
+  },
+  "age": {
+    "min": 2,
+    "max": 7,
+    "default": 4.5
+  },
+  "orbitalDistance": {
+    "min": 0.6,
+    "max": 2,
+    "default": 1.2
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #A8A9AD; padding: 2px 8px; border-radius: 3px;">#A8A9AD</span>
-- <span style="background-color: #8B9199; padding: 2px 8px; border-radius: 3px;">#8B9199</span>
-- <span style="background-color: #5C6370; padding: 2px 8px; border-radius: 3px;">#5C6370</span>
-- <span style="background-color: #D7DADC; padding: 2px 8px; border-radius: 3px;">#D7DADC</span>
-- <span style="background-color: #293542; padding: 2px 8px; border-radius: 3px;">#293542</span>
+- <span style="background-color: #4B4B4B; padding: 2px 8px; border-radius: 3px;">#4B4B4B</span>
+- <span style="background-color: #313131; padding: 2px 8px; border-radius: 3px;">#313131</span>
+- <span style="background-color: #525252; padding: 2px 8px; border-radius: 3px;">#525252</span>
+- <span style="background-color: #787878; padding: 2px 8px; border-radius: 3px;">#787878</span>
+- <span style="background-color: #A0A0A0; padding: 2px 8px; border-radius: 3px;">#A0A0A0</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#A8A9AD",
+  "baseColor": "#4B4B4B",
+  "roughness": 0.85,
+  "metallic": 0.95,
+  "normalStrength": 1,
+  "aoStrength": 0.7,
+  "heightScale": 0.08,
+  "emissive": "#313131"
+}
+```
+
+**Procedural Rules:**
+> Variable node branching to simulate natural fissures and cracking.
+
+**Textures:**
+- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
+- **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
+
+---
+
+#### Thermal Bore Accelerator (`macro_2`)
+
+**Description:** Utilizes geothermal energy to accelerate drill penetration into the carbon mantle, unlocking subterranean carbon-based resources.
+
+**Parameters:**
+```json
+{
+  "stellarMass": {
+    "min": 1,
+    "max": 1.4,
+    "default": 1.1
+  },
+  "metallicity": {
+    "min": 0.4,
+    "max": 0.9,
+    "default": 0.6
+  },
+  "age": {
+    "min": 3,
+    "max": 8,
+    "default": 5.5
+  },
+  "orbitalDistance": {
+    "min": 1,
+    "max": 3,
+    "default": 2
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #866143; padding: 2px 8px; border-radius: 3px;">#866143</span>
+- <span style="background-color: #564334; padding: 2px 8px; border-radius: 3px;">#564334</span>
+- <span style="background-color: #7C5F38; padding: 2px 8px; border-radius: 3px;">#7C5F38</span>
+- <span style="background-color: #A17A50; padding: 2px 8px; border-radius: 3px;">#A17A50</span>
+- <span style="background-color: #492B20; padding: 2px 8px; border-radius: 3px;">#492B20</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#866143",
+  "roughness": 0.7,
+  "metallic": 0.5,
+  "normalStrength": 1.5,
+  "aoStrength": 0.9,
+  "heightScale": 0.07,
+  "emissive": "#564334"
+}
+```
+
+**Procedural Rules:**
+> Fractal surfaces simulate thermal stress and heat-induced coloration variations.
+
+**Textures:**
+- **Rock025** (unknown): `Rock025` (not found in manifest)
+- **Metal050** (unknown): `Metal050` (not found in manifest)
+
+---
+
+#### Aqua-Seep Extractor (`macro_3`)
+
+**Description:** Designed for deep extraction of volatile compounds from subsurface water channels, retrieving essential life-supporting resources.
+
+**Parameters:**
+```json
+{
+  "stellarMass": {
+    "min": 0.8,
+    "max": 1.1,
+    "default": 0.9
+  },
+  "metallicity": {
+    "min": 0.3,
+    "max": 0.8,
+    "default": 0.5
+  },
+  "age": {
+    "min": 1,
+    "max": 5,
+    "default": 3
+  },
+  "orbitalDistance": {
+    "min": 0.7,
+    "max": 2.5,
+    "default": 1.5
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #2F729C; padding: 2px 8px; border-radius: 3px;">#2F729C</span>
+- <span style="background-color: #1D4C73; padding: 2px 8px; border-radius: 3px;">#1D4C73</span>
+- <span style="background-color: #4196B4; padding: 2px 8px; border-radius: 3px;">#4196B4</span>
+- <span style="background-color: #6CB6D8; padding: 2px 8px; border-radius: 3px;">#6CB6D8</span>
+- <span style="background-color: #145A74; padding: 2px 8px; border-radius: 3px;">#145A74</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#2F729C",
+  "roughness": 0.6,
+  "metallic": 0.4,
+  "normalStrength": 1.2,
+  "aoStrength": 0.7,
+  "heightScale": 0.03,
+  "emissive": "#1D4C73"
+}
+```
+
+**Procedural Rules:**
+> Varying reflective patterns to simulate surface refractions and wetness.
+
+**Textures:**
+- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
+- **Wood051** (Wood): <img src="../../packages/gen/public/textures/wood/Wood051_bundle_2K.jpg" alt="Wood 051" width="200" />
+
+---
+
+#### Chromatic Forge Array (`macro_4`)
+
+**Description:** An expansive system capable of synthesizing complex materials by fusing small metal particles utilizing fusion-powered processes.
+
+**Parameters:**
+```json
+{
+  "stellarMass": {
+    "min": 1.2,
+    "max": 1.5,
+    "default": 1.35
+  },
+  "metallicity": {
+    "min": 0.5,
+    "max": 1,
+    "default": 0.75
+  },
+  "age": {
+    "min": 2.5,
+    "max": 7.5,
+    "default": 5
+  },
+  "orbitalDistance": {
+    "min": 1,
+    "max": 3,
+    "default": 1.5
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #D3B782; padding: 2px 8px; border-radius: 3px;">#D3B782</span>
+- <span style="background-color: #9B7A3C; padding: 2px 8px; border-radius: 3px;">#9B7A3C</span>
+- <span style="background-color: #593A1B; padding: 2px 8px; border-radius: 3px;">#593A1B</span>
+- <span style="background-color: #A67C52; padding: 2px 8px; border-radius: 3px;">#A67C52</span>
+- <span style="background-color: #744E25; padding: 2px 8px; border-radius: 3px;">#744E25</span>
+- <span style="background-color: #5C3C20; padding: 2px 8px; border-radius: 3px;">#5C3C20</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#D3B782",
+  "roughness": 0.4,
+  "metallic": 0.85,
+  "normalStrength": 1.3,
+  "aoStrength": 0.8,
+  "heightScale": 0.06,
+  "emissive": "#9B7A3C"
+}
+```
+
+**Procedural Rules:**
+> Synthetic augmented designs with metallic sheen and mineral overlay to signify harmonic metal syntheses.
+
+**Textures:**
+- **Metal050** (unknown): `Metal050` (not found in manifest)
+- **Rock025** (unknown): `Rock025` (not found in manifest)
+
+---
+
+#### Skybridge Logistical Platform (`macro_5`)
+
+**Description:** Infrastructure utilizing interconnected pathways and platforms to unlock tough-to-access cliffside ores and enhance vertical mobility.
+
+**Parameters:**
+```json
+{
+  "stellarMass": {
+    "min": 0.8,
+    "max": 1.2,
+    "default": 1
+  },
+  "metallicity": {
+    "min": 0.2,
+    "max": 0.7,
+    "default": 0.4
+  },
+  "age": {
+    "min": 4,
+    "max": 9,
+    "default": 6.5
+  },
+  "orbitalDistance": {
+    "min": 1.3,
+    "max": 3.5,
+    "default": 2.4
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #8D6F4E; padding: 2px 8px; border-radius: 3px;">#8D6F4E</span>
+- <span style="background-color: #5E4731; padding: 2px 8px; border-radius: 3px;">#5E4731</span>
+- <span style="background-color: #B7946E; padding: 2px 8px; border-radius: 3px;">#B7946E</span>
+- <span style="background-color: #9C8360; padding: 2px 8px; border-radius: 3px;">#9C8360</span>
+- <span style="background-color: #C9A57E; padding: 2px 8px; border-radius: 3px;">#C9A57E</span>
+- <span style="background-color: #D6B585; padding: 2px 8px; border-radius: 3px;">#D6B585</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#8D6F4E",
   "roughness": 0.5,
-  "metallic": 0.8,
+  "metallic": 0.3,
   "normalStrength": 1,
   "aoStrength": 0.7,
   "heightScale": 0.05,
-  "emissive": "#5EC8D2"
+  "emissive": "#5E4731"
 }
 ```
 
 **Procedural Rules:**
-> The network expands with fractal-like patterns, mimicking natural ore distribution.
+> Natural wood textures integrated with polished metal keystones, promoting aesthetic functionality.
 
 **Textures:**
-- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
-- **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
-
----
-
-#### Crystalline Conduction Array (`archetype_002`)
-
-**Description:** A series of crystalline arrays that harness electromagnetism to extract and purify conductive metals. Reflective surfaces guide energy flows, unlocking deeper metallic elements crucial for technological advancement.
-
-**Parameters:**
-```json
-{
-  "materialAccessDepth": 15,
-  "materialsUnlocked": 9,
-  "emergenceThreshold": 0.9,
-  "knowledgeTransferRate": 0.8
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #B0BEC5; padding: 2px 8px; border-radius: 3px;">#B0BEC5</span>
-- <span style="background-color: #607D8B; padding: 2px 8px; border-radius: 3px;">#607D8B</span>
-- <span style="background-color: #455A64; padding: 2px 8px; border-radius: 3px;">#455A64</span>
-- <span style="background-color: #CFD8DC; padding: 2px 8px; border-radius: 3px;">#CFD8DC</span>
-- <span style="background-color: #ECEFF1; padding: 2px 8px; border-radius: 3px;">#ECEFF1</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#B0BEC5",
-  "roughness": 0.2,
-  "metallic": 0.9,
-  "normalStrength": 1.2,
-  "aoStrength": 0.6,
-  "heightScale": 0.07,
-  "emissive": "#8FD4F7"
-}
-```
-
-**Procedural Rules:**
-> Array formations increase density with deeper layers, reflecting deeper electromagnetic potential.
-
-**Textures:**
-- **Metal050** (unknown): `Metal050` (not found in manifest)
-- **Rock025** (unknown): `Rock025` (not found in manifest)
-
----
-
-#### Granite Tunneling Constructs (`archetype_003`)
-
-**Description:** Massive constructs bored into granite, forming extensive tunnels that enable access to previously unreachable geological deposits. Combining natural fortitude with engineered ingenuity, these constructs guide resource flows smoothly.
-
-**Parameters:**
-```json
-{
-  "materialAccessDepth": 14.3,
-  "materialsUnlocked": 10,
-  "emergenceThreshold": 0.92,
-  "knowledgeTransferRate": 0.9
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #9E9E9E; padding: 2px 8px; border-radius: 3px;">#9E9E9E</span>
-- <span style="background-color: #757575; padding: 2px 8px; border-radius: 3px;">#757575</span>
-- <span style="background-color: #BDBDBD; padding: 2px 8px; border-radius: 3px;">#BDBDBD</span>
-- <span style="background-color: #E0E0E0; padding: 2px 8px; border-radius: 3px;">#E0E0E0</span>
-- <span style="background-color: #FAFAFA; padding: 2px 8px; border-radius: 3px;">#FAFAFA</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#9E9E9E",
-  "roughness": 0.7,
-  "metallic": 0.3,
-  "normalStrength": 1.1,
-  "aoStrength": 0.8,
-  "heightScale": 0.04,
-  "emissive": "#D6D4D4"
-}
-```
-
-**Procedural Rules:**
-> Irregular surface textures mimic deep granite layers, providing structural integrity and resource access.
-
-**Textures:**
-- **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
+- **Wood094** (Wood): <img src="../../packages/gen/public/textures/wood/Wood094_bundle_2K.jpg" alt="Wood 094" width="200" />
 - **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
 
 ---
 
-#### Subterranean Resonance Forge (`archetype_004`)
+#### Lunar Resonance Facility (`macro_6`)
 
-**Description:** Utilizes acoustic resonance to break down mineral bonds, facilitating extraction of rare materials otherwise inaccessible. Mimics natural seismic activities amplified through engineered arrays, reaching unprecedented depths.
-
-**Parameters:**
-```json
-{
-  "materialAccessDepth": 13.7,
-  "materialsUnlocked": 8,
-  "emergenceThreshold": 0.88,
-  "knowledgeTransferRate": 0.85
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #607D8B; padding: 2px 8px; border-radius: 3px;">#607D8B</span>
-- <span style="background-color: #78909C; padding: 2px 8px; border-radius: 3px;">#78909C</span>
-- <span style="background-color: #B0BEC5; padding: 2px 8px; border-radius: 3px;">#B0BEC5</span>
-- <span style="background-color: #E3F2FD; padding: 2px 8px; border-radius: 3px;">#E3F2FD</span>
-- <span style="background-color: #263238; padding: 2px 8px; border-radius: 3px;">#263238</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#607D8B",
-  "roughness": 0.6,
-  "metallic": 0.5,
-  "normalStrength": 1.3,
-  "aoStrength": 0.75,
-  "heightScale": 0.06,
-  "emissive": "#A7C0CD"
-}
-```
-
-**Procedural Rules:**
-> Surface echoes mimic seismic patterns, creating energy fields that unlock hidden materials.
-
-**Textures:**
-- **Rock025** (unknown): `Rock025` (not found in manifest)
-- **Metal050** (unknown): `Metal050` (not found in manifest)
-
----
-
-#### Luminous Drilling Consortium (`archetype_005`)
-
-**Description:** Drilling systems embedded with luminescent crystals, guiding miners to deeper underground cavities. Illumination patterns adapt to resource density, creating a visual map for resource extraction.
+**Description:** Advanced harvesting of lunar elements by synchronizing orbital alignments and employing resonant frequency technology.
 
 **Parameters:**
 ```json
 {
-  "materialAccessDepth": 16.2,
-  "materialsUnlocked": 11,
-  "emergenceThreshold": 0.95,
-  "knowledgeTransferRate": 0.82
+  "stellarMass": {
+    "min": 0.9,
+    "max": 1.3,
+    "default": 1.1
+  },
+  "metallicity": {
+    "min": 0.4,
+    "max": 0.9,
+    "default": 0.65
+  },
+  "age": {
+    "min": 2.5,
+    "max": 6.5,
+    "default": 4
+  },
+  "orbitalDistance": {
+    "min": 2,
+    "max": 3.5,
+    "default": 2.7
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #C5CAE9; padding: 2px 8px; border-radius: 3px;">#C5CAE9</span>
-- <span style="background-color: #7986CB; padding: 2px 8px; border-radius: 3px;">#7986CB</span>
-- <span style="background-color: #303F9F; padding: 2px 8px; border-radius: 3px;">#303F9F</span>
-- <span style="background-color: #9FA8DA; padding: 2px 8px; border-radius: 3px;">#9FA8DA</span>
-- <span style="background-color: #1A237E; padding: 2px 8px; border-radius: 3px;">#1A237E</span>
+- <span style="background-color: #21374A; padding: 2px 8px; border-radius: 3px;">#21374A</span>
+- <span style="background-color: #587C91; padding: 2px 8px; border-radius: 3px;">#587C91</span>
+- <span style="background-color: #2C4F61; padding: 2px 8px; border-radius: 3px;">#2C4F61</span>
+- <span style="background-color: #4B7D8A; padding: 2px 8px; border-radius: 3px;">#4B7D8A</span>
+- <span style="background-color: #1E566E; padding: 2px 8px; border-radius: 3px;">#1E566E</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#C5CAE9",
-  "roughness": 0.4,
+  "baseColor": "#21374A",
+  "roughness": 0.65,
   "metallic": 0.2,
   "normalStrength": 1.4,
   "aoStrength": 0.9,
-  "heightScale": 0.03,
-  "emissive": "#5EC8D2"
+  "heightScale": 0.07,
+  "emissive": "#587C91"
 }
 ```
 
 **Procedural Rules:**
-> Luminescent patterns dynamically change based on crystalline structure and resource layers.
+> Reflective luminescent pads illuminate surface when engaging orbital extraction protocols.
+
+**Textures:**
+- **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
+- **Metal050** (unknown): `Metal050` (not found in manifest)
+
+---
+
+#### Stellar Fusion Hub (`macro_7`)
+
+**Description:** A centralized location where stellar materials are synthesized into advanced components, utilizing plasma-based heating and elemental fusion processes.
+
+**Parameters:**
+```json
+{
+  "stellarMass": {
+    "min": 1.1,
+    "max": 1.5,
+    "default": 1.3
+  },
+  "metallicity": {
+    "min": 0.5,
+    "max": 1,
+    "default": 0.8
+  },
+  "age": {
+    "min": 4,
+    "max": 10,
+    "default": 6
+  },
+  "orbitalDistance": {
+    "min": 1.5,
+    "max": 4,
+    "default": 2.5
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #FF7F00; padding: 2px 8px; border-radius: 3px;">#FF7F00</span>
+- <span style="background-color: #FF4000; padding: 2px 8px; border-radius: 3px;">#FF4000</span>
+- <span style="background-color: #FF9F40; padding: 2px 8px; border-radius: 3px;">#FF9F40</span>
+- <span style="background-color: #CC3300; padding: 2px 8px; border-radius: 3px;">#CC3300</span>
+- <span style="background-color: #FF5500; padding: 2px 8px; border-radius: 3px;">#FF5500</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#FF7F00",
+  "roughness": 0.3,
+  "metallic": 0.9,
+  "normalStrength": 1.6,
+  "aoStrength": 1,
+  "heightScale": 0.06,
+  "emissive": "#FF4000"
+}
+```
+
+**Procedural Rules:**
+> Generates fusion colors across compound surfaces emitting radiant volcanic-like glow during synthesis.
 
 **Textures:**
 - **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
 - **Rock025** (unknown): `Rock025` (not found in manifest)
+
+---
+
+#### Gem Vein Expander (`macro_8`)
+
+**Description:** A network designed for the systematic expansion and controlled exploitation of gem-rich veins extending deep below the surface.
+
+**Parameters:**
+```json
+{
+  "stellarMass": {
+    "min": 0.7,
+    "max": 1.3,
+    "default": 0.9
+  },
+  "metallicity": {
+    "min": 0.6,
+    "max": 0.9,
+    "default": 0.75
+  },
+  "age": {
+    "min": 2,
+    "max": 6,
+    "default": 4
+  },
+  "orbitalDistance": {
+    "min": 0.5,
+    "max": 2,
+    "default": 1
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #B92323; padding: 2px 8px; border-radius: 3px;">#B92323</span>
+- <span style="background-color: #FF4040; padding: 2px 8px; border-radius: 3px;">#FF4040</span>
+- <span style="background-color: #CF3232; padding: 2px 8px; border-radius: 3px;">#CF3232</span>
+- <span style="background-color: #A51A1A; padding: 2px 8px; border-radius: 3px;">#A51A1A</span>
+- <span style="background-color: #C85757; padding: 2px 8px; border-radius: 3px;">#C85757</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#B92323",
+  "roughness": 0.8,
+  "metallic": 0.4,
+  "normalStrength": 1.2,
+  "aoStrength": 0.7,
+  "heightScale": 0.05,
+  "emissive": "#FF4040"
+}
+```
+
+**Procedural Rules:**
+> Vein conduits show crystalline fractal formations mimicking geometric repetition of gems.
+
+**Textures:**
+- **Rock025** (unknown): `Rock025` (not found in manifest)
+- **Metal050** (unknown): `Metal050` (not found in manifest)
 
 ---
 
@@ -2307,46 +4217,62 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 ### MESO: Intermediate dynamics and structural relationships
 
 **WEFT Flow:** Building on MACRO scale archetypes:
-- "Titanium Vein Network", "Crystalline Conduction Array", "Granite Tunneling Constructs"...
+- "Deep Vein Network", "Thermal Bore Accelerator", "Aqua-Seep Extractor"...
 
 **Total Archetypes:** 5
 
-#### Titanium Core Drillers (`unique_id_1`)
+#### Core Drill Attachment (`archetype_001`)
 
-**Description:** Specialized drilling tools that exploit the Titanium Vein Network for deep material access, enabling efficient excavation of dense strata.
+**Description:** A specialized attachment designed to enhance drilling into deep iron-nickel cores, optimized for seamless integration with the Deep Vein Network.
 
 **Parameters:**
 ```json
 {
-  "effectivenessMultiplier": 1.5,
-  "durability": 0.9,
-  "materialCost": 3.2,
-  "creationComplexity": 2.5
+  "effectivenessMultiplier": {
+    "min": 1.5,
+    "max": 3,
+    "default": 2.1
+  },
+  "durability": {
+    "min": 2000,
+    "max": 5000,
+    "default": 3500
+  },
+  "materialCost": {
+    "min": 150,
+    "max": 300,
+    "default": 200
+  },
+  "creationComplexity": {
+    "min": 4,
+    "max": 8,
+    "default": 6
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #5C727D; padding: 2px 8px; border-radius: 3px;">#5C727D</span>
-- <span style="background-color: #9BAAB5; padding: 2px 8px; border-radius: 3px;">#9BAAB5</span>
-- <span style="background-color: #E4E9EF; padding: 2px 8px; border-radius: 3px;">#E4E9EF</span>
-- <span style="background-color: #4E5963; padding: 2px 8px; border-radius: 3px;">#4E5963</span>
-- <span style="background-color: #BCC4CC; padding: 2px 8px; border-radius: 3px;">#BCC4CC</span>
+- <span style="background-color: #8B9AA3; padding: 2px 8px; border-radius: 3px;">#8B9AA3</span>
+- <span style="background-color: #B0BEC5; padding: 2px 8px; border-radius: 3px;">#B0BEC5</span>
+- <span style="background-color: #455A64; padding: 2px 8px; border-radius: 3px;">#455A64</span>
+- <span style="background-color: #78909C; padding: 2px 8px; border-radius: 3px;">#78909C</span>
+- <span style="background-color: #37474F; padding: 2px 8px; border-radius: 3px;">#37474F</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#5C727D",
-  "roughness": 0.5,
-  "metallic": 0.8,
+  "baseColor": "#8B9AA3",
+  "roughness": 0.6,
+  "metallic": 0.9,
   "normalStrength": 1.2,
-  "aoStrength": 0.7,
-  "heightScale": 0.03,
-  "emissive": "#9BAAB5"
+  "aoStrength": 0.9,
+  "heightScale": 0.02,
+  "emissive": "#455A64"
 }
 ```
 
 **Procedural Rules:**
-> Texture variations simulate wear from continuous drilling, exhibiting metallic streaks and rough edges.
+> Surface features exhibit subtle grooves and layered metallic textures similar to deep-metallurgical formations.
 
 **Textures:**
 - **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
@@ -2354,175 +4280,239 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 
 ---
 
-#### Crystalline Harvesters (`unique_id_2`)
+#### Geothermal Resonator (`archetype_002`)
 
-**Description:** Tools designed to extract and refine energy from the Crystalline Conduction Array, utilizing light manipulation and purification processes.
+**Description:** A tool designed to channel geothermal energy to enhance material extraction, particularly effective in hot accretion zones.
 
 **Parameters:**
 ```json
 {
-  "effectivenessMultiplier": 1.8,
-  "durability": 0.75,
-  "materialCost": 4,
-  "creationComplexity": 3
+  "effectivenessMultiplier": {
+    "min": 2,
+    "max": 4,
+    "default": 3
+  },
+  "durability": {
+    "min": 1500,
+    "max": 4000,
+    "default": 3000
+  },
+  "materialCost": {
+    "min": 200,
+    "max": 350,
+    "default": 275
+  },
+  "creationComplexity": {
+    "min": 5,
+    "max": 9,
+    "default": 7
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #82A1C0; padding: 2px 8px; border-radius: 3px;">#82A1C0</span>
-- <span style="background-color: #A9CCE3; padding: 2px 8px; border-radius: 3px;">#A9CCE3</span>
-- <span style="background-color: #E6F0FF; padding: 2px 8px; border-radius: 3px;">#E6F0FF</span>
-- <span style="background-color: #517A9C; padding: 2px 8px; border-radius: 3px;">#517A9C</span>
-- <span style="background-color: #D1E3F3; padding: 2px 8px; border-radius: 3px;">#D1E3F3</span>
+- <span style="background-color: #FF8F00; padding: 2px 8px; border-radius: 3px;">#FF8F00</span>
+- <span style="background-color: #FF6F00; padding: 2px 8px; border-radius: 3px;">#FF6F00</span>
+- <span style="background-color: #FF5722; padding: 2px 8px; border-radius: 3px;">#FF5722</span>
+- <span style="background-color: #B71C1C; padding: 2px 8px; border-radius: 3px;">#B71C1C</span>
+- <span style="background-color: #BF360C; padding: 2px 8px; border-radius: 3px;">#BF360C</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#82A1C0",
-  "roughness": 0.2,
-  "metallic": 0.5,
-  "normalStrength": 1,
-  "aoStrength": 0.5,
-  "heightScale": 0.02,
-  "emissive": "#E6F0FF"
+  "baseColor": "#FF8F00",
+  "roughness": 0.7,
+  "metallic": 0.6,
+  "normalStrength": 1.4,
+  "aoStrength": 0.7,
+  "heightScale": 0.03,
+  "emissive": "#FF5722"
 }
 ```
 
 **Procedural Rules:**
-> Crystalline surfaces glisten under varying light conditions, creating a shimmering effect enhanced by surrounding metallic structures.
+> Exhibits vibrant thermal animation effects with fluctuating emissive glow in response to geothermal sources.
 
 **Textures:**
-- **Crystal004** (unknown): `Crystal004` (not found in manifest)
+- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
+- **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
+
+---
+
+#### Hydraulic Channel Carver (`archetype_003`)
+
+**Description:** An advanced tool designed for carving precise channels through subsurface water deposits for efficient volatile transport.
+
+**Parameters:**
+```json
+{
+  "effectivenessMultiplier": {
+    "min": 1.8,
+    "max": 3.5,
+    "default": 2.5
+  },
+  "durability": {
+    "min": 2500,
+    "max": 4500,
+    "default": 3500
+  },
+  "materialCost": {
+    "min": 175,
+    "max": 325,
+    "default": 250
+  },
+  "creationComplexity": {
+    "min": 6,
+    "max": 10,
+    "default": 8
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #00796B; padding: 2px 8px; border-radius: 3px;">#00796B</span>
+- <span style="background-color: #004D40; padding: 2px 8px; border-radius: 3px;">#004D40</span>
+- <span style="background-color: #006064; padding: 2px 8px; border-radius: 3px;">#006064</span>
+- <span style="background-color: #004D40; padding: 2px 8px; border-radius: 3px;">#004D40</span>
+- <span style="background-color: #005662; padding: 2px 8px; border-radius: 3px;">#005662</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#00796B",
+  "roughness": 0.8,
+  "metallic": 0.2,
+  "normalStrength": 1.4,
+  "aoStrength": 0.85,
+  "heightScale": 0.04,
+  "emissive": "#004D40"
+}
+```
+
+**Procedural Rules:**
+> Surfaces display aquatically inspired undulating patterns, reacting dynamically with water presence.
+
+**Textures:**
+- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
+- **Rock025** (unknown): `Rock025` (not found in manifest)
+
+---
+
+#### Alloy Synthesizer (`archetype_004`)
+
+**Description:** Crafted to blend extracted metals into usable alloys, the Alloy Synthesizer powers the Chromatic Forge Array.
+
+**Parameters:**
+```json
+{
+  "effectivenessMultiplier": {
+    "min": 2.5,
+    "max": 5,
+    "default": 3.5
+  },
+  "durability": {
+    "min": 3000,
+    "max": 5000,
+    "default": 4000
+  },
+  "materialCost": {
+    "min": 250,
+    "max": 400,
+    "default": 325
+  },
+  "creationComplexity": {
+    "min": 7,
+    "max": 11,
+    "default": 9
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #C5CAE9; padding: 2px 8px; border-radius: 3px;">#C5CAE9</span>
+- <span style="background-color: #7986CB; padding: 2px 8px; border-radius: 3px;">#7986CB</span>
+- <span style="background-color: #3F51B5; padding: 2px 8px; border-radius: 3px;">#3F51B5</span>
+- <span style="background-color: #1A237E; padding: 2px 8px; border-radius: 3px;">#1A237E</span>
+- <span style="background-color: #283593; padding: 2px 8px; border-radius: 3px;">#283593</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#C5CAE9",
+  "roughness": 0.5,
+  "metallic": 0.8,
+  "normalStrength": 1.3,
+  "aoStrength": 0.75,
+  "heightScale": 0.06,
+  "emissive": "#283593"
+}
+```
+
+**Procedural Rules:**
+> Creates vivid metallic sheen fluctuating across surfaces depending on ambient light and composition.
+
+**Textures:**
+- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
 - **Metal050** (unknown): `Metal050` (not found in manifest)
 
 ---
 
-#### Granite Excavation Units (`unique_id_3`)
+#### Elevated Transport System (`archetype_005`)
 
-**Description:** Robust machinery integrated into the Granite Tunneling Constructs, capable of carving extensive pathways through dense rock formations.
-
-**Parameters:**
-```json
-{
-  "effectivenessMultiplier": 1.4,
-  "durability": 0.85,
-  "materialCost": 3.5,
-  "creationComplexity": 2
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #8A8D91; padding: 2px 8px; border-radius: 3px;">#8A8D91</span>
-- <span style="background-color: #6C747A; padding: 2px 8px; border-radius: 3px;">#6C747A</span>
-- <span style="background-color: #B1B6BB; padding: 2px 8px; border-radius: 3px;">#B1B6BB</span>
-- <span style="background-color: #4F5255; padding: 2px 8px; border-radius: 3px;">#4F5255</span>
-- <span style="background-color: #DADFE4; padding: 2px 8px; border-radius: 3px;">#DADFE4</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#8A8D91",
-  "roughness": 0.7,
-  "metallic": 0.3,
-  "normalStrength": 1.3,
-  "aoStrength": 0.8,
-  "heightScale": 0.04,
-  "emissive": "#B1B6BB"
-}
-```
-
-**Procedural Rules:**
-> Layered textures convey depth within structural granite surfaces, emphasizing wear and tear from extensive use.
-
-**Textures:**
-- **Rock025** (unknown): `Rock025` (not found in manifest)
-- **Metal052** (unknown): `Metal052` (not found in manifest)
-
----
-
-#### Subterranean Acoustic Disruptors (`unique_id_4`)
-
-**Description:** Implements that harness sound waves to disintegrate mineral compositions, facilitating the work of the Subterranean Resonance Forge.
+**Description:** This system facilitates material movement between elevated and grounded positions, bridging the Skybridge Logistical Platform.
 
 **Parameters:**
 ```json
 {
-  "effectivenessMultiplier": 1.6,
-  "durability": 0.8,
-  "materialCost": 2.8,
-  "creationComplexity": 3.2
+  "effectivenessMultiplier": {
+    "min": 1.4,
+    "max": 3,
+    "default": 2.3
+  },
+  "durability": {
+    "min": 1800,
+    "max": 4000,
+    "default": 3000
+  },
+  "materialCost": {
+    "min": 200,
+    "max": 325,
+    "default": 275
+  },
+  "creationComplexity": {
+    "min": 5,
+    "max": 9,
+    "default": 7
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #3E4A56; padding: 2px 8px; border-radius: 3px;">#3E4A56</span>
-- <span style="background-color: #7A8B9A; padding: 2px 8px; border-radius: 3px;">#7A8B9A</span>
-- <span style="background-color: #CED9E2; padding: 2px 8px; border-radius: 3px;">#CED9E2</span>
-- <span style="background-color: #2D353E; padding: 2px 8px; border-radius: 3px;">#2D353E</span>
-- <span style="background-color: #A5B4BE; padding: 2px 8px; border-radius: 3px;">#A5B4BE</span>
+- <span style="background-color: #BCAAA4; padding: 2px 8px; border-radius: 3px;">#BCAAA4</span>
+- <span style="background-color: #8D6E63; padding: 2px 8px; border-radius: 3px;">#8D6E63</span>
+- <span style="background-color: #37474F; padding: 2px 8px; border-radius: 3px;">#37474F</span>
+- <span style="background-color: #546E7A; padding: 2px 8px; border-radius: 3px;">#546E7A</span>
+- <span style="background-color: #263238; padding: 2px 8px; border-radius: 3px;">#263238</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#3E4A56",
+  "baseColor": "#8D6E63",
   "roughness": 0.6,
   "metallic": 0.4,
   "normalStrength": 1.1,
   "aoStrength": 0.6,
-  "heightScale": 0.02,
-  "emissive": "#CED9E2"
-}
-```
-
-**Procedural Rules:**
-> Surfaces display subtle vibrations reflecting frequency adjustments, with fabric details supporting acoustic properties.
-
-**Textures:**
-- **Metal051** (unknown): `Metal051` (not found in manifest)
-- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
-
----
-
-#### Illuminated Bore Systems (`unique_id_5`)
-
-**Description:** Advanced drilling equipment incorporating phosphorescent materials to navigate the Luminous Drilling Consortium's tunnels safely.
-
-**Parameters:**
-```json
-{
-  "effectivenessMultiplier": 1.7,
-  "durability": 0.78,
-  "materialCost": 3.7,
-  "creationComplexity": 2.8
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #556B72; padding: 2px 8px; border-radius: 3px;">#556B72</span>
-- <span style="background-color: #A4BCC3; padding: 2px 8px; border-radius: 3px;">#A4BCC3</span>
-- <span style="background-color: #EDF4FA; padding: 2px 8px; border-radius: 3px;">#EDF4FA</span>
-- <span style="background-color: #3D4449; padding: 2px 8px; border-radius: 3px;">#3D4449</span>
-- <span style="background-color: #C5D3DA; padding: 2px 8px; border-radius: 3px;">#C5D3DA</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#556B72",
-  "roughness": 0.5,
-  "metallic": 0.6,
-  "normalStrength": 1,
-  "aoStrength": 0.5,
   "heightScale": 0.03,
-  "emissive": "#EDF4FA"
+  "emissive": "#37474F"
 }
 ```
 
 **Procedural Rules:**
-> Luminescent patterns appear along metal and wood surfaces, strategically diffusing light in dark environments.
+> Exhibits organic textures with weathered markings reflecting the environmental transition process.
 
 **Textures:**
-- **Metal053** (unknown): `Metal053` (not found in manifest)
-- **Wood094** (Wood): <img src="../../packages/gen/public/textures/wood/Wood094_bundle_2K.jpg" alt="Wood 094" width="200" />
+- **Metal050** (unknown): `Metal050` (not found in manifest)
+- **Wood051** (Wood): <img src="../../packages/gen/public/textures/wood/Wood051_bundle_2K.jpg" alt="Wood 051" width="200" />
 
 ---
 
@@ -2530,47 +4520,63 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 ### MICRO: Fine-grained details and specific implementations
 
 **WEFT Flow:** Building on MACRO and MESO scales:
-- MACRO: "Titanium Vein Network", "Crystalline Conduction Array"...
-- MESO: "Titanium Core Drillers", "Crystalline Harvesters"...
+- MACRO: "Deep Vein Network", "Thermal Bore Accelerator"...
+- MESO: "Core Drill Attachment", "Geothermal Resonator"...
 
-**Total Archetypes:** 5
+**Total Archetypes:** 7
 
-#### Vermiculite Durability Layer (`unique_id_1`)
+#### Durable Miner (`durable_miner_archetype`)
 
-**Description:** A protective layer that enables tools to withstand high temperatures and pressures, extending tool life in harsh environments.
+**Description:** Tools designed for deep mining with enhanced durability to withstand harsh environments.
 
 **Parameters:**
 ```json
 {
-  "baseDurability": 85,
-  "effectivenessCurve": 0.9,
-  "maintenanceFrequency": 10,
-  "materialCompatibility": 0.85
+  "baseDurability": {
+    "min": 0.8,
+    "max": 1.5,
+    "default": 1.2
+  },
+  "effectivenessCurve": {
+    "min": 0.6,
+    "max": 1,
+    "default": 0.85
+  },
+  "maintenanceFrequency": {
+    "min": 0.2,
+    "max": 0.5,
+    "default": 0.3
+  },
+  "materialCompatibility": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.9
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #6A7D89; padding: 2px 8px; border-radius: 3px;">#6A7D89</span>
-- <span style="background-color: #525E65; padding: 2px 8px; border-radius: 3px;">#525E65</span>
-- <span style="background-color: #7F8A8F; padding: 2px 8px; border-radius: 3px;">#7F8A8F</span>
-- <span style="background-color: #AEB5B8; padding: 2px 8px; border-radius: 3px;">#AEB5B8</span>
-- <span style="background-color: #BDC4C8; padding: 2px 8px; border-radius: 3px;">#BDC4C8</span>
+- <span style="background-color: #6C7D8B; padding: 2px 8px; border-radius: 3px;">#6C7D8B</span>
+- <span style="background-color: #8B9CA8; padding: 2px 8px; border-radius: 3px;">#8B9CA8</span>
+- <span style="background-color: #ABBCCD; padding: 2px 8px; border-radius: 3px;">#ABBCCD</span>
+- <span style="background-color: #CCDDEE; padding: 2px 8px; border-radius: 3px;">#CCDDEE</span>
+- <span style="background-color: #E1EAF0; padding: 2px 8px; border-radius: 3px;">#E1EAF0</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#6A7D89",
-  "roughness": 0.6,
-  "metallic": 0.2,
-  "normalStrength": 0.7,
-  "aoStrength": 0.5,
+  "baseColor": "#6C7D8B",
+  "roughness": 0.8,
+  "metallic": 0.3,
+  "normalStrength": 1.2,
+  "aoStrength": 0.6,
   "heightScale": 0.05,
-  "emissive": "#525E65"
+  "emissive": "#8B9CA8"
 }
 ```
 
 **Procedural Rules:**
-> Textures vary with layered appearance, mimicking weathered metal.
+> Variation in surface weathering and wear patterns.
 
 **Textures:**
 - **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
@@ -2578,85 +4584,176 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 
 ---
 
-#### Corundum Cutting Edge (`unique_id_2`)
+#### Corrosion Resistant Tool (`corrosion_resistant_tool`)
 
-**Description:** An ultra-sharp cutting edge derived from corundum, designed for precise material separation and minimal wear over time.
+**Description:** Specialized tools with coatings to withstand corrosive elements during extraction processes.
 
 **Parameters:**
 ```json
 {
-  "baseDurability": 95,
-  "effectivenessCurve": 1.2,
-  "maintenanceFrequency": 5,
-  "materialCompatibility": 0.9
+  "baseDurability": {
+    "min": 0.9,
+    "max": 1.6,
+    "default": 1.3
+  },
+  "effectivenessCurve": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.9
+  },
+  "maintenanceFrequency": {
+    "min": 0.3,
+    "max": 0.7,
+    "default": 0.5
+  },
+  "materialCompatibility": {
+    "min": 0.8,
+    "max": 1,
+    "default": 0.95
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #365867; padding: 2px 8px; border-radius: 3px;">#365867</span>
-- <span style="background-color: #2F4858; padding: 2px 8px; border-radius: 3px;">#2F4858</span>
-- <span style="background-color: #B0C7D1; padding: 2px 8px; border-radius: 3px;">#B0C7D1</span>
-- <span style="background-color: #DBE6EE; padding: 2px 8px; border-radius: 3px;">#DBE6EE</span>
-- <span style="background-color: #F3F9FC; padding: 2px 8px; border-radius: 3px;">#F3F9FC</span>
+- <span style="background-color: #434C5E; padding: 2px 8px; border-radius: 3px;">#434C5E</span>
+- <span style="background-color: #56657A; padding: 2px 8px; border-radius: 3px;">#56657A</span>
+- <span style="background-color: #69798D; padding: 2px 8px; border-radius: 3px;">#69798D</span>
+- <span style="background-color: #7C8EA0; padding: 2px 8px; border-radius: 3px;">#7C8EA0</span>
+- <span style="background-color: #90A3B3; padding: 2px 8px; border-radius: 3px;">#90A3B3</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#365867",
-  "roughness": 0.3,
-  "metallic": 0.5,
-  "normalStrength": 1,
-  "aoStrength": 0.6,
-  "heightScale": 0.02,
-  "emissive": "#B0C7D1"
+  "baseColor": "#434C5E",
+  "roughness": 0.7,
+  "metallic": 0.4,
+  "normalStrength": 1.4,
+  "aoStrength": 0.7,
+  "heightScale": 0.04,
+  "emissive": "#56657A"
 }
 ```
 
 **Procedural Rules:**
-> Fine grain patterns provide varied reflection and refraction.
+> Corrosion patterns and resilient surface coatings vary procedurally.
 
 **Textures:**
-- **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
 - **Metal050** (unknown): `Metal050` (not found in manifest)
+- **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
 
 ---
 
-#### Silicate Flex Coil (`unique_id_3`)
+#### Precision Drill Head (`precision_drill_head`)
 
-**Description:** A flexible coil that absorbs vibrations, reducing tool degradation and improving handling precision.
+**Description:** Drilling toolheads optimized for precision and reduced vibration at extreme depths.
 
 **Parameters:**
 ```json
 {
-  "baseDurability": 80,
-  "effectivenessCurve": 1,
-  "maintenanceFrequency": 8,
-  "materialCompatibility": 0.8
+  "baseDurability": {
+    "min": 0.7,
+    "max": 1.2,
+    "default": 1
+  },
+  "effectivenessCurve": {
+    "min": 0.8,
+    "max": 1.2,
+    "default": 1.1
+  },
+  "maintenanceFrequency": {
+    "min": 0.4,
+    "max": 0.6,
+    "default": 0.5
+  },
+  "materialCompatibility": {
+    "min": 0.9,
+    "max": 1,
+    "default": 1
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #7A8671; padding: 2px 8px; border-radius: 3px;">#7A8671</span>
-- <span style="background-color: #525D4A; padding: 2px 8px; border-radius: 3px;">#525D4A</span>
-- <span style="background-color: #D1D8C4; padding: 2px 8px; border-radius: 3px;">#D1D8C4</span>
-- <span style="background-color: #A3AA8B; padding: 2px 8px; border-radius: 3px;">#A3AA8B</span>
-- <span style="background-color: #C5CAC0; padding: 2px 8px; border-radius: 3px;">#C5CAC0</span>
+- <span style="background-color: #525A64; padding: 2px 8px; border-radius: 3px;">#525A64</span>
+- <span style="background-color: #636C77; padding: 2px 8px; border-radius: 3px;">#636C77</span>
+- <span style="background-color: #747D89; padding: 2px 8px; border-radius: 3px;">#747D89</span>
+- <span style="background-color: #868E9A; padding: 2px 8px; border-radius: 3px;">#868E9A</span>
+- <span style="background-color: #99A1AB; padding: 2px 8px; border-radius: 3px;">#99A1AB</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#7A8671",
-  "roughness": 0.4,
-  "metallic": 0.3,
-  "normalStrength": 0.6,
-  "aoStrength": 0.4,
-  "heightScale": 0.04,
-  "emissive": "#D1D8C4"
+  "baseColor": "#525A64",
+  "roughness": 0.9,
+  "metallic": 0.2,
+  "normalStrength": 1.6,
+  "aoStrength": 0.5,
+  "heightScale": 0.03,
+  "emissive": "#747D89"
 }
 ```
 
 **Procedural Rules:**
-> Processes alternating metal and wood textures to exhibit resilience and elasticity.
+> Etching and patterning related to precision needs vary.
+
+**Textures:**
+- **Rock025** (unknown): `Rock025` (not found in manifest)
+- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
+
+---
+
+#### Adaptive Joint Tool (`adaptive_joint_tool`)
+
+**Description:** Tools with joints that adapt dynamically to various shapes, enhancing versatility.
+
+**Parameters:**
+```json
+{
+  "baseDurability": {
+    "min": 0.6,
+    "max": 1.1,
+    "default": 0.9
+  },
+  "effectivenessCurve": {
+    "min": 0.5,
+    "max": 1,
+    "default": 0.8
+  },
+  "maintenanceFrequency": {
+    "min": 0.2,
+    "max": 0.4,
+    "default": 0.3
+  },
+  "materialCompatibility": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.85
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #4A5A6A; padding: 2px 8px; border-radius: 3px;">#4A5A6A</span>
+- <span style="background-color: #5F6F7E; padding: 2px 8px; border-radius: 3px;">#5F6F7E</span>
+- <span style="background-color: #748A93; padding: 2px 8px; border-radius: 3px;">#748A93</span>
+- <span style="background-color: #8BA2A5; padding: 2px 8px; border-radius: 3px;">#8BA2A5</span>
+- <span style="background-color: #A3B1B5; padding: 2px 8px; border-radius: 3px;">#A3B1B5</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#4A5A6A",
+  "roughness": 0.85,
+  "metallic": 0.15,
+  "normalStrength": 1.5,
+  "aoStrength": 0.4,
+  "heightScale": 0.03,
+  "emissive": "#5F6F7E"
+}
+```
+
+**Procedural Rules:**
+> Joints can alter surface shape dynamically based on application.
 
 **Textures:**
 - **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
@@ -2664,89 +4761,180 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 
 ---
 
-#### Boron Infused Reinforcement (`unique_id_4`)
+#### Heat Resistant Coating (`heat_resistant_coating`)
 
-**Description:** Boron enhancements that maximize tool rigidity and minimize wear, especially in abrasive conditions.
+**Description:** A protective coating applied to tool surfaces, enabling usage in high-temperature zones.
 
 **Parameters:**
 ```json
 {
-  "baseDurability": 100,
-  "effectivenessCurve": 1.1,
-  "maintenanceFrequency": 15,
-  "materialCompatibility": 0.95
+  "baseDurability": {
+    "min": 0.5,
+    "max": 1,
+    "default": 0.8
+  },
+  "effectivenessCurve": {
+    "min": 0.6,
+    "max": 1,
+    "default": 0.9
+  },
+  "maintenanceFrequency": {
+    "min": 0.5,
+    "max": 0.8,
+    "default": 0.6
+  },
+  "materialCompatibility": {
+    "min": 0.9,
+    "max": 1,
+    "default": 0.95
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #4A4F59; padding: 2px 8px; border-radius: 3px;">#4A4F59</span>
-- <span style="background-color: #787C86; padding: 2px 8px; border-radius: 3px;">#787C86</span>
-- <span style="background-color: #B8BEC4; padding: 2px 8px; border-radius: 3px;">#B8BEC4</span>
-- <span style="background-color: #D3DAE0; padding: 2px 8px; border-radius: 3px;">#D3DAE0</span>
-- <span style="background-color: #E9EDF1; padding: 2px 8px; border-radius: 3px;">#E9EDF1</span>
+- <span style="background-color: #2E3844; padding: 2px 8px; border-radius: 3px;">#2E3844</span>
+- <span style="background-color: #5A6673; padding: 2px 8px; border-radius: 3px;">#5A6673</span>
+- <span style="background-color: #788290; padding: 2px 8px; border-radius: 3px;">#788290</span>
+- <span style="background-color: #959DAF; padding: 2px 8px; border-radius: 3px;">#959DAF</span>
+- <span style="background-color: #B1BBC5; padding: 2px 8px; border-radius: 3px;">#B1BBC5</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#4A4F59",
-  "roughness": 0.5,
-  "metallic": 0.7,
-  "normalStrength": 0.8,
-  "aoStrength": 0.7,
-  "heightScale": 0.03,
-  "emissive": "#B8BEC4"
+  "baseColor": "#2E3844",
+  "roughness": 0.75,
+  "metallic": 0.35,
+  "normalStrength": 1.3,
+  "aoStrength": 0.8,
+  "heightScale": 0.06,
+  "emissive": "#5A6673"
 }
 ```
 
 **Procedural Rules:**
-> Layered boron application gives tools a mottled grey appearance, enhancing hardness.
+> Coating thickness and texture vary based on thermal exposure.
 
 **Textures:**
-- **Rock025** (unknown): `Rock025` (not found in manifest)
+- **Metal050** (unknown): `Metal050` (not found in manifest)
+- **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
+
+---
+
+#### Heavy Duty Hinges (`heavy_duty_hinges`)
+
+**Description:** Strong hinge mechanisms for tools, allowing high-load applications without failure.
+
+**Parameters:**
+```json
+{
+  "baseDurability": {
+    "min": 1,
+    "max": 1.8,
+    "default": 1.5
+  },
+  "effectivenessCurve": {
+    "min": 0.7,
+    "max": 1.1,
+    "default": 0.9
+  },
+  "maintenanceFrequency": {
+    "min": 0.4,
+    "max": 0.7,
+    "default": 0.6
+  },
+  "materialCompatibility": {
+    "min": 0.6,
+    "max": 1,
+    "default": 0.8
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #373F48; padding: 2px 8px; border-radius: 3px;">#373F48</span>
+- <span style="background-color: #4C5560; padding: 2px 8px; border-radius: 3px;">#4C5560</span>
+- <span style="background-color: #636F78; padding: 2px 8px; border-radius: 3px;">#636F78</span>
+- <span style="background-color: #7B8891; padding: 2px 8px; border-radius: 3px;">#7B8891</span>
+- <span style="background-color: #93A1AA; padding: 2px 8px; border-radius: 3px;">#93A1AA</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#373F48",
+  "roughness": 0.9,
+  "metallic": 0.5,
+  "normalStrength": 1.8,
+  "aoStrength": 0.9,
+  "heightScale": 0.05,
+  "emissive": "#4C5560"
+}
+```
+
+**Procedural Rules:**
+> Joint patterning and surface joint reinforcement vary based on load capacity.
+
+**Textures:**
+- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
 - **Metal050** (unknown): `Metal050` (not found in manifest)
 
 ---
 
-#### Aluminum Adaptive Sheath (`unique_id_5`)
+#### Energy Vibration Dampener (`energy_vibration_dampener`)
 
-**Description:** Aluminum sheaths that adapt to environmental stressors, preserving tool condition over extended use.
+**Description:** A tool feature designed to reduce energy transmission and minimize vibration effect during use.
 
 **Parameters:**
 ```json
 {
-  "baseDurability": 90,
-  "effectivenessCurve": 1.15,
-  "maintenanceFrequency": 12,
-  "materialCompatibility": 0.87
+  "baseDurability": {
+    "min": 0.8,
+    "max": 1.4,
+    "default": 1.2
+  },
+  "effectivenessCurve": {
+    "min": 0.6,
+    "max": 1,
+    "default": 0.85
+  },
+  "maintenanceFrequency": {
+    "min": 0.3,
+    "max": 0.5,
+    "default": 0.4
+  },
+  "materialCompatibility": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.9
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #8E9EA9; padding: 2px 8px; border-radius: 3px;">#8E9EA9</span>
-- <span style="background-color: #D6DEE5; padding: 2px 8px; border-radius: 3px;">#D6DEE5</span>
-- <span style="background-color: #F2F8FB; padding: 2px 8px; border-radius: 3px;">#F2F8FB</span>
-- <span style="background-color: #BCC4C9; padding: 2px 8px; border-radius: 3px;">#BCC4C9</span>
-- <span style="background-color: #E3E9ED; padding: 2px 8px; border-radius: 3px;">#E3E9ED</span>
+- <span style="background-color: #5E6A78; padding: 2px 8px; border-radius: 3px;">#5E6A78</span>
+- <span style="background-color: #718593; padding: 2px 8px; border-radius: 3px;">#718593</span>
+- <span style="background-color: #849FAD; padding: 2px 8px; border-radius: 3px;">#849FAD</span>
+- <span style="background-color: #97B7C0; padding: 2px 8px; border-radius: 3px;">#97B7C0</span>
+- <span style="background-color: #ABCCD3; padding: 2px 8px; border-radius: 3px;">#ABCCD3</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#8E9EA9",
-  "roughness": 0.4,
-  "metallic": 0.8,
-  "normalStrength": 0.9,
-  "aoStrength": 0.6,
-  "heightScale": 0.02,
-  "emissive": "#D6DEE5"
+  "baseColor": "#5E6A78",
+  "roughness": 0.85,
+  "metallic": 0.25,
+  "normalStrength": 1.4,
+  "aoStrength": 0.7,
+  "heightScale": 0.04,
+  "emissive": "#718593"
 }
 ```
 
 **Procedural Rules:**
-> Aluminum surface layer shifts in response to environmental changes, reflecting light dynamically.
+> Pattern of energy dispersion lines vary.
 
 **Textures:**
-- **Metal050** (unknown): `Metal050` (not found in manifest)
 - **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
+- **Rock025** (unknown): `Rock025` (not found in manifest)
 
 ---
 
@@ -2757,8 +4945,8 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 
 **WARP Flow:** Inheriting knowledge from previous generation:
 - **Gen 3: Tool Systems** provided:
-  - "Titanium Vein Network", "Crystalline Conduction Array", "Granite Tunneling Constructs", "Subterranean Resonance Forge", "Luminous Drilling Consortium"...
-  - Total: 15 archetypes across all scales
+  - "Deep Vein Network", "Thermal Bore Accelerator", "Aqua-Seep Extractor", "Chromatic Forge Array", "Skybridge Logistical Platform"...
+  - Total: 20 archetypes across all scales
 
 ---
 
@@ -2766,42 +4954,58 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 
 **Total Archetypes:** 5
 
-#### Metal Vein Alliance Network (`unique_id_1`)
+#### Trade Winds Network (`trade_winds_01`)
 
-**Description:** A sophisticated web of interconnected tribes that share access to deep, rich metal veins. Tribes cooperate by contributing to an advanced mining system, ensuring equitable distribution and technological advancement.
+**Description:** A vast system of inter-tribal trade routes connecting multiple territories across metal-rich zones. Tribes exchange resources like iron and rare minerals using specialized communication signals and guided rail systems.
 
 **Parameters:**
 ```json
 {
-  "networkSize": 1200,
-  "tradeVolume": 0.8,
-  "allianceStrength": 0.9,
-  "conflictFrequency": 0.1
+  "networkSize": {
+    "min": 8,
+    "max": 20,
+    "default": 15
+  },
+  "tradeVolume": {
+    "min": 50,
+    "max": 200,
+    "default": 100
+  },
+  "allianceStrength": {
+    "min": 0.3,
+    "max": 0.7,
+    "default": 0.5
+  },
+  "conflictFrequency": {
+    "min": 0.1,
+    "max": 0.4,
+    "default": 0.2
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #525252; padding: 2px 8px; border-radius: 3px;">#525252</span>
-- <span style="background-color: #D4AF37; padding: 2px 8px; border-radius: 3px;">#D4AF37</span>
-- <span style="background-color: #303030; padding: 2px 8px; border-radius: 3px;">#303030</span>
-- <span style="background-color: #696969; padding: 2px 8px; border-radius: 3px;">#696969</span>
-- <span style="background-color: #A9A9A9; padding: 2px 8px; border-radius: 3px;">#A9A9A9</span>
+- <span style="background-color: #476A75; padding: 2px 8px; border-radius: 3px;">#476A75</span>
+- <span style="background-color: #739391; padding: 2px 8px; border-radius: 3px;">#739391</span>
+- <span style="background-color: #A4C4C3; padding: 2px 8px; border-radius: 3px;">#A4C4C3</span>
+- <span style="background-color: #DCEAEF; padding: 2px 8px; border-radius: 3px;">#DCEAEF</span>
+- <span style="background-color: #333B40; padding: 2px 8px; border-radius: 3px;">#333B40</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#303030",
+  "baseColor": "#739391",
   "roughness": 0.7,
   "metallic": 0.6,
-  "normalStrength": 1.2,
-  "aoStrength": 0.9,
-  "heightScale": 0.03,
-  "emissive": "#B8860B"
+  "normalStrength": 1.4,
+  "aoStrength": 0.5,
+  "heightScale": 0.1,
+  "emissive": "#A4C4C3"
 }
 ```
 
 **Procedural Rules:**
-> Layering of metallic veins with rocky sedimentary strata for surface depth.
+> Trade routes vary procedurally with terrain; rail systems adapt to valleys and inclines.
 
 **Textures:**
 - **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
@@ -2809,175 +5013,239 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 
 ---
 
-#### Crystalline Confluence (`unique_id_2`)
+#### Alliance Network (`alliance_network_02`)
 
-**Description:** A network driven by knowledge sharing and cultural exchange, with tribes using crystal-based communication technologies to connect across vast distances. This results in a vibrant exchange of ideas and skills.
-
-**Parameters:**
-```json
-{
-  "networkSize": 1500,
-  "tradeVolume": 0.7,
-  "allianceStrength": 0.8,
-  "conflictFrequency": 0.2
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #89CFF0; padding: 2px 8px; border-radius: 3px;">#89CFF0</span>
-- <span style="background-color: #FFD700; padding: 2px 8px; border-radius: 3px;">#FFD700</span>
-- <span style="background-color: #A9A9A9; padding: 2px 8px; border-radius: 3px;">#A9A9A9</span>
-- <span style="background-color: #E5E4E2; padding: 2px 8px; border-radius: 3px;">#E5E4E2</span>
-- <span style="background-color: #6A5ACD; padding: 2px 8px; border-radius: 3px;">#6A5ACD</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#89CFF0",
-  "roughness": 0.6,
-  "metallic": 0.4,
-  "normalStrength": 1.3,
-  "aoStrength": 0.8,
-  "heightScale": 0.02,
-  "emissive": "#DAA520"
-}
-```
-
-**Procedural Rules:**
-> Crystal growth patterns simulate organic communication nodes.
-
-**Textures:**
-- **Crystal004** (unknown): `Crystal004` (not found in manifest)
-- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
-
----
-
-#### Titanium Shield Pact (`unique_id_3`)
-
-**Description:** Strategic alliances formed among tribes for defensive purposes, utilizing titanium structures crafted from local resources to fortify positions and create resilient bastions in contested areas.
+**Description:** A structured alliance of tribes across territories, providing mutual defense and technological sharing. Tribes contribute to a central knowledge pool accessible through shared hubs.
 
 **Parameters:**
 ```json
 {
-  "networkSize": 1000,
-  "tradeVolume": 0.5,
-  "allianceStrength": 0.95,
-  "conflictFrequency": 0.05
+  "networkSize": {
+    "min": 5,
+    "max": 15,
+    "default": 10
+  },
+  "tradeVolume": {
+    "min": 20,
+    "max": 100,
+    "default": 60
+  },
+  "allianceStrength": {
+    "min": 0.5,
+    "max": 1,
+    "default": 0.8
+  },
+  "conflictFrequency": {
+    "min": 0.05,
+    "max": 0.2,
+    "default": 0.1
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #BFBFBF; padding: 2px 8px; border-radius: 3px;">#BFBFBF</span>
-- <span style="background-color: #708090; padding: 2px 8px; border-radius: 3px;">#708090</span>
-- <span style="background-color: #778899; padding: 2px 8px; border-radius: 3px;">#778899</span>
-- <span style="background-color: #2F4F4F; padding: 2px 8px; border-radius: 3px;">#2F4F4F</span>
-- <span style="background-color: #F0E68C; padding: 2px 8px; border-radius: 3px;">#F0E68C</span>
+- <span style="background-color: #7E9988; padding: 2px 8px; border-radius: 3px;">#7E9988</span>
+- <span style="background-color: #B7CAB1; padding: 2px 8px; border-radius: 3px;">#B7CAB1</span>
+- <span style="background-color: #3D5B59; padding: 2px 8px; border-radius: 3px;">#3D5B59</span>
+- <span style="background-color: #96B2A6; padding: 2px 8px; border-radius: 3px;">#96B2A6</span>
+- <span style="background-color: #EBF0E0; padding: 2px 8px; border-radius: 3px;">#EBF0E0</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#2F4F4F",
+  "baseColor": "#96B2A6",
   "roughness": 0.8,
-  "metallic": 0.7,
-  "normalStrength": 1.4,
-  "aoStrength": 0.85,
-  "heightScale": 0.04,
-  "emissive": "#8B0000"
+  "metallic": 0.2,
+  "normalStrength": 1.3,
+  "aoStrength": 0.6,
+  "heightScale": 0.05,
+  "emissive": "#B7CAB1"
 }
 ```
 
 **Procedural Rules:**
-> Fortified titanium walls interspersed with armored brickwork patterns.
+> Alliance hubs adapt visually to geological features, symbolized by shared banners and technologies.
 
 **Textures:**
-- **Metal047** (unknown): `Metal047` (not found in manifest)
-- **Bricks051** (Bricks): <img src="../../packages/gen/public/textures/bricks/Bricks051_bundle_2K.jpg" alt="Bricks 051" width="200" />
+- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
+- **Wood094** (Wood): <img src="../../packages/gen/public/textures/wood/Wood094_bundle_2K.jpg" alt="Wood 094" width="200" />
 
 ---
 
-#### Volcanic Trade Lattice (`unique_id_4`)
+#### Conflict Zone (`conflict_zone_03`)
 
-**Description:** An intricate system of trade routes leveraging volcanic heat and energy for sustainable resource exchange. The warm glow of the volcanic surface provides a fertile ground for innovation amidst harsh conditions.
+**Description:** Areas where territorial disputes and resource contention lead to frequent skirmishes. Tribes employ defensive fortifications and engage in tactical maneuvers to control strategic resources.
 
 **Parameters:**
 ```json
 {
-  "networkSize": 1100,
-  "tradeVolume": 0.9,
-  "allianceStrength": 0.7,
-  "conflictFrequency": 0.3
+  "networkSize": {
+    "min": 3,
+    "max": 8,
+    "default": 5
+  },
+  "tradeVolume": {
+    "min": 0,
+    "max": 20,
+    "default": 10
+  },
+  "allianceStrength": {
+    "min": 0,
+    "max": 0.3,
+    "default": 0.1
+  },
+  "conflictFrequency": {
+    "min": 0.6,
+    "max": 1,
+    "default": 0.8
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #8B4513; padding: 2px 8px; border-radius: 3px;">#8B4513</span>
-- <span style="background-color: #FF4500; padding: 2px 8px; border-radius: 3px;">#FF4500</span>
-- <span style="background-color: #B22222; padding: 2px 8px; border-radius: 3px;">#B22222</span>
-- <span style="background-color: #C0C0C0; padding: 2px 8px; border-radius: 3px;">#C0C0C0</span>
-- <span style="background-color: #FFD700; padding: 2px 8px; border-radius: 3px;">#FFD700</span>
+- <span style="background-color: #5C5E60; padding: 2px 8px; border-radius: 3px;">#5C5E60</span>
+- <span style="background-color: #8A8B8D; padding: 2px 8px; border-radius: 3px;">#8A8B8D</span>
+- <span style="background-color: #B8B8B8; padding: 2px 8px; border-radius: 3px;">#B8B8B8</span>
+- <span style="background-color: #37383A; padding: 2px 8px; border-radius: 3px;">#37383A</span>
+- <span style="background-color: #1C1D1E; padding: 2px 8px; border-radius: 3px;">#1C1D1E</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#8B4513",
-  "roughness": 0.5,
+  "baseColor": "#37383A",
+  "roughness": 0.9,
   "metallic": 0.4,
   "normalStrength": 1.6,
   "aoStrength": 0.7,
-  "heightScale": 0.06,
-  "emissive": "#FF4500"
+  "heightScale": 0.07,
+  "emissive": "#B8B8B8"
 }
 ```
 
 **Procedural Rules:**
-> Volcanic rock surfaces seamlessly integrated with glowing energy lines.
+> Rock formations and metal fortifications adapt to topography for strategic advantage.
 
 **Textures:**
 - **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
-- **Lava002** (unknown): `Lava002` (not found in manifest)
+- **Metal050** (unknown): `Metal050` (not found in manifest)
 
 ---
 
-#### Diplomatic Zenith Nexus (`unique_id_5`)
+#### Cultural Exchange Hubs (`cultural_exchange_01`)
 
-**Description:** Centers of diplomacy where tribes converge to negotiate treaties and resolve conflicts. These sophisticated hubs utilize elegant stone architecture to symbolize unity, peace, and progress.
+**Description:** Central points of cultural and knowledge sharing among tribes. These hubs facilitate the exchange of art, technology, and traditions, strengthening inter-tribal connections.
 
 **Parameters:**
 ```json
 {
-  "networkSize": 1300,
-  "tradeVolume": 0.6,
-  "allianceStrength": 0.85,
-  "conflictFrequency": 0.15
+  "networkSize": {
+    "min": 5,
+    "max": 12,
+    "default": 8
+  },
+  "tradeVolume": {
+    "min": 10,
+    "max": 50,
+    "default": 30
+  },
+  "allianceStrength": {
+    "min": 0.4,
+    "max": 0.8,
+    "default": 0.6
+  },
+  "conflictFrequency": {
+    "min": 0.1,
+    "max": 0.3,
+    "default": 0.15
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #708090; padding: 2px 8px; border-radius: 3px;">#708090</span>
-- <span style="background-color: #D3D3D3; padding: 2px 8px; border-radius: 3px;">#D3D3D3</span>
-- <span style="background-color: #4682B4; padding: 2px 8px; border-radius: 3px;">#4682B4</span>
-- <span style="background-color: #B0C4DE; padding: 2px 8px; border-radius: 3px;">#B0C4DE</span>
-- <span style="background-color: #778899; padding: 2px 8px; border-radius: 3px;">#778899</span>
+- <span style="background-color: #6D5D4E; padding: 2px 8px; border-radius: 3px;">#6D5D4E</span>
+- <span style="background-color: #A09E8B; padding: 2px 8px; border-radius: 3px;">#A09E8B</span>
+- <span style="background-color: #D6D5C7; padding: 2px 8px; border-radius: 3px;">#D6D5C7</span>
+- <span style="background-color: #857864; padding: 2px 8px; border-radius: 3px;">#857864</span>
+- <span style="background-color: #BFABA0; padding: 2px 8px; border-radius: 3px;">#BFABA0</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#708090",
-  "roughness": 0.9,
-  "metallic": 0.2,
-  "normalStrength": 1.1,
-  "aoStrength": 0.9,
-  "heightScale": 0.03,
-  "emissive": "#FFD700"
+  "baseColor": "#A09E8B",
+  "roughness": 0.6,
+  "metallic": 0.1,
+  "normalStrength": 1.3,
+  "aoStrength": 0.5,
+  "heightScale": 0.04,
+  "emissive": "#D6D5C7"
 }
 ```
 
 **Procedural Rules:**
-> Smooth stone surfaces interlaced with fabric banners of negotiation.
+> Cultural motifs and architectural designs vary with the artistic influences of participating tribes.
 
 **Textures:**
-- **Stone014** (unknown): `Stone014` (not found in manifest)
 - **Fabric023** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric023_bundle_2K.jpg" alt="Fabric 023" width="200" />
+- **Wood051** (Wood): <img src="../../packages/gen/public/textures/wood/Wood051_bundle_2K.jpg" alt="Wood 051" width="200" />
+
+---
+
+#### Diplomatic Hub (`diplomatic_hub_04`)
+
+**Description:** Key centers for negotiation and treaty formation between tribes. Facilitates long-term alliances and policies addressing environmental and resource challenges.
+
+**Parameters:**
+```json
+{
+  "networkSize": {
+    "min": 4,
+    "max": 10,
+    "default": 6
+  },
+  "tradeVolume": {
+    "min": 5,
+    "max": 30,
+    "default": 15
+  },
+  "allianceStrength": {
+    "min": 0.6,
+    "max": 1,
+    "default": 0.9
+  },
+  "conflictFrequency": {
+    "min": 0.05,
+    "max": 0.2,
+    "default": 0.1
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #4B5539; padding: 2px 8px; border-radius: 3px;">#4B5539</span>
+- <span style="background-color: #727B57; padding: 2px 8px; border-radius: 3px;">#727B57</span>
+- <span style="background-color: #939985; padding: 2px 8px; border-radius: 3px;">#939985</span>
+- <span style="background-color: #BCC3A7; padding: 2px 8px; border-radius: 3px;">#BCC3A7</span>
+- <span style="background-color: #DDE4C2; padding: 2px 8px; border-radius: 3px;">#DDE4C2</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#727B57",
+  "roughness": 0.7,
+  "metallic": 0.3,
+  "normalStrength": 1.2,
+  "aoStrength": 0.5,
+  "heightScale": 0.06,
+  "emissive": "#BCC3A7"
+}
+```
+
+**Procedural Rules:**
+> Diplomatic buildings exhibit a blend of architectural styles, signifying cross-cultural influence.
+
+**Textures:**
+- **Leather011** (Leather): <img src="../../packages/gen/public/textures/leather/Leather011_bundle_2K.jpg" alt="Leather 011" width="200" />
+- **Concrete025** (Concrete): <img src="../../packages/gen/public/textures/concrete/Concrete025_bundle_2K.jpg" alt="Concrete 025" width="200" />
 
 ---
 
@@ -2985,222 +5253,479 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 ### MESO: Intermediate dynamics and structural relationships
 
 **WEFT Flow:** Building on MACRO scale archetypes:
-- "Metal Vein Alliance Network", "Crystalline Confluence", "Titanium Shield Pact"...
+- "Trade Winds Network", "Alliance Network", "Conflict Zone"...
 
-**Total Archetypes:** 5
+**Total Archetypes:** 8
 
-#### Tribal Initiate Council (`tribal_initiate_council`)
+#### Iron Nexus Council (`archetype_001`)
 
-**Description:** A tribal structure where young leaders are chosen from various packs to form a governing council. This council is responsible for decision-making and resource management.
+**Description:** A centralized council governance structure where elected representatives from each tribe come together to make decisions for the greater community. This governance model balances local autonomy with central decision-making, ideal for regions with interconnected trade routes.
 
 **Parameters:**
 ```json
 {
-  "governanceComplexity": 4.2,
-  "decisionSpeed": 3.5,
-  "resourceEfficiency": 4,
-  "socialStability": 4.5
+  "governanceComplexity": {
+    "min": 0.5,
+    "max": 0.9,
+    "default": 0.7
+  },
+  "decisionSpeed": {
+    "min": 0.4,
+    "max": 0.8,
+    "default": 0.6
+  },
+  "resourceEfficiency": {
+    "min": 0.6,
+    "max": 0.9,
+    "default": 0.75
+  },
+  "socialStability": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.85
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #4A3F35; padding: 2px 8px; border-radius: 3px;">#4A3F35</span>
-- <span style="background-color: #DDAE77; padding: 2px 8px; border-radius: 3px;">#DDAE77</span>
-- <span style="background-color: #CAB49B; padding: 2px 8px; border-radius: 3px;">#CAB49B</span>
-- <span style="background-color: #6E583F; padding: 2px 8px; border-radius: 3px;">#6E583F</span>
-- <span style="background-color: #8E7C68; padding: 2px 8px; border-radius: 3px;">#8E7C68</span>
+- <span style="background-color: #34495E; padding: 2px 8px; border-radius: 3px;">#34495E</span>
+- <span style="background-color: #2ECC71; padding: 2px 8px; border-radius: 3px;">#2ECC71</span>
+- <span style="background-color: #3498DB; padding: 2px 8px; border-radius: 3px;">#3498DB</span>
+- <span style="background-color: #E74C3C; padding: 2px 8px; border-radius: 3px;">#E74C3C</span>
+- <span style="background-color: #9B59B6; padding: 2px 8px; border-radius: 3px;">#9B59B6</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#4A3F35",
-  "roughness": 0.7,
-  "metallic": 0,
+  "baseColor": "#34495E",
+  "roughness": 0.5,
+  "metallic": 0.3,
   "normalStrength": 1.2,
-  "aoStrength": 0.9,
-  "heightScale": 0.04,
-  "emissive": "#CAB49B"
-}
-```
-
-**Procedural Rules:**
-> Patterns on fabric change with rank, adding more stitching and color gradation for higher ranks.
-
-**Textures:**
-- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
-- **Rock025** (unknown): `Rock025` (not found in manifest)
-
----
-
-#### Elder Council of Sages (`elder_council_of_sages`)
-
-**Description:** A council composed of the wisest elder members from each pack, who guide the tribe with their vast experience. Decisions are deliberated over time to ensure the best outcome.
-
-**Parameters:**
-```json
-{
-  "governanceComplexity": 5,
-  "decisionSpeed": 2,
-  "resourceEfficiency": 3.8,
-  "socialStability": 5
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #3A615C; padding: 2px 8px; border-radius: 3px;">#3A615C</span>
-- <span style="background-color: #A7B8B5; padding: 2px 8px; border-radius: 3px;">#A7B8B5</span>
-- <span style="background-color: #F2D3AB; padding: 2px 8px; border-radius: 3px;">#F2D3AB</span>
-- <span style="background-color: #7A857A; padding: 2px 8px; border-radius: 3px;">#7A857A</span>
-- <span style="background-color: #404844; padding: 2px 8px; border-radius: 3px;">#404844</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#3A615C",
-  "roughness": 0.85,
-  "metallic": 0,
-  "normalStrength": 1,
-  "aoStrength": 0.95,
-  "heightScale": 0.02,
-  "emissive": "#A7B8B5"
-}
-```
-
-**Procedural Rules:**
-> Rock texture features carvings that tell stories of past councils, updated with time.
-
-**Textures:**
-- **Fabric023** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric023_bundle_2K.jpg" alt="Fabric 023" width="200" />
-- **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
-
----
-
-#### Pack Federation (`pack_federation`)
-
-**Description:** Multiple packs come together to form a loose federation, retaining autonomy but coordinating on critical issues and resource distribution.
-
-**Parameters:**
-```json
-{
-  "governanceComplexity": 3.5,
-  "decisionSpeed": 4,
-  "resourceEfficiency": 4.5,
-  "socialStability": 4
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #4F301F; padding: 2px 8px; border-radius: 3px;">#4F301F</span>
-- <span style="background-color: #A67B5B; padding: 2px 8px; border-radius: 3px;">#A67B5B</span>
-- <span style="background-color: #C9B59F; padding: 2px 8px; border-radius: 3px;">#C9B59F</span>
-- <span style="background-color: #7C5853; padding: 2px 8px; border-radius: 3px;">#7C5853</span>
-- <span style="background-color: #272020; padding: 2px 8px; border-radius: 3px;">#272020</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#4F301F",
-  "roughness": 0.78,
-  "metallic": 0,
-  "normalStrength": 1.3,
-  "aoStrength": 0.8,
+  "aoStrength": 0.7,
   "heightScale": 0.03,
-  "emissive": "#A67B5B"
+  "emissive": "#3498DB"
 }
 ```
 
 **Procedural Rules:**
-> Leather markings represent the history and distinct traits of each pack within the federation.
+> Fabric patterns vary by tribal symbol, metal sheen reflects council diversity.
 
 **Textures:**
-- **Leather011** (Leather): <img src="../../packages/gen/public/textures/leather/Leather011_bundle_2K.jpg" alt="Leather 011" width="200" />
-- **Rock025** (unknown): `Rock025` (not found in manifest)
+- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
+- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
 
 ---
 
-#### Resource Allocation Seer Coalition (`resource_allocation_seer_coalition`)
+#### Metal Tapestry Confederation (`archetype_002`)
 
-**Description:** A unique system where seers, skilled in resource assessments and predictions, take on a central role in resource distribution and strategic decision-making.
+**Description:** A confederation model that emphasizes loose alliance among tribes, focusing on shared cultural heritage and defensive collaborations.
 
 **Parameters:**
 ```json
 {
-  "governanceComplexity": 4.6,
-  "decisionSpeed": 3.8,
-  "resourceEfficiency": 5,
-  "socialStability": 4.2
+  "governanceComplexity": {
+    "min": 0.3,
+    "max": 0.6,
+    "default": 0.5
+  },
+  "decisionSpeed": {
+    "min": 0.5,
+    "max": 0.9,
+    "default": 0.7
+  },
+  "resourceEfficiency": {
+    "min": 0.4,
+    "max": 0.7,
+    "default": 0.6
+  },
+  "socialStability": {
+    "min": 0.6,
+    "max": 0.9,
+    "default": 0.75
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #223F4A; padding: 2px 8px; border-radius: 3px;">#223F4A</span>
-- <span style="background-color: #90AFC5; padding: 2px 8px; border-radius: 3px;">#90AFC5</span>
-- <span style="background-color: #336B87; padding: 2px 8px; border-radius: 3px;">#336B87</span>
-- <span style="background-color: #2A3132; padding: 2px 8px; border-radius: 3px;">#2A3132</span>
-- <span style="background-color: #763626; padding: 2px 8px; border-radius: 3px;">#763626</span>
+- <span style="background-color: #1ABC9C; padding: 2px 8px; border-radius: 3px;">#1ABC9C</span>
+- <span style="background-color: #F39C12; padding: 2px 8px; border-radius: 3px;">#F39C12</span>
+- <span style="background-color: #E67E22; padding: 2px 8px; border-radius: 3px;">#E67E22</span>
+- <span style="background-color: #C0392B; padding: 2px 8px; border-radius: 3px;">#C0392B</span>
+- <span style="background-color: #8E44AD; padding: 2px 8px; border-radius: 3px;">#8E44AD</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#223F4A",
-  "roughness": 0.72,
-  "metallic": 0,
-  "normalStrength": 1.4,
-  "aoStrength": 0.85,
-  "heightScale": 0.05,
-  "emissive": "#90AFC5"
+  "baseColor": "#1ABC9C",
+  "roughness": 0.4,
+  "metallic": 0.2,
+  "normalStrength": 1,
+  "aoStrength": 0.6,
+  "heightScale": 0.04,
+  "emissive": "#F39C12"
 }
 ```
 
 **Procedural Rules:**
-> Fabric patterns feature intricate threads glowing faintly, signifying seer's insight.
+> Fabric colors weave together to represent unified tribal identity.
+
+**Textures:**
+- **Fabric023** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric023_bundle_2K.jpg" alt="Fabric 023" width="200" />
+- **Metal050** (unknown): `Metal050` (not found in manifest)
+
+---
+
+#### Harmonic Council (`archetype_003`)
+
+**Description:** A council system where decision-making is based on harmonizing differing perspectives into a cohesive strategy, ideal for diplomatic hubs.
+
+**Parameters:**
+```json
+{
+  "governanceComplexity": {
+    "min": 0.6,
+    "max": 0.9,
+    "default": 0.8
+  },
+  "decisionSpeed": {
+    "min": 0.3,
+    "max": 0.6,
+    "default": 0.45
+  },
+  "resourceEfficiency": {
+    "min": 0.5,
+    "max": 0.8,
+    "default": 0.6
+  },
+  "socialStability": {
+    "min": 0.8,
+    "max": 1,
+    "default": 0.9
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #2980B9; padding: 2px 8px; border-radius: 3px;">#2980B9</span>
+- <span style="background-color: #27AE60; padding: 2px 8px; border-radius: 3px;">#27AE60</span>
+- <span style="background-color: #F1C40F; padding: 2px 8px; border-radius: 3px;">#F1C40F</span>
+- <span style="background-color: #E74C3C; padding: 2px 8px; border-radius: 3px;">#E74C3C</span>
+- <span style="background-color: #8E44AD; padding: 2px 8px; border-radius: 3px;">#8E44AD</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#2980B9",
+  "roughness": 0.3,
+  "metallic": 0.25,
+  "normalStrength": 1.3,
+  "aoStrength": 0.7,
+  "heightScale": 0.02,
+  "emissive": "#E74C3C"
+}
+```
+
+**Procedural Rules:**
+> Metallic elements represent balanced perspectives, fabrics indicate diverse cultures.
 
 **Textures:**
 - **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
+- **Metal050** (unknown): `Metal050` (not found in manifest)
+
+---
+
+#### Resource Ring Federation (`archetype_004`)
+
+**Description:** A federation structure that coordinates multiple packs specialized in different resource extraction and provides a platform for controlled distribution.
+
+**Parameters:**
+```json
+{
+  "governanceComplexity": {
+    "min": 0.6,
+    "max": 0.9,
+    "default": 0.7
+  },
+  "decisionSpeed": {
+    "min": 0.4,
+    "max": 0.7,
+    "default": 0.6
+  },
+  "resourceEfficiency": {
+    "min": 0.8,
+    "max": 1,
+    "default": 0.9
+  },
+  "socialStability": {
+    "min": 0.7,
+    "max": 0.9,
+    "default": 0.8
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #ECF0F1; padding: 2px 8px; border-radius: 3px;">#ECF0F1</span>
+- <span style="background-color: #95A5A6; padding: 2px 8px; border-radius: 3px;">#95A5A6</span>
+- <span style="background-color: #7F8C8D; padding: 2px 8px; border-radius: 3px;">#7F8C8D</span>
+- <span style="background-color: #BDC3C7; padding: 2px 8px; border-radius: 3px;">#BDC3C7</span>
+- <span style="background-color: #D5D8DC; padding: 2px 8px; border-radius: 3px;">#D5D8DC</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#95A5A6",
+  "roughness": 0.5,
+  "metallic": 0.4,
+  "normalStrength": 1.4,
+  "aoStrength": 0.8,
+  "heightScale": 0.05,
+  "emissive": "#BDC3C7"
+}
+```
+
+**Procedural Rules:**
+> Textures reflect the resource specialization of the federation.
+
+**Textures:**
+- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
 - **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
 
 ---
 
-#### Democratic Alliance Council (`democratic_alliance_council`)
+#### Sovereign Mesh (`archetype_005`)
 
-**Description:** A democratic assembly composed of representatives from each pack, ensuring equitable decision-making and shared responsibility for all tribal endeavors.
+**Description:** A democratic mesh of tribes where power is distributed horizontally, and decisions are made collectively through transparent consensus.
 
 **Parameters:**
 ```json
 {
-  "governanceComplexity": 4,
-  "decisionSpeed": 3.3,
-  "resourceEfficiency": 4.3,
-  "socialStability": 4.5
+  "governanceComplexity": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.85
+  },
+  "decisionSpeed": {
+    "min": 0.3,
+    "max": 0.5,
+    "default": 0.4
+  },
+  "resourceEfficiency": {
+    "min": 0.5,
+    "max": 0.7,
+    "default": 0.6
+  },
+  "socialStability": {
+    "min": 0.9,
+    "max": 1,
+    "default": 0.95
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #233237; padding: 2px 8px; border-radius: 3px;">#233237</span>
-- <span style="background-color: #4A6B6F; padding: 2px 8px; border-radius: 3px;">#4A6B6F</span>
-- <span style="background-color: #88C1D0; padding: 2px 8px; border-radius: 3px;">#88C1D0</span>
-- <span style="background-color: #BDBBB5; padding: 2px 8px; border-radius: 3px;">#BDBBB5</span>
-- <span style="background-color: #A33A3A; padding: 2px 8px; border-radius: 3px;">#A33A3A</span>
+- <span style="background-color: #F5B041; padding: 2px 8px; border-radius: 3px;">#F5B041</span>
+- <span style="background-color: #45B39D; padding: 2px 8px; border-radius: 3px;">#45B39D</span>
+- <span style="background-color: #BB8FCE; padding: 2px 8px; border-radius: 3px;">#BB8FCE</span>
+- <span style="background-color: #F4D03F; padding: 2px 8px; border-radius: 3px;">#F4D03F</span>
+- <span style="background-color: #1C2833; padding: 2px 8px; border-radius: 3px;">#1C2833</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#233237",
-  "roughness": 0.8,
-  "metallic": 0,
+  "baseColor": "#45B39D",
+  "roughness": 0.6,
+  "metallic": 0.2,
   "normalStrength": 1.1,
-  "aoStrength": 0.9,
-  "heightScale": 0.025,
-  "emissive": "#88C1D0"
+  "aoStrength": 0.7,
+  "heightScale": 0.03,
+  "emissive": "#F4D03F"
 }
 ```
 
 **Procedural Rules:**
-> Fabric embroidered with symbols representing each member pack, with periodic updates as alliances shift.
+> Textile patterns are diverse but unified in shared symbolism.
 
 **Textures:**
 - **Fabric023** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric023_bundle_2K.jpg" alt="Fabric 023" width="200" />
+- **Metal050** (unknown): `Metal050` (not found in manifest)
+
+---
+
+#### Iron Veil Protection Alliance (`archetype_006`)
+
+**Description:** A defensive alliance model prioritizing mutual protection and coordinated responses to external threats, securing territorial boundaries.
+
+**Parameters:**
+```json
+{
+  "governanceComplexity": {
+    "min": 0.5,
+    "max": 0.8,
+    "default": 0.7
+  },
+  "decisionSpeed": {
+    "min": 0.6,
+    "max": 0.9,
+    "default": 0.8
+  },
+  "resourceEfficiency": {
+    "min": 0.4,
+    "max": 0.6,
+    "default": 0.5
+  },
+  "socialStability": {
+    "min": 0.6,
+    "max": 0.8,
+    "default": 0.7
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #2C3E50; padding: 2px 8px; border-radius: 3px;">#2C3E50</span>
+- <span style="background-color: #E74C3C; padding: 2px 8px; border-radius: 3px;">#E74C3C</span>
+- <span style="background-color: #3498DB; padding: 2px 8px; border-radius: 3px;">#3498DB</span>
+- <span style="background-color: #9B59B6; padding: 2px 8px; border-radius: 3px;">#9B59B6</span>
+- <span style="background-color: #27AE60; padding: 2px 8px; border-radius: 3px;">#27AE60</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#2C3E50",
+  "roughness": 0.7,
+  "metallic": 0.3,
+  "normalStrength": 1.3,
+  "aoStrength": 0.9,
+  "heightScale": 0.06,
+  "emissive": "#E74C3C"
+}
+```
+
+**Procedural Rules:**
+> Metals signify protection, stone textures underline defense.
+
+**Textures:**
+- **Metal050** (unknown): `Metal050` (not found in manifest)
 - **Rock025** (unknown): `Rock025` (not found in manifest)
+
+---
+
+#### Equilibrium Council (`archetype_007`)
+
+**Description:** Designed to maintain societal balance by integrating rotating leadership roles based on individual merit and achievement, supporting dynamic stability.
+
+**Parameters:**
+```json
+{
+  "governanceComplexity": {
+    "min": 0.4,
+    "max": 0.7,
+    "default": 0.6
+  },
+  "decisionSpeed": {
+    "min": 0.5,
+    "max": 0.8,
+    "default": 0.7
+  },
+  "resourceEfficiency": {
+    "min": 0.6,
+    "max": 0.8,
+    "default": 0.75
+  },
+  "socialStability": {
+    "min": 0.7,
+    "max": 0.9,
+    "default": 0.8
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #34495E; padding: 2px 8px; border-radius: 3px;">#34495E</span>
+- <span style="background-color: #1ABC9C; padding: 2px 8px; border-radius: 3px;">#1ABC9C</span>
+- <span style="background-color: #F39C12; padding: 2px 8px; border-radius: 3px;">#F39C12</span>
+- <span style="background-color: #E67E22; padding: 2px 8px; border-radius: 3px;">#E67E22</span>
+- <span style="background-color: #8E44AD; padding: 2px 8px; border-radius: 3px;">#8E44AD</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#1ABC9C",
+  "roughness": 0.5,
+  "metallic": 0.3,
+  "normalStrength": 1.1,
+  "aoStrength": 0.6,
+  "heightScale": 0.02,
+  "emissive": "#F39C12"
+}
+```
+
+**Procedural Rules:**
+> Patterns represent change, unity, and dynamic governance.
+
+**Textures:**
+- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
+- **Leather012** (Leather): <img src="../../packages/gen/public/textures/leather/Leather012_bundle_2K.jpg" alt="Leather 012" width="200" />
+
+---
+
+#### Radiant Assembly (`archetype_008`)
+
+**Description:** A highly structured democratic assembly focusing on resource innovation and technological advancement, blending different tribal disciplines.
+
+**Parameters:**
+```json
+{
+  "governanceComplexity": {
+    "min": 0.8,
+    "max": 1,
+    "default": 0.9
+  },
+  "decisionSpeed": {
+    "min": 0.3,
+    "max": 0.5,
+    "default": 0.4
+  },
+  "resourceEfficiency": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.85
+  },
+  "socialStability": {
+    "min": 0.8,
+    "max": 1,
+    "default": 0.9
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #3498DB; padding: 2px 8px; border-radius: 3px;">#3498DB</span>
+- <span style="background-color: #1ABC9C; padding: 2px 8px; border-radius: 3px;">#1ABC9C</span>
+- <span style="background-color: #F39C12; padding: 2px 8px; border-radius: 3px;">#F39C12</span>
+- <span style="background-color: #E74C3C; padding: 2px 8px; border-radius: 3px;">#E74C3C</span>
+- <span style="background-color: #8E44AD; padding: 2px 8px; border-radius: 3px;">#8E44AD</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#3498DB",
+  "roughness": 0.4,
+  "metallic": 0.35,
+  "normalStrength": 1.5,
+  "aoStrength": 0.7,
+  "heightScale": 0.03,
+  "emissive": "#8E44AD"
+}
+```
+
+**Procedural Rules:**
+> Fabrics symbolize knowledge exchange, metals express innovation.
+
+**Textures:**
+- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
+- **Fabric023** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric023_bundle_2K.jpg" alt="Fabric 023" width="200" />
 
 ---
 
@@ -3208,223 +5733,363 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 ### MICRO: Fine-grained details and specific implementations
 
 **WEFT Flow:** Building on MACRO and MESO scales:
-- MACRO: "Metal Vein Alliance Network", "Crystalline Confluence"...
-- MESO: "Tribal Initiate Council", "Elder Council of Sages"...
+- MACRO: "Trade Winds Network", "Alliance Network"...
+- MESO: "Iron Nexus Council", "Metal Tapestry Confederation"...
 
-**Total Archetypes:** 5
+**Total Archetypes:** 6
 
-#### Forge Mediator (`micro_role_1`)
+#### Harmony Keeper (`role_001`)
 
-**Description:** The Forge Mediator role manages disputes and negotiations within the tribe, utilizing a keen sense of diplomacy and conflict resolution skills. Metallic elements adorn their attire, reflecting their connection to the Titanium Shield Pact for defense.
+**Description:** An individual whose primary role is to mediate disputes and maintain harmony among tribe members and with neighboring tribes. Known for their calm demeanor and profound understanding of social dynamics.
 
 **Parameters:**
 ```json
 {
-  "roleAuthority": 7.5,
-  "skillRequirement": 8,
-  "socialStatus": 9,
-  "resourceAccess": 6.5
+  "roleAuthority": {
+    "min": 0.4,
+    "max": 0.8,
+    "default": 0.6
+  },
+  "skillRequirement": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.85
+  },
+  "socialStatus": {
+    "min": 0.5,
+    "max": 0.9,
+    "default": 0.7
+  },
+  "resourceAccess": {
+    "min": 0.3,
+    "max": 0.6,
+    "default": 0.5
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #D4AF37; padding: 2px 8px; border-radius: 3px;">#D4AF37</span>
-- <span style="background-color: #787A79; padding: 2px 8px; border-radius: 3px;">#787A79</span>
-- <span style="background-color: #F2E7C9; padding: 2px 8px; border-radius: 3px;">#F2E7C9</span>
-- <span style="background-color: #2E3031; padding: 2px 8px; border-radius: 3px;">#2E3031</span>
-- <span style="background-color: #708090; padding: 2px 8px; border-radius: 3px;">#708090</span>
+- <span style="background-color: #8A2BE2; padding: 2px 8px; border-radius: 3px;">#8A2BE2</span>
+- <span style="background-color: #9370DB; padding: 2px 8px; border-radius: 3px;">#9370DB</span>
+- <span style="background-color: #E6E6FA; padding: 2px 8px; border-radius: 3px;">#E6E6FA</span>
+- <span style="background-color: #F8F8FF; padding: 2px 8px; border-radius: 3px;">#F8F8FF</span>
+- <span style="background-color: #4B0082; padding: 2px 8px; border-radius: 3px;">#4B0082</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#D4AF37",
+  "baseColor": "#8A2BE2",
   "roughness": 0.5,
-  "metallic": 0.8,
-  "normalStrength": 1.2,
+  "metallic": 0.1,
+  "normalStrength": 1,
   "aoStrength": 0.7,
   "heightScale": 0.02,
-  "emissive": "#2E3031"
+  "emissive": "#9370DB"
 }
 ```
 
 **Procedural Rules:**
-> Procedural variants include adjustments in metallic sheen and leather engravings to signify rank and experience.
+> Fabric patterns change to reflect emotional states, incorporating flowing lines and waves.
 
 **Textures:**
-- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
+- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
 - **Leather011** (Leather): <img src="../../packages/gen/public/textures/leather/Leather011_bundle_2K.jpg" alt="Leather 011" width="200" />
 
 ---
 
-#### Crystal Artificer (`micro_role_2`)
+#### Resource Strategist (`role_002`)
 
-**Description:** Artificers are the primary innovators, creating tools that elevate the capabilities of their tribe. They work closely with resources from the Crystalline Confluence to craft and repair essential equipment.
-
-**Parameters:**
-```json
-{
-  "roleAuthority": 6,
-  "skillRequirement": 9.5,
-  "socialStatus": 8,
-  "resourceAccess": 7
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #8FD4F7; padding: 2px 8px; border-radius: 3px;">#8FD4F7</span>
-- <span style="background-color: #A9A9A9; padding: 2px 8px; border-radius: 3px;">#A9A9A9</span>
-- <span style="background-color: #5EC8D2; padding: 2px 8px; border-radius: 3px;">#5EC8D2</span>
-- <span style="background-color: #F0FFFF; padding: 2px 8px; border-radius: 3px;">#F0FFFF</span>
-- <span style="background-color: #4682B4; padding: 2px 8px; border-radius: 3px;">#4682B4</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#8FD4F7",
-  "roughness": 0.4,
-  "metallic": 0.6,
-  "normalStrength": 1.3,
-  "aoStrength": 0.8,
-  "heightScale": 0.03,
-  "emissive": "#F0FFFF"
-}
-```
-
-**Procedural Rules:**
-> The fabric component's complexity varies with an artificer's specialty, showcasing intricate weaving patterns.
-
-**Textures:**
-- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
-- **Metal050** (unknown): `Metal050` (not found in manifest)
-
----
-
-#### Volcanic Trader (`micro_role_3`)
-
-**Description:** Traders work across the Volcanic Trade Lattice, facilitating the exchange of goods and technologies. They navigate through thermal routes, adept at securing essential resources for the tribe.
+**Description:** Specializes in analyzing and optimizing resource allocation within and between tribes, balancing supply with communal needs.
 
 **Parameters:**
 ```json
 {
-  "roleAuthority": 5.5,
-  "skillRequirement": 7,
-  "socialStatus": 7.5,
-  "resourceAccess": 8.5
+  "roleAuthority": {
+    "min": 0.6,
+    "max": 0.9,
+    "default": 0.75
+  },
+  "skillRequirement": {
+    "min": 0.7,
+    "max": 0.95,
+    "default": 0.85
+  },
+  "socialStatus": {
+    "min": 0.4,
+    "max": 0.7,
+    "default": 0.55
+  },
+  "resourceAccess": {
+    "min": 0.6,
+    "max": 1,
+    "default": 0.8
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #FF4500; padding: 2px 8px; border-radius: 3px;">#FF4500</span>
-- <span style="background-color: #2C3E50; padding: 2px 8px; border-radius: 3px;">#2C3E50</span>
-- <span style="background-color: #B22222; padding: 2px 8px; border-radius: 3px;">#B22222</span>
-- <span style="background-color: #FFD700; padding: 2px 8px; border-radius: 3px;">#FFD700</span>
-- <span style="background-color: #8B0000; padding: 2px 8px; border-radius: 3px;">#8B0000</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#FF4500",
-  "roughness": 0.6,
-  "metallic": 0.5,
-  "normalStrength": 1,
-  "aoStrength": 0.7,
-  "heightScale": 0.04,
-  "emissive": "#8B0000"
-}
-```
-
-**Procedural Rules:**
-> Trade insignias are embossed onto leather, with color variations indicating trade experience.
-
-**Textures:**
-- **Leather012** (Leather): <img src="../../packages/gen/public/textures/leather/Leather012_bundle_2K.jpg" alt="Leather 012" width="200" />
-- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
-
----
-
-#### Diplomatic Sage (`micro_role_4`)
-
-**Description:** Sages in the Diplomatic Zenith Nexus are revered for their wisdom and ability to guide treaties and alliances. They embody calmness and are instrumental in maintaining harmony across tribes.
-
-**Parameters:**
-```json
-{
-  "roleAuthority": 9.5,
-  "skillRequirement": 8.5,
-  "socialStatus": 10,
-  "resourceAccess": 6
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #556B2F; padding: 2px 8px; border-radius: 3px;">#556B2F</span>
-- <span style="background-color: #D3D3D3; padding: 2px 8px; border-radius: 3px;">#D3D3D3</span>
-- <span style="background-color: #FFE4B5; padding: 2px 8px; border-radius: 3px;">#FFE4B5</span>
-- <span style="background-color: #4682B4; padding: 2px 8px; border-radius: 3px;">#4682B4</span>
+- <span style="background-color: #9C661F; padding: 2px 8px; border-radius: 3px;">#9C661F</span>
+- <span style="background-color: #CD853F; padding: 2px 8px; border-radius: 3px;">#CD853F</span>
+- <span style="background-color: #D2B48C; padding: 2px 8px; border-radius: 3px;">#D2B48C</span>
+- <span style="background-color: #DEB887; padding: 2px 8px; border-radius: 3px;">#DEB887</span>
 - <span style="background-color: #F5DEB3; padding: 2px 8px; border-radius: 3px;">#F5DEB3</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#556B2F",
-  "roughness": 0.3,
-  "metallic": 0.2,
-  "normalStrength": 1.1,
+  "baseColor": "#9C661F",
+  "roughness": 0.7,
+  "metallic": 0.3,
+  "normalStrength": 1,
   "aoStrength": 0.9,
-  "heightScale": 0.02,
-  "emissive": "#FFE4B5"
+  "heightScale": 0.03,
+  "emissive": "#CD853F"
 }
 ```
 
 **Procedural Rules:**
-> Fabric weave intricacy reflects sage wisdom level, with emissive threads denoting enlightenment.
+> Visual patterns shift between tight geometric shapes and expansive fields, symbolizing resource flow.
 
 **Textures:**
+- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
 - **Fabric023** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric023_bundle_2K.jpg" alt="Fabric 023" width="200" />
-- **Metal050** (unknown): `Metal050` (not found in manifest)
 
 ---
 
-#### Resource Prognosticator (`micro_role_5`)
+#### Cultural Artisan (`role_003`)
 
-**Description:** In the Resource Allocation Seer Coalition, these individuals predict key resource locations and manage distribution strategies. They possess heightened sensory capabilities evolved to detect subtle environmental shifts.
+**Description:** Creates and maintains cultural artifacts that encode tribal history and identity. Proficient in integrating new materials into traditional forms.
 
 **Parameters:**
 ```json
 {
-  "roleAuthority": 8,
-  "skillRequirement": 9,
-  "socialStatus": 8.5,
-  "resourceAccess": 9
+  "roleAuthority": {
+    "min": 0.3,
+    "max": 0.6,
+    "default": 0.4
+  },
+  "skillRequirement": {
+    "min": 0.8,
+    "max": 1,
+    "default": 0.9
+  },
+  "socialStatus": {
+    "min": 0.5,
+    "max": 0.8,
+    "default": 0.65
+  },
+  "resourceAccess": {
+    "min": 0.4,
+    "max": 0.7,
+    "default": 0.55
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #708090; padding: 2px 8px; border-radius: 3px;">#708090</span>
-- <span style="background-color: #C0C0C0; padding: 2px 8px; border-radius: 3px;">#C0C0C0</span>
-- <span style="background-color: #D2B48C; padding: 2px 8px; border-radius: 3px;">#D2B48C</span>
-- <span style="background-color: #778899; padding: 2px 8px; border-radius: 3px;">#778899</span>
-- <span style="background-color: #E0FFFF; padding: 2px 8px; border-radius: 3px;">#E0FFFF</span>
+- <span style="background-color: #FFD700; padding: 2px 8px; border-radius: 3px;">#FFD700</span>
+- <span style="background-color: #FF8C00; padding: 2px 8px; border-radius: 3px;">#FF8C00</span>
+- <span style="background-color: #FFFF00; padding: 2px 8px; border-radius: 3px;">#FFFF00</span>
+- <span style="background-color: #FF4500; padding: 2px 8px; border-radius: 3px;">#FF4500</span>
+- <span style="background-color: #D2691E; padding: 2px 8px; border-radius: 3px;">#D2691E</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#708090",
-  "roughness": 0.7,
-  "metallic": 0.3,
-  "normalStrength": 1.4,
-  "aoStrength": 0.8,
-  "heightScale": 0.03,
-  "emissive": "#E0FFFF"
+  "baseColor": "#FFD700",
+  "roughness": 0.6,
+  "metallic": 0.2,
+  "normalStrength": 0.8,
+  "aoStrength": 0.85,
+  "heightScale": 0.05,
+  "emissive": "#FF8C00"
 }
 ```
 
 **Procedural Rules:**
-> Rock texture is integrated to signify connection with the earth; patterns adapt to geological findings.
+> Patterns are inspired by natural motifs and embossed with tribal symbols.
+
+**Textures:**
+- **Leather012** (Leather): <img src="../../packages/gen/public/textures/leather/Leather012_bundle_2K.jpg" alt="Leather 012" width="200" />
+- **Wood094** (Wood): <img src="../../packages/gen/public/textures/wood/Wood094_bundle_2K.jpg" alt="Wood 094" width="200" />
+
+---
+
+#### Iron Vanguard (`role_004`)
+
+**Description:** Trained to protect tribal territories and manage defensive structures, this warrior is clad in metal-enhanced gear.
+
+**Parameters:**
+```json
+{
+  "roleAuthority": {
+    "min": 0.5,
+    "max": 0.8,
+    "default": 0.7
+  },
+  "skillRequirement": {
+    "min": 0.7,
+    "max": 0.95,
+    "default": 0.85
+  },
+  "socialStatus": {
+    "min": 0.6,
+    "max": 0.9,
+    "default": 0.8
+  },
+  "resourceAccess": {
+    "min": 0.3,
+    "max": 0.6,
+    "default": 0.45
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #4B0082; padding: 2px 8px; border-radius: 3px;">#4B0082</span>
+- <span style="background-color: #483D8B; padding: 2px 8px; border-radius: 3px;">#483D8B</span>
+- <span style="background-color: #2F4F4F; padding: 2px 8px; border-radius: 3px;">#2F4F4F</span>
+- <span style="background-color: #006400; padding: 2px 8px; border-radius: 3px;">#006400</span>
+- <span style="background-color: #1E90FF; padding: 2px 8px; border-radius: 3px;">#1E90FF</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#4B0082",
+  "roughness": 0.4,
+  "metallic": 0.5,
+  "normalStrength": 1.5,
+  "aoStrength": 1,
+  "heightScale": 0.04,
+  "emissive": "#483D8B"
+}
+```
+
+**Procedural Rules:**
+> Metallic surfaces show dynamic reflection variances to intimidate foes.
+
+**Textures:**
+- **Metal050** (unknown): `Metal050` (not found in manifest)
+- **Leather011** (Leather): <img src="../../packages/gen/public/textures/leather/Leather011_bundle_2K.jpg" alt="Leather 011" width="200" />
+
+---
+
+#### Inter-Tribal Liaison (`role_005`)
+
+**Description:** Facilitates communication and collaboration between tribes, knowledgeable about multiple cultures and languages.
+
+**Parameters:**
+```json
+{
+  "roleAuthority": {
+    "min": 0.4,
+    "max": 0.7,
+    "default": 0.55
+  },
+  "skillRequirement": {
+    "min": 0.8,
+    "max": 1,
+    "default": 0.9
+  },
+  "socialStatus": {
+    "min": 0.5,
+    "max": 0.8,
+    "default": 0.65
+  },
+  "resourceAccess": {
+    "min": 0.2,
+    "max": 0.5,
+    "default": 0.4
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #4682B4; padding: 2px 8px; border-radius: 3px;">#4682B4</span>
+- <span style="background-color: #5F9EA0; padding: 2px 8px; border-radius: 3px;">#5F9EA0</span>
+- <span style="background-color: #87CEEB; padding: 2px 8px; border-radius: 3px;">#87CEEB</span>
+- <span style="background-color: #8A2BE2; padding: 2px 8px; border-radius: 3px;">#8A2BE2</span>
+- <span style="background-color: #7B68EE; padding: 2px 8px; border-radius: 3px;">#7B68EE</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#4682B4",
+  "roughness": 0.6,
+  "metallic": 0.1,
+  "normalStrength": 1,
+  "aoStrength": 0.85,
+  "heightScale": 0.04,
+  "emissive": "#5F9EA0"
+}
+```
+
+**Procedural Rules:**
+> Textile patterns feature motifs from various tribes, facilitating cross-cultural identification.
 
 **Textures:**
 - **Fabric023** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric023_bundle_2K.jpg" alt="Fabric 023" width="200" />
-- **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
+- **Leather012** (Leather): <img src="../../packages/gen/public/textures/leather/Leather012_bundle_2K.jpg" alt="Leather 012" width="200" />
+
+---
+
+#### Innovative Machinist (`role_006`)
+
+**Description:** Specializes in the creation and maintenance of advanced machinery used in mining and resource extraction, integrating new technologies with tribal needs.
+
+**Parameters:**
+```json
+{
+  "roleAuthority": {
+    "min": 0.4,
+    "max": 0.7,
+    "default": 0.55
+  },
+  "skillRequirement": {
+    "min": 0.9,
+    "max": 1,
+    "default": 0.95
+  },
+  "socialStatus": {
+    "min": 0.5,
+    "max": 0.8,
+    "default": 0.65
+  },
+  "resourceAccess": {
+    "min": 0.6,
+    "max": 1,
+    "default": 0.8
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #A9A9A9; padding: 2px 8px; border-radius: 3px;">#A9A9A9</span>
+- <span style="background-color: #808080; padding: 2px 8px; border-radius: 3px;">#808080</span>
+- <span style="background-color: #696969; padding: 2px 8px; border-radius: 3px;">#696969</span>
+- <span style="background-color: #C0C0C0; padding: 2px 8px; border-radius: 3px;">#C0C0C0</span>
+- <span style="background-color: #D3D3D3; padding: 2px 8px; border-radius: 3px;">#D3D3D3</span>
+- <span style="background-color: #778899; padding: 2px 8px; border-radius: 3px;">#778899</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#808080",
+  "roughness": 0.4,
+  "metallic": 0.6,
+  "normalStrength": 1.2,
+  "aoStrength": 1,
+  "heightScale": 0.03,
+  "emissive": "#696969"
+}
+```
+
+**Procedural Rules:**
+> Machinery surfaces dynamically adjust based on environmental wear and tear.
+
+**Textures:**
+- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
+- **Concrete023** (Concrete): <img src="../../packages/gen/public/textures/concrete/Concrete023_bundle_2K.jpg" alt="Concrete 023" width="200" />
 
 ---
 
@@ -3435,51 +6100,67 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 
 **WARP Flow:** Inheriting knowledge from previous generation:
 - **Gen 4: Tribe Formation** provided:
-  - "Metal Vein Alliance Network", "Crystalline Confluence", "Titanium Shield Pact", "Volcanic Trade Lattice", "Diplomatic Zenith Nexus"...
-  - Total: 15 archetypes across all scales
+  - "Trade Winds Network", "Alliance Network", "Conflict Zone", "Cultural Exchange Hubs", "Diplomatic Hub"...
+  - Total: 19 archetypes across all scales
 
 ---
 
 ### MACRO: System-level context and foundational patterns
 
-**Total Archetypes:** 5
+**Total Archetypes:** 4
 
-#### Metallic Nexus Cluster (`settlement_001`)
+#### Iron Nexus City (`urban_center_001`)
 
-**Description:** A complex of interconnected metallic structures forming a hub for trade and coordination. These settlements are built into natural metal-rich formations, harnessing geological structures for stability and resources.
+**Description:** A dense urban hub thriving in metal-rich environments featuring towering structures and complex transport systems.
 
 **Parameters:**
 ```json
 {
-  "settlementDensity": 0.8,
-  "infrastructureComplexity": 0.9,
-  "populationCapacity": 0.7,
-  "resourceEfficiency": 0.85
+  "settlementDensity": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.85
+  },
+  "infrastructureComplexity": {
+    "min": 0.8,
+    "max": 1,
+    "default": 0.9
+  },
+  "populationCapacity": {
+    "min": 0.5,
+    "max": 1,
+    "default": 0.8
+  },
+  "resourceEfficiency": {
+    "min": 0.6,
+    "max": 0.9,
+    "default": 0.75
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #2F2F2F; padding: 2px 8px; border-radius: 3px;">#2F2F2F</span>
-- <span style="background-color: #7E8C8D; padding: 2px 8px; border-radius: 3px;">#7E8C8D</span>
-- <span style="background-color: #AAB7B8; padding: 2px 8px; border-radius: 3px;">#AAB7B8</span>
-- <span style="background-color: #3C3C3C; padding: 2px 8px; border-radius: 3px;">#3C3C3C</span>
-- <span style="background-color: #E0E0E0; padding: 2px 8px; border-radius: 3px;">#E0E0E0</span>
+- <span style="background-color: #708090; padding: 2px 8px; border-radius: 3px;">#708090</span>
+- <span style="background-color: #2F4F4F; padding: 2px 8px; border-radius: 3px;">#2F4F4F</span>
+- <span style="background-color: #4682B4; padding: 2px 8px; border-radius: 3px;">#4682B4</span>
+- <span style="background-color: #5F9EA0; padding: 2px 8px; border-radius: 3px;">#5F9EA0</span>
+- <span style="background-color: #778899; padding: 2px 8px; border-radius: 3px;">#778899</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#2F2F2F",
+  "baseColor": "#708090",
   "roughness": 0.7,
-  "metallic": 0.9,
+  "metallic": 0.5,
   "normalStrength": 1,
   "aoStrength": 0.8,
   "heightScale": 0.05,
-  "emissive": "#AAB7B8"
+  "emissive": "#2F4F4F"
 }
 ```
 
 **Procedural Rules:**
-> Surfaces fluctuate between smooth metallic panels and rough concrete interspaces, providing visual and functional contrast.
+> Skyscrapers exhibit a variety of metal textures interspersed with reflective surfaces.
 
 **Textures:**
 - **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
@@ -3487,42 +6168,58 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 
 ---
 
-#### Volcanic Basin Enclaves (`settlement_002`)
+#### Fortified Enclave (`defensive_cluster_002`)
 
-**Description:** Settlements carved into volcanic basin walls, utilizing natural thermal energy and rich soil. These enclaves are semi-circular, protecting inhabitants while allowing agricultural and geothermal activities.
+**Description:** A strategically positioned settlement focused on defense, utilizing natural rock formations and advanced construction techniques.
 
 **Parameters:**
 ```json
 {
-  "settlementDensity": 0.6,
-  "infrastructureComplexity": 0.7,
-  "populationCapacity": 0.8,
-  "resourceEfficiency": 0.9
+  "settlementDensity": {
+    "min": 0.4,
+    "max": 0.7,
+    "default": 0.5
+  },
+  "infrastructureComplexity": {
+    "min": 0.5,
+    "max": 0.8,
+    "default": 0.7
+  },
+  "populationCapacity": {
+    "min": 0.3,
+    "max": 0.6,
+    "default": 0.5
+  },
+  "resourceEfficiency": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.9
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #614126; padding: 2px 8px; border-radius: 3px;">#614126</span>
-- <span style="background-color: #B85C38; padding: 2px 8px; border-radius: 3px;">#B85C38</span>
-- <span style="background-color: #F2C14E; padding: 2px 8px; border-radius: 3px;">#F2C14E</span>
-- <span style="background-color: #AA2B1D; padding: 2px 8px; border-radius: 3px;">#AA2B1D</span>
-- <span style="background-color: #DA627D; padding: 2px 8px; border-radius: 3px;">#DA627D</span>
+- <span style="background-color: #6A5ACD; padding: 2px 8px; border-radius: 3px;">#6A5ACD</span>
+- <span style="background-color: #8A2BE2; padding: 2px 8px; border-radius: 3px;">#8A2BE2</span>
+- <span style="background-color: #4B0082; padding: 2px 8px; border-radius: 3px;">#4B0082</span>
+- <span style="background-color: #5B5B5B; padding: 2px 8px; border-radius: 3px;">#5B5B5B</span>
+- <span style="background-color: #696969; padding: 2px 8px; border-radius: 3px;">#696969</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#614126",
-  "roughness": 0.85,
-  "metallic": 0.1,
+  "baseColor": "#6A5ACD",
+  "roughness": 0.9,
+  "metallic": 0.2,
   "normalStrength": 1.2,
-  "aoStrength": 0.75,
-  "heightScale": 0.06,
-  "emissive": "#B85C38"
+  "aoStrength": 1,
+  "heightScale": 0.1,
+  "emissive": "#4B0082"
 }
 ```
 
 **Procedural Rules:**
-> Differentiated layers of brickwork and weathered rock echo natural geological formations, adding resilience and character.
+> Buildings merge seamlessly into the rocky landscape, reinforced with brick fortifications.
 
 **Textures:**
 - **Rock025** (unknown): `Rock025` (not found in manifest)
@@ -3530,132 +6227,121 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 
 ---
 
-#### Crystalline Confluence (`settlement_003`)
+#### Metal Exchange Port (`trade_hub_003`)
 
-**Description:** A radiant gathering of prism-like structures reflecting light to create an ethereal landscape. Used as a central meeting place for tribes to exchange knowledge and resources.
+**Description:** An essential trade nexus bustling with activity, facilitating extensive resource exchange along major trade routes.
 
 **Parameters:**
 ```json
 {
-  "settlementDensity": 0.5,
-  "infrastructureComplexity": 0.8,
-  "populationCapacity": 0.6,
-  "resourceEfficiency": 0.75
+  "settlementDensity": {
+    "min": 0.5,
+    "max": 0.9,
+    "default": 0.75
+  },
+  "infrastructureComplexity": {
+    "min": 0.6,
+    "max": 0.9,
+    "default": 0.8
+  },
+  "populationCapacity": {
+    "min": 0.6,
+    "max": 0.9,
+    "default": 0.85
+  },
+  "resourceEfficiency": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.9
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #DAF7A6; padding: 2px 8px; border-radius: 3px;">#DAF7A6</span>
-- <span style="background-color: #FFC300; padding: 2px 8px; border-radius: 3px;">#FFC300</span>
-- <span style="background-color: #FF5733; padding: 2px 8px; border-radius: 3px;">#FF5733</span>
-- <span style="background-color: #C70039; padding: 2px 8px; border-radius: 3px;">#C70039</span>
-- <span style="background-color: #900C3F; padding: 2px 8px; border-radius: 3px;">#900C3F</span>
+- <span style="background-color: #DAA520; padding: 2px 8px; border-radius: 3px;">#DAA520</span>
+- <span style="background-color: #B8860B; padding: 2px 8px; border-radius: 3px;">#B8860B</span>
+- <span style="background-color: #FFB6C1; padding: 2px 8px; border-radius: 3px;">#FFB6C1</span>
+- <span style="background-color: #FFD700; padding: 2px 8px; border-radius: 3px;">#FFD700</span>
+- <span style="background-color: #FF6347; padding: 2px 8px; border-radius: 3px;">#FF6347</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#DAF7A6",
+  "baseColor": "#DAA520",
   "roughness": 0.4,
-  "metallic": 0.7,
-  "normalStrength": 0.8,
-  "aoStrength": 0.6,
-  "heightScale": 0.05,
-  "emissive": "#FFC300"
+  "metallic": 0.6,
+  "normalStrength": 1.1,
+  "aoStrength": 0.9,
+  "heightScale": 0.03,
+  "emissive": "#FFD700"
 }
 ```
 
 **Procedural Rules:**
-> Faceted reflective surfaces vary in color slightly with the angle of light, creating dynamic patterns.
+> Markets display a diverse range of metalworks, highlighted by vibrant colors and bustling activity.
 
 **Textures:**
-- **Glass011** (unknown): `Glass011` (not found in manifest)
-- **Concrete025** (Concrete): <img src="../../packages/gen/public/textures/concrete/Concrete025_bundle_2K.jpg" alt="Concrete 025" width="200" />
+- **Metal050** (unknown): `Metal050` (not found in manifest)
+- **Bricks060** (Bricks): <img src="../../packages/gen/public/textures/bricks/Bricks060_bundle_2K.jpg" alt="Bricks 060" width="200" />
 
 ---
 
-#### Nomadic Trading Posts (`settlement_004`)
+#### Metalmine Basin (`resource_site_005`)
 
-**Description:** Scattered within resource-plentiful plains, these posts serve as transient settlements for nomadic tribes. They are modular and adaptable, streamlined for quick disassembly and reassembly.
+**Description:** A pivotal installation focused on the extraction and processing of mineral-rich deposits found within natural basins.
 
 **Parameters:**
 ```json
 {
-  "settlementDensity": 0.4,
-  "infrastructureComplexity": 0.6,
-  "populationCapacity": 0.5,
-  "resourceEfficiency": 0.65
+  "settlementDensity": {
+    "min": 0.2,
+    "max": 0.5,
+    "default": 0.3
+  },
+  "infrastructureComplexity": {
+    "min": 0.3,
+    "max": 0.6,
+    "default": 0.5
+  },
+  "populationCapacity": {
+    "min": 0.2,
+    "max": 0.4,
+    "default": 0.3
+  },
+  "resourceEfficiency": {
+    "min": 0.8,
+    "max": 1,
+    "default": 0.95
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #8E7C8D; padding: 2px 8px; border-radius: 3px;">#8E7C8D</span>
-- <span style="background-color: #D9D7DD; padding: 2px 8px; border-radius: 3px;">#D9D7DD</span>
-- <span style="background-color: #BFB4C5; padding: 2px 8px; border-radius: 3px;">#BFB4C5</span>
-- <span style="background-color: #E8E5EF; padding: 2px 8px; border-radius: 3px;">#E8E5EF</span>
-- <span style="background-color: #B5A1B9; padding: 2px 8px; border-radius: 3px;">#B5A1B9</span>
+- <span style="background-color: #B0C4DE; padding: 2px 8px; border-radius: 3px;">#B0C4DE</span>
+- <span style="background-color: #6960EC; padding: 2px 8px; border-radius: 3px;">#6960EC</span>
+- <span style="background-color: #008080; padding: 2px 8px; border-radius: 3px;">#008080</span>
+- <span style="background-color: #4682B4; padding: 2px 8px; border-radius: 3px;">#4682B4</span>
+- <span style="background-color: #5F9EA0; padding: 2px 8px; border-radius: 3px;">#5F9EA0</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#8E7C8D",
-  "roughness": 0.7,
-  "metallic": 0.1,
-  "normalStrength": 0.9,
-  "aoStrength": 0.7,
-  "heightScale": 0.04,
-  "emissive": "#BFB4C5"
-}
-```
-
-**Procedural Rules:**
-> Natural textures of wood with draped fabric create a sense of lightness and flow.
-
-**Textures:**
-- **Wood094** (Wood): <img src="../../packages/gen/public/textures/wood/Wood094_bundle_2K.jpg" alt="Wood 094" width="200" />
-- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
-
----
-
-#### Defensive Cliffside Colony (`settlement_005`)
-
-**Description:** Situated on the edges of steep cliffs, these fortified colonies provide an integrated defense against predators and hostile tribes. Designed with a focus on security and isolation.
-
-**Parameters:**
-```json
-{
-  "settlementDensity": 0.7,
-  "infrastructureComplexity": 0.9,
-  "populationCapacity": 0.85,
-  "resourceEfficiency": 0.8
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #2C3E50; padding: 2px 8px; border-radius: 3px;">#2C3E50</span>
-- <span style="background-color: #34495E; padding: 2px 8px; border-radius: 3px;">#34495E</span>
-- <span style="background-color: #E74C3C; padding: 2px 8px; border-radius: 3px;">#E74C3C</span>
-- <span style="background-color: #ECF0F1; padding: 2px 8px; border-radius: 3px;">#ECF0F1</span>
-- <span style="background-color: #95A5A6; padding: 2px 8px; border-radius: 3px;">#95A5A6</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#2C3E50",
+  "baseColor": "#B0C4DE",
   "roughness": 0.9,
-  "metallic": 0.2,
-  "normalStrength": 1,
-  "aoStrength": 0.85,
-  "heightScale": 0.07,
-  "emissive": "#34495E"
+  "metallic": 0,
+  "normalStrength": 1.3,
+  "aoStrength": 1,
+  "heightScale": 0.02,
+  "emissive": "#6960EC"
 }
 ```
 
 **Procedural Rules:**
-> Rugged rock complements structured brick, enhancing strength and resilience in harsh terrain.
+> Quarries and machinery reflect the surrounding geology, with pathways between extraction points.
 
 **Textures:**
 - **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
-- **Bricks060** (Bricks): <img src="../../packages/gen/public/textures/bricks/Bricks060_bundle_2K.jpg" alt="Bricks 060" width="200" />
+- **Concrete025** (Concrete): <img src="../../packages/gen/public/textures/concrete/Concrete025_bundle_2K.jpg" alt="Concrete 025" width="200" />
 
 ---
 
@@ -3663,222 +6349,243 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 ### MESO: Intermediate dynamics and structural relationships
 
 **WEFT Flow:** Building on MACRO scale archetypes:
-- "Metallic Nexus Cluster", "Volcanic Basin Enclaves", "Crystalline Confluence"...
+- "Iron Nexus City", "Fortified Enclave", "Metal Exchange Port"...
 
-**Total Archetypes:** 5
+**Total Archetypes:** 4
 
-#### Trading Outpost (`arch_001`)
+#### Skyward Living Cluster (`residential_habitat_01`)
 
-**Description:** Strategically placed buildings facilitating trade between tribes, featuring robust storage and market areas.
+**Description:** A multi-tiered residential system designed for vertical expansion in metal-rich urban environments. Utilizes dynamic iron-aluminum alloys to create a robust yet flexible living space.
 
 **Parameters:**
 ```json
 {
-  "buildingCapacity": 150,
-  "constructionCost": 200,
-  "functionalEfficiency": 0.8,
-  "maintenanceRequirement": 0.4
+  "buildingCapacity": {
+    "min": 20,
+    "max": 150,
+    "default": 80
+  },
+  "constructionCost": {
+    "min": 100,
+    "max": 500,
+    "default": 300
+  },
+  "functionalEfficiency": {
+    "min": 0.6,
+    "max": 1,
+    "default": 0.85
+  },
+  "maintenanceRequirement": {
+    "min": 0.1,
+    "max": 0.3,
+    "default": 0.2
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #8C4A31; padding: 2px 8px; border-radius: 3px;">#8C4A31</span>
-- <span style="background-color: #D3A87A; padding: 2px 8px; border-radius: 3px;">#D3A87A</span>
-- <span style="background-color: #593D29; padding: 2px 8px; border-radius: 3px;">#593D29</span>
-- <span style="background-color: #4C2922; padding: 2px 8px; border-radius: 3px;">#4C2922</span>
-- <span style="background-color: #D6BCA2; padding: 2px 8px; border-radius: 3px;">#D6BCA2</span>
+- <span style="background-color: #3A4B57; padding: 2px 8px; border-radius: 3px;">#3A4B57</span>
+- <span style="background-color: #9C8E7D; padding: 2px 8px; border-radius: 3px;">#9C8E7D</span>
+- <span style="background-color: #CFB99D; padding: 2px 8px; border-radius: 3px;">#CFB99D</span>
+- <span style="background-color: #D6D9D0; padding: 2px 8px; border-radius: 3px;">#D6D9D0</span>
+- <span style="background-color: #76827A; padding: 2px 8px; border-radius: 3px;">#76827A</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#8C4A31",
-  "roughness": 0.5,
-  "metallic": 0.1,
-  "normalStrength": 1,
-  "aoStrength": 0.7,
-  "heightScale": 0.1,
-  "emissive": "#000000"
+  "baseColor": "#3A4B57",
+  "roughness": 0.4,
+  "metallic": 0.7,
+  "normalStrength": 1.2,
+  "aoStrength": 0.5,
+  "heightScale": 0.02,
+  "emissive": "#76827A"
 }
 ```
 
 **Procedural Rules:**
-> Market areas feature diversified stalls with varied textures from wood to bricks, reflecting merchant activity.
+> Vertical expansions follow a fractal pattern to allow for natural light distribution.
 
 **Textures:**
-- **Wood094** (Wood): <img src="../../packages/gen/public/textures/wood/Wood094_bundle_2K.jpg" alt="Wood 094" width="200" />
+- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
 - **Bricks051** (Bricks): <img src="../../packages/gen/public/textures/bricks/Bricks051_bundle_2K.jpg" alt="Bricks 051" width="200" />
 
 ---
 
-#### Workshops of Confluence (`arch_002`)
+#### Metalwork Fabrication Complex (`workshop_fabricator_02`)
 
-**Description:** Hubs of creation where tools and artistic items are crafted, reflecting the blending of tribal cultures.
+**Description:** A centralized facility for crafting and assembling metal-based tools and structures, supporting both local and inter-tribal resource refinement needs.
 
 **Parameters:**
 ```json
 {
-  "buildingCapacity": 100,
-  "constructionCost": 150,
-  "functionalEfficiency": 0.9,
-  "maintenanceRequirement": 0.3
+  "buildingCapacity": {
+    "min": 5,
+    "max": 20,
+    "default": 12
+  },
+  "constructionCost": {
+    "min": 150,
+    "max": 600,
+    "default": 375
+  },
+  "functionalEfficiency": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.9
+  },
+  "maintenanceRequirement": {
+    "min": 0.15,
+    "max": 0.35,
+    "default": 0.22
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #5E5A59; padding: 2px 8px; border-radius: 3px;">#5E5A59</span>
-- <span style="background-color: #A8B2AB; padding: 2px 8px; border-radius: 3px;">#A8B2AB</span>
-- <span style="background-color: #757D75; padding: 2px 8px; border-radius: 3px;">#757D75</span>
-- <span style="background-color: #3B3F3E; padding: 2px 8px; border-radius: 3px;">#3B3F3E</span>
-- <span style="background-color: #C3C6C3; padding: 2px 8px; border-radius: 3px;">#C3C6C3</span>
+- <span style="background-color: #4F4F4F; padding: 2px 8px; border-radius: 3px;">#4F4F4F</span>
+- <span style="background-color: #A5B2C2; padding: 2px 8px; border-radius: 3px;">#A5B2C2</span>
+- <span style="background-color: #D4D9DF; padding: 2px 8px; border-radius: 3px;">#D4D9DF</span>
+- <span style="background-color: #F0F0F0; padding: 2px 8px; border-radius: 3px;">#F0F0F0</span>
+- <span style="background-color: #6A798A; padding: 2px 8px; border-radius: 3px;">#6A798A</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#5E5A59",
-  "roughness": 0.6,
-  "metallic": 0.3,
-  "normalStrength": 1.2,
-  "aoStrength": 0.8,
-  "heightScale": 0.05,
-  "emissive": "#000000"
+  "baseColor": "#4F4F4F",
+  "roughness": 0.8,
+  "metallic": 0.4,
+  "normalStrength": 1,
+  "aoStrength": 0.7,
+  "heightScale": 0.03,
+  "emissive": "#6A798A"
 }
 ```
 
 **Procedural Rules:**
-> Surfaces exhibit a patchwork of textures indicating diverse crafting methods.
+> Exteriors are adorned with modular panels that can be swapped out or reconfigured as needed.
 
 **Textures:**
-- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
+- **Metal050** (unknown): `Metal050` (not found in manifest)
 - **Concrete023** (Concrete): <img src="../../packages/gen/public/textures/concrete/Concrete023_bundle_2K.jpg" alt="Concrete 023" width="200" />
 
 ---
 
-#### Ceremonial Dome (`arch_003`)
+#### Vaulted Resource Bastion (`storage_facility_03`)
 
-**Description:** Grand structures for spiritual gatherings, made with reflective materials to symbolize unity and enlightenment.
+**Description:** A vast underground network for storing essential raw materials and finished products, safeguarded by natural formations.
 
 **Parameters:**
 ```json
 {
-  "buildingCapacity": 300,
-  "constructionCost": 300,
-  "functionalEfficiency": 0.7,
-  "maintenanceRequirement": 0.5
+  "buildingCapacity": {
+    "min": 100,
+    "max": 500,
+    "default": 300
+  },
+  "constructionCost": {
+    "min": 200,
+    "max": 800,
+    "default": 500
+  },
+  "functionalEfficiency": {
+    "min": 0.5,
+    "max": 1,
+    "default": 0.85
+  },
+  "maintenanceRequirement": {
+    "min": 0.05,
+    "max": 0.2,
+    "default": 0.1
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #7A8DA1; padding: 2px 8px; border-radius: 3px;">#7A8DA1</span>
-- <span style="background-color: #D9E1F2; padding: 2px 8px; border-radius: 3px;">#D9E1F2</span>
-- <span style="background-color: #4B596B; padding: 2px 8px; border-radius: 3px;">#4B596B</span>
-- <span style="background-color: #2B3A44; padding: 2px 8px; border-radius: 3px;">#2B3A44</span>
-- <span style="background-color: #A7BCC3; padding: 2px 8px; border-radius: 3px;">#A7BCC3</span>
+- <span style="background-color: #5A5A5A; padding: 2px 8px; border-radius: 3px;">#5A5A5A</span>
+- <span style="background-color: #7B7B7B; padding: 2px 8px; border-radius: 3px;">#7B7B7B</span>
+- <span style="background-color: #9E9E9E; padding: 2px 8px; border-radius: 3px;">#9E9E9E</span>
+- <span style="background-color: #CCCCCC; padding: 2px 8px; border-radius: 3px;">#CCCCCC</span>
+- <span style="background-color: #E6E6E6; padding: 2px 8px; border-radius: 3px;">#E6E6E6</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#7A8DA1",
-  "roughness": 0.4,
-  "metallic": 0.5,
-  "normalStrength": 1.3,
-  "aoStrength": 0.9,
-  "heightScale": 0.08,
-  "emissive": "#D9E1F2"
+  "baseColor": "#5A5A5A",
+  "roughness": 0.9,
+  "metallic": 0.1,
+  "normalStrength": 1.4,
+  "aoStrength": 0.8,
+  "heightScale": 0.04,
+  "emissive": "#CCCCCC"
 }
 ```
 
 **Procedural Rules:**
-> Dome surfaces shimmer variably based on natural lighting and ceremonial activities.
+> Rock carvings vary by segment, blending artificial structures with natural formations.
 
 **Textures:**
 - **Rock025** (unknown): `Rock025` (not found in manifest)
-- **Metal050** (unknown): `Metal050` (not found in manifest)
-
----
-
-#### Council Hall (`arch_004`)
-
-**Description:** Centres of governance where leaders convene, these halls are fortified and symbolic of order and strength.
-
-**Parameters:**
-```json
-{
-  "buildingCapacity": 200,
-  "constructionCost": 250,
-  "functionalEfficiency": 0.85,
-  "maintenanceRequirement": 0.4
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #5A5958; padding: 2px 8px; border-radius: 3px;">#5A5958</span>
-- <span style="background-color: #A2A2A1; padding: 2px 8px; border-radius: 3px;">#A2A2A1</span>
-- <span style="background-color: #3B3A3A; padding: 2px 8px; border-radius: 3px;">#3B3A3A</span>
-- <span style="background-color: #8C8C8B; padding: 2px 8px; border-radius: 3px;">#8C8C8B</span>
-- <span style="background-color: #CFCCCB; padding: 2px 8px; border-radius: 3px;">#CFCCCB</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#5A5958",
-  "roughness": 0.7,
-  "metallic": 0.2,
-  "normalStrength": 1.2,
-  "aoStrength": 0.9,
-  "heightScale": 0.07,
-  "emissive": "#000000"
-}
-```
-
-**Procedural Rules:**
-> Structured forms with a focus on solidity, echoing the importance of leadership stability.
-
-**Textures:**
 - **Concrete025** (Concrete): <img src="../../packages/gen/public/textures/concrete/Concrete025_bundle_2K.jpg" alt="Concrete 025" width="200" />
-- **Metal050** (unknown): `Metal050` (not found in manifest)
 
 ---
 
-#### Storage Vault (`arch_005`)
+#### Iron Council Hall (`administrative_center_04`)
 
-**Description:** Secure facilities designed for preservation and management of vital resources, complete with environmental controls.
+**Description:** A formidable structure serving as the decision-making hub for inter-tribal governance and coordination, characterized by its gravitas-filled majesty.
 
 **Parameters:**
 ```json
 {
-  "buildingCapacity": 500,
-  "constructionCost": 180,
-  "functionalEfficiency": 0.95,
-  "maintenanceRequirement": 0.3
+  "buildingCapacity": {
+    "min": 15,
+    "max": 60,
+    "default": 30
+  },
+  "constructionCost": {
+    "min": 300,
+    "max": 900,
+    "default": 650
+  },
+  "functionalEfficiency": {
+    "min": 0.8,
+    "max": 1,
+    "default": 0.95
+  },
+  "maintenanceRequirement": {
+    "min": 0.15,
+    "max": 0.25,
+    "default": 0.2
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #4E3A3C; padding: 2px 8px; border-radius: 3px;">#4E3A3C</span>
-- <span style="background-color: #BCAEA8; padding: 2px 8px; border-radius: 3px;">#BCAEA8</span>
-- <span style="background-color: #645C5B; padding: 2px 8px; border-radius: 3px;">#645C5B</span>
-- <span style="background-color: #392E2F; padding: 2px 8px; border-radius: 3px;">#392E2F</span>
-- <span style="background-color: #C9B5B2; padding: 2px 8px; border-radius: 3px;">#C9B5B2</span>
+- <span style="background-color: #4D4D4D; padding: 2px 8px; border-radius: 3px;">#4D4D4D</span>
+- <span style="background-color: #757575; padding: 2px 8px; border-radius: 3px;">#757575</span>
+- <span style="background-color: #A8A8A8; padding: 2px 8px; border-radius: 3px;">#A8A8A8</span>
+- <span style="background-color: #CCCCCC; padding: 2px 8px; border-radius: 3px;">#CCCCCC</span>
+- <span style="background-color: #F7F7F7; padding: 2px 8px; border-radius: 3px;">#F7F7F7</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#4E3A3C",
-  "roughness": 0.6,
-  "metallic": 0.4,
-  "normalStrength": 1,
-  "aoStrength": 0.8,
-  "heightScale": 0.06,
-  "emissive": "#000000"
+  "baseColor": "#4D4D4D",
+  "roughness": 0.3,
+  "metallic": 0.6,
+  "normalStrength": 1.3,
+  "aoStrength": 0.9,
+  "heightScale": 0.05,
+  "emissive": "#F7F7F7"
 }
 ```
 
 **Procedural Rules:**
-> Reinforced structures with modular compartments adaptable to various resources.
+> Exterior features geometric recesses depicting tribal heritage and alliances.
 
 **Textures:**
-- **Bricks060** (Bricks): <img src="../../packages/gen/public/textures/bricks/Bricks060_bundle_2K.jpg" alt="Bricks 060" width="200" />
 - **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
+- **Bricks060** (Bricks): <img src="../../packages/gen/public/textures/bricks/Bricks060_bundle_2K.jpg" alt="Bricks 060" width="200" />
 
 ---
 
@@ -3886,219 +6593,356 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 ### MICRO: Fine-grained details and specific implementations
 
 **WEFT Flow:** Building on MACRO and MESO scales:
-- MACRO: "Metallic Nexus Cluster", "Volcanic Basin Enclaves"...
-- MESO: "Trading Outpost", "Workshops of Confluence"...
+- MACRO: "Iron Nexus City", "Fortified Enclave"...
+- MESO: "Skyward Living Cluster", "Metalwork Fabrication Complex"...
 
-**Total Archetypes:** 5
+**Total Archetypes:** 6
 
-#### Interwoven Stone Lattice (`cm_001`)
+#### Metal Weave Construction (`CM001`)
 
-**Description:** A construction method using interlocking stones to create intricate, self-supporting lattice structures. This technique relies on the precise shaping of stones to fit together perfectly, allowing natural load distribution and increased stability, reflecting the interconnected nature of the Metallic Nexus Cluster.
+**Description:** A lightweight framework composed of interwoven metallic strands, optimized for rapid assembly and adaptation to uneven terrain.
 
 **Parameters:**
 ```json
 {
-  "constructionSpeed": 0.5,
-  "materialEfficiency": 0.8,
-  "structuralStrength": 0.95,
-  "durability": 0.9
+  "constructionSpeed": {
+    "min": 0.5,
+    "max": 0.9,
+    "default": 0.7
+  },
+  "materialEfficiency": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.85
+  },
+  "structuralStrength": {
+    "min": 0.6,
+    "max": 0.9,
+    "default": 0.75
+  },
+  "durability": {
+    "min": 0.5,
+    "max": 0.8,
+    "default": 0.65
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #6C5B4B; padding: 2px 8px; border-radius: 3px;">#6C5B4B</span>
-- <span style="background-color: #A19279; padding: 2px 8px; border-radius: 3px;">#A19279</span>
-- <span style="background-color: #D8C3A5; padding: 2px 8px; border-radius: 3px;">#D8C3A5</span>
-- <span style="background-color: #8E7C68; padding: 2px 8px; border-radius: 3px;">#8E7C68</span>
-- <span style="background-color: #4E3D31; padding: 2px 8px; border-radius: 3px;">#4E3D31</span>
+- <span style="background-color: #323840; padding: 2px 8px; border-radius: 3px;">#323840</span>
+- <span style="background-color: #687D8B; padding: 2px 8px; border-radius: 3px;">#687D8B</span>
+- <span style="background-color: #A7BCC6; padding: 2px 8px; border-radius: 3px;">#A7BCC6</span>
+- <span style="background-color: #D2DEE8; padding: 2px 8px; border-radius: 3px;">#D2DEE8</span>
+- <span style="background-color: #FFFFFF; padding: 2px 8px; border-radius: 3px;">#FFFFFF</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#6C5B4B",
-  "roughness": 1,
-  "metallic": 0,
-  "normalStrength": 1,
-  "aoStrength": 0.9,
-  "heightScale": 0.1
+  "baseColor": "#687D8B",
+  "roughness": 0.4,
+  "metallic": 0.9,
+  "normalStrength": 1.2,
+  "aoStrength": 0.6,
+  "heightScale": 0.03
 }
 ```
 
 **Procedural Rules:**
-> Bricks exhibit slight color variation, creating a dynamic mosaic-like appearance.
+> Variations in weave density create visual complexity and strength gradients.
+
+**Textures:**
+- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
+- **Metal050** (unknown): `Metal050` (not found in manifest)
+
+---
+
+#### Stone Filigree Masonry (`CM002`)
+
+**Description:** Intricate stone masonry utilizing decorative patterns and precise joinery, providing aesthetic appeal and stability.
+
+**Parameters:**
+```json
+{
+  "constructionSpeed": {
+    "min": 0.3,
+    "max": 0.7,
+    "default": 0.5
+  },
+  "materialEfficiency": {
+    "min": 0.6,
+    "max": 0.9,
+    "default": 0.75
+  },
+  "structuralStrength": {
+    "min": 0.8,
+    "max": 1,
+    "default": 0.9
+  },
+  "durability": {
+    "min": 0.8,
+    "max": 1,
+    "default": 0.9
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #5E4C4A; padding: 2px 8px; border-radius: 3px;">#5E4C4A</span>
+- <span style="background-color: #8A7D77; padding: 2px 8px; border-radius: 3px;">#8A7D77</span>
+- <span style="background-color: #B5ADAA; padding: 2px 8px; border-radius: 3px;">#B5ADAA</span>
+- <span style="background-color: #D8D5D3; padding: 2px 8px; border-radius: 3px;">#D8D5D3</span>
+- <span style="background-color: #ECECEC; padding: 2px 8px; border-radius: 3px;">#ECECEC</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#8A7D77",
+  "roughness": 0.8,
+  "metallic": 0.1,
+  "normalStrength": 1.3,
+  "aoStrength": 1,
+  "heightScale": 0.06
+}
+```
+
+**Procedural Rules:**
+> Customized filigree designs applied during the carving process enhance uniqueness.
 
 **Textures:**
 - **Rock025** (unknown): `Rock025` (not found in manifest)
-- **Bricks051** (Bricks): <img src="../../packages/gen/public/textures/bricks/Bricks051_bundle_2K.jpg" alt="Bricks 051" width="200" />
+- **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
 
 ---
 
-#### Metallic Framework Integration (`cm_002`)
+#### Geomorph Earthworks (`CM003`)
 
-**Description:** A method involving the construction of resilient frameworks using metals, combined with other materials for wall and roof infill. Inspired by the Volcanic Basin Enclaves, this technique is ideal for creating structures that must withstand harsh environments.
+**Description:** Earth and clay construction technique enhanced by natural terrain features, providing thermal and structural benefits.
 
 **Parameters:**
 ```json
 {
-  "constructionSpeed": 0.7,
-  "materialEfficiency": 0.85,
-  "structuralStrength": 0.8,
-  "durability": 0.85
+  "constructionSpeed": {
+    "min": 0.4,
+    "max": 0.6,
+    "default": 0.5
+  },
+  "materialEfficiency": {
+    "min": 0.8,
+    "max": 1,
+    "default": 0.9
+  },
+  "structuralStrength": {
+    "min": 0.5,
+    "max": 0.8,
+    "default": 0.65
+  },
+  "durability": {
+    "min": 0.6,
+    "max": 0.8,
+    "default": 0.7
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #7A8288; padding: 2px 8px; border-radius: 3px;">#7A8288</span>
-- <span style="background-color: #B0B3B8; padding: 2px 8px; border-radius: 3px;">#B0B3B8</span>
-- <span style="background-color: #E5E5E5; padding: 2px 8px; border-radius: 3px;">#E5E5E5</span>
-- <span style="background-color: #4A4E54; padding: 2px 8px; border-radius: 3px;">#4A4E54</span>
-- <span style="background-color: #2C2F33; padding: 2px 8px; border-radius: 3px;">#2C2F33</span>
+- <span style="background-color: #6B572F; padding: 2px 8px; border-radius: 3px;">#6B572F</span>
+- <span style="background-color: #8C7642; padding: 2px 8px; border-radius: 3px;">#8C7642</span>
+- <span style="background-color: #A58D5D; padding: 2px 8px; border-radius: 3px;">#A58D5D</span>
+- <span style="background-color: #C3A983; padding: 2px 8px; border-radius: 3px;">#C3A983</span>
+- <span style="background-color: #DED3B0; padding: 2px 8px; border-radius: 3px;">#DED3B0</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#7A8288",
-  "roughness": 0.6,
-  "metallic": 0.7,
-  "normalStrength": 0.8,
-  "aoStrength": 0.5,
-  "heightScale": 0.05
-}
-```
-
-**Procedural Rules:**
-> Textures show metallic sheen variations and concrete speckling for realistic structure appearance.
-
-**Textures:**
-- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
-- **Concrete023** (Concrete): <img src="../../packages/gen/public/textures/concrete/Concrete023_bundle_2K.jpg" alt="Concrete 023" width="200" />
-
----
-
-#### Crystal Facet Bonding (`cm_003`)
-
-**Description:** Construction technique utilizing crystal facets as both structural and aesthetic elements. Facets are bonded and aligned meticulously to form elegant prisms and reflective surfaces. This method is ideal for structures like the Crystalline Confluence that rely on light manipulation.
-
-**Parameters:**
-```json
-{
-  "constructionSpeed": 0.4,
-  "materialEfficiency": 0.7,
-  "structuralStrength": 0.7,
-  "durability": 0.75
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #CFF8FF; padding: 2px 8px; border-radius: 3px;">#CFF8FF</span>
-- <span style="background-color: #8ED7E7; padding: 2px 8px; border-radius: 3px;">#8ED7E7</span>
-- <span style="background-color: #65AABC; padding: 2px 8px; border-radius: 3px;">#65AABC</span>
-- <span style="background-color: #3B5B75; padding: 2px 8px; border-radius: 3px;">#3B5B75</span>
-- <span style="background-color: #203644; padding: 2px 8px; border-radius: 3px;">#203644</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#3B5B75",
-  "roughness": 0.1,
-  "metallic": 0.2,
-  "normalStrength": 1.2,
-  "aoStrength": 0.4,
-  "heightScale": 0.05,
-  "emissive": "#CFF8FF"
-}
-```
-
-**Procedural Rules:**
-> Facets reflect light differently depending on angle, creating dynamic visuals.
-
-**Textures:**
-- **Wood094** (Wood): <img src="../../packages/gen/public/textures/wood/Wood094_bundle_2K.jpg" alt="Wood 094" width="200" />
-- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
-
----
-
-#### Reinforced Wattle and Daub (`cm_004`)
-
-**Description:** An evolved technique taking traditional wattle and daub to new levels using advanced materials for reinforcement. This method blends organic and modern materials, perfect for Cultural Hubs where the Workshop of Confluence thrives with creative blends.
-
-**Parameters:**
-```json
-{
-  "constructionSpeed": 0.6,
-  "materialEfficiency": 0.9,
-  "structuralStrength": 0.75,
-  "durability": 0.7
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #B28B67; padding: 2px 8px; border-radius: 3px;">#B28B67</span>
-- <span style="background-color: #D9C9B3; padding: 2px 8px; border-radius: 3px;">#D9C9B3</span>
-- <span style="background-color: #8D7153; padding: 2px 8px; border-radius: 3px;">#8D7153</span>
-- <span style="background-color: #553C2D; padding: 2px 8px; border-radius: 3px;">#553C2D</span>
-- <span style="background-color: #32241F; padding: 2px 8px; border-radius: 3px;">#32241F</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#B28B67",
+  "baseColor": "#8C7642",
   "roughness": 0.7,
-  "metallic": 0,
-  "normalStrength": 1.3,
-  "aoStrength": 0.6,
-  "heightScale": 0.08
-}
-```
-
-**Procedural Rules:**
-> Fabrics and woods show natural grain and subtle imperfections, enhancing texture realism.
-
-**Textures:**
-- **Wood094** (Wood): <img src="../../packages/gen/public/textures/wood/Wood094_bundle_2K.jpg" alt="Wood 094" width="200" />
-- **Fabric023** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric023_bundle_2K.jpg" alt="Fabric 023" width="200" />
-
----
-
-#### Geo-Reclaimed Terra Walls (`cm_005`)
-
-**Description:** Technique utilizing reclaimed earth, clay, and stone to construct thick, durable walls. These structures retain heat and provide insulation, ideal for Storage Vaults that conserve resources.
-
-**Parameters:**
-```json
-{
-  "constructionSpeed": 0.5,
-  "materialEfficiency": 0.95,
-  "structuralStrength": 0.85,
-  "durability": 0.8
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #8A7E75; padding: 2px 8px; border-radius: 3px;">#8A7E75</span>
-- <span style="background-color: #6B6353; padding: 2px 8px; border-radius: 3px;">#6B6353</span>
-- <span style="background-color: #D0BBA8; padding: 2px 8px; border-radius: 3px;">#D0BBA8</span>
-- <span style="background-color: #C4A88A; padding: 2px 8px; border-radius: 3px;">#C4A88A</span>
-- <span style="background-color: #374039; padding: 2px 8px; border-radius: 3px;">#374039</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#8A7E75",
-  "roughness": 0.95,
   "metallic": 0,
   "normalStrength": 1,
   "aoStrength": 0.7,
-  "heightScale": 0.1
+  "heightScale": 0.04
 }
 ```
 
 **Procedural Rules:**
-> Earth walls show natural stratification and varying hues of clay and stone.
+> Varied earth tones and surface textures reflect local soil composition.
 
 **Textures:**
-- **Rock025** (unknown): `Rock025` (not found in manifest)
-- **Concrete025** (Concrete): <img src="../../packages/gen/public/textures/concrete/Concrete025_bundle_2K.jpg" alt="Concrete 025" width="200" />
+- **Grass001** (Grass): <img src="../../packages/gen/public/textures/grass/Grass001_bundle_2K.jpg" alt="Grass 001" width="200" />
+- **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
+
+---
+
+#### Composite Timber Framework (`CM004`)
+
+**Description:** Advanced wood construction using multi-layered beams and interlocking joints, enhancing load-bearing capabilities.
+
+**Parameters:**
+```json
+{
+  "constructionSpeed": {
+    "min": 0.6,
+    "max": 0.85,
+    "default": 0.75
+  },
+  "materialEfficiency": {
+    "min": 0.7,
+    "max": 0.9,
+    "default": 0.8
+  },
+  "structuralStrength": {
+    "min": 0.7,
+    "max": 0.9,
+    "default": 0.8
+  },
+  "durability": {
+    "min": 0.6,
+    "max": 0.8,
+    "default": 0.7
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #3B2800; padding: 2px 8px; border-radius: 3px;">#3B2800</span>
+- <span style="background-color: #5A3B00; padding: 2px 8px; border-radius: 3px;">#5A3B00</span>
+- <span style="background-color: #7A552A; padding: 2px 8px; border-radius: 3px;">#7A552A</span>
+- <span style="background-color: #9B704B; padding: 2px 8px; border-radius: 3px;">#9B704B</span>
+- <span style="background-color: #BC8C71; padding: 2px 8px; border-radius: 3px;">#BC8C71</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#7A552A",
+  "roughness": 0.6,
+  "metallic": 0,
+  "normalStrength": 1.1,
+  "aoStrength": 0.6,
+  "heightScale": 0.02
+}
+```
+
+**Procedural Rules:**
+> Layer textures vary by species and orientation, adding complexity.
+
+**Textures:**
+- **Wood094** (Wood): <img src="../../packages/gen/public/textures/wood/Wood094_bundle_2K.jpg" alt="Wood 094" width="200" />
+- **Wood051** (Wood): <img src="../../packages/gen/public/textures/wood/Wood051_bundle_2K.jpg" alt="Wood 051" width="200" />
+
+---
+
+#### Integrated Metal Casting (`CM005`)
+
+**Description:** Metal casting technique using molds for uniform structural elements, ensuring precision and strength.
+
+**Parameters:**
+```json
+{
+  "constructionSpeed": {
+    "min": 0.4,
+    "max": 0.7,
+    "default": 0.55
+  },
+  "materialEfficiency": {
+    "min": 0.7,
+    "max": 0.85,
+    "default": 0.8
+  },
+  "structuralStrength": {
+    "min": 0.8,
+    "max": 1,
+    "default": 0.9
+  },
+  "durability": {
+    "min": 0.8,
+    "max": 1,
+    "default": 0.9
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #353839; padding: 2px 8px; border-radius: 3px;">#353839</span>
+- <span style="background-color: #565656; padding: 2px 8px; border-radius: 3px;">#565656</span>
+- <span style="background-color: #7F7F7F; padding: 2px 8px; border-radius: 3px;">#7F7F7F</span>
+- <span style="background-color: #A0A0A0; padding: 2px 8px; border-radius: 3px;">#A0A0A0</span>
+- <span style="background-color: #CCCCCC; padding: 2px 8px; border-radius: 3px;">#CCCCCC</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#7F7F7F",
+  "roughness": 0.5,
+  "metallic": 0.9,
+  "normalStrength": 1.4,
+  "aoStrength": 0.8,
+  "heightScale": 0.03
+}
+```
+
+**Procedural Rules:**
+> Casting imperfections add unique visual identifiers within elements.
+
+**Textures:**
+- **Concrete023** (Concrete): <img src="../../packages/gen/public/textures/concrete/Concrete023_bundle_2K.jpg" alt="Concrete 023" width="200" />
+- **Metal050** (unknown): `Metal050` (not found in manifest)
+
+---
+
+#### Wattle and Daub Fusion (`CM006`)
+
+**Description:** Traditional woven framework covered with an advanced composite for improved insulation and weather resistance.
+
+**Parameters:**
+```json
+{
+  "constructionSpeed": {
+    "min": 0.5,
+    "max": 0.75,
+    "default": 0.65
+  },
+  "materialEfficiency": {
+    "min": 0.8,
+    "max": 1,
+    "default": 0.9
+  },
+  "structuralStrength": {
+    "min": 0.5,
+    "max": 0.7,
+    "default": 0.6
+  },
+  "durability": {
+    "min": 0.6,
+    "max": 0.8,
+    "default": 0.7
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #A8935A; padding: 2px 8px; border-radius: 3px;">#A8935A</span>
+- <span style="background-color: #C7B88D; padding: 2px 8px; border-radius: 3px;">#C7B88D</span>
+- <span style="background-color: #E2D2AB; padding: 2px 8px; border-radius: 3px;">#E2D2AB</span>
+- <span style="background-color: #F0E3C3; padding: 2px 8px; border-radius: 3px;">#F0E3C3</span>
+- <span style="background-color: #FFF6E5; padding: 2px 8px; border-radius: 3px;">#FFF6E5</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#C7B88D",
+  "roughness": 0.7,
+  "metallic": 0,
+  "normalStrength": 1,
+  "aoStrength": 0.6,
+  "heightScale": 0.02
+}
+```
+
+**Procedural Rules:**
+> Variations in daub surface texture enhance visual complexity.
+
+**Textures:**
+- **Wood094** (Wood): <img src="../../packages/gen/public/textures/wood/Wood094_bundle_2K.jpg" alt="Wood 094" width="200" />
+- **Concrete023** (Concrete): <img src="../../packages/gen/public/textures/concrete/Concrete023_bundle_2K.jpg" alt="Concrete 023" width="200" />
 
 ---
 
@@ -4109,227 +6953,192 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 
 **WARP Flow:** Inheriting knowledge from previous generation:
 - **Gen 5: Building Systems** provided:
-  - "Metallic Nexus Cluster", "Volcanic Basin Enclaves", "Crystalline Confluence", "Nomadic Trading Posts", "Defensive Cliffside Colony"...
-  - Total: 15 archetypes across all scales
+  - "Iron Nexus City", "Fortified Enclave", "Metal Exchange Port", "Metalmine Basin", "Skyward Living Cluster"...
+  - Total: 14 archetypes across all scales
 
 ---
 
 ### MACRO: System-level context and foundational patterns
 
-**Total Archetypes:** 5
+**Total Archetypes:** 3
 
-#### Celestial Harmony (`celestial_harmony`)
+#### Iron Harmony Doctrine (`archetype_001`)
 
-**Description:** A spiritual cosmology rooted in the balance between celestial forces and earthly life, emphasizing unity and coexistence.
+**Description:** An ideological framework that perceives the universe as a symphony orchestrated by the balance of metal and consciousness. Believers see harmony in the network of iron veins that sustain their settlements.
 
 **Parameters:**
 ```json
 {
-  "ideologicalCoherence": 0.9,
-  "socialInfluence": 0.8,
-  "adoptionRate": 0.7,
-  "persistenceStrength": 0.9
+  "stellarMass": {
+    "min": 1.1,
+    "max": 2.5,
+    "default": 1.5
+  },
+  "metallicity": {
+    "min": 0.6,
+    "max": 1.2,
+    "default": 0.9
+  },
+  "age": {
+    "min": 3,
+    "max": 8,
+    "default": 5.5
+  },
+  "orbitalDistance": {
+    "min": 0.6,
+    "max": 2,
+    "default": 1.1
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #4B89AC; padding: 2px 8px; border-radius: 3px;">#4B89AC</span>
-- <span style="background-color: #F0E3A3; padding: 2px 8px; border-radius: 3px;">#F0E3A3</span>
-- <span style="background-color: #C2C2C2; padding: 2px 8px; border-radius: 3px;">#C2C2C2</span>
-- <span style="background-color: #8B5E3C; padding: 2px 8px; border-radius: 3px;">#8B5E3C</span>
-- <span style="background-color: #312F2F; padding: 2px 8px; border-radius: 3px;">#312F2F</span>
+- <span style="background-color: #4F4F4F; padding: 2px 8px; border-radius: 3px;">#4F4F4F</span>
+- <span style="background-color: #A3A3A3; padding: 2px 8px; border-radius: 3px;">#A3A3A3</span>
+- <span style="background-color: #FFDD00; padding: 2px 8px; border-radius: 3px;">#FFDD00</span>
+- <span style="background-color: #002233; padding: 2px 8px; border-radius: 3px;">#002233</span>
+- <span style="background-color: #00AAFF; padding: 2px 8px; border-radius: 3px;">#00AAFF</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#4B89AC",
-  "roughness": 0.5,
-  "metallic": 0.3,
-  "normalStrength": 1.2,
+  "baseColor": "#4F4F4F",
+  "roughness": 0.6,
+  "metallic": 0.7,
+  "normalStrength": 1,
   "aoStrength": 0.9,
   "heightScale": 0.07,
-  "emissive": "#F0E3A3"
+  "emissive": "#FFDD00"
 }
 ```
 
 **Procedural Rules:**
-> Textures of sky-like gradients interspersed with earthy tones, representing the integration of cosmic and terrestrial elements.
-
-**Textures:**
-- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
-- **Rock025** (unknown): `Rock025` (not found in manifest)
-
----
-
-#### Techno Manifest (`techno_manifest`)
-
-**Description:** An economic ideology that prioritizes technological innovation as the highest form of societal advancement.
-
-**Parameters:**
-```json
-{
-  "ideologicalCoherence": 0.8,
-  "socialInfluence": 0.9,
-  "adoptionRate": 0.8,
-  "persistenceStrength": 0.7
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #151515; padding: 2px 8px; border-radius: 3px;">#151515</span>
-- <span style="background-color: #90A4AE; padding: 2px 8px; border-radius: 3px;">#90A4AE</span>
-- <span style="background-color: #CFD8DC; padding: 2px 8px; border-radius: 3px;">#CFD8DC</span>
-- <span style="background-color: #00B8D4; padding: 2px 8px; border-radius: 3px;">#00B8D4</span>
-- <span style="background-color: #212121; padding: 2px 8px; border-radius: 3px;">#212121</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#151515",
-  "roughness": 0.4,
-  "metallic": 0.8,
-  "normalStrength": 1.4,
-  "aoStrength": 0.7,
-  "heightScale": 0.05,
-  "emissive": "#00B8D4"
-}
-```
-
-**Procedural Rules:**
-> Sleek, metallic surfaces with illuminated circuits, echoing themes of progress and connectivity.
+> Patterns of interlocking metal veins with woven fabric codex representing philosophical texts.
 
 **Textures:**
 - **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
-- **Concrete023** (Concrete): <img src="../../packages/gen/public/textures/concrete/Concrete023_bundle_2K.jpg" alt="Concrete 023" width="200" />
-
----
-
-#### Primordial Balance (`primordial_balance`)
-
-**Description:** A philosophical system affirming the cyclical nature of life, connecting the ancient with the contemporary.
-
-**Parameters:**
-```json
-{
-  "ideologicalCoherence": 0.85,
-  "socialInfluence": 0.7,
-  "adoptionRate": 0.6,
-  "persistenceStrength": 0.85
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #5F4B32; padding: 2px 8px; border-radius: 3px;">#5F4B32</span>
-- <span style="background-color: #BCAAA4; padding: 2px 8px; border-radius: 3px;">#BCAAA4</span>
-- <span style="background-color: #8D6E63; padding: 2px 8px; border-radius: 3px;">#8D6E63</span>
-- <span style="background-color: #4E342E; padding: 2px 8px; border-radius: 3px;">#4E342E</span>
-- <span style="background-color: #3E2723; padding: 2px 8px; border-radius: 3px;">#3E2723</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#5F4B32",
-  "roughness": 0.7,
-  "metallic": 0.2,
-  "normalStrength": 1.6,
-  "aoStrength": 1,
-  "heightScale": 0.06,
-  "emissive": "#8D6E63"
-}
-```
-
-**Procedural Rules:**
-> Textures showcase a weathered look with cuts and marks symbolizing the passage of time.
-
-**Textures:**
 - **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
 - **Fabric023** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric023_bundle_2K.jpg" alt="Fabric 023" width="200" />
 
 ---
 
-#### Tribal Horizon (`tribal_horizon`)
+#### Stone Pattern Allegiance (`archetype_002`)
 
-**Description:** A cultural movement valuing ancestral wisdom and tribal solidarity in an ever-expanding universe.
+**Description:** An ideology that prioritizes the alignment and organization of stone structures as reflections of cosmic order. These structures serve both religious and social functions in guiding community life.
 
 **Parameters:**
 ```json
 {
-  "ideologicalCoherence": 0.8,
-  "socialInfluence": 0.85,
-  "adoptionRate": 0.65,
-  "persistenceStrength": 0.8
+  "stellarMass": {
+    "min": 0.8,
+    "max": 1.5,
+    "default": 1.2
+  },
+  "metallicity": {
+    "min": 0.3,
+    "max": 0.9,
+    "default": 0.6
+  },
+  "age": {
+    "min": 2,
+    "max": 6,
+    "default": 4
+  },
+  "orbitalDistance": {
+    "min": 0.5,
+    "max": 1.5,
+    "default": 1
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #795548; padding: 2px 8px; border-radius: 3px;">#795548</span>
-- <span style="background-color: #D7CCC8; padding: 2px 8px; border-radius: 3px;">#D7CCC8</span>
-- <span style="background-color: #A1887F; padding: 2px 8px; border-radius: 3px;">#A1887F</span>
-- <span style="background-color: #4E342E; padding: 2px 8px; border-radius: 3px;">#4E342E</span>
-- <span style="background-color: #3E2723; padding: 2px 8px; border-radius: 3px;">#3E2723</span>
+- <span style="background-color: #70543E; padding: 2px 8px; border-radius: 3px;">#70543E</span>
+- <span style="background-color: #D1C6B5; padding: 2px 8px; border-radius: 3px;">#D1C6B5</span>
+- <span style="background-color: #8B8C89; padding: 2px 8px; border-radius: 3px;">#8B8C89</span>
+- <span style="background-color: #3A3E41; padding: 2px 8px; border-radius: 3px;">#3A3E41</span>
+- <span style="background-color: #D3D4D5; padding: 2px 8px; border-radius: 3px;">#D3D4D5</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#795548",
-  "roughness": 0.6,
-  "metallic": 0.1,
-  "normalStrength": 1.3,
-  "aoStrength": 0.8,
-  "heightScale": 0.04,
-  "emissive": "#D7CCC8"
+  "baseColor": "#70543E",
+  "roughness": 0.8,
+  "metallic": 0.2,
+  "normalStrength": 0.9,
+  "aoStrength": 0.85,
+  "heightScale": 0.1,
+  "emissive": "#D1C6B5"
 }
 ```
 
 **Procedural Rules:**
-> Interwoven leather and wood designs, reflecting deep-seated tribal traditions and heritage.
+> Interwoven stone patterns manifested as divine symbols, generally woven with inscriptions using soft fabrics.
 
 **Textures:**
-- **Leather012** (Leather): <img src="../../packages/gen/public/textures/leather/Leather012_bundle_2K.jpg" alt="Leather 012" width="200" />
-- **Wood051** (Wood): <img src="../../packages/gen/public/textures/wood/Wood051_bundle_2K.jpg" alt="Wood 051" width="200" />
+- **Rock025** (unknown): `Rock025` (not found in manifest)
+- **Bricks051** (Bricks): <img src="../../packages/gen/public/textures/bricks/Bricks051_bundle_2K.jpg" alt="Bricks 051" width="200" />
+- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
 
 ---
 
-#### Interconnected Growth (`interconnected_growth`)
+#### Metal Exchange Reverence (`archetype_003`)
 
-**Description:** A political philosophy fostering decentralized control and inter-node collaboration across vast networks.
+**Description:** A complex belief system founded on the flow and trade of metals, associating economic activity with spiritual progression. Trade routes become pilgrimages, where metals carry spiritual weight.
 
 **Parameters:**
 ```json
 {
-  "ideologicalCoherence": 0.75,
-  "socialInfluence": 0.9,
-  "adoptionRate": 0.7,
-  "persistenceStrength": 0.75
+  "stellarMass": {
+    "min": 0.9,
+    "max": 1.8,
+    "default": 1.4
+  },
+  "metallicity": {
+    "min": 0.4,
+    "max": 1,
+    "default": 0.8
+  },
+  "age": {
+    "min": 2,
+    "max": 6,
+    "default": 3.5
+  },
+  "orbitalDistance": {
+    "min": 0.7,
+    "max": 2.2,
+    "default": 1.4
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #455A64; padding: 2px 8px; border-radius: 3px;">#455A64</span>
-- <span style="background-color: #CFD8DC; padding: 2px 8px; border-radius: 3px;">#CFD8DC</span>
-- <span style="background-color: #607D8B; padding: 2px 8px; border-radius: 3px;">#607D8B</span>
-- <span style="background-color: #263238; padding: 2px 8px; border-radius: 3px;">#263238</span>
-- <span style="background-color: #212121; padding: 2px 8px; border-radius: 3px;">#212121</span>
+- <span style="background-color: #8D8D8D; padding: 2px 8px; border-radius: 3px;">#8D8D8D</span>
+- <span style="background-color: #CFCFCF; padding: 2px 8px; border-radius: 3px;">#CFCFCF</span>
+- <span style="background-color: #4D4D4D; padding: 2px 8px; border-radius: 3px;">#4D4D4D</span>
+- <span style="background-color: #FFF700; padding: 2px 8px; border-radius: 3px;">#FFF700</span>
+- <span style="background-color: #AE7C00; padding: 2px 8px; border-radius: 3px;">#AE7C00</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#455A64",
-  "roughness": 0.5,
-  "metallic": 0.4,
-  "normalStrength": 1.5,
+  "baseColor": "#8D8D8D",
+  "roughness": 0.3,
+  "metallic": 0.85,
+  "normalStrength": 1.2,
   "aoStrength": 0.7,
-  "heightScale": 0.06,
-  "emissive": "#607D8B"
+  "heightScale": 0.03,
+  "emissive": "#FFF700"
 }
 ```
 
 **Procedural Rules:**
-> Brick patterns combined with soft fabric elements show resilience through flexibility and structure.
+> Metallic consistency with interwoven trade patterns represented by softer contrasting textures.
 
 **Textures:**
-- **Bricks051** (Bricks): <img src="../../packages/gen/public/textures/bricks/Bricks051_bundle_2K.jpg" alt="Bricks 051" width="200" />
-- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
+- **Metal050** (unknown): `Metal050` (not found in manifest)
+- **Fabric023** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric023_bundle_2K.jpg" alt="Fabric 023" width="200" />
+- **Concrete023** (Concrete): <img src="../../packages/gen/public/textures/concrete/Concrete023_bundle_2K.jpg" alt="Concrete 023" width="200" />
 
 ---
 
@@ -4337,217 +7146,243 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 ### MESO: Intermediate dynamics and structural relationships
 
 **WEFT Flow:** Building on MACRO scale archetypes:
-- "Celestial Harmony", "Techno Manifest", "Primordial Balance"...
+- "Iron Harmony Doctrine", "Stone Pattern Allegiance", "Metal Exchange Reverence"
 
-**Total Archetypes:** 5
+**Total Archetypes:** 4
 
-#### The Celestial Synod (`institution_001`)
+#### Doctrine Council (`institutional_doctrine_council`)
 
-**Description:** A spiritual organization that enforces the principles of Celestial Harmony among communities. It serves as the religious institution preserving cosmological balance and providing spiritual guidance.
+**Description:** A central governing body that oversees the integration and interpretation of the Iron Harmony Doctrine across settlements. Functions as a spiritual and administrative guide, ensuring community alignment with cosmic principles.
 
 **Parameters:**
 ```json
 {
-  "institutionalComplexity": 4.5,
-  "coordinationEfficiency": 4.2,
-  "influenceRange": 5,
-  "stability": 4.8
+  "institutionalComplexity": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.85
+  },
+  "coordinationEfficiency": {
+    "min": 0.6,
+    "max": 0.9,
+    "default": 0.75
+  },
+  "influenceRange": {
+    "min": 0.2,
+    "max": 0.5,
+    "default": 0.35
+  },
+  "stability": {
+    "min": 0.8,
+    "max": 1,
+    "default": 0.9
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #263445; padding: 2px 8px; border-radius: 3px;">#263445</span>
-- <span style="background-color: #4C687C; padding: 2px 8px; border-radius: 3px;">#4C687C</span>
-- <span style="background-color: #97AABD; padding: 2px 8px; border-radius: 3px;">#97AABD</span>
-- <span style="background-color: #B0CACF; padding: 2px 8px; border-radius: 3px;">#B0CACF</span>
-- <span style="background-color: #7992AF; padding: 2px 8px; border-radius: 3px;">#7992AF</span>
+- <span style="background-color: #8A8D91; padding: 2px 8px; border-radius: 3px;">#8A8D91</span>
+- <span style="background-color: #C2C5C9; padding: 2px 8px; border-radius: 3px;">#C2C5C9</span>
+- <span style="background-color: #E5E7E9; padding: 2px 8px; border-radius: 3px;">#E5E7E9</span>
+- <span style="background-color: #7B7D81; padding: 2px 8px; border-radius: 3px;">#7B7D81</span>
+- <span style="background-color: #343537; padding: 2px 8px; border-radius: 3px;">#343537</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#263445",
-  "roughness": 0.85,
-  "metallic": 0.2,
-  "normalStrength": 1.2,
-  "aoStrength": 0.7,
-  "heightScale": 0.03
+  "baseColor": "#8A8D91",
+  "roughness": 0.6,
+  "metallic": 0,
+  "normalStrength": 1,
+  "aoStrength": 0.9,
+  "heightScale": 0.01,
+  "emissive": "#C2C5C9"
 }
 ```
 
 **Procedural Rules:**
-> Surfaces appear celestial-like with swirling patterns resembling stars and galaxies woven into stone and fabric textures.
+> Materials show intricate stone carving patterns interwoven with fabric elements.
 
 **Textures:**
-- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
-- **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
+- **Stone049** (unknown): `Stone049` (not found in manifest)
+- **Fabric023** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric023_bundle_2K.jpg" alt="Fabric 023" width="200" />
 
 ---
 
-#### Innovation Assembly (`institution_002`)
+#### Stone Pattern University (`stone_pattern_university`)
 
-**Description:** An economic institution aligned with the Techno Manifest ideology, dedicated to advancing technological innovation through collaborative research and design hubs.
+**Description:** An educational institution dedicated to teaching and expanding the principles of the Stone Pattern Allegiance, specializing in architectural and societal symmetries.
 
 **Parameters:**
 ```json
 {
-  "institutionalComplexity": 5,
-  "coordinationEfficiency": 4.8,
-  "influenceRange": 4.5,
-  "stability": 4.3
+  "institutionalComplexity": {
+    "min": 0.6,
+    "max": 0.9,
+    "default": 0.75
+  },
+  "coordinationEfficiency": {
+    "min": 0.5,
+    "max": 0.7,
+    "default": 0.6
+  },
+  "influenceRange": {
+    "min": 0.3,
+    "max": 0.6,
+    "default": 0.4
+  },
+  "stability": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.85
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #2B2B2B; padding: 2px 8px; border-radius: 3px;">#2B2B2B</span>
-- <span style="background-color: #536872; padding: 2px 8px; border-radius: 3px;">#536872</span>
-- <span style="background-color: #87AFC7; padding: 2px 8px; border-radius: 3px;">#87AFC7</span>
-- <span style="background-color: #CAD7DF; padding: 2px 8px; border-radius: 3px;">#CAD7DF</span>
-- <span style="background-color: #D3D3D3; padding: 2px 8px; border-radius: 3px;">#D3D3D3</span>
+- <span style="background-color: #ADB7C0; padding: 2px 8px; border-radius: 3px;">#ADB7C0</span>
+- <span style="background-color: #6C7A89; padding: 2px 8px; border-radius: 3px;">#6C7A89</span>
+- <span style="background-color: #E0E3E5; padding: 2px 8px; border-radius: 3px;">#E0E3E5</span>
+- <span style="background-color: #44546B; padding: 2px 8px; border-radius: 3px;">#44546B</span>
+- <span style="background-color: #A0A4A8; padding: 2px 8px; border-radius: 3px;">#A0A4A8</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#2B2B2B",
-  "roughness": 0.6,
-  "metallic": 0.8,
-  "normalStrength": 1.4,
-  "aoStrength": 0.9,
-  "heightScale": 0.02
+  "baseColor": "#ADB7C0",
+  "roughness": 0.7,
+  "metallic": 0.1,
+  "normalStrength": 0.9,
+  "aoStrength": 0.85,
+  "heightScale": 0.02,
+  "emissive": "#6C7A89"
 }
 ```
 
 **Procedural Rules:**
-> Structures exhibit sleek metallic surfaces with clear delineations of various materials symbolizing innovation and progress.
+> The surfaces of the university feature repeating geometric patterns and fabric banners.
+
+**Textures:**
+- **Rock030** (Rock): <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="200" />
+- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
+
+---
+
+#### Metal Trade Network (`metal_trade_network`)
+
+**Description:** An economic institution facilitating the trade and distribution of metals across regions, operating on the principles of Metal Exchange Reverence.
+
+**Parameters:**
+```json
+{
+  "institutionalComplexity": {
+    "min": 0.8,
+    "max": 1,
+    "default": 0.9
+  },
+  "coordinationEfficiency": {
+    "min": 0.7,
+    "max": 0.95,
+    "default": 0.85
+  },
+  "influenceRange": {
+    "min": 0.5,
+    "max": 0.8,
+    "default": 0.65
+  },
+  "stability": {
+    "min": 0.6,
+    "max": 0.9,
+    "default": 0.75
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #BCC1C6; padding: 2px 8px; border-radius: 3px;">#BCC1C6</span>
+- <span style="background-color: #F2F4F5; padding: 2px 8px; border-radius: 3px;">#F2F4F5</span>
+- <span style="background-color: #AEB2B5; padding: 2px 8px; border-radius: 3px;">#AEB2B5</span>
+- <span style="background-color: #868A8D; padding: 2px 8px; border-radius: 3px;">#868A8D</span>
+- <span style="background-color: #5C5F63; padding: 2px 8px; border-radius: 3px;">#5C5F63</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#BCC1C6",
+  "roughness": 0.3,
+  "metallic": 0.6,
+  "normalStrength": 1.2,
+  "aoStrength": 0.9,
+  "heightScale": 0.015,
+  "emissive": "#F2F4F5"
+}
+```
+
+**Procedural Rules:**
+> Network outposts exhibit reflective metal surfaces and interconnected fabric trade routes.
 
 **Textures:**
 - **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
-- **Concrete023** (Concrete): <img src="../../packages/gen/public/textures/concrete/Concrete023_bundle_2K.jpg" alt="Concrete 023" width="200" />
-
----
-
-#### Cycle Council (`institution_003`)
-
-**Description:** A philosophical body supporting Primordial Balance, overseeing the cyclical transitions of society and fostering continuity and renewal.
-
-**Parameters:**
-```json
-{
-  "institutionalComplexity": 3.8,
-  "coordinationEfficiency": 4,
-  "influenceRange": 4.2,
-  "stability": 5
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #30352F; padding: 2px 8px; border-radius: 3px;">#30352F</span>
-- <span style="background-color: #5B7F65; padding: 2px 8px; border-radius: 3px;">#5B7F65</span>
-- <span style="background-color: #8CA99E; padding: 2px 8px; border-radius: 3px;">#8CA99E</span>
-- <span style="background-color: #C0CDD9; padding: 2px 8px; border-radius: 3px;">#C0CDD9</span>
-- <span style="background-color: #F1F8E9; padding: 2px 8px; border-radius: 3px;">#F1F8E9</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#30352F",
-  "roughness": 0.9,
-  "metallic": 0.1,
-  "normalStrength": 1.1,
-  "aoStrength": 0.8,
-  "heightScale": 0.04
-}
-```
-
-**Procedural Rules:**
-> Textures highlight natural decay and renewal patterns, with a grainy appearance that suggests age and wisdom.
-
-**Textures:**
-- **Rock025** (unknown): `Rock025` (not found in manifest)
-- **Wood051** (Wood): <img src="../../packages/gen/public/textures/wood/Wood051_bundle_2K.jpg" alt="Wood 051" width="200" />
-
----
-
-#### Horizon Guild (`institution_004`)
-
-**Description:** A cultural organization that preserves ancestral wisdom and promotes Tribal Horizon principles, emphasizing traditional knowledge and community bonding.
-
-**Parameters:**
-```json
-{
-  "institutionalComplexity": 3.5,
-  "coordinationEfficiency": 4.2,
-  "influenceRange": 4,
-  "stability": 4.6
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #764C24; padding: 2px 8px; border-radius: 3px;">#764C24</span>
-- <span style="background-color: #A6795D; padding: 2px 8px; border-radius: 3px;">#A6795D</span>
-- <span style="background-color: #C0A068; padding: 2px 8px; border-radius: 3px;">#C0A068</span>
-- <span style="background-color: #E8D2BC; padding: 2px 8px; border-radius: 3px;">#E8D2BC</span>
-- <span style="background-color: #F4E9DA; padding: 2px 8px; border-radius: 3px;">#F4E9DA</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#764C24",
-  "roughness": 0.7,
-  "metallic": 0,
-  "normalStrength": 1.3,
-  "aoStrength": 0.6,
-  "heightScale": 0.03
-}
-```
-
-**Procedural Rules:**
-> Materials appear woven with intricate patterns reflecting heritage and interconnected communities.
-
-**Textures:**
 - **Fabric023** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric023_bundle_2K.jpg" alt="Fabric 023" width="200" />
-- **Leather011** (Leather): <img src="../../packages/gen/public/textures/leather/Leather011_bundle_2K.jpg" alt="Leather 011" width="200" />
 
 ---
 
-#### Network Nexus (`institution_005`)
+#### Cultural Preservation Society (`cultural_preservation_society`)
 
-**Description:** A decentralized political institution fostering interconnected growth, enabling collaboration between diverse nodes and communities through adaptive governance.
+**Description:** An organization dedicated to preserving, chronicling, and transmitting cultural history, art, and knowledge within the framework of Iron Harmony Doctrine.
 
 **Parameters:**
 ```json
 {
-  "institutionalComplexity": 4.2,
-  "coordinationEfficiency": 4.6,
-  "influenceRange": 5,
-  "stability": 4.7
+  "institutionalComplexity": {
+    "min": 0.4,
+    "max": 0.7,
+    "default": 0.55
+  },
+  "coordinationEfficiency": {
+    "min": 0.4,
+    "max": 0.7,
+    "default": 0.55
+  },
+  "influenceRange": {
+    "min": 0.2,
+    "max": 0.5,
+    "default": 0.35
+  },
+  "stability": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.85
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #1F2833; padding: 2px 8px; border-radius: 3px;">#1F2833</span>
-- <span style="background-color: #45A29E; padding: 2px 8px; border-radius: 3px;">#45A29E</span>
-- <span style="background-color: #66FCF1; padding: 2px 8px; border-radius: 3px;">#66FCF1</span>
-- <span style="background-color: #C5C6C7; padding: 2px 8px; border-radius: 3px;">#C5C6C7</span>
-- <span style="background-color: #0B0C10; padding: 2px 8px; border-radius: 3px;">#0B0C10</span>
+- <span style="background-color: #A9A9A9; padding: 2px 8px; border-radius: 3px;">#A9A9A9</span>
+- <span style="background-color: #FFE8A1; padding: 2px 8px; border-radius: 3px;">#FFE8A1</span>
+- <span style="background-color: #606060; padding: 2px 8px; border-radius: 3px;">#606060</span>
+- <span style="background-color: #333333; padding: 2px 8px; border-radius: 3px;">#333333</span>
+- <span style="background-color: #FFFFFF; padding: 2px 8px; border-radius: 3px;">#FFFFFF</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#1F2833",
-  "roughness": 0.65,
-  "metallic": 0.5,
-  "normalStrength": 1.2,
-  "aoStrength": 0.9,
-  "heightScale": 0.02
+  "baseColor": "#A9A9A9",
+  "roughness": 0.5,
+  "metallic": 0.2,
+  "normalStrength": 1.1,
+  "aoStrength": 0.95,
+  "heightScale": 0.02,
+  "emissive": "#FFE8A1"
 }
 ```
 
 **Procedural Rules:**
-> Structures emphasize connectivity and flow, with patterns depicting networks and linkages between disparate components.
+> Displays intricate wooden carvings and patterned fabric inserts as symbols of heritage.
 
 **Textures:**
-- **Concrete025** (Concrete): <img src="../../packages/gen/public/textures/concrete/Concrete025_bundle_2K.jpg" alt="Concrete 025" width="200" />
-- **Metal050** (unknown): `Metal050` (not found in manifest)
+- **Wood094** (Wood): <img src="../../packages/gen/public/textures/wood/Wood094_bundle_2K.jpg" alt="Wood 094" width="200" />
+- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
 
 ---
 
@@ -4555,223 +7390,303 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 ### MICRO: Fine-grained details and specific implementations
 
 **WEFT Flow:** Building on MACRO and MESO scales:
-- MACRO: "Celestial Harmony", "Techno Manifest"...
-- MESO: "The Celestial Synod", "Innovation Assembly"...
+- MACRO: "Iron Harmony Doctrine", "Stone Pattern Allegiance"...
+- MESO: "Doctrine Council", "Stone Pattern University"...
 
 **Total Archetypes:** 5
 
-#### Celestial Conductor (`belief_01`)
+#### Devotional Practices (`devotional-practices`)
 
-**Description:** Embodying the celestial alignment of cosmic forces, individuals believe they channel universal energies. They engage in rituals of alignment, fostering a connection to the celestial synod.
+**Description:** Personal rituals that express commitment to the Iron Harmony Doctrine, involving rhythmic chants and harmonized movements resonating with metal and stone landscapes.
 
 **Parameters:**
 ```json
 {
-  "beliefIntensity": 0.9,
-  "participationLevel": 0.8,
-  "identityStrength": 0.85,
-  "socialBonding": 0.9
+  "beliefIntensity": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.85
+  },
+  "participationLevel": {
+    "min": 0.6,
+    "max": 1,
+    "default": 0.8
+  },
+  "identityStrength": {
+    "min": 0.5,
+    "max": 0.9,
+    "default": 0.7
+  },
+  "socialBonding": {
+    "min": 0.4,
+    "max": 0.8,
+    "default": 0.6
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #091A29; padding: 2px 8px; border-radius: 3px;">#091A29</span>
-- <span style="background-color: #3A4F82; padding: 2px 8px; border-radius: 3px;">#3A4F82</span>
-- <span style="background-color: #B1CCF9; padding: 2px 8px; border-radius: 3px;">#B1CCF9</span>
-- <span style="background-color: #EAEAFF; padding: 2px 8px; border-radius: 3px;">#EAEAFF</span>
-- <span style="background-color: #8AA5D1; padding: 2px 8px; border-radius: 3px;">#8AA5D1</span>
+- <span style="background-color: #708090; padding: 2px 8px; border-radius: 3px;">#708090</span>
+- <span style="background-color: #A9A9A9; padding: 2px 8px; border-radius: 3px;">#A9A9A9</span>
+- <span style="background-color: #778899; padding: 2px 8px; border-radius: 3px;">#778899</span>
+- <span style="background-color: #D3D3D3; padding: 2px 8px; border-radius: 3px;">#D3D3D3</span>
+- <span style="background-color: #C0C0C0; padding: 2px 8px; border-radius: 3px;">#C0C0C0</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#091A29",
-  "roughness": 0.7,
-  "metallic": 0.1,
+  "baseColor": "#708090",
+  "roughness": 0.4,
+  "metallic": 0.5,
+  "normalStrength": 1,
+  "aoStrength": 0.5,
+  "heightScale": 0.03,
+  "emissive": "#A9A9A9"
+}
+```
+
+**Procedural Rules:**
+> Surfaces feature intertwining metallic threads creating harmonic patterns.
+
+**Textures:**
+- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
+- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
+
+---
+
+#### Civic Duties (`civic-duties`)
+
+**Description:** Structured communal responsibilities that individuals perform regularly to maintain alignment with Stone Pattern Allegiance, emphasizing civic engineering and stonework maintenance.
+
+**Parameters:**
+```json
+{
+  "beliefIntensity": {
+    "min": 0.5,
+    "max": 0.8,
+    "default": 0.65
+  },
+  "participationLevel": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.85
+  },
+  "identityStrength": {
+    "min": 0.6,
+    "max": 0.9,
+    "default": 0.75
+  },
+  "socialBonding": {
+    "min": 0.7,
+    "max": 0.9,
+    "default": 0.8
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #2C3E50; padding: 2px 8px; border-radius: 3px;">#2C3E50</span>
+- <span style="background-color: #34495E; padding: 2px 8px; border-radius: 3px;">#34495E</span>
+- <span style="background-color: #5D6D7E; padding: 2px 8px; border-radius: 3px;">#5D6D7E</span>
+- <span style="background-color: #AAB7B8; padding: 2px 8px; border-radius: 3px;">#AAB7B8</span>
+- <span style="background-color: #EAEDED; padding: 2px 8px; border-radius: 3px;">#EAEDED</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#2C3E50",
+  "roughness": 0.8,
+  "metallic": 0,
+  "normalStrength": 1.5,
+  "aoStrength": 0.7,
+  "heightScale": 0.05,
+  "emissive": "#34495E"
+}
+```
+
+**Procedural Rules:**
+> Stone surfaces display procedural engravings reflecting community involvement.
+
+**Textures:**
+- **Rock025** (unknown): `Rock025` (not found in manifest)
+- **Leather011** (Leather): <img src="../../packages/gen/public/textures/leather/Leather011_bundle_2K.jpg" alt="Leather 011" width="200" />
+
+---
+
+#### Cultural Identities (`cultural-identities`)
+
+**Description:** Strongly held personal and collective identities rooted in the Metal Exchange Reverence, exhibiting decorative attire and unique dialects associated with trade interactions.
+
+**Parameters:**
+```json
+{
+  "beliefIntensity": {
+    "min": 0.6,
+    "max": 0.9,
+    "default": 0.75
+  },
+  "participationLevel": {
+    "min": 0.6,
+    "max": 1,
+    "default": 0.9
+  },
+  "identityStrength": {
+    "min": 0.7,
+    "max": 0.95,
+    "default": 0.85
+  },
+  "socialBonding": {
+    "min": 0.8,
+    "max": 1,
+    "default": 0.9
+  }
+}
+```
+
+**Color Palette:**
+- <span style="background-color: #B0C4DE; padding: 2px 8px; border-radius: 3px;">#B0C4DE</span>
+- <span style="background-color: #4682B4; padding: 2px 8px; border-radius: 3px;">#4682B4</span>
+- <span style="background-color: #6495ED; padding: 2px 8px; border-radius: 3px;">#6495ED</span>
+- <span style="background-color: #B0E0E6; padding: 2px 8px; border-radius: 3px;">#B0E0E6</span>
+- <span style="background-color: #00CED1; padding: 2px 8px; border-radius: 3px;">#00CED1</span>
+
+**PBR Properties:**
+```json
+{
+  "baseColor": "#B0C4DE",
+  "roughness": 0.5,
+  "metallic": 0.6,
   "normalStrength": 1.2,
   "aoStrength": 0.7,
-  "heightScale": 0.03,
-  "emissive": "#B1CCF9"
+  "heightScale": 0.04,
+  "emissive": "#4682B4"
 }
 ```
 
 **Procedural Rules:**
-> Wavy patterns reminiscent of cosmic ripples vary to symbolize celestial movements.
+> Layered fabrics mixed with metallic adornments form a distinct identity appearance.
 
 **Textures:**
-- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
-- **Leather011** (Leather): <img src="../../packages/gen/public/textures/leather/Leather011_bundle_2K.jpg" alt="Leather 011" width="200" />
+- **Leather012** (Leather): <img src="../../packages/gen/public/textures/leather/Leather012_bundle_2K.jpg" alt="Leather 012" width="200" />
+- **Metal050** (unknown): `Metal050` (not found in manifest)
 
 ---
 
-#### Innovator's Creed (`belief_02`)
+#### Philosophical Commitments (`philosophical-commitments`)
 
-**Description:** Believers in the Techno Manifest dedicate themselves to technological advancement. Their personal mantra emphasizes creative exploration and allegiance to the Innovation Assembly.
+**Description:** Deep contemplative practices driven by the understanding of universal harmony under the Iron Harmony Doctrine, focusing on self-awareness and cosmic alignment through minimalistic living.
 
 **Parameters:**
 ```json
 {
-  "beliefIntensity": 0.95,
-  "participationLevel": 0.9,
-  "identityStrength": 0.92,
-  "socialBonding": 0.85
+  "beliefIntensity": {
+    "min": 0.8,
+    "max": 1,
+    "default": 0.9
+  },
+  "participationLevel": {
+    "min": 0.5,
+    "max": 1,
+    "default": 0.7
+  },
+  "identityStrength": {
+    "min": 0.7,
+    "max": 0.95,
+    "default": 0.85
+  },
+  "socialBonding": {
+    "min": 0.3,
+    "max": 0.6,
+    "default": 0.5
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #2E4057; padding: 2px 8px; border-radius: 3px;">#2E4057</span>
-- <span style="background-color: #FFD700; padding: 2px 8px; border-radius: 3px;">#FFD700</span>
-- <span style="background-color: #C0C0C0; padding: 2px 8px; border-radius: 3px;">#C0C0C0</span>
-- <span style="background-color: #879AA1; padding: 2px 8px; border-radius: 3px;">#879AA1</span>
-- <span style="background-color: #6B778D; padding: 2px 8px; border-radius: 3px;">#6B778D</span>
+- <span style="background-color: #483D8B; padding: 2px 8px; border-radius: 3px;">#483D8B</span>
+- <span style="background-color: #6A5ACD; padding: 2px 8px; border-radius: 3px;">#6A5ACD</span>
+- <span style="background-color: #7B68EE; padding: 2px 8px; border-radius: 3px;">#7B68EE</span>
+- <span style="background-color: #4682B4; padding: 2px 8px; border-radius: 3px;">#4682B4</span>
+- <span style="background-color: #8A2BE2; padding: 2px 8px; border-radius: 3px;">#8A2BE2</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#2E4057",
-  "roughness": 0.6,
+  "baseColor": "#483D8B",
+  "roughness": 0.3,
   "metallic": 0.2,
-  "normalStrength": 1.8,
+  "normalStrength": 1.3,
   "aoStrength": 0.6,
   "heightScale": 0.02,
-  "emissive": "#FFD700"
+  "emissive": "#6A5ACD"
 }
 ```
 
 **Procedural Rules:**
-> Angular lines and circuit-like patterns reflect a technological blueprint.
+> Flowing fabric textures with subtle iron inlays signify philosophical commitments.
 
 **Textures:**
-- **Leather012** (Leather): <img src="../../packages/gen/public/textures/leather/Leather012_bundle_2K.jpg" alt="Leather 012" width="200" />
 - **Fabric023** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric023_bundle_2K.jpg" alt="Fabric 023" width="200" />
+- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
 
 ---
 
-#### Cycle Embracer (`belief_03`)
+#### Ideological Alignment (`ideological-alignment`)
 
-**Description:** Followers of Primordial Balance live by the cycles of nature and time. They uphold the Cycle Council’s principles, participating in ceremonies that mark these transitions.
+**Description:** The practice of consciously aligning personal beliefs with the overarching principles of Metal Exchange Reverence, involving continuous adaptation to dynamic trade flows.
 
 **Parameters:**
 ```json
 {
-  "beliefIntensity": 0.87,
-  "participationLevel": 0.75,
-  "identityStrength": 0.8,
-  "socialBonding": 0.88
+  "beliefIntensity": {
+    "min": 0.7,
+    "max": 1,
+    "default": 0.85
+  },
+  "participationLevel": {
+    "min": 0.3,
+    "max": 0.7,
+    "default": 0.5
+  },
+  "identityStrength": {
+    "min": 0.5,
+    "max": 0.8,
+    "default": 0.65
+  },
+  "socialBonding": {
+    "min": 0.4,
+    "max": 0.7,
+    "default": 0.55
+  }
 }
 ```
 
 **Color Palette:**
-- <span style="background-color: #7A4D1D; padding: 2px 8px; border-radius: 3px;">#7A4D1D</span>
-- <span style="background-color: #D9A066; padding: 2px 8px; border-radius: 3px;">#D9A066</span>
-- <span style="background-color: #6F442B; padding: 2px 8px; border-radius: 3px;">#6F442B</span>
-- <span style="background-color: #F3D9C2; padding: 2px 8px; border-radius: 3px;">#F3D9C2</span>
-- <span style="background-color: #B48444; padding: 2px 8px; border-radius: 3px;">#B48444</span>
+- <span style="background-color: #4682B4; padding: 2px 8px; border-radius: 3px;">#4682B4</span>
+- <span style="background-color: #5F9EA0; padding: 2px 8px; border-radius: 3px;">#5F9EA0</span>
+- <span style="background-color: #B0E0E6; padding: 2px 8px; border-radius: 3px;">#B0E0E6</span>
+- <span style="background-color: #00CED1; padding: 2px 8px; border-radius: 3px;">#00CED1</span>
+- <span style="background-color: #AFEEEE; padding: 2px 8px; border-radius: 3px;">#AFEEEE</span>
 
 **PBR Properties:**
 ```json
 {
-  "baseColor": "#7A4D1D",
-  "roughness": 0.85,
-  "metallic": 0.05,
-  "normalStrength": 1.3,
-  "aoStrength": 0.9,
-  "heightScale": 0.04,
-  "emissive": "#D9A066"
-}
-```
-
-**Procedural Rules:**
-> Organic curves mimic natural cycles and growth patterns, varying subtly.
-
-**Textures:**
-- **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
-- **Leather011** (Leather): <img src="../../packages/gen/public/textures/leather/Leather011_bundle_2K.jpg" alt="Leather 011" width="200" />
-
----
-
-#### Ancestral Keeper (`belief_04`)
-
-**Description:** These individuals preserve tribal wisdom and historical legacies, aligning closely with the Horizon Guild’s mission. They engage in storytelling and traditional craft.
-
-**Parameters:**
-```json
-{
-  "beliefIntensity": 0.88,
-  "participationLevel": 0.82,
-  "identityStrength": 0.9,
-  "socialBonding": 0.92
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #3F301F; padding: 2px 8px; border-radius: 3px;">#3F301F</span>
-- <span style="background-color: #7E6A59; padding: 2px 8px; border-radius: 3px;">#7E6A59</span>
-- <span style="background-color: #948B85; padding: 2px 8px; border-radius: 3px;">#948B85</span>
-- <span style="background-color: #B59A7A; padding: 2px 8px; border-radius: 3px;">#B59A7A</span>
-- <span style="background-color: #D7C9B4; padding: 2px 8px; border-radius: 3px;">#D7C9B4</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#3F301F",
-  "roughness": 0.75,
-  "metallic": 0.1,
+  "baseColor": "#4682B4",
+  "roughness": 0.4,
+  "metallic": 0.5,
   "normalStrength": 1.1,
-  "aoStrength": 0.85,
-  "heightScale": 0.05,
-  "emissive": "#948B85"
-}
-```
-
-**Procedural Rules:**
-> Intricate, traditional patterns that change subtly, reflecting oral histories.
-
-**Textures:**
-- **Fabric023** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric023_bundle_2K.jpg" alt="Fabric 023" width="200" />
-- **Leather011** (Leather): <img src="../../packages/gen/public/textures/leather/Leather011_bundle_2K.jpg" alt="Leather 011" width="200" />
-
----
-
-#### Network Pilgrim (`belief_05`)
-
-**Description:** Believers view themselves as part of the interconnected fabric of society. Dedicated to the Network Nexus, their practices include collaborative projects and shared experiences.
-
-**Parameters:**
-```json
-{
-  "beliefIntensity": 0.92,
-  "participationLevel": 0.87,
-  "identityStrength": 0.88,
-  "socialBonding": 0.91
-}
-```
-
-**Color Palette:**
-- <span style="background-color: #253937; padding: 2px 8px; border-radius: 3px;">#253937</span>
-- <span style="background-color: #576F6C; padding: 2px 8px; border-radius: 3px;">#576F6C</span>
-- <span style="background-color: #92ACA1; padding: 2px 8px; border-radius: 3px;">#92ACA1</span>
-- <span style="background-color: #C4D9D5; padding: 2px 8px; border-radius: 3px;">#C4D9D5</span>
-- <span style="background-color: #F1F7F6; padding: 2px 8px; border-radius: 3px;">#F1F7F6</span>
-
-**PBR Properties:**
-```json
-{
-  "baseColor": "#253937",
-  "roughness": 0.65,
-  "metallic": 0.15,
-  "normalStrength": 1.6,
-  "aoStrength": 0.75,
+  "aoStrength": 0.6,
   "heightScale": 0.03,
-  "emissive": "#92ACA1"
+  "emissive": "#5F9EA0"
 }
 ```
 
 **Procedural Rules:**
-> Geometric patterns inspired by network nodes alter symmetrically.
+> Fabric mixed with metallic threads creates adaptive ideological symbols.
 
 **Textures:**
-- **Leather012** (Leather): <img src="../../packages/gen/public/textures/leather/Leather012_bundle_2K.jpg" alt="Leather 012" width="200" />
 - **Fabric019** (Fabric): <img src="../../packages/gen/public/textures/fabric/Fabric019_bundle_2K.jpg" alt="Fabric 019" width="200" />
+- **Metal049A** (Metal): <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="200" />
 
 ---
 
@@ -4780,7 +7695,7 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 
 ## Texture Reference Collection
 
-**Total Unique Textures Used:** 61
+**Total Unique Textures Used:** 30
 
 ### Bricks Textures
 
@@ -4832,10 +7747,6 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 <img src="../../packages/gen/public/textures/grass/Grass002_bundle_2K.jpg" alt="Grass 002" width="150" />
 <br/><small><strong>Grass002</strong><br/>Grass 002</small>
 </div>
-<div style="text-align: center;">
-<img src="../../packages/gen/public/textures/grass/Grass005_bundle_2K.jpg" alt="Grass 005" width="150" />
-<br/><small><strong>Grass005</strong><br/>Grass 005</small>
-</div>
 </div>
 
 ### Leather Textures
@@ -4858,22 +7769,14 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 <img src="../../packages/gen/public/textures/metal/Metal049A_bundle_2K.jpg" alt="Metal 049 A" width="150" />
 <br/><small><strong>Metal049A</strong><br/>Metal 049 A</small>
 </div>
-<div style="text-align: center;">
-<img src="../../packages/gen/public/textures/metal/Metal050A_bundle_2K.jpg" alt="Metal 050 A" width="150" />
-<br/><small><strong>Metal050A</strong><br/>Metal 050 A</small>
-</div>
 </div>
 
 ### Rock Textures
 
 <div style="display: flex; flex-wrap: wrap; gap: 10px;">
 <div style="text-align: center;">
-<img src="../../packages/gen/public/textures/rock/Rock020_bundle_2K.jpg" alt="Rock 020" width="150" />
-<br/><small><strong>Rock020</strong><br/>Rock 020</small>
-</div>
-<div style="text-align: center;">
-<img src="../../packages/gen/public/textures/rock/Rock029_bundle_2K.jpg" alt="Rock 029" width="150" />
-<br/><small><strong>Rock029</strong><br/>Rock 029</small>
+<img src="../../packages/gen/public/textures/rock/Rock028_bundle_2K.jpg" alt="Rock 028" width="150" />
+<br/><small><strong>Rock028</strong><br/>Rock 028</small>
 </div>
 <div style="text-align: center;">
 <img src="../../packages/gen/public/textures/rock/Rock030_bundle_2K.jpg" alt="Rock 030" width="150" />
@@ -4882,6 +7785,10 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 <div style="text-align: center;">
 <img src="../../packages/gen/public/textures/rock/Rock035_bundle_2K.jpg" alt="Rock 035" width="150" />
 <br/><small><strong>Rock035</strong><br/>Rock 035</small>
+</div>
+<div style="text-align: center;">
+<img src="../../packages/gen/public/textures/rock/Rock050_bundle_2K.jpg" alt="Rock 050" width="150" />
+<br/><small><strong>Rock050</strong><br/>Rock 050</small>
 </div>
 </div>
 
@@ -4902,3 +7809,16 @@ This document presents all generations (Gen 0-6) with their WARP (vertical causa
 <br/><small><strong>Wood094</strong><br/>Wood 094</small>
 </div>
 </div>
+
+
+---
+
+# Quality Assessment
+
+## Overall Quality Statistics
+
+- **Total Archetypes Assessed**: 125
+- **Overall Average Score**: 0.0%
+- **Anemic Archetypes** (< 30%): 0
+
+✅ **All archetypes meet quality standards!**

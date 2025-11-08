@@ -422,7 +422,56 @@ export async function generateGenerationDocumentation(): Promise<void> {
     lines.push('');
   }
 
-  // Write to file
+  // Add quality assessment section
+  lines.push('');
+  lines.push('---');
+  lines.push('');
+  lines.push('# Quality Assessment');
+  lines.push('');
+  lines.push('## Overall Quality Statistics');
+  lines.push('');
+  
+  try {
+    const qualityReportPath = join(__dirname, '../../data/manifests/quality-assessment.json');
+    const qualityReport = JSON.parse(await fs.readFile(qualityReportPath, 'utf8'));
+    const reports = qualityReport.reports || [];
+    const anemicArchetypes = qualityReport.anemicArchetypes || [];
+    
+    if (reports.length > 0) {
+      const allScores = reports.flatMap((r: any) => 
+        r.anemicArchetypes.map((a: any) => a.score)
+      );
+      const avgScore = allScores.length > 0 
+        ? allScores.reduce((a: number, b: number) => a + b, 0) / allScores.length 
+        : 0;
+      
+      lines.push(`- **Total Archetypes Assessed**: ${reports.reduce((sum: number, r: any) => sum + r.totalArchetypes, 0)}`);
+      lines.push(`- **Overall Average Score**: ${(avgScore * 100).toFixed(1)}%`);
+      lines.push(`- **Anemic Archetypes** (< 30%): ${anemicArchetypes.length}`);
+      lines.push('');
+      
+      if (anemicArchetypes.length > 0) {
+        lines.push('### ⚠️ Anemic Archetypes Requiring Attention');
+        lines.push('');
+        anemicArchetypes.slice(0, 10).forEach((a: any, i: number) => {
+          lines.push(`${i + 1}. **${a.generation}/${a.scale}/${a.name}** (${(a.score * 100).toFixed(1)}%)`);
+          lines.push(`   - Issues: ${a.issues.slice(0, 3).join(', ')}`);
+          if (a.suspiciousSize) {
+            lines.push(`   - ⚠️ Suspicious file size detected`);
+          }
+          lines.push('');
+        });
+      } else {
+        lines.push('✅ **All archetypes meet quality standards!**');
+        lines.push('');
+      }
+    }
+  } catch (error: any) {
+    lines.push('⚠️ Quality assessment data not available');
+    lines.push('');
+  }
+
+  // Write to file (once, at the end)
   const output = lines.join('\n');
   await fs.writeFile(OUTPUT_PATH, output, 'utf8');
 

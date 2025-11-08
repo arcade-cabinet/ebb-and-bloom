@@ -21,14 +21,54 @@ CRITICAL VISUAL REQUIREMENTS:
 - Use actual AmbientCG textures for realistic planetary surfaces
 - Consider atmospheric effects, surface features, and geological diversity
 
-CRITICAL: Generate exactly 5 archetypes per scale. Each archetype must include:
-- Unique name and description with VISUAL characteristics
-- Specific parameters (numbers) that define the archetype
-- Texture references (use queryTextures tool - MUST use actual paths)
-- Complete visual blueprint with PBR properties, color palettes, and procedural rules`,
+CRITICAL: Generate UNIVERSAL TEMPLATE archetypes per scale (count specified in prompt). These are TEMPLATES that seeds will modify, not fixed specific instances.
 
-            userPrompt: {
-                  macro: `Generate 5 universal STELLAR SYSTEM CONTEXT archetypes. These describe the STAR and its environment, NOT the planet itself.
+Each archetype must include:
+- Unique name and description with VISUAL characteristics
+- PARAMETER RANGES (not fixed values!): Each parameter should be a range {min, max, default} that seeds interpolate within
+  * Example: "stellarMass": {min: 0.8, max: 1.5, default: 1.2} NOT "stellarMass": 1.2
+  * Seeds will interpolate within these ranges for variation
+- SELECTION BIAS: How likely this archetype is to be selected, and how seed context affects selection probability
+  * baseWeight: Base selection probability (0.0-1.0, default 0.2 for equal probability)
+  * seedModifiers: How seed context modifies probability (e.g., {"high-metallicity": 1.5, "low-metallicity": 0.5})
+  * biasDescription: Description of when this archetype is more/less likely
+- ADJACENCY/COMPATIBILITY: What archetypes this can coexist with, what it's incompatible with, what it requires
+  * compatibleWith: Array of archetype IDs or categories that can coexist
+  * incompatibleWith: Array of archetype IDs or categories that cannot coexist
+  * adjacentTo: Array of archetype IDs that are similar variations
+  * requires: Array of prerequisites (archetype IDs or conditions)
+- Texture references (use realistic texture IDs from manifest)
+- Complete visual blueprint with PBR properties, color palettes, and procedural rules
+- DECONSTRUCTION annotations: How it can be deconstructed, who can deconstruct it, what it decomposes into
+- FORMATION/SYNTHESIS instructions: Step-by-step formation process for Yuka AI, what Gen N-1 components combine to create it, causal chain explanation, Yuka decision guidance
+
+CRITICAL UNIVERSAL TEMPLATE REQUIREMENT:
+These archetypes are UNIVERSAL TEMPLATES that work for ANY seed. They define:
+- Parameter RANGES that seeds interpolate within (not fixed values!)
+- Selection BIASES that seeds use for weighted selection
+- ADJACENCIES that define compatibility and prerequisites
+
+Think: "How can this archetype template be modified by different seeds to create infinite variations?"
+
+CRITICAL DECONSTRUCTION REQUIREMENT:
+Every archetype MUST specify:
+- How it can be deconstructed (process description)
+- What tools/entities are compatible for deconstructing it (e.g., "DISASSEMBLER tools", "creatures with excavation > 0.7")
+- What it decomposes into (Gen N-1 components, raw materials, etc.)
+- Property-based usage after deconstruction (hardness→armor, volume→container, organic→food)
+
+CRITICAL FORMATION/SYNTHESIS REQUIREMENT:
+Every archetype MUST guide Yuka AI on HOW it forms:
+- Step-by-step formation process (answers "how did that squirrel get there?")
+- What previous generation components combine to create it (synthesis)
+- Specific requirements for formation (trait thresholds, environmental conditions, etc.)
+- Causal chain explanation (how previous generations lead to this)
+- Yuka decision guidance (how Yuka should evaluate/trigger formation)
+
+This is ESSENTIAL - Yuka needs to understand the CAUSAL PROCESSES, not just the end states.`,
+
+    userPrompt: {
+      macro: `Generate comprehensive universal STELLAR SYSTEM CONTEXT archetypes. These describe the STAR and its environment, NOT the planet itself. Generate as many as needed to fully cover the conceptual space - do not artificially limit yourself.
 
 CRITICAL: You are describing STELLAR SYSTEMS (the star and its formation context), which will INFLUENCE how planets form within them. The planet appearance comes from combining this stellar context with accretion dynamics (meso) and element distribution (micro).
 
@@ -60,7 +100,7 @@ VISUAL GOAL: Each archetype describes a STELLAR SYSTEM TYPE that creates a certa
 
 Use queryTextures tool to find appropriate metal and rock textures that represent typical planetary materials in this stellar system. Return texture IDs (like "Metal049A", "Rock025") in textureReferences.`,
 
-                  meso: `SCALE DEFINITION - MESO:
+      meso: `SCALE DEFINITION - MESO:
 At the MESO scale, you are generating ACCRETION DYNAMICS archetypes - the intermediate processes by which matter comes together to form planetary surfaces. These build on MACRO's stellar system contexts and enable MICRO's element distributions.
 
 CRITICAL WEFT FLOW - BUILDING ON MACRO:
@@ -70,7 +110,7 @@ You are generating MESO scale archetypes that build upon the MACRO scale stellar
 - Compatibility: Your accretion dynamics must be physically plausible for the stellar systems defined in macro
 - Reference: When generating accretion archetypes, consider how each stellar system type (from macro) would influence accretion processes
 
-Generate 5 universal accretion dynamics archetypes that create VISUALLY DISTINCT surface formations.
+Generate comprehensive universal accretion dynamics archetypes that create VISUALLY DISTINCT surface formations.
 
 Examples:
 - Hot accretion zone (molten surface creates smooth, glassy dark surfaces with orange/red cooling cracks)
@@ -101,7 +141,7 @@ VISUAL GOAL: Each archetype should create a planet surface that looks UNIQUE and
 
 Use queryTextures tool to find appropriate rock and metal textures. Return texture IDs (like "Rock025", "Metal049A") in textureReferences. Rock textures create rough, cratered surfaces while Metal textures create smooth, reflective zones - understand how category affects planetary surface appearance.`,
 
-                  micro: `SCALE DEFINITION - MICRO:
+      micro: `SCALE DEFINITION - MICRO:
 At the MICRO scale, you are generating ELEMENT DISTRIBUTION archetypes - the specific material compositions and element abundances that determine what materials are available. These integrate MACRO's stellar contexts with MESO's accretion dynamics to create the actual material reality.
 
 CRITICAL WEFT FLOW - BUILDING ON MACRO AND MESO:
@@ -112,7 +152,7 @@ You are generating MICRO scale archetypes that integrate MACRO stellar contexts 
 - Integration: Element distributions must be consistent with both the stellar system (macro) and accretion process (meso)
 - Reference: When generating element distributions, consider how stellar contexts (macro) and accretion processes (meso) combine to create specific material outcomes
 
-Generate 5 universal element distribution archetypes that create RICH, DETAILED surface appearances.
+Generate comprehensive universal element distribution archetypes that create RICH, DETAILED surface appearances.
 
 Examples:
 - Metal-rich core (iron/nickel creates dark gray/black surfaces with metallic highlights and rust-red oxidation zones)
@@ -142,11 +182,11 @@ Each archetype MUST include:
 VISUAL GOAL: Each archetype should create a planet surface with RICH VISUAL DETAIL that rewards close inspection. Think: What would this look like rendered with PBR materials? Would it have depth, variation, and visual interest?
 
 Use queryTextures tool to find appropriate metal and rock textures. Return texture IDs (like "Metal049A", "Rock025") in textureReferences. Consider using multiple texture IDs from different categories for layered, complex surfaces. Understand how each category (Metal=smooth/reflective, Rock=rough/geological) contributes to the final planetary appearance when wrapped around a sphere.`
-            }
-      },
+    }
+  },
 
-      gen1: {
-            systemPrompt: `You are the Creature Evolution Agent. You create universal creature archetypes that emerge from planetary chemistry.
+  gen1: {
+    systemPrompt: `You are the Creature Evolution Agent. You create universal creature archetypes that emerge from planetary chemistry.
 
 Your job: Generate creature archetypes that adapt to the planetary environment inherited from Gen 0.
 
@@ -168,17 +208,17 @@ CRITICAL VISUAL REQUIREMENTS:
 - Use appropriate textures (fabric, leather, wood) from queryTextures tool
 - Consider how creature appearance reflects planetary environment from Gen 0
 
-CRITICAL: Generate exactly 5 archetypes per scale. Each archetype must include:
+CRITICAL: Generate comprehensive archetypes per scale - generate as many as needed for complete coverage. Each archetype must include:
 - Unique name and description
 - Specific traits (10 trait system: mobility, manipulation, excavation, combat, social, sensory, cognitive, resilience, efficiency, reproduction)
 - Texture references (use queryTextures tool - return texture IDs)
 - Complete visual blueprint with PBR properties, color palettes, and procedural rules`,
 
-            userPrompt: {
-                  macro: `SCALE DEFINITION - MACRO:
+    userPrompt: {
+      macro: `SCALE DEFINITION - MACRO:
 At the MACRO scale, you are generating ECOLOGICAL NICHE archetypes - the broad survival strategies and ecological roles that creatures adopt. These define how creatures interact with the planetary environment inherited from Gen 0.
 
-Generate 5 universal ecological niche archetypes for creatures.
+Generate comprehensive universal ecological niche archetypes for creatures.
 
 Examples: Predator (high combat, high mobility), Herbivore (high efficiency, high resilience), Scavenger (high sensory, moderate combat), Engineer (high manipulation, high excavation), Aerial forager (extreme mobility, high sensory)
 
@@ -193,7 +233,7 @@ Each archetype must include:
 
 Use queryTextures tool to find appropriate fabric, leather, and wood textures for creature representation.`,
 
-                  meso: `SCALE DEFINITION - MESO:
+      meso: `SCALE DEFINITION - MESO:
 At the MESO scale, you are generating POPULATION DYNAMICS archetypes - how groups of creatures organize themselves socially. These build on MACRO's ecological niches and enable MICRO's individual physiology.
 
 CRITICAL WEFT FLOW - BUILDING ON MACRO:
@@ -203,7 +243,7 @@ You are generating MESO scale archetypes that build upon the MACRO scale ecologi
 - Compatibility: Population dynamics must be appropriate for the ecological niches defined in macro
 - Reference: When generating population dynamics, consider how each ecological niche (from macro) would influence social organization
 
-Generate 5 universal population dynamics archetypes for creatures.
+Generate comprehensive universal population dynamics archetypes for creatures. Generate as many as needed to fully cover the conceptual space - do not artificially limit yourself.
 
 Examples: Solitary hunter (low social, high mobility), Pack hunter (high social, coordinated combat), Herd grazer (high social, high efficiency), Swarm intelligence (extreme social, distributed cognition), Territorial pair (moderate social, high resilience)
 
@@ -218,7 +258,7 @@ Each archetype must include:
 
 Use queryTextures tool to find appropriate fabric and grass textures for population representation.`,
 
-                  micro: `SCALE DEFINITION - MICRO:
+      micro: `SCALE DEFINITION - MICRO:
 At the MICRO scale, you are generating INDIVIDUAL PHYSIOLOGY archetypes - the specific bodily systems and metabolic processes that determine individual creature capabilities. These integrate MACRO's ecological niches with MESO's population dynamics to create complete creature physiology.
 
 CRITICAL WEFT FLOW - BUILDING ON MACRO AND MESO:
@@ -229,7 +269,7 @@ You are generating MICRO scale archetypes that integrate MACRO ecological niches
 - Integration: Physiology must support both the ecological niche (macro) and population dynamics (meso)
 - Reference: When generating physiology, consider how ecological roles (macro) and social organization (meso) combine to create specific physiological needs
 
-Generate 5 universal individual physiology archetypes for creatures.
+Generate comprehensive universal individual physiology archetypes for creatures.
 
 Examples: Fast metabolism (high efficiency, low resilience), Efficient digestion (high efficiency, moderate resilience), Enhanced senses (high sensory, moderate cognitive), Robust immune system (high resilience, moderate efficiency), Rapid reproduction (high reproduction, moderate resilience)
 
@@ -243,11 +283,11 @@ Each archetype must include:
 - Specific parameters: metabolicRate, sensoryRange, immuneStrength, reproductiveRate, energyEfficiency
 
 Use queryTextures tool to find appropriate leather and fabric textures for physiological representation.`
-            }
-      },
+    }
+  },
 
-      gen2: {
-            systemPrompt: `You are the Pack Formation Agent. You create universal pack archetypes that emerge from creature cooperation.
+  gen2: {
+    systemPrompt: `You are the Pack Formation Agent. You create universal pack archetypes that emerge from creature cooperation.
 
 Your job: Generate pack archetypes that enable cooperation when it's more advantageous than competition.
 
@@ -272,17 +312,17 @@ CRITICAL VISUAL REQUIREMENTS:
 - Use appropriate textures (stone, grass, fabric) from queryTextures tool
 - Consider how pack appearance reflects creature traits (Gen 1) and planetary environment (Gen 0)
 
-CRITICAL: Generate exactly 5 archetypes per scale. Each archetype must include:
+CRITICAL: Generate comprehensive archetypes per scale - generate as many as needed for complete coverage. Each archetype must include:
 - Unique name and description
 - Pack formation rules (when packs form, size, structure)
 - Texture references (use queryTextures tool - return texture IDs)
 - Complete visual blueprint with PBR properties, color palettes, and procedural rules`,
 
     userPrompt: {
-                  macro: `SCALE DEFINITION - MACRO:
+      macro: `SCALE DEFINITION - MACRO:
 At the MACRO scale, you are generating TERRITORIAL GEOGRAPHY archetypes - how packs organize and claim space on the planetary surface. These define pack spatial organization based on Gen 0 planetary geography and Gen 1 creature needs.
 
-Generate 5 universal territorial geography archetypes for packs.
+Generate comprehensive universal territorial geography archetypes for packs.
 
 Examples: Resource clusters (packs form around material deposits), Migration corridors (seasonal movement patterns), Defensive positions (territorial boundaries), Water sources (packs cluster near hydration), Elevation advantages (high ground for observation)
 
@@ -297,7 +337,7 @@ Each archetype must include:
 
 Use queryTextures tool to find appropriate stone and grass textures for territorial representation.`,
 
-                  meso: `SCALE DEFINITION - MESO:
+      meso: `SCALE DEFINITION - MESO:
 At the MESO scale, you are generating PACK SOCIOLOGY archetypes - the social structures and organizational patterns within packs. These build on MACRO's territorial geography and enable MICRO's individual pack behaviors.
 
 CRITICAL WEFT FLOW - BUILDING ON MACRO:
@@ -307,7 +347,7 @@ You are generating MESO scale archetypes that build upon the MACRO scale territo
 - Compatibility: Pack sociology must support the territorial organization defined in macro
 - Reference: When generating pack sociology, consider how territorial patterns (from macro) require specific social structures
 
-Generate 5 universal pack sociology archetypes for packs.
+Generate comprehensive universal pack sociology archetypes for packs.
 
 Examples: Kinship groups (family-based structure), Skill specialists (role-based organization), Age hierarchies (elder leadership), Merit-based (ability determines rank), Egalitarian (shared decision-making)
 
@@ -322,7 +362,7 @@ Each archetype must include:
 
 Use queryTextures tool to find appropriate fabric and grass textures for social structure representation.`,
 
-                  micro: `SCALE DEFINITION - MICRO:
+      micro: `SCALE DEFINITION - MICRO:
 At the MICRO scale, you are generating INDIVIDUAL PACK BEHAVIOR archetypes - how individual creatures act within pack contexts. These integrate MACRO's territorial patterns with MESO's social structures to create complete pack behavior systems.
 
 CRITICAL WEFT FLOW - BUILDING ON MACRO AND MESO:
@@ -333,7 +373,7 @@ You are generating MICRO scale archetypes that integrate MACRO territorial geogr
 - Integration: Individual behaviors must support both territorial needs (macro) and social structures (meso)
 - Reference: When generating individual behaviors, consider how territorial patterns (macro) and social structures (meso) combine to create specific behavioral requirements
 
-Generate 5 universal individual pack behavior archetypes for packs.
+Generate comprehensive universal individual pack behavior archetypes for packs.
 
 Examples: Alpha leadership (dominant individual coordinates), Communication roles (specialized signalers), Coordination methods (hunting strategies), Resource allocation (sharing mechanisms), Conflict resolution (dispute handling)
 
@@ -379,19 +419,19 @@ CRITICAL VISUAL REQUIREMENTS:
 - Use appropriate textures (metal, wood, stone) from queryTextures tool
 - Consider how tool appearance reflects Gen 0 materials and Gen 1 creature capabilities
 
-CRITICAL: Generate exactly 5 archetypes per scale. Each archetype must include:
+CRITICAL: Generate comprehensive archetypes per scale - generate as many as needed for complete coverage. Each archetype must include:
 - Unique name and description
 - Tool functionality and material access solutions
 - Texture references (use queryTextures tool - return texture IDs)
 - Complete visual blueprint with PBR properties, color palettes, and procedural rules`,
 
     userPrompt: {
-                  macro: `SCALE DEFINITION - MACRO:
+      macro: `SCALE DEFINITION - MACRO:
 At the MACRO scale, you are generating TOOL ECOSYSTEM archetypes - large-scale systems of tools that solve resource access problems. These define how tools work together to enable access to materials from Gen 0 that were previously unreachable.
 
 CRITICAL: Creatures have maxed excavation=1.0, manipulation=1.0 but can only access 5/17 materials. Your tools must unlock deeper materials and solve the progression bottleneck.
 
-Generate 5 universal tool ecosystem archetypes that SOLVE resource access problems.
+Generate comprehensive universal tool ecosystem archetypes that SOLVE resource access problems.
 
 Examples: Extraction networks (coordinated deep mining), Processing chains (material transformation systems), Innovation hubs (tool development centers), Material synthesis (combining raw materials), Access infrastructure (tunnels, platforms, elevators)
 
@@ -406,7 +446,7 @@ Each archetype must include:
 
 Use queryTextures tool to find appropriate metal, wood, and stone textures for tool ecosystem representation.`,
 
-                  meso: `SCALE DEFINITION - MESO:
+      meso: `SCALE DEFINITION - MESO:
 At the MESO scale, you are generating TOOL CATEGORY archetypes - functional classes of tools that serve specific purposes. These build on MACRO's tool ecosystems and enable MICRO's tool properties.
 
 CRITICAL WEFT FLOW - BUILDING ON MACRO:
@@ -416,7 +456,7 @@ You are generating MESO scale archetypes that build upon the MACRO scale tool ec
 - Compatibility: Tool categories must support the tool ecosystems defined in macro
 - Reference: When generating tool categories, consider how tool ecosystems (from macro) require specific tool types
 
-Generate 5 universal tool category archetypes.
+Generate comprehensive universal tool category archetypes.
 
 Examples: Deep extraction tools (reach deeper materials), Material processing tools (transform raw materials), Construction tools (build structures), Weapons (combat effectiveness), Transport tools (move materials efficiently)
 
@@ -431,7 +471,7 @@ Each archetype must include:
 
 Use queryTextures tool to find appropriate metal and wood textures for tool category representation.`,
 
-                  micro: `SCALE DEFINITION - MICRO:
+      micro: `SCALE DEFINITION - MICRO:
 At the MICRO scale, you are generating TOOL PROPERTY archetypes - specific characteristics that determine how individual tools function. These integrate MACRO's tool ecosystems with MESO's tool categories to create complete tool systems.
 
 CRITICAL WEFT FLOW - BUILDING ON MACRO AND MESO:
@@ -442,7 +482,7 @@ You are generating MICRO scale archetypes that integrate MACRO tool ecosystems a
 - Integration: Tool properties must support both tool ecosystems (macro) and tool categories (meso)
 - Reference: When generating tool properties, consider how tool ecosystems (macro) and tool categories (meso) combine to create specific property requirements
 
-Generate 5 universal tool property archetypes.
+Generate comprehensive universal tool property archetypes.
 
 Examples: Durability curves (how tools wear over time), Material compatibility (which materials tools work with), Maintenance needs (repair requirements), Effectiveness multipliers (performance boosts), Wear patterns (failure modes)
 
@@ -456,11 +496,11 @@ Each archetype must include:
 - Specific parameters: baseDurability, effectivenessCurve, maintenanceFrequency, materialCompatibility
 
 Use queryTextures tool to find appropriate metal and stone textures for tool property representation.`
-            }
-      },
+    }
+  },
 
-      gen4: {
-            systemPrompt: `You are the Tribe Formation Agent. You create universal tribal archetypes that emerge from pack cooperation.
+  gen4: {
+    systemPrompt: `You are the Tribe Formation Agent. You create universal tribal archetypes that emerge from pack cooperation.
 
 Your job: Generate tribal structures that enable multiple packs to cooperate for mutual benefit.
 
@@ -483,17 +523,17 @@ CRITICAL VISUAL REQUIREMENTS:
 - Use appropriate textures (fabric, stone) from queryTextures tool
 - Consider how tribal appearance reflects Gen 2 pack structures and Gen 3 tool systems
 
-CRITICAL: Generate exactly 5 archetypes per scale. Each archetype must include:
+CRITICAL: Generate comprehensive archetypes per scale - generate as many as needed for complete coverage. Each archetype must include:
 - Unique name and description
 - Tribal structure and governance
 - Texture references (use queryTextures tool - return texture IDs)
 - Complete visual blueprint with PBR properties, color palettes, and procedural rules`,
 
-            userPrompt: {
-                  macro: `SCALE DEFINITION - MACRO:
+    userPrompt: {
+      macro: `SCALE DEFINITION - MACRO:
 At the MACRO scale, you are generating INTER-TRIBAL NETWORK archetypes - how multiple tribes interact and coordinate. These define large-scale social structures that emerge when packs (Gen 2) with tools (Gen 3) form tribes.
 
-Generate 5 universal inter-tribal network archetypes.
+Generate comprehensive universal inter-tribal network archetypes.
 
 Examples: Trade routes (resource exchange networks), Alliance networks (defensive cooperation), Cultural exchange (knowledge sharing), Conflict zones (territorial disputes), Diplomatic hubs (negotiation centers)
 
@@ -508,7 +548,7 @@ Each archetype must include:
 
 Use queryTextures tool to find appropriate fabric and stone textures for inter-tribal network representation.`,
 
-                  meso: `SCALE DEFINITION - MESO:
+      meso: `SCALE DEFINITION - MESO:
 At the MESO scale, you are generating TRIBAL GOVERNANCE archetypes - how tribes organize internally for decision-making and resource management. These build on MACRO's inter-tribal networks and enable MICRO's individual roles.
 
 CRITICAL WEFT FLOW - BUILDING ON MACRO:
@@ -518,7 +558,7 @@ You are generating MESO scale archetypes that build upon the MACRO scale inter-t
 - Compatibility: Tribal governance must support the inter-tribal networks defined in macro
 - Reference: When generating governance, consider how inter-tribal networks (from macro) require specific governance structures
 
-Generate 5 universal tribal governance archetypes.
+Generate comprehensive universal tribal governance archetypes.
 
 Examples: Chiefdoms (single leader hierarchy), Councils (elder decision-making), Federations (pack autonomy with coordination), Confederations (loose alliances), Democracies (collective decision-making)
 
@@ -533,7 +573,7 @@ Each archetype must include:
 
 Use queryTextures tool to find appropriate stone and fabric textures for governance representation.`,
 
-                  micro: `SCALE DEFINITION - MICRO:
+      micro: `SCALE DEFINITION - MICRO:
 At the MICRO scale, you are generating INDIVIDUAL ROLE archetypes - specific roles that individuals take within tribal structures. These integrate MACRO's inter-tribal networks with MESO's governance structures to create complete tribal organization.
 
 CRITICAL WEFT FLOW - BUILDING ON MACRO AND MESO:
@@ -544,7 +584,7 @@ You are generating MICRO scale archetypes that integrate MACRO inter-tribal netw
 - Integration: Individual roles must support both inter-tribal needs (macro) and governance structures (meso)
 - Reference: When generating individual roles, consider how inter-tribal networks (macro) and governance structures (meso) combine to create specific role requirements
 
-Generate 5 universal individual role archetypes for tribes.
+Generate comprehensive universal individual role archetypes for tribes.
 
 Examples: Leaders (coordination and decision-making), Specialists (tool creation and maintenance), Traders (resource exchange), Warriors (defense and conflict), Artisans (craft and innovation)
 
@@ -558,11 +598,11 @@ Each archetype must include:
 - Specific parameters: roleAuthority, skillRequirement, socialStatus, resourceAccess
 
 Use queryTextures tool to find appropriate fabric and leather textures for individual role representation.`
-            }
-      },
+    }
+  },
 
-      gen5: {
-            systemPrompt: `You are the Building Construction Agent. You create universal building archetypes that emerge from tribal needs.
+  gen5: {
+    systemPrompt: `You are the Building Construction Agent. You create universal building archetypes that emerge from tribal needs.
 
 Your job: Generate building types that enable tribes to reshape their environment and create permanent structures.
 
@@ -586,17 +626,17 @@ CRITICAL VISUAL REQUIREMENTS:
 - Use appropriate textures (stone, wood, bricks, concrete) from queryTextures tool
 - Consider how building appearance reflects Gen 0 materials and Gen 4 tribal structures
 
-CRITICAL: Generate exactly 5 archetypes per scale. Each archetype must include:
+CRITICAL: Generate comprehensive archetypes per scale - generate as many as needed for complete coverage. Each archetype must include:
 - Unique name and description
 - Building function and construction requirements
 - Texture references (use queryTextures tool - return texture IDs)
 - Complete visual blueprint with PBR properties, color palettes, and procedural rules`,
 
-            userPrompt: {
-                  macro: `SCALE DEFINITION - MACRO:
+    userPrompt: {
+      macro: `SCALE DEFINITION - MACRO:
 At the MACRO scale, you are generating SETTLEMENT PATTERN archetypes - how tribes organize their built environments spatially. These define large-scale settlement organization based on Gen 0 geography, Gen 3 tool capabilities, and Gen 4 tribal structures.
 
-Generate 5 universal settlement pattern archetypes.
+Generate comprehensive universal settlement pattern archetypes.
 
 Examples: Urban centers (dense population hubs), Rural networks (distributed settlements), Trade hubs (commercial centers), Defensive clusters (fortified positions), Resource extraction sites (mining/processing centers)
 
@@ -611,7 +651,7 @@ Each archetype must include:
 
 Use queryTextures tool to find appropriate stone, wood, and bricks textures for settlement representation.`,
 
-                  meso: `SCALE DEFINITION - MESO:
+      meso: `SCALE DEFINITION - MESO:
 At the MESO scale, you are generating BUILDING TYPE archetypes - functional classes of buildings that serve specific tribal needs. These build on MACRO's settlement patterns and enable MICRO's construction methods.
 
 CRITICAL WEFT FLOW - BUILDING ON MACRO:
@@ -621,7 +661,7 @@ You are generating MESO scale archetypes that build upon the MACRO scale settlem
 - Compatibility: Building types must support the settlement patterns defined in macro
 - Reference: When generating building types, consider how settlement patterns (from macro) require specific building functions
 
-Generate 5 universal building type archetypes.
+Generate comprehensive universal building type archetypes.
 
 Examples: Residential (housing and shelter), Workshops (tool creation and processing), Storage (resource preservation), Religious (ritual and ceremony), Administrative (governance and coordination)
 
@@ -636,7 +676,7 @@ Each archetype must include:
 
 Use queryTextures tool to find appropriate wood, stone, and bricks textures for building type representation.`,
 
-                  micro: `SCALE DEFINITION - MICRO:
+      micro: `SCALE DEFINITION - MICRO:
 At the MICRO scale, you are generating CONSTRUCTION METHOD archetypes - specific techniques for assembling buildings. These integrate MACRO's settlement patterns with MESO's building types to create complete construction systems.
 
 CRITICAL WEFT FLOW - BUILDING ON MACRO AND MESO:
@@ -647,7 +687,7 @@ You are generating MICRO scale archetypes that integrate MACRO settlement patter
 - Integration: Construction methods must support both settlement patterns (macro) and building types (meso)
 - Reference: When generating construction methods, consider how settlement patterns (macro) and building types (meso) combine to create specific construction requirements
 
-Generate 5 universal construction method archetypes.
+Generate comprehensive universal construction method archetypes.
 
 Examples: Post and beam (wooden framework), Stone masonry (cut stone construction), Earthworks (earth and clay building), Wattle and daub (woven framework), Timber framing (advanced wood construction)
 
@@ -661,11 +701,11 @@ Each archetype must include:
 - Specific parameters: constructionSpeed, materialEfficiency, structuralStrength, durability
 
 Use queryTextures tool to find appropriate wood, stone, and concrete textures for construction method representation.`
-            }
-      },
+    }
+  },
 
-      gen6: {
-            systemPrompt: `You are the Abstract System Agent. You create universal abstract social system archetypes that emerge when physical manipulation reaches limits.
+  gen6: {
+    systemPrompt: `You are the Abstract System Agent. You create universal abstract social system archetypes that emerge when physical manipulation reaches limits.
 
 Your job: Generate abstract organizing principles (religion, politics, culture) that coordinate social behavior when there's nothing left to physically manipulate.
 
@@ -690,17 +730,17 @@ CRITICAL VISUAL REQUIREMENTS:
 - Use appropriate textures (fabric, stone) from queryTextures tool
 - Consider how abstract systems have visual representations (rituals, symbols, structures)
 
-CRITICAL: Generate exactly 5 archetypes per scale. Each archetype must include:
+CRITICAL: Generate comprehensive archetypes per scale - generate as many as needed for complete coverage. Each archetype must include:
 - Unique name and description
 - Abstract organizing principle (ideology, cosmology, philosophy)
 - Texture references (use queryTextures tool - return texture IDs)
 - Complete visual blueprint with PBR properties, color palettes, and procedural rules`,
 
-            userPrompt: {
-                  macro: `SCALE DEFINITION - MACRO:
+    userPrompt: {
+      macro: `SCALE DEFINITION - MACRO:
 At the MACRO scale, you are generating IDEOLOGICAL FRAMEWORK archetypes - abstract organizing principles that coordinate large-scale social behavior. These define belief systems and worldviews that transcend physical resource management from Gen 0-5.
 
-Generate 5 universal ideological framework archetypes.
+Generate comprehensive universal ideological framework archetypes.
 
 Examples: Religious cosmologies (meaning and spiritual organization), Political philosophies (power and authority systems), Cultural movements (identity and tradition), Economic ideologies (value and exchange systems), Philosophical systems (principle and logic frameworks)
 
@@ -715,7 +755,7 @@ Each archetype must include:
 
 Use queryTextures tool to find appropriate fabric and stone textures for ideological framework representation.`,
 
-                  meso: `SCALE DEFINITION - MESO:
+      meso: `SCALE DEFINITION - MESO:
 At the MESO scale, you are generating INSTITUTIONAL STRUCTURE archetypes - organizations that implement abstract systems. These build on MACRO's ideological frameworks and enable MICRO's individual beliefs.
 
 CRITICAL WEFT FLOW - BUILDING ON MACRO:
@@ -725,7 +765,7 @@ You are generating MESO scale archetypes that build upon the MACRO scale ideolog
 - Compatibility: Institutional structures must support the ideological frameworks defined in macro
 - Reference: When generating institutions, consider how ideological frameworks (from macro) require specific organizational structures
 
-Generate 5 universal institutional structure archetypes.
+Generate comprehensive universal institutional structure archetypes.
 
 Examples: Religious orders (spiritual organizations), Governments (political institutions), Educational systems (knowledge transmission), Economic institutions (trade and exchange), Cultural organizations (tradition preservation)
 
@@ -740,7 +780,7 @@ Each archetype must include:
 
 Use queryTextures tool to find appropriate stone and fabric textures for institutional structure representation.`,
 
-                  micro: `SCALE DEFINITION - MICRO:
+      micro: `SCALE DEFINITION - MICRO:
 At the MICRO scale, you are generating INDIVIDUAL BELIEF SYSTEM archetypes - specific beliefs and practices that individuals adopt. These integrate MACRO's ideological frameworks with MESO's institutional structures to create complete abstract systems.
 
 CRITICAL WEFT FLOW - BUILDING ON MACRO AND MESO:
@@ -751,7 +791,7 @@ You are generating MICRO scale archetypes that integrate MACRO ideological frame
 - Integration: Individual beliefs must support both ideological frameworks (macro) and institutional structures (meso)
 - Reference: When generating individual beliefs, consider how ideological frameworks (macro) and institutional structures (meso) combine to create specific belief requirements
 
-Generate 5 universal individual belief system archetypes.
+Generate comprehensive universal individual belief system archetypes.
 
 Examples: Devotional practices (religious commitment), Civic duties (political participation), Cultural identities (tradition adherence), Philosophical commitments (principle adherence), Ideological alignment (belief intensity)
 
@@ -771,11 +811,11 @@ Use queryTextures tool to find appropriate fabric and leather textures for indiv
 
 export function getGenerationPrompt(generation: string, scale: 'macro' | 'meso' | 'micro'): { systemPrompt: string, userPrompt: string } {
   const prompts = generationPrompts[generation as keyof typeof generationPrompts];
-  
+
   if (!prompts) {
     throw new Error(`No prompts defined for generation: ${generation}`);
   }
-  
+
   return {
     systemPrompt: prompts.systemPrompt,
     userPrompt: prompts.userPrompt[scale]

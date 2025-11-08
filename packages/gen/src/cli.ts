@@ -28,4 +28,12 @@ program
     await executeStatusCommand();
   });
 
+program
+  .command('quality')
+  .description('Assess quality of generated archetypes and identify anemic entries')
+  .action(async () => {
+    const { assessAllGenerations } = await import('./tools/quality-assessor.js');
+    await assessAllGenerations();
+  });
+
 program.parse();

@@ -67,11 +67,81 @@ export function extractSeedComponents(seed: string): { macro: number; meso: numb
 }
 
 /**
- * Select from pool deterministically
+ * Select from pool deterministically (simple version - equal weights)
  */
 export function selectFromPool<T>(options: T[], seedComponent: number): T {
   const index = Math.floor(seedComponent * options.length);
   return options[index];
+}
+
+/**
+ * Select from pool with BIASED selection (weighted by archetype selectionBias)
+ * Supports seed-based probability modification
+ */
+export function selectFromPoolBiased<T extends { selectionBias?: { baseWeight?: number; seedModifiers?: Record<string, number> } }>(
+  options: T[],
+  seedComponent: number,
+  seedContext?: Record<string, any> // Context for seed modifiers (e.g., { metallicity: 'high' })
+): T {
+  // Calculate weights for each option
+  const weights = options.map((option, index) => {
+    let weight = option.selectionBias?.baseWeight ?? (1.0 / options.length);
+    
+    // Apply seed modifiers if context provided
+    if (seedContext && option.selectionBias?.seedModifiers) {
+      for (const [key, modifier] of Object.entries(option.selectionBias.seedModifiers)) {
+        if (seedContext[key]) {
+          weight *= modifier;
+        }
+      }
+    }
+    
+    return { option, weight, index };
+  });
+  
+  // Normalize weights
+  const totalWeight = weights.reduce((sum, w) => sum + w.weight, 0);
+  const normalizedWeights = weights.map(w => ({ ...w, weight: w.weight / totalWeight }));
+  
+  // Cumulative distribution for weighted selection
+  let cumulative = 0;
+  const cumulativeWeights = normalizedWeights.map(w => {
+    cumulative += w.weight;
+    return { ...w, cumulative };
+  });
+  
+  // Select based on seed component
+  const random = seedComponent;
+  for (const weighted of cumulativeWeights) {
+    if (random <= weighted.cumulative) {
+      return weighted.option;
+    }
+  }
+  
+  // Fallback to last option
+  return options[options.length - 1];
+}
+
+/**
+ * Interpolate parameter value from range using seed component
+ */
+export function interpolateParameter(
+  param: number | { min: number; max: number; default?: number },
+  seedComponent: number
+): number {
+  if (typeof param === 'number') {
+    // Backward compatibility: fixed value
+    return param;
+  }
+  
+  // Interpolate within range
+  const { min, max, default: defaultValue } = param;
+  if (defaultValue !== undefined && seedComponent < 0.1) {
+    // Use default for very low seed values
+    return defaultValue;
+  }
+  
+  return min + (seedComponent * (max - min));
 }
 
 /**
