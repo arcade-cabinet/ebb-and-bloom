@@ -280,6 +280,14 @@ BREAKING CHANGE: REST API removed, Fastify removed, React removed
 8. ✅ **Fixed CI/CD workflows** - Removed pnpm version conflict (all workflows were failing)
 9. ✅ **Migrated Gen1+ screens** - Extracted OnboardingScene, CatalystCreatorScene, EvolutionHUD, NarrativeDisplay from archived code
 10. ✅ **Deleted archived code** - Removed 1.1MB of dead React Three Fiber code (87 files)
+11. ✅ **Wired onboarding flow** - First-time users see tutorial, returning users skip to menu
+12. ✅ **Wired Evolution HUD** - Live generation display connected to GameEngine
+13. ✅ **Connected simulation to UI** - GameEngine now powers GameScene with real data
+
+**In Progress**:
+- Adding generation advancement button
+- Wiring Catalyst Creator to trait system
+- Testing full Gen0→Gen1 flow
 
 **Remaining (Low Priority)**: 
 - Fix 11 failing tests (likely archetype structure bugs like we fixed in AccretionSimulation)
