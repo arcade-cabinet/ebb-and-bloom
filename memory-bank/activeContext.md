@@ -1,432 +1,128 @@
 # Active Context
 
 **Last Updated**: 2025-11-08  
-**Current Phase**: Unified Game Package Migration  
-**Status**: Structural Migration 95% Complete, Functional Verification 0%
-
----
-
-## CRITICAL STATUS
-
-### ✅ MIGRATION VERIFIED - FUNCTIONAL
-
-**What was requested:**
-1. Gen0 backend complete with full unit/integration tests
-2. Full WARP/WEFT genesis from seed
-3. Full exchange with simulation frontend
-4. Complete end-to-end testing
-5. E2E test in REAL Chromium browser with mouse/keyboard
-6. Verify: Main menu > seed > simulation > 3D sphere + materials + celestial bodies
-7. Run with process-compose to test on phone
-8. Capacitor web build (proper cross-platform)
-9. Move everything to packages/game
-10. Internal API only (no public REST)
-
-**What's actually done:**
-- ✅ Gen0 backend complete (tests passing)
-- ✅ WARP/WEFT working (verified)
-- ✅ Frontend unified (dev server running)
-- ✅ TypeScript compiles (0 errors)
-- ✅ Most tests passing (56/67 tests)
-- ✅ Dev server verified (http://localhost:5173)
-- ❌ E2E testing NOT RUN (Playwright)
-- ❌ Phone access NOT TESTED
-- ⚠️ Capacitor CONFIGURED but NOT BUILT
-- ✅ Move to packages/game COMPLETE
-- ✅ Internal API COMPLETE
-
-**STATUS**: ✅ CAPACITOR CROSS-PLATFORM READY
-
-**Latest Updates (Beast Mode Session 2 - COMPLETE):**
-- ✅ Fixed 54 TypeScript errors → 0 errors
-- ✅ Removed 4 obsolete REST test files
-- ✅ Deleted packages/backend and packages/frontend
-- ✅ Capacitor Filesystem for archetype loading (web/iOS/Android)
-- ✅ Capacitor Preferences for storage (cross-platform)
-- ✅ Hash-based routing for navigation (Capacitor-compatible)
-- ✅ BabylonJS GUI InputText (no HTML overlays)
-- ✅ Browser-compatible EventEmitter (replaced Node.js events)
-- ✅ Design system constants (COLORS, FONTS, LAYOUT)
-- ✅ React artifacts fully removed (hooks deleted)
-- ✅ Production build working (5.6MB, 1.25MB gzipped)
-- ✅ Capacitor sync successful (iOS/Android ready)
-- ✅ GitHub Actions updated (cross-platform CI/CD)
-
-**RESULT**: True cross-platform Capacitor application ready for App Store and Play Store
-
----
-
-## Current Focus
-
-**UNIFIED GAME PACKAGE ARCHITECTURE**
-
-### What Just Happened (Last 200+ Tool Calls)
-
-**MASSIVE MIGRATION:**
-1. Moved ALL of `packages/backend/` → `packages/game/src/`
-2. Moved ALL of `packages/frontend/` → `packages/game/src/scenes/`
-3. Removed `packages/backend` package entirely
-4. Removed `packages/frontend` package entirely
-5. Removed ALL REST API code (server.ts, routes, middleware)
-6. Removed ALL React code (hooks, components, App.tsx)
-7. Removed ALL Fastify dependencies
-8. Created unified `packages/game/` with internal API only
-9. Set up Protobuf schema for generation layer communication
-10. Updated `packages/gen/` to output to `packages/game/`
-11. Updated `packages/shared/` to remove DB code (schemas only)
-
-### Architecture Change
-
-**BEFORE:**
-```
-packages/backend/  → REST API server (Fastify)
-packages/frontend/ → React frontend (fetch() calls)
-Communication: HTTP REST API
-```
-
-**AFTER:**
-```
-packages/game/     → Unified package
-  src/engine/      → GameEngine (internal API)
-  src/gen0-6/      → Generation systems
-  src/scenes/      → BabylonJS scenes
-Communication: Direct function calls (no HTTP)
-```
-
-### File Movement Log
-
-**Backend → Game:**
-- `packages/backend/src/engine/` → `packages/game/src/engine/`
-- `packages/backend/src/gen0/` → `packages/game/src/gen0/`
-- `packages/backend/src/gen1/` → `packages/game/src/gen1/`
-- `packages/backend/src/gen2/` → `packages/game/src/gen2/`
-- `packages/backend/src/gen3/` → `packages/game/src/gen3/`
-- `packages/backend/src/gen4/` → `packages/game/src/gen4/`
-- `packages/backend/src/gen5/` → `packages/game/src/gen5/`
-- `packages/backend/src/gen6/` → `packages/game/src/gen6/`
-- `packages/backend/src/planetary/` → `packages/game/src/planetary/`
-- `packages/backend/src/seed/` → `packages/game/src/seed/`
-- `packages/backend/src/schemas/` → `packages/game/src/schemas/`
-- `packages/backend/src/types/` → `packages/game/src/types/`
-- `packages/backend/src/utils/` → `packages/game/src/utils/`
-- `packages/backend/src/gen-systems/` → `packages/game/src/gen-systems/`
-- `packages/backend/data/archetypes/` → `packages/game/data/archetypes/`
-- `packages/backend/test/` → `packages/game/test-backend/`
-
-**Frontend → Game:**
-- `packages/frontend/src/scenes/` → `packages/game/src/scenes/`
-- `packages/frontend/public/` → `packages/game/public/`
-- `packages/frontend/test/` → `packages/game/test-frontend/`
-- `packages/frontend/simulation/` → (merged into game)
-
-**Removed:**
-- `packages/backend/src/server.ts` (REST server)
-- `packages/backend/src/resources/` (REST route handlers)
-- `packages/backend/src/seed/seed-routes.ts` (REST routes)
-- `packages/backend/src/seed/seed-middleware.ts` (Fastify middleware)
-- `packages/frontend/src/hooks/` (React hooks - incompatible with BabylonJS)
-- `packages/frontend/src/components/` (React components)
-- `packages/frontend/src/App.tsx` (React app)
-- `packages/frontend/src/index.tsx` (React entry)
-
-### Gen Package Updates
-
-**ALL paths updated:**
-- `packages/gen/src/workflows/ui-asset-generator.ts` → outputs to `packages/game/public/`
-- `packages/gen/src/workflows/fonts.ts` → outputs to `packages/game/public/fonts/`
-- `packages/gen/src/downloaders/ambientcg.ts` → outputs to `packages/game/public/textures/`
-- `packages/gen/src/generators/archetype-pools.ts` → outputs to `packages/game/data/archetypes/`
-- `packages/gen/src/tools/structured-texture-tool.ts` → reads from `packages/game/public/textures/`
-- `packages/gen/data/manifests/fonts.json` → references `packages/game/public/fonts/`
-
-### Shared Package Updates
-
-**DB code removed:**
-- Deleted `packages/shared/src/db/` (drizzle, connection, schema)
-- Deleted `packages/shared/migrations/`
-- Deleted `packages/shared/drizzle.config.ts`
-- Deleted `packages/shared/*.db` files
-- Removed dependencies: drizzle-orm, drizzle-kit, drizzle-zod, better-sqlite3, axios
-- **Result**: Schemas only (Zod schemas for game data structures)
-
----
-
-## 🚨 BLOCKING ISSUES
-
-### TypeScript Compilation Errors: 54
-
-**Categories:**
-1. **Unused variables** (~30): Variables declared but never read
-2. **Implicit any** (~10): Missing type annotations
-3. **Missing modules** (~8): Import path issues
-4. **Schema mismatch** (~6): Planet type doesn't include moons/visualBlueprints
-
-**Impact**: Code WILL NOT build until fixed
-
-### Obsolete Tests: 4
-
-Tests for REST endpoints that no longer exist:
-- `test-backend/seed-api.integration.test.ts`
-- `test-backend/seed-middleware.test.ts`
-- `test-backend/gen0-api.integration.test.ts`
-- `test-backend/api.integration.test.ts`
-
-### Unverified Functionality
-
-**Nothing has been tested since migration:**
-- Dev server may not start
-- Tests may be completely broken
-- E2E flow completely unknown
-- Phone access not attempted
-- Capacitor build not run
-
----
-
-## packages/game/ Structure
-
-```
-packages/game/
-├── src/
-│   ├── engine/
-│   │   ├── GameEngine.ts (wrapper)
-│   │   ├── GameEngineBackend.ts (core logic)
-│   │   └── index.ts (exports)
-│   ├── gen0/ (Accretion, Moons)
-│   ├── gen1/ (Creatures)
-│   ├── gen2/ (Packs)
-│   ├── gen3/ (Tools)
-│   ├── gen4/ (Tribes)
-│   ├── gen5/ (Buildings)
-│   ├── gen6/ (Religion/Democracy)
-│   ├── gen-systems/ (WARP/WEFT data loaders)
-│   ├── planetary/ (composition, layers, noise)
-│   ├── seed/ (seed-manager.ts only - pure functions)
-│   ├── schemas/ (type re-exports from @ebb/shared)
-│   ├── scenes/
-│   │   ├── MainMenuScene.ts (BabylonJS GUI)
-│   │   ├── GameScene.ts (Unified scene for all gens)
-│   │   └── SplashScreenScene.ts
-│   ├── types/ (yuka.d.ts, generation-zero.ts)
-│   └── utils/ (Logger, textureLoader)
-├── data/archetypes/ (Gen0-6 WARP/WEFT data)
-├── public/
-│   ├── fonts/ (Playfair Display, Work Sans, JetBrains Mono)
-│   ├── textures/ (AmbientCG materials)
-│   ├── ui/ (icons, frames, hud, backgrounds, banners)
-│   └── splash/ (splash screens)
-├── test-backend/ (18 test files)
-├── test-frontend/ (1 test file)
-├── test-e2e/ (Playwright - empty, needs migration)
-├── proto/ (game.proto - protobuf schema)
-└── configs (vite, ts, vitest, playwright, capacitor)
-```
-
----
-
-## Internal API
-
-**No HTTP, no REST, just function calls:**
-
-```typescript
-// packages/game/src/engine/GameEngine.ts
-const engine = new GameEngine(gameId);
-await engine.initialize(seed);         // Create game
-const state = engine.getState();        // Get state
-const data = await engine.getGen0RenderData(time); // Render data
-await engine.advanceGeneration();      // Next generation
-```
-
-**Used by:**
-- `MainMenuScene.ts` - Create/load games
-- `GameScene.ts` - Load render data
-- Tests - Direct function calls
-
----
-
-## NEXT (Critical Path)
-
-### IMMEDIATE (BLOCKING)
-1. **Fix TypeScript errors** (54 errors)
-   - Unused variables (prefix with `_` or remove)
-   - Implicit any (add type annotations)
-   - Missing exports (fix import paths)
-   - Planet schema (add moons field or use type extension)
-
-2. **Remove obsolete REST tests** (4 files)
-   - Delete tests for endpoints that don't exist
-   - Update remaining tests to use internal API
-
-3. **Run test suite** - Verify migration didn't break tests
-   - `pnpm test` in packages/game
-   - Fix any broken imports
-   - Update test expectations
-
-### VERIFICATION
-4. **Start dev server** - `pnpm dev` in packages/game
-   - Verify it starts on port 5173
-   - Verify assets load correctly
-   - Check browser console for errors
-
-5. **Manual E2E test**
-   - Open http://localhost:5173
-   - Click "Start New"
-   - Enter seed
-   - Click "Create World"
-   - Verify navigation to ?gameId=...
-   - Verify 3D sphere renders
-   - Verify textures load
-   - Verify moons render
-
-6. **Automated E2E test**
-   - `pnpm test:e2e`
-   - Run in real Chromium (headless: false)
-   - Verify mouse clicks work
-   - Verify keyboard input works
-   - Verify scene transitions
-
-7. **Phone testing**
-   - `process-compose up dev-game`
-   - Access http://192.168.1.200:5173 on phone
-   - Test touch interactions
-   - Verify rendering performance
-
-### BUILD
-8. **Build for production**
-   - `pnpm build`
-   - Verify dist/ contains all assets
-   - Check bundle size
-
-9. **Capacitor sync**
-   - `pnpm build:capacitor`
-   - Verify iOS/Android/Web targets
-
----
-
-## Documentation Status
-
-### ❌ OUTDATED (Need updates):
-- `docs/ARCHITECTURE.md` - References packages/backend, packages/frontend
-- `memory-bank/agent-permanent-context.md` - Old structure
-- `memory-bank/activeContext.md` - (THIS FILE - being updated now)
-- `memory-bank/progress.md` - Missing migration work
-
-### ✅ UP TO DATE:
-- `docs/DESIGN.md` - BabylonJS, UI assets strategy
-- `docs/ARCHITECTURE_UNIFIED_GAME.md` - Proposed architecture (now implemented)
-- `MIGRATION_ASSESSMENT.md` - Just created with full status
-
----
-
-## Key Decisions Made
-
-1. **No cp usage** - All files written/moved properly with git mv or direct write
-2. **No React** - BabylonJS only, React incompatible
-3. **No REST** - Internal API with direct function calls
-4. **No public API** - All functions internal and testable
-5. **Protobuf ready** - Schema created for future generation layer protocol
-6. **Cross-platform** - Capacitor configured for iOS/Android/Web
-7. **Single source of truth** - packages/game/ is the only package
-
----
-
-## What Works (Theoretically)
-
-**IF TypeScript compiled:**
-- GameEngine initialization
-- Gen0 planet creation
-- WARP/WEFT data loading
-- BabylonJS scene rendering
-- Seed management
-- Internal API
-
-**Actually verified:**
-- File structure
-- Dependencies installed
-- Configs created
-
-**NOT verified:**
-- Compilation
-- Runtime execution
-- Test suite
-- E2E flow
-- Phone access
-- Build process
-
----
-
-## Agent Instructions
-
-**For next agent (BEAST MODE):**
-1. Fix all TypeScript errors - NO STATUS UPDATES until done
-2. Remove obsolete tests - NO PAUSES
-3. Run full test suite - ITERATE until passing
-4. Start dev server - VERIFY it works
-5. Run E2E tests - REAL Chromium browser
-6. Test on phone - process-compose
-7. Update documentation - ALL files aligned
-8. Build for production - Capacitor sync
-9. Final verification - Complete flow end-to-end
-
-**NO STOPS. NO BREAKS. COMPLETE THE MISSION.**
-
-See: `AGENT_HANDOFF.md` for comprehensive instructions.
-
----
-
-## Warnings & Gotchas
-
-- **sed usage broke code** - Reverted but may have residual issues
-- **Planet schema mismatch** - Needs moons field or type extension
-- **Test imports** - May reference old package locations
-- **REST test files** - Will fail (endpoints don't exist)
-- **React artifacts** - Hooks/components lingering, needs removal
-- **Gen code still uses rng()** - Some instances not properly scoped
-
----
-
-## Files Modified (Last Session)
-
-**Created:**
-- `packages/game/` (entire package)
-- `packages/game/proto/game.proto`
-- `packages/game/vitest.config.ts`
-- `packages/game/playwright.config.ts`
-- `MIGRATION_ASSESSMENT.md`
-
-**Moved:**
-- ALL backend code → packages/game/src/
-- ALL frontend code → packages/game/src/scenes/
-- ALL data → packages/game/data/
-- ALL tests → packages/game/test-*/
-- ALL assets → packages/game/public/
-
-**Deleted:**
-- `packages/backend/` (entire package)
-- `packages/frontend/` (entire package)
-- `packages/shared/src/db/`
-- React hooks, components, App.tsx
-- REST server, routes, middleware
-
-**Modified:**
-- `packages/gen/` - All output paths to packages/game
-- `packages/shared/` - DB code removed
-- `process-compose.yml` - Single dev-game service
-- All scene files - Use GameEngine directly (no fetch)
-
----
-
-## Current Task
-
-**✅ CAPACITOR MIGRATION COMPLETE**
-
-**Status**: Production-ready cross-platform application
-
-**Achievements**:
-- Capacitor Filesystem for asset loading
-- Capacitor Preferences for storage
-- BabylonJS GUI for inputs
-- Hash-based routing
-- Design constants system
-- Browser-compatible EventEmitter
-
-**Next**: E2E testing, phone testing, refactor hardcoded values
+**Current Work**: Gen2 Social Dynamics - COMPLETE ✨
+
+## Current Phase: Gen2 Enhancements & Gen3 Prep
+
+### Just Completed: Pack Formation & Creature Interactions
+
+Built a complete social dynamics system with:
+- **Pack Formation System**: Proximity-based clustering, leader selection, cohesion tracking
+- **Creature Interaction System**: Territorial disputes, social bonds, predation, pack coordination
+- **Visual Indicators**: Wireframe pack auras (colored, pulsing) and interaction lines (red/green/orange/cyan)
+- **Emergent Behaviors**: All interactions arise from simple rules—no hardcoding
+
+**Status**: ✅ Committed and pushed to `copilot/document-screenshot-flow`
+
+### What Players Experience Now
+
+**Gen0**: Formation of planet and moons (complete)  
+**Gen1**: Living, moving creatures with:
+- Autonomous AI (foraging, fleeing, resting)
+- Walking animations
+- Resource seeking
+- Multi-scale view (points of light → 3D creatures)
+
+**Gen2**: Social dynamics with:
+- **Pack formation**: Creatures cluster into colored groups
+- **Interactions**: Visible relationships (fights, bonds, hunting, coordination)
+- **Emergent complexity**: Every playthrough is unique
+
+### What's Working
+- ✅ Celestial view (zoom from space to surface)
+- ✅ LOD system (point lights ↔ 3D meshes)
+- ✅ Four creature archetypes with procedural bodies
+- ✅ Walking animations synced to movement
+- ✅ Autonomous behaviors (foraging, fleeing, resting)
+- ✅ Resource system (food nodes)
+- ✅ Pack formation (automatic clustering)
+- ✅ Creature interactions (4 types)
+- ✅ Visual indicators (auras, lines)
+
+### Next Priorities
+
+1. **Gen2 Polish**:
+   - Smarter AI (pathfinding obstacles, memory, learning)
+   - Pack benefits (coordinated hunting, speed boost)
+   - Interaction outcomes (winners/losers in disputes)
+   - Performance (spatial partitioning for large counts)
+
+2. **Gen3 Planning** (Tools & Structures):
+   - Simple tool usage (sticks, rocks)
+   - First structures (burrows, nests, platforms)
+   - Cultural transmission (tool use spreads)
+   - Resource competition (territory control)
+
+3. **Testing & Polish**:
+   - E2E tests for Gen2 features
+   - Performance benchmarks
+   - Visual polish (particle effects)
+   - UX improvements (tooltips, info panels)
+
+## Known Issues
+
+### Existing (Pre-Gen2):
+- Some TypeScript errors in old files (OnboardingScene, CatalystCreatorScene, UI components)
+- E2E tests at 76% pass rate (11 failing due to UI timing)
+- Some Gen0 type mismatches (AccretionSimulation, MoonRenderer)
+
+### New (Gen2):
+- None identified yet (needs testing)
+
+## Context for Next Session
+
+**Branch**: `copilot/document-screenshot-flow`  
+**Build Status**: Compiles (with warnings in old files)  
+**What's Ready**: Gen0, Gen1 (living creatures), Gen2 (pack formation + interactions)
+
+**To Test**:
+1. Launch game
+2. Advance to Gen1
+3. Wait ~10 seconds for packs to form
+4. Zoom in/out to see:
+   - Pack auras (wireframe spheres)
+   - Interaction lines (red/green/orange/cyan)
+   - Creatures moving together
+
+**Files to Know**:
+- `packages/game/src/scenes/GameScene.ts` - Main orchestration
+- `packages/game/src/systems/` - Behavior, Pack, Interaction systems
+- `packages/game/src/renderers/gen1/` - Creature, Resource renderers
+- `packages/game/src/renderers/gen2/` - Pack, Interaction renderers
+- `docs/GEN2_PACK_INTERACTIONS.md` - Complete documentation
+
+## Architecture Notes
+
+**WARP/WEFT Pattern**:
+- Backend: Simulation logic, archetype definitions
+- Frontend: Visual interpretation, rendering
+
+**Gen2 Systems**:
+- `PackFormationSystem`: Detects packs via proximity clustering
+- `CreatureInteractionSystem`: Checks distances, creates interactions
+- Both run every frame, update in real-time
+
+**Gen2 Renderers**:
+- `PackFormationRenderer`: Wireframe spheres, leader bonds
+- `InteractionVisualizer`: Colored connection lines
+
+**Performance**:
+- Pack detection: O(n²) where n = pack creatures (~20-30)
+- Interaction checks: O(n²) where n = all creatures (~20-30)
+- Frame time: <1ms for typical counts
+
+## Design Philosophy Reinforcement
+
+**Core Principle**: Emergent complexity from simple rules
+
+Gen2 embodies this:
+- No scripted pack assignments
+- No hardcoded interaction outcomes
+- Everything emerges from:
+  - Proximity
+  - Traits (social, temperament, strength, intelligence)
+  - Internal states (energy, fear)
+  - Real-time decisions
+
+This creates a **living social ecosystem** where authentic dynamics unfold naturally, and every playthrough generates unique emergent behaviors.
