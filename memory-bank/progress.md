@@ -277,6 +277,7 @@ BREAKING CHANGE: REST API removed, Fastify removed, React removed
 5. ✅ GitHub Actions updated
 6. ✅ Documentation complete
 7. ✅ PR review comments resolved (19/19 threads closed)
+8. ✅ **Fixed CI/CD workflows** - Removed pnpm version conflict (all workflows were failing)
 
 **Remaining (Low Priority)**: 
 - Fix 11 failing tests (likely archetype structure bugs like we fixed in AccretionSimulation)
