@@ -163,3 +163,13 @@ public/creatures/
 # Playwright test results (can be large)
 playwright-results/
 playwright-report/
+# Database files
+*.db
+*.db-*
+
+# Generated content  
+packages/gen/data/archetypes/
+packages/gen/public/textures/
+
+# AI cache
+packages/gen/data/cache/

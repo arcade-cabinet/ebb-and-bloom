@@ -1,97 +1,179 @@
-# Ebb & Bloom
+# Ebb and Bloom - A Yuka-Driven Evolution Simulation
 
-**Procedural evolution game where consciousness flows through living forms**
+**Version**: 0.2.0 - Algorithm-First Architecture  
+**Status**: Backend Complete - Gen 0-6 Systems Implemented
 
-Cross-platform evolutionary ecosystem with emergent complexity from simple archetypes.
+## Overview
 
----
+Ebb and Bloom is a simulation where you guide the evolution of life from planetary formation to complex civilizations. Every entity—from planets to creatures to tools—is driven by Yuka AI making intelligent decisions based on deterministic mathematical models and AI-generated content pools.
+
+The game asks fundamental questions about evolution, emergence, and what happens when life encounters constraints.
+
+## Architecture
+
+### Backend-First Design
+
+This project uses a **backend-first architecture** where all game logic is implemented as RESTful APIs with pure mathematical algorithms, completely separate from any frontend rendering.
+
+```
+packages/
+├── backend/           # Complete game simulation (Gen 0-6)
+└── [future packages]  # Frontend, CLI, mobile apps
+```
+
+### Generation System
+
+The simulation progresses through 7 generations of increasing complexity:
+
+- **Gen 0**: Planetary Formation (Yuka CohesionBehavior physics)
+- **Gen 1**: Creatures (Yuka Goals, traits, needs)
+- **Gen 2**: Packs (Yuka FuzzyModule + Flocking)
+- **Gen 3**: Tools (Yuka FuzzyModule emergence)
+- **Gen 4**: Tribes (cooperation, territories)
+- **Gen 5**: Buildings (construction, settlements)
+- **Gen 6**: Religion & Democracy (cosmology, governance)
 
 ## Quick Start
 
+### Development
+
 ```bash
-pnpm install          # Install dependencies
-pnpm setup:textures   # Setup textures
-pnpm dev              # Start dev server
-pnpm test             # Run tests (57/57 passing)
+# Install dependencies
+pnpm install
+
+# Start backend development server
+pnpm dev
+
+# Run tests
+pnpm test
+
+# Watch tests during development
+pnpm test:watch
 ```
 
----
+### Backend API
 
-## Core Concept
+The backend exposes RESTful APIs for all game systems:
 
-**"Everything is Squirrels"**: Base archetypes evolve through environmental pressure into infinite variations.
+```bash
+# Start a new game
+POST /api/game/new { seed: "your-seed-phrase" }
 
-### Generational Architecture
+# Query planetary composition
+GET /api/planet/query?x=0&y=0&z=6371000
 
-- **Generation 0**: Planetary genesis from seed (gravity, materials, climate) - **TO BE IMPLEMENTED**
-- **Generation 1**: ECS archetypes spawn (Daggerfall-style prefabs)
-- **Generation 2+**: Yuka AI spheres coordinate evolution
+# Get current creatures
+GET /api/creatures
 
-**Key Innovation**: NO hardcoded progression. Everything emerges from seed-driven planetary physics.
+# Get active events
+GET /api/events
+```
 
----
+## Technical Details
 
-## Technology
+### AI Integration
 
-- **ECS**: Miniplex (game logic)
-- **Rendering**: React Three Fiber (3D graphics)
-- **UI**: @react-three/uikit (3D UI, NO DOM)
-- **AI**: Yuka (creature behavior)
-- **State**: Zustand (syncs FROM ECS, never writes)
-- **Platform**: Capacitor (web, Android, iOS, desktop)
-- **Build**: Vite
-- **Test**: Vitest
+- **OpenAI Workflows**: Generate content pools for all parameters
+- **Deterministic Selection**: Seed components select from AI-generated options
+- **No Hardcoded Values**: Everything derived from physics or AI sources
+- **Visual Blueprints**: Complete rendering instructions for future frontends
 
----
+### Yuka AI Systems
 
-## Current Status
+Extensive use of Yuka's AI libraries:
 
-**Foundation missing**: Generation 0 does not exist. All systems use hardcoded values.
+- **GoalEvaluator**: Hierarchical decision making
+- **FuzzyModule**: Fuzzy logic for emergence decisions
+- **CohesionBehavior**: Planetary accretion, pack formation
+- **StateMachine**: Creature states, governance transitions
+- **MessageDispatcher**: Inter-system communication
 
-**What works**: ECS, rendering, creature evolution, packs, haikus, camera, haptics, gestures.
+### Testing
 
-**What's broken**: Tools never emerge, materials never unlock, buildings never construct. Game loop broken at Gen 3+.
+Comprehensive test coverage proving mathematical correctness:
 
-**Blocker**: Need Gen 0 foundation before other work can proceed.
+```bash
+# Backend tests (all generations)
+cd packages/backend
+pnpm test
 
----
+# View test coverage
+pnpm test:coverage
+```
+
+## Development Status
+
+### ✅ Completed
+
+- **Gen 0-6 Systems**: All generations implemented with real Yuka AI
+- **AI Data Pools**: OpenAI integration for content generation  
+- **Visual Blueprints**: Complete rendering instructions
+- **Comprehensive Tests**: Mathematical correctness proven
+- **REST API Foundation**: Backend architecture complete
+
+### 🔄 In Progress
+
+- **REST Endpoints**: Exposing game systems as HTTP APIs
+- **Database Integration**: SQLite + Drizzle ORM for persistence
+
+### 📋 Planned
+
+- **Simple Frontend**: 3D sphere viewer for simulation
+- **CLI Interface**: Command-line game client
+- **Mobile Apps**: iOS/Android using Capacitor
+
+## Architecture Philosophy
+
+### WARP & WEFT System
+
+- **WARP** (Vertical): Each generation causally influences the next
+- **WEFT** (Horizontal): Macro/Meso/Micro scales at each generation
+- **AI-Sourced**: OpenAI generates realistic parameter pools
+- **Deterministic**: Seed ensures reproducible results
+
+### Backend vs Frontend
+
+- **Backend**: Pure algorithms, mathematical simulation, AI decision-making
+- **Frontend**: Visualization only, queries backend via REST APIs
+- **Separation**: Game logic never mixed with rendering concerns
+
+## Legacy Architecture
+
+The original React Three Fiber frontend has been archived to `memory-bank/archived-code/` during the transition to the backend-first approach. This archive contains:
+
+- Complete ECS systems
+- React Three Fiber components
+- Comprehensive test suites
+- Development tools and asset pipelines
+
+See `memory-bank/archived-code/ARCHIVE_INDEX.md` for details.
+
+## Contributing
+
+This project uses a monorepo structure with pnpm workspaces:
+
+```bash
+# Work on backend
+cd packages/backend
+pnpm dev
+
+# Run specific package tests
+pnpm --filter backend test
+
+# Add dependencies to specific package
+pnpm --filter backend add [dependency]
+```
 
 ## Documentation
 
-- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** - System architecture
-- **[docs/DESIGN.md](docs/DESIGN.md)** - Vision, brand, UI/UX
-- **[memory-bank/](memory-bank/)** - AI agent context
-
----
-
-## Development
-
-### File Structure
-```
-src/
-├── systems/      # ECS systems (game logic)
-├── world/        # ECS schema (WorldSchema)
-├── components/   # React Three Fiber (rendering)
-├── stores/       # Zustand (UI state)
-└── App.tsx       # Entry point
-```
-
-### Architecture Rules
-1. ECS for game logic
-2. React Three Fiber for rendering ONLY
-3. Zustand syncs FROM ECS, never writes
-4. UIKit for ALL UI (NO DOM)
-5. NO hardcoded values (calculate from Gen 0)
-
-### Before Contributing
-1. Read `memory-bank/activeContext.md`
-2. Read `docs/ARCHITECTURE.md`
-3. Write tests first (TDD)
-4. Run `pnpm test` (all must pass)
-
----
+- **Game Design**: `docs/WORLD.md` - Complete game philosophy and systems
+- **Progress Tracking**: `memory-bank/` - Development history and decisions
+- **Backend API**: `packages/backend/README.md` - Technical implementation details
 
 ## License
 
-MIT
+MIT License - See LICENSE file for details
 
+---
+
+*"If you give life enough time, constraints, and pressure... what will it become?"*

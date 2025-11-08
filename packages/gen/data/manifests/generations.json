@@ -1,0 +1,203 @@
+{
+  "version": "1.0.0",
+  "description": "Complete generation workflow configuration - WARP & WEFT",
+  "lastUpdated": "2025-11-07",
+  "generations": {
+    "gen0": {
+      "name": "Planetary Formation",
+      "duration": "4.5 billion years",
+      "question": "How does matter organize under gravity?",
+      "warpWeft": {
+        "macro": {
+          "scale": "Stellar System Context",
+          "examples": ["Population I star", "Binary system", "Post-supernova enrichment"],
+          "aiPrompt": "Generate 5 stellar system contexts affecting planetary formation",
+          "textureCategories": ["metal", "rock"],
+          "outputKey": "stellarContexts"
+        },
+        "meso": {
+          "scale": "Accretion Dynamics", 
+          "examples": ["Hot accretion zone", "Giant impacts", "Late bombardment"],
+          "aiPrompt": "Generate 5 accretion process variations",
+          "textureCategories": ["rock", "metal"],
+          "outputKey": "accretionProcesses"
+        },
+        "micro": {
+          "scale": "Element Distribution",
+          "examples": ["Metal-rich", "Carbon-rich", "Volatile-rich"],
+          "aiPrompt": "Generate 5 elemental composition patterns",
+          "textureCategories": ["metal", "rock"],
+          "outputKey": "elementDistributions"
+        }
+      }
+    },
+    "gen1": {
+      "name": "Creatures",
+      "duration": "Millions of years", 
+      "question": "How does chemistry become biology?",
+      "warpWeft": {
+        "macro": {
+          "scale": "Ecological Niches",
+          "examples": ["Predator", "Herbivore", "Scavenger", "Engineer"],
+          "aiPrompt": "Generate 5 ecological roles based on planetary materials",
+          "textureCategories": ["fabric", "leather", "wood"],
+          "outputKey": "ecologicalNiches"
+        },
+        "meso": {
+          "scale": "Population Dynamics",
+          "examples": ["Solitary", "Pack hunting", "Herd grazing", "Swarm intelligence"],
+          "aiPrompt": "Generate 5 population organization patterns",
+          "textureCategories": ["fabric", "grass"],
+          "outputKey": "populationPatterns"
+        },
+        "micro": {
+          "scale": "Individual Physiology",
+          "examples": ["Fast metabolism", "Efficient digestion", "Enhanced senses"],
+          "aiPrompt": "Generate 5 physiological adaptations",
+          "textureCategories": ["leather", "fabric"],
+          "outputKey": "physiologyTypes"
+        }
+      }
+    },
+    "gen2": {
+      "name": "Packs",
+      "duration": "Thousands of years",
+      "question": "When is cooperation better than competition?",
+      "warpWeft": {
+        "macro": {
+          "scale": "Territorial Geography", 
+          "examples": ["Resource clusters", "Migration corridors", "Defensive positions"],
+          "aiPrompt": "Generate 5 territorial organization patterns",
+          "textureCategories": ["stone", "grass"],
+          "outputKey": "territorialPatterns"
+        },
+        "meso": {
+          "scale": "Pack Sociology",
+          "examples": ["Kinship groups", "Skill specialists", "Age hierarchies"],
+          "aiPrompt": "Generate 5 pack social structures",
+          "textureCategories": ["fabric", "grass"],
+          "outputKey": "packStructures"
+        },
+        "micro": {
+          "scale": "Individual Pack Behavior",
+          "examples": ["Alpha leadership", "Communication roles", "Coordination methods"],
+          "aiPrompt": "Generate 5 individual pack behaviors",
+          "textureCategories": ["fabric", "leather"],
+          "outputKey": "packBehaviors"
+        }
+      }
+    },
+    "gen3": {
+      "name": "Tools",
+      "duration": "Hundreds of years",
+      "question": "How does intelligence overcome physical limits?",
+      "warpWeft": {
+        "macro": {
+          "scale": "Tool Ecosystems",
+          "examples": ["Extraction networks", "Processing chains", "Innovation hubs"],
+          "aiPrompt": "Generate 5 tool ecosystem patterns",
+          "textureCategories": ["metal", "wood", "stone"],
+          "outputKey": "toolEcosystems"
+        },
+        "meso": {
+          "scale": "Tool Categories",
+          "examples": ["Digging tools", "Cutting tools", "Carrying tools", "Weapons"],
+          "aiPrompt": "Generate 5 tool category systems",
+          "textureCategories": ["metal", "wood"],
+          "outputKey": "toolCategories"
+        },
+        "micro": {
+          "scale": "Tool Properties",
+          "examples": ["Durability curves", "Effectiveness multipliers", "Maintenance needs"],
+          "aiPrompt": "Generate 5 tool property systems",
+          "textureCategories": ["metal", "stone"],
+          "outputKey": "toolProperties"
+        }
+      }
+    },
+    "gen4": {
+      "name": "Tribes",
+      "duration": "Centuries",
+      "question": "How do groups learn to cooperate?",
+      "warpWeft": {
+        "macro": {
+          "scale": "Inter-Tribal Networks",
+          "examples": ["Trade routes", "Alliance networks", "Cultural exchange"],
+          "aiPrompt": "Generate 5 inter-tribal relationship patterns", 
+          "textureCategories": ["fabric", "stone"],
+          "outputKey": "tribalNetworks"
+        },
+        "meso": {
+          "scale": "Tribal Governance",
+          "examples": ["Chiefdoms", "Councils", "Federations", "Confederations"],
+          "aiPrompt": "Generate 5 governance structures",
+          "textureCategories": ["stone", "fabric"],
+          "outputKey": "governanceTypes"
+        },
+        "micro": {
+          "scale": "Individual Roles",
+          "examples": ["Leaders", "Specialists", "Traders", "Warriors"],
+          "aiPrompt": "Generate 5 individual role systems",
+          "textureCategories": ["fabric", "leather"],
+          "outputKey": "socialRoles"
+        }
+      }
+    },
+    "gen5": {
+      "name": "Buildings",
+      "duration": "Decades", 
+      "question": "How does intelligence reshape the world?",
+      "warpWeft": {
+        "macro": {
+          "scale": "Settlement Patterns",
+          "examples": ["Urban centers", "Rural networks", "Trade hubs"],
+          "aiPrompt": "Generate 5 settlement organization patterns",
+          "textureCategories": ["stone", "wood", "bricks"],
+          "outputKey": "settlementPatterns"
+        },
+        "meso": {
+          "scale": "Building Types",
+          "examples": ["Residential", "Workshops", "Storage", "Religious", "Administrative"],
+          "aiPrompt": "Generate 5 building functional categories",
+          "textureCategories": ["wood", "stone", "bricks"],
+          "outputKey": "buildingFunctions"
+        },
+        "micro": {
+          "scale": "Construction Methods",
+          "examples": ["Post and beam", "Stone masonry", "Earthworks"],
+          "aiPrompt": "Generate 5 construction technique systems", 
+          "textureCategories": ["wood", "stone", "concrete"],
+          "outputKey": "constructionMethods"
+        }
+      }
+    },
+    "gen6": {
+      "name": "Abstract Systems",
+      "duration": "Generations",
+      "question": "What happens when there's nothing left to physically manipulate?",
+      "warpWeft": {
+        "macro": {
+          "scale": "Ideological Frameworks",
+          "examples": ["Religious cosmologies", "Political philosophies", "Cultural movements"],
+          "aiPrompt": "Generate 5 abstract organizing principles",
+          "textureCategories": ["fabric", "stone"],
+          "outputKey": "ideologicalFrameworks"
+        },
+        "meso": {
+          "scale": "Institutional Structures", 
+          "examples": ["Religious orders", "Governments", "Educational systems"],
+          "aiPrompt": "Generate 5 institutional organization patterns",
+          "textureCategories": ["stone", "fabric"],
+          "outputKey": "institutions"
+        },
+        "micro": {
+          "scale": "Individual Beliefs",
+          "examples": ["Devotional practices", "Civic duties", "Cultural identities"],
+          "aiPrompt": "Generate 5 individual belief systems",
+          "textureCategories": ["fabric", "leather"],
+          "outputKey": "beliefSystems"
+        }
+      }
+    }
+  }
+}

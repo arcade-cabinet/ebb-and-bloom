@@ -1,0 +1,26 @@
+{
+  "version": "1.0.0",
+  "description": "Asset generation configuration",
+  "lastUpdated": "2025-11-07",
+  "assets": {
+    "textures": {
+      "source": "ambientcg",
+      "resolution": "2K",
+      "categories": ["wood", "metal", "stone", "fabric", "leather", "grass", "rock", "concrete", "bricks"],
+      "formats": ["jpg"],
+      "manifestPath": "./textures.json"
+    },
+    "models": {
+      "source": "meshy",
+      "style": "low-poly-organic",
+      "formats": ["glb", "fbx"],
+      "manifestPath": "./models.json"
+    },
+    "audio": {
+      "source": "freesound", 
+      "quality": "high",
+      "formats": ["mp3", "wav"],
+      "manifestPath": "./audio.json"
+    }
+  }
+}
