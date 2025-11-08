@@ -1,14 +1,8 @@
 /**
- * SHARED PACKAGE - ALL COMMON RESOURCES
- * Database, schemas, textures, models
+ * SHARED PACKAGE - SCHEMAS ONLY
+ * Zod schemas for all game data structures (single source of truth)
+ * Database removed - not used anywhere
  */
-
-// Database
-export * from './db/index.js';
 
 // Schemas  
 export * from './schemas/index.js';
-
-// Textures
-export * from './textures/index.js';
-export * from './textures/texture-manifest.js';

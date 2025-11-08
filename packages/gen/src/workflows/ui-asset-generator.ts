@@ -1,581 +1,400 @@
 /**
- * Production Asset Generator - GPT-4 + GPT-image-1 workflow for complete asset creation
- * Implements prefab archetype assemblies with AI enhancement
+ * UI Asset Generator - Generates UI assets for Ebb & Bloom frontend
+ * Uses GPT-image-1 to create brand-aligned UI elements
  */
 
-import { generateImage, generateObject } from 'ai';
-import { readFile, writeFile, existsSync, mkdirSync } from 'fs/promises';
-import { join } from 'path';
-import { TEXT_MODEL, IMAGE_MODEL } from '../config/ai-models';
+import { experimental_generateImage as generateImage } from 'ai';
+import { readFile, writeFile, stat } from 'fs/promises';
+import { existsSync, mkdirSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+import { IMAGE_MODEL } from '../config/ai-models';
 
 // Simple console logging
 const log = {
-  info: (...args: any[]) => console.log('[UI-GEN]', ...args),
-  error: (...args: any[]) => console.error('[UI-GEN ERROR]', ...args),
-  warn: (...args: any[]) => console.warn('[UI-GEN WARN]', ...args),
+  info: (...args: any[]) => console.log('[UI-ASSETS]', ...args),
+  error: (...args: any[]) => console.error('[UI-ASSETS ERROR]', ...args),
+  warn: (...args: any[]) => console.warn('[UI-ASSETS WARN]', ...args),
 };
 
-interface AmbientCGCatalog {
-  textures: Array<{
+interface UIAssetManifest {
+  version: string;
+  description: string;
+  brandColors: Record<string, string>;
+  assets: Array<{
+    id: string;
     category: string;
-    assetId: string;
     name: string;
-    tags: string[];
-    suitableFor: string[];
+    description: string;
+    path: string;
+    expectedSize: { width: number; height: number };
+    expectedFormat: string;
+    maxFileSizeKB: number;
+    requiresTransparency: boolean;
+    aiPrompt: string;
+    canBeGenerated: boolean;
+    priority: string;
   }>;
 }
 
-interface CreatureArchetypeSpec {
-  id: string;
-  name: string;
-  morphology: {
-    baseSize: number;
-    limbConfiguration: string;
-    surfaceTexture: string;
-    specialFeatures: string[];
-  };
-  traitDistribution: number[]; // Starting trait values
-  evolutionaryPathways: Array<{
-    pathway: string;
-    triggerConditions: string[];
-    resultingMorphology: string;
-    newCapabilities: string[];
-  }>;
-  textureMapping: {
-    primarySurface: string;
-    secondaryFeatures: string[];
-    specializedParts: string[];
-    evolutionaryStages: Array<{
-      traitThreshold: number;
-      textureChanges: string;
-    }>;
-  };
-  behavioralPattern: {
-    baseAI: string;
-    socialTendency: number;
-    environmentalPreference: string[];
-    packCompatibility: string[];
-  };
+/**
+ * Generate UI assets for the Ebb & Bloom frontend
+ */
+export async function generateUIAssets(): Promise<void> {
+  log.info('Starting UI asset generation...');
+
+  try {
+    // Load UI assets manifest
+    const __dirname = dirname(fileURLToPath(import.meta.url));
+    const manifestPath = join(__dirname, '../../data/manifests/ui-assets.json');
+    const manifestContent = await readFile(manifestPath, 'utf-8');
+    const manifest: UIAssetManifest = JSON.parse(manifestContent);
+
+    log.info('Loaded UI assets manifest', {
+      version: manifest.version,
+      totalAssets: manifest.assets.length,
+      categories: [...new Set(manifest.assets.map(a => a.category))]
+    });
+
+    // Sort by priority (critical first)
+    const priorityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
+    const sortedAssets = manifest.assets
+      .filter(asset => asset.canBeGenerated)
+      .sort((a, b) => priorityOrder[a.priority as keyof typeof priorityOrder] - priorityOrder[b.priority as keyof typeof priorityOrder]);
+
+    log.info('Generating assets in priority order', {
+      critical: sortedAssets.filter(a => a.priority === 'critical').length,
+      high: sortedAssets.filter(a => a.priority === 'high').length,
+      medium: sortedAssets.filter(a => a.priority === 'medium').length
+    });
+
+    // Generate each asset
+    for (const asset of sortedAssets) {
+      await generateUIAsset(asset, manifest.brandColors);
+      log.info(`Generated ${asset.id}`);
+
+      // Small delay to respect API rate limits
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+
+    log.info('UI asset generation complete');
+
+  } catch (error) {
+    log.error('Failed to generate UI assets', error);
+    throw error;
+  }
 }
 
-interface BuildingAssemblySpec {
-  id: string;
-  name: string;
-  purpose: string;
-  materialRequirements: Array<{
-    material: string;
-    quantity: number;
-    quality: string;
-  }>;
-  structuralElements: Array<{
-    component: string;
-    dimensions: [number, number, number];
-    material: string;
-    function: string;
-  }>;
-  interiorLayout: {
-    floors: Array<{
-      level: number;
-      rooms: Array<{
-        type: string;
-        function: string;
-        dimensions: [number, number];
-        furniture: string[];
-        craftingStations: string[];
-      }>;
-    }>;
-  };
-  upgradePaths: Array<{
-    requiredMaterials: string[];
-    newCapabilities: string[];
-    structuralChanges: string;
-  }>;
-}
+/**
+ * Generate a single UI asset
+ */
+async function generateUIAsset(
+  asset: UIAssetManifest['assets'][0],
+  brandColors: Record<string, string>
+): Promise<void> {
 
-class ProductionAssetGenerator {
-  private ambientCGCatalog: AmbientCGCatalog | null = null;
-  private manifestPath = join(__dirname, '../../data/manifests/ui-asset-manifest.ts');
+  // Check if asset already exists and is compliant
+  const __dirname_local = dirname(fileURLToPath(import.meta.url));
+  // Use WebP for all images (better compression, supports transparency)
+  const outputPath = join(__dirname_local, '../../../game/public', asset.path.replace(/\.png$/, '.webp'));
   
-  constructor() {
-    this.loadAmbientCGCatalog();
-  }
-  
-  private async loadAmbientCGCatalog(): Promise<void> {
-    try {
-      // Load our downloaded texture catalog for intelligent texture mapping
-      const manifestPath = join(__dirname, '../textures/manifest.json');
-      if (existsSync(manifestPath)) {
-        const manifest = JSON.parse(await readFile(manifestPath, 'utf-8'));
-        
-        this.ambientCGCatalog = {
-          textures: manifest.assets.map((asset: any) => ({
-            category: asset.category,
-            assetId: asset.assetId,
-            name: asset.name,
-            tags: this.extractTags(asset.name),
-            suitableFor: this.determineSuitability(asset.category, asset.name)
-          }))
-        };
-        
-        log.info('AmbientCG catalog loaded for intelligent texture mapping', {
-          totalTextures: this.ambientCGCatalog.textures.length,
-          categories: [...new Set(this.ambientCGCatalog.textures.map(t => t.category))]
-        });
-      }
-    } catch (error) {
-      log.error('Failed to load AmbientCG catalog', error);
-    }
-  }
-  
-  private extractTags(name: string): string[] {
-    // Extract semantic tags from texture names for AI matching
-    const words = name.toLowerCase().split(/[_\s-]+/);
-    return words.filter(word => word.length > 2);
-  }
-  
-  private determineSuitability(category: string, name: string): string[] {
-    const suitabilityMap: Record<string, string[]> = {
-      'Wood': ['structure_walls', 'furniture', 'organic_surface', 'creature_natural'],
-      'Metal': ['tools', 'weapons', 'industrial', 'creature_metallic'],
-      'Stone': ['foundation', 'walls', 'natural_terrain', 'creature_armored'],
-      'Fabric': ['creature_fur', 'creature_skin', 'soft_surfaces', 'organic_texture'],
-      'Leather': ['creature_hide', 'tough_surfaces', 'worn_materials', 'natural_armor'],
-      'Grass': ['ground_cover', 'natural_environment', 'creature_camouflage'],
-      'Rock': ['natural_terrain', 'creature_shells', 'defensive_structures'],
-      'Concrete': ['advanced_structures', 'industrial_builds', 'modern_materials']
-    };
-    
-    return suitabilityMap[category] || ['general_purpose'];
-  }
-  
-  /**
-   * Generate creature archetype with GPT-4 + texture mapping
-   */
-  async generateCreatureArchetype(
-    baseArchetype: string,
-    traitProfile: number[],
-    environmentalContext: string
-  ): Promise<CreatureArchetypeSpec> {
-    
-    log.info('Generating creature archetype with AI', {
-      baseArchetype,
-      traitProfile,
-      environmentalContext
-    });
-    
-    // Build context-aware prompt with AmbientCG texture options
-    const availableTextures = this.getRelevantTextures(['creature_fur', 'creature_skin', 'organic_texture']);
-    
-    const systemPrompt = `You are an evolutionary biologist and creature designer for an advanced ecosystem simulation. You understand:
-    
-1. Evolutionary trait inheritance and environmental pressure
-2. Morphological adaptation based on behavioral requirements  
-3. Realistic biological constraints and possibilities
-4. How texture and material properties affect creature design
-5. Social dynamics and pack coordination requirements
-
-Available texture materials from AmbientCG catalog:
-${availableTextures.map(t => `${t.assetId}: ${t.name} (${t.suitableFor.join(', ')})`).join('\n')}
-
-Create detailed creature archetype specifications that will be used to generate both AI visuals and 3D game assets.`;
+  if (existsSync(outputPath)) {
+    const stats = await stat(outputPath);
+    const sharp = (await import('sharp')).default;
     
     try {
-      const result = await generateObject({
-        model: TEXT_MODEL,
-        system: systemPrompt,
-        prompt: `Generate a complete creature archetype specification:
-
-Base Archetype: ${baseArchetype}
-Trait Profile: ${traitProfile.map((t, i) => `Trait${i}: ${(t*100).toFixed(0)}%`).join(', ')}
-Environmental Context: ${environmentalContext}
-
-Requirements:
-1. Detailed morphology that reflects trait distribution
-2. Evolutionary pathways showing how traits could develop
-3. Specific AmbientCG texture mapping for realistic material application
-4. Behavioral patterns compatible with Yuka AI steering system
-5. Social compatibility for pack formation dynamics
-6. Tool-use potential based on manipulation traits
-7. Environmental adaptation based on context
-
-Output a complete CreatureArchetypeSpec with all fields populated.`,
-        schema: {
-          type: 'object',
-          properties: {
-            id: { type: 'string' },
-            name: { type: 'string' },
-            morphology: {
-              type: 'object',
-              properties: {
-                baseSize: { type: 'number' },
-                limbConfiguration: { type: 'string' },
-                surfaceTexture: { type: 'string' },
-                specialFeatures: { type: 'array', items: { type: 'string' } }
-              },
-              required: ['baseSize', 'limbConfiguration', 'surfaceTexture', 'specialFeatures']
-            },
-            traitDistribution: { type: 'array', items: { type: 'number' } },
-            evolutionaryPathways: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  pathway: { type: 'string' },
-                  triggerConditions: { type: 'array', items: { type: 'string' } },
-                  resultingMorphology: { type: 'string' },
-                  newCapabilities: { type: 'array', items: { type: 'string' } }
-                },
-                required: ['pathway', 'triggerConditions', 'resultingMorphology', 'newCapabilities']
-              }
-            },
-            textureMapping: {
-              type: 'object',
-              properties: {
-                primarySurface: { type: 'string' },
-                secondaryFeatures: { type: 'array', items: { type: 'string' } },
-                specializedParts: { type: 'array', items: { type: 'string' } },
-                evolutionaryStages: {
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      traitThreshold: { type: 'number' },
-                      textureChanges: { type: 'string' }
-                    },
-                    required: ['traitThreshold', 'textureChanges']
-                  }
-                }
-              },
-              required: ['primarySurface', 'secondaryFeatures', 'specializedParts', 'evolutionaryStages']
-            },
-            behavioralPattern: {
-              type: 'object',
-              properties: {
-                baseAI: { type: 'string' },
-                socialTendency: { type: 'number' },
-                environmentalPreference: { type: 'array', items: { type: 'string' } },
-                packCompatibility: { type: 'array', items: { type: 'string' } }
-              },
-              required: ['baseAI', 'socialTendency', 'environmentalPreference', 'packCompatibility']
-            }
-          },
-          required: ['id', 'name', 'morphology', 'traitDistribution', 'evolutionaryPathways', 'textureMapping', 'behavioralPattern']
-        }
-      });
+      // Check compliance of existing image
+      const metadata = await sharp(outputPath).metadata();
+      const sizeKB = stats.size / 1024;
       
-      const creatureSpec = result.object as CreatureArchetypeSpec;
+      // Check if image is compliant (including format - must be WebP)
+      const isCompliant = 
+        metadata.format === 'webp' && // Must be WebP format
+        metadata.width === asset.expectedSize.width &&
+        metadata.height === asset.expectedSize.height &&
+        sizeKB <= asset.maxFileSizeKB &&
+        (!asset.requiresTransparency || metadata.hasAlpha) &&
+        stats.size > 1000; // At least 1KB (not corrupted)
       
-      log.info('Creature archetype generated', {
-        name: creatureSpec.name,
-        pathways: creatureSpec.evolutionaryPathways.length,
-        textureMapping: creatureSpec.textureMapping.primarySurface
-      });
-      
-      return creatureSpec;
-      
-    } catch (error) {
-      log.error('Failed to generate creature archetype', error);
-      throw error;
-    }
-  }
-  
-  /**
-   * Generate building assembly with structural engineering AI
-   */
-  async generateBuildingAssembly(
-    buildingType: string,
-    materialRequirements: string[],
-    functionalRequirements: string[]
-  ): Promise<BuildingAssemblySpec> {
-    
-    log.info('Generating building assembly with structural engineering AI', {
-      buildingType,
-      materialRequirements,
-      functionalRequirements
-    });
-    
-    const availableMaterials = this.getRelevantTextures(['structure_walls', 'foundation', 'roofing']);
-    
-    const systemPrompt = `You are a structural engineer and architect specializing in functional building design for evolutionary ecosystems. You understand:
-
-1. Structural engineering principles and load-bearing requirements
-2. Material properties and construction techniques  
-3. Functional space planning and workflow optimization
-4. Integration with natural environments and creature behavior
-5. Upgrade and expansion pathways for evolving needs
-
-Available construction materials from AmbientCG catalog:
-${availableMaterials.map(t => `${t.assetId}: ${t.name} (${t.suitableFor.join(', ')})`).join('\n')}
-
-Design buildings that serve specific gameplay functions while being structurally sound and aesthetically pleasing.`;
-    
-    try {
-      const result = await generateObject({
-        model: TEXT_MODEL,
-        system: systemPrompt,
-        prompt: `Design a complete building assembly:
-
-Building Type: ${buildingType}
-Required Materials: ${materialRequirements.join(', ')}
-Functional Requirements: ${functionalRequirements.join(', ')}
-
-Create a building that:
-1. Serves specific gameplay functions (crafting, storage, social coordination)
-2. Uses realistic structural engineering principles
-3. Maps to available AmbientCG textures for visual consistency
-4. Provides clear workflow areas for creature/player interaction
-5. Has upgrade pathways as better materials become available
-6. Integrates naturally with the evolutionary ecosystem theme
-
-Output a complete BuildingAssemblySpec with precise dimensions and material specifications.`,
-        schema: {
-          type: 'object',
-          properties: {
-            id: { type: 'string' },
-            name: { type: 'string' },
-            purpose: { type: 'string' },
-            materialRequirements: {
-              type: 'array',
-              items: {
-                type: 'object', 
-                properties: {
-                  material: { type: 'string' },
-                  quantity: { type: 'number' },
-                  quality: { type: 'string' }
-                },
-                required: ['material', 'quantity', 'quality']
-              }
-            },
-            structuralElements: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  component: { type: 'string' },
-                  dimensions: { type: 'array', items: { type: 'number' } },
-                  material: { type: 'string' },
-                  function: { type: 'string' }
-                },
-                required: ['component', 'dimensions', 'material', 'function']
-              }
-            },
-            interiorLayout: {
-              type: 'object',
-              properties: {
-                floors: {
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      level: { type: 'number' },
-                      rooms: {
-                        type: 'array',
-                        items: {
-                          type: 'object',
-                          properties: {
-                            type: { type: 'string' },
-                            function: { type: 'string' },
-                            dimensions: { type: 'array', items: { type: 'number' } },
-                            furniture: { type: 'array', items: { type: 'string' } },
-                            craftingStations: { type: 'array', items: { type: 'string' } }
-                          },
-                          required: ['type', 'function', 'dimensions', 'furniture', 'craftingStations']
-                        }
-                      }
-                    },
-                    required: ['level', 'rooms']
-                  }
-                }
-              },
-              required: ['floors']
-            },
-            upgradePaths: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  requiredMaterials: { type: 'array', items: { type: 'string' } },
-                  newCapabilities: { type: 'array', items: { type: 'string' } },
-                  structuralChanges: { type: 'string' }
-                },
-                required: ['requiredMaterials', 'newCapabilities', 'structuralChanges']
-              }
-            }
-          },
-          required: ['id', 'name', 'purpose', 'materialRequirements', 'structuralElements', 'interiorLayout', 'upgradePaths']
-        }
-      });
-      
-      const buildingSpec = result.object as BuildingAssemblySpec;
-      
-      log.info('Building assembly generated', {
-        name: buildingSpec.name,
-        rooms: buildingSpec.interiorLayout.floors.reduce((sum, floor) => sum + floor.rooms.length, 0),
-        upgrades: buildingSpec.upgradePaths.length
-      });
-      
-      return buildingSpec;
-      
-    } catch (error) {
-      log.error('Failed to generate building assembly', error);
-      throw error;
-    }
-  }
-  
-  /**
-   * Generate creature visual with GPT-image-1
-   */
-  async generateCreatureVisual(
-    creatureSpec: CreatureArchetypeSpec,
-    evolutionStage: 'base' | 'intermediate' | 'advanced' = 'base'
-  ): Promise<string> {
-    
-    log.info('Generating creature visual with GPT-image-1', {
-      creatureId: creatureSpec.id,
-      evolutionStage
-    });
-    
-    const textureContext = this.buildTextureContext(creatureSpec.textureMapping);
-    
-    const visualPrompt = `Create a realistic creature illustration for the evolutionary ecosystem game "Ebb & Bloom".
-
-Creature: ${creatureSpec.name}
-Evolution Stage: ${evolutionStage}
-
-Morphology: ${creatureSpec.morphology.limbConfiguration}, size ${creatureSpec.morphology.baseSize} units, ${creatureSpec.morphology.surfaceTexture}
-
-Special Features: ${creatureSpec.morphology.specialFeatures.join(', ')}
-
-Texture Inspiration: ${textureContext}
-
-Style: Realistic biological design showing clear evolutionary adaptations, natural environment setting, organic form with visible trait development, game-asset ready reference illustration.
-
-Evolutionary Focus: Show traits that reflect ${evolutionStage} development stage - ${evolutionStage === 'base' ? 'starting form with potential' : evolutionStage === 'intermediate' ? 'developing specialized features' : 'fully evolved with advanced adaptations'}.
-
-Brand Integration: Subtle earth tones with hints of Ebb & Bloom color palette (deep indigo, emerald green, trait gold accents where appropriate).`;
-    
-    try {
-      // Use Vercel AI SDK generateImage
-      const result = await generateImage({
-        model: IMAGE_MODEL,
-        prompt: visualPrompt,
-        size: '1024x1024',
-        quality: 'hd',
-      });
-      
-      if (!result.image) throw new Error('No image generated');
-      
-      // Handle different response formats
-      let imageBuffer: Buffer;
-      if (typeof result.image === 'string') {
-        // URL - download it
-        imageBuffer = await this.downloadImage(result.image);
-      } else if (result.image instanceof Uint8Array) {
-        imageBuffer = Buffer.from(result.image);
+      if (isCompliant) {
+        log.info(`Skipping compliant asset: ${asset.id} (${sizeKB.toFixed(1)}KB)`);
+        return;
       } else {
-        throw new Error(`Unexpected image format`);
+        // Image exists but is non-compliant - fix it
+        log.warn(`Existing asset ${asset.id} is non-compliant - fixing:`, {
+          format: `${metadata.format || 'unknown'} (expected webp)`,
+          dimensions: `${metadata.width}x${metadata.height} (expected ${asset.expectedSize.width}x${asset.expectedSize.height})`,
+          size: `${sizeKB.toFixed(1)}KB (max ${asset.maxFileSizeKB}KB)`,
+          hasAlpha: metadata.hasAlpha,
+          requiresTransparency: asset.requiresTransparency
+        });
+        // Continue to regenerate/fix it
       }
-      const fileName = `${creatureSpec.id}_${evolutionStage}.png`;
-      const filePath = join(__dirname, `../../../frontend/public/creatures/${fileName}`);
-      
-      // Ensure directory exists
-      const creatureDir = join(__dirname, '../../../frontend/public/creatures');
-      if (!existsSync(creatureDir)) {
-        await mkdirSync(creatureDir, { recursive: true });
-      }
-      
-      await writeFile(filePath, imageBuffer);
-      
-      log.info('Creature visual generated successfully', {
-        creatureId: creatureSpec.id,
-        evolutionStage,
-        filePath,
-        size: imageBuffer.length
-      });
-      
-      return filePath;
-      
     } catch (error) {
-      log.error('Failed to generate creature visual', error);
-      throw error;
+      // Image might be corrupted - regenerate
+      log.warn(`Existing asset ${asset.id} appears corrupted - regenerating`);
+      // Continue to regenerate
     }
   }
-  
-  private buildTextureContext(textureMapping: CreatureArchetypeSpec['textureMapping']): string {
-    if (!this.ambientCGCatalog) return 'Natural organic textures';
-    
-    const primaryTexture = this.ambientCGCatalog.textures.find(t => 
-      t.assetId.toLowerCase().includes(textureMapping.primarySurface.toLowerCase())
-    );
-    
-    return primaryTexture 
-      ? `Primary surface inspired by ${primaryTexture.name} texture characteristics`
-      : `Organic surface texture (${textureMapping.primarySurface})`;
-  }
-  
-  private getRelevantTextures(suitabilityFilter: string[]) {
-    if (!this.ambientCGCatalog) return [];
-    
-    return this.ambientCGCatalog.textures.filter(texture =>
-      texture.suitableFor.some(use => suitabilityFilter.includes(use))
-    );
-  }
-  
-  private async downloadImage(url: string): Promise<Buffer> {
-    const response = await fetch(url);
-    const arrayBuffer = await response.arrayBuffer();
-    return Buffer.from(arrayBuffer);
-  }
-  
-  /**
-   * Generate complete production asset library
-   */
-  async generateCompleteAssetLibrary(): Promise<void> {
-    log.info('Starting complete production asset generation...');
-    
-    try {
-      // Load production manifest
-      const manifest = JSON.parse(await readFile(this.manifestPath, 'utf-8'));
-      
-      // Generate creature archetypes
-      log.info('Generating creature archetypes...');
-      for (const archetype of manifest.creature_archetypes.assets) {
-        const creatureSpec = await this.generateCreatureArchetype(
-          archetype.id,
-          [0.3, 0.6, 0.4, 0.5, 0.7, 0.2, 0.5, 0.4, 0.3, 0.2], // Example trait profile
-          'temperate_ecosystem'
-        );
-        
-        // Generate visuals for each evolution stage
-        await this.generateCreatureVisual(creatureSpec, 'base');
-        await this.generateCreatureVisual(creatureSpec, 'intermediate'); 
-        await this.generateCreatureVisual(creatureSpec, 'advanced');
-        
-        // Small delay to respect API rate limits
-        await new Promise(resolve => setTimeout(resolve, 2000));
+
+  log.info(`Generating UI asset: ${asset.id} (${asset.category})`);
+
+  // Build the AI prompt with brand colors
+  const enhancedPrompt = `${asset.aiPrompt}
+
+Brand Colors (use exactly):
+- Deep Indigo: ${brandColors.ebbIndigo}
+- Bloom Emerald: ${brandColors.bloomEmerald}
+- Trait Gold: ${brandColors.traitGold}
+- Background Deep: ${brandColors.backgroundDeep}
+- Accent White: ${brandColors.accentWhite}
+
+Technical Requirements:
+- Size: ${asset.expectedSize.width}x${asset.expectedSize.height} pixels
+- Format: ${asset.expectedFormat}
+- ${asset.requiresTransparency ? 'Transparent background' : 'Solid background'}
+- Max file size: ${asset.maxFileSizeKB}KB
+- Style: Organic, flowing, meditative, contemplative, evolutionary theme`;
+
+  try {
+    // Generate image with GPT-image-1
+    // Map expected size to supported sizes (GPT-image-1 only supports: 1024x1024, 1024x1536, 1536x1024, auto)
+    const getSupportedSize = (width: number, height: number): string => {
+      const aspectRatio = width / height;
+
+      if (aspectRatio > 1.2) {
+        // Landscape
+        return '1536x1024';
+      } else if (aspectRatio < 0.8) {
+        // Portrait
+        return '1024x1536';
+      } else {
+        // Square-ish
+        return '1024x1024';
       }
-      
-      // Generate building assemblies  
-      log.info('Generating building assemblies...');
-      for (const building of manifest.building_archetypes.assets) {
-        const buildingSpec = await this.generateBuildingAssembly(
-          building.id,
-          ['wood', 'stone', 'metal'],
-          building.functional_requirements
-        );
-        
-        // Would generate building visuals here
-        
-        await new Promise(resolve => setTimeout(resolve, 2000));
-      }
-      
-      log.info('Complete production asset library generated');
-      
-    } catch (error) {
-      log.error('Failed to generate complete asset library', error);
-      throw error;
+    };
+
+    const imageSize = getSupportedSize(asset.expectedSize.width, asset.expectedSize.height);
+
+    const result = await generateImage({
+      model: IMAGE_MODEL,
+      prompt: enhancedPrompt,
+      size: imageSize as any,
+      quality: 'hd', // High quality generation
+    });
+
+    if (!result.image) {
+      throw new Error('No image generated by AI');
     }
+
+    // Handle different response formats
+    let rawImageBuffer: Buffer;
+    if (typeof result.image === 'string') {
+      // URL - download it
+      rawImageBuffer = await downloadImage(result.image);
+    } else if (result.image instanceof Uint8Array) {
+      rawImageBuffer = Buffer.from(result.image);
+    } else if (typeof result.image === 'object') {
+      // Object with various possible formats
+      const imageObj = result.image as any;
+      
+      // AI SDK format: base64Data, uint8ArrayData, mediaType
+      if (imageObj.base64Data) {
+        rawImageBuffer = Buffer.from(imageObj.base64Data, 'base64');
+      } else if (imageObj.uint8ArrayData) {
+        rawImageBuffer = Buffer.from(imageObj.uint8ArrayData);
+      } else if (imageObj.b64_json) {
+        // OpenAI b64_json format
+        rawImageBuffer = Buffer.from(imageObj.b64_json, 'base64');
+      } else if (imageObj.url || imageObj.imageUrl) {
+        // URL format
+        rawImageBuffer = await downloadImage(imageObj.url || imageObj.imageUrl);
+      } else {
+        log.error('Could not extract image from result object', {
+          keys: Object.keys(imageObj),
+          result: JSON.stringify(result, null, 2).substring(0, 500)
+        });
+        throw new Error('No UI asset generated - unknown image format');
+      }
+    } else {
+      log.error('Unexpected image type', { imageType: typeof result.image });
+      throw new Error(`Unexpected image format: ${typeof result.image}`);
+    }
+
+    // POST-PROCESS: Resize, handle transparency, and optimize
+    // PRESERVE QUALITY - minimal processing
+    const sharp = (await import('sharp')).default;
+
+    const [targetWidth, targetHeight] = [asset.expectedSize.width, asset.expectedSize.height];
+
+    // Start with raw image - preserve original quality
+    let processedImage = sharp(rawImageBuffer);
+
+    // Handle transparency FIRST on original high-res image (better quality)
+    if (asset.requiresTransparency) {
+      // Remove white background from original high-res image
+      const transparentBuffer = await removeWhiteBackground(rawImageBuffer);
+      processedImage = sharp(transparentBuffer);
+    }
+
+    // Resize AFTER transparency processing (preserves quality better)
+    // Use 'cover' to fill dimensions exactly (no letterboxing/padding)
+    // Use lanczos3 for best quality resampling
+    processedImage = processedImage.resize(targetWidth, targetHeight, {
+      fit: 'cover', // Fill exact dimensions (no padding)
+      position: 'center', // Center crop if needed
+      kernel: sharp.kernel.lanczos3, // Highest quality resampling
+      withoutEnlargement: false, // Allow upscaling if needed
+      background: asset.requiresTransparency
+        ? { r: 0, g: 0, b: 0, alpha: 0 }
+        : { r: 26, g: 32, b: 44, alpha: 1 } // Use brand background color
+    });
+
+    // Use WebP for all images - better compression than PNG/JPEG, supports transparency
+    // WebP provides 25-35% better compression than PNG with same quality
+    const totalPixels = targetWidth * targetHeight;
+    
+    // Adaptive quality based on image size
+    let webpQuality: number;
+    if (totalPixels > 1500000) {
+      // Very large images (splash) - slightly lower quality for size
+      webpQuality = 80;
+    } else if (totalPixels > 500000) {
+      // Large images (panels) - balanced quality
+      webpQuality = 85;
+    } else {
+      // Small images (buttons, icons) - high quality
+      webpQuality = 90;
+    }
+    
+    processedImage = processedImage.webp({
+      quality: webpQuality,
+      effort: 6, // Compression effort (0-6, higher = better compression, slower)
+      lossless: false, // Use lossy for better compression (transparency still supported)
+      nearLossless: false,
+      smartSubsample: true, // Better quality for same file size
+    });
+
+    const imageBuffer = await processedImage.toBuffer();
+
+    // Validate final image
+    const metadata = await sharp(imageBuffer).metadata();
+
+    // Check dimensions are correct
+    if (metadata.width !== targetWidth || metadata.height !== targetHeight) {
+      log.warn(`Final image dimensions mismatch: expected ${targetWidth}x${targetHeight}, got ${metadata.width}x${metadata.height}`);
+    }
+
+    // Check transparency if required
+    if (asset.requiresTransparency && !metadata.hasAlpha) {
+      log.warn(`Transparency requirement not met - no alpha channel in final image`);
+    }
+
+    // Check file size
+    const sizeKB = imageBuffer.length / 1024;
+    if (sizeKB > asset.maxFileSizeKB) {
+      log.warn(`Image size: ${sizeKB.toFixed(1)}KB (target: ${asset.maxFileSizeKB}KB)`);
+    }
+
+    // Ensure output directory exists
+    const outputDir = join(outputPath, '..');
+    if (!existsSync(outputDir)) {
+      mkdirSync(outputDir, { recursive: true });
+    }
+
+    // Write the processed file
+    await writeFile(outputPath, imageBuffer);
+
+    log.info(`Successfully generated ${asset.id}`, {
+      path: outputPath,
+      size: imageBuffer.length,
+      dimensions: `${asset.expectedSize.width}x${asset.expectedSize.height}`
+    });
+
+  } catch (error) {
+    log.error(`Failed to generate ${asset.id}`, error);
+    throw error;
   }
 }
 
-export default ProductionAssetGenerator;
+/**
+ * Remove white background and make it transparent
+ * FIXED: Preserve 8-bit alpha channel (not 1-bit binary)
+ */
+async function removeWhiteBackground(buffer: Buffer): Promise<Buffer> {
+  const sharp = (await import('sharp')).default;
+
+  // Get image metadata first
+  const metadata = await sharp(buffer).metadata();
+  
+  // Process with proper alpha channel handling
+  return sharp(buffer)
+    .ensureAlpha() // Ensure we have alpha channel
+    .raw()
+    .toBuffer({ resolveWithObject: true })
+    .then(({ data, info }) => {
+      // Process pixels to remove white background with smooth alpha
+      const channels = info.channels || 4;
+      const pixelCount = info.width * info.height;
+      
+      for (let i = 0; i < pixelCount; i++) {
+        const pixelOffset = i * channels;
+        const r = data[pixelOffset];
+        const g = data[pixelOffset + 1];
+        const b = data[pixelOffset + 2];
+        
+        // Calculate whiteness (average of RGB)
+        const avg = (r + g + b) / 3;
+        const max = Math.max(r, g, b);
+        const min = Math.min(r, g, b);
+        
+        // More sophisticated white detection
+        // Check if pixel is white-ish (high brightness AND low saturation)
+        const brightness = avg;
+        const saturation = max > 0 ? (max - min) / max : 0;
+        
+        // If very white and low saturation, make transparent
+        if (brightness > 245 && saturation < 0.1) {
+          data[pixelOffset + 3] = 0; // Fully transparent
+        }
+        // Smooth gradient for near-white pixels (smooth edges)
+        else if (brightness > 230 && saturation < 0.2) {
+          // Linear gradient: 230 = 100% opaque, 245 = 0% opaque
+          const alpha = Math.floor(255 * (1 - (brightness - 230) / 15));
+          data[pixelOffset + 3] = Math.max(0, Math.min(255, alpha));
+        }
+        // Otherwise keep fully opaque
+        else {
+          data[pixelOffset + 3] = 255;
+        }
+      }
+
+      // Return with proper 8-bit alpha channel (not 1-bit)
+      return sharp(data, {
+        raw: {
+          width: info.width,
+          height: info.height,
+          channels: 4, // RGBA
+        }
+      })
+      .webp({
+        quality: 90, // High quality for transparency processing
+        effort: 6,
+        lossless: false,
+        smartSubsample: true
+      })
+        .toBuffer();
+    });
+}
+
+/**
+ * Download image from URL
+ */
+async function downloadImage(url: string): Promise<Buffer> {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Failed to download image: ${response.status} ${response.statusText}`);
+  }
+  const arrayBuffer = await response.arrayBuffer();
+  return Buffer.from(arrayBuffer);
+}

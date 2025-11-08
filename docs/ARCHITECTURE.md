@@ -15,20 +15,28 @@
 
 ## Generational Architecture
 
-### Generation 0: Planetary Genesis (MISSING - CRITICAL)
+### Generation 0: Planetary Genesis (PARTIAL - IN PROGRESS)
 
 **Purpose**: Create physical reality from seed.
 
 **Input**: Seed phrase (3 words) → seedrandom → Deterministic planet
 
 **Components**:
-1. Core Type Selection (8 types: Molten, Iron, Diamond, Living Wood, Water, Ice, Void, Dual)
-2. Planetary Physics (gravity, rotation, day/night, tides)
-3. Layer Assembly (Core → Mantle → Crust → Hydrosphere → Atmosphere)
-4. Material Distribution (depths/hardness from layers, NOT hardcoded)
-5. Primordial Wells (life spawn points)
+1. ✅ **Accretion Simulation** - Yuka physics-based planetary formation with debris field
+2. ✅ **Layer Assembly** - Core (inner/outer) → Mantle → Crust (physics-derived boundaries)
+3. ✅ **Planetary Physics** - Radius, mass, rotation period from angular momentum
+4. ✅ **Material Distribution** - Materials distributed to layers based on density
+5. ✅ **Moon Calculation** - Orbital mechanics for moon generation
+6. ✅ **Core Type Selection** - 8 types (Molten, Iron, Diamond, Living Wood, Water, Ice, Void, Dual) - Physics-based selection
+7. ✅ **Hydrosphere/Atmosphere** - Surface layers generated from composition and temperature
+8. ✅ **Primordial Wells** - Life spawn points (3-12 per planet) with energy levels and composition
 
-**Status**: ❌ Does not exist
+**Status**: ✅ COMPLETE - All components implemented with full test coverage (`AccretionSimulation.ts`)
+- ✅ Unit tests: Core type, hydrosphere, atmosphere, primordial wells, moons (20 tests)
+- ✅ Integration tests: GameEngine initialization with WARP/WEFT (12 tests)
+- ✅ API tests: `/api/game/:id/gen0/render` endpoint (10 tests)
+- ✅ Frontend tests: GameScene data loading and API integration (15 tests)
+- ✅ E2E tests: Complete flow from seed to rendering (3 tests)
 
 ---
 
@@ -286,24 +294,56 @@ Gen 3 creature (complex)
 ## Technology Stack
 
 - **ECS**: Miniplex (game logic)
-- **Rendering**: React Three Fiber
-- **UI**: @react-three/uikit (NO DOM)
+- **Rendering**: BabylonJS (3D engine + GUI)
+- **UI**: BabylonJS GUI (NO DOM, integrated with 3D scene)
 - **AI**: Yuka (creature behavior)
 - **State**: Zustand (read-only from ECS)
 - **Platform**: Capacitor (mobile)
 - **Seed**: seedrandom (TO BE ADDED)
+
+### Frontend Architecture Decision: BabylonJS
+
+**Decision**: Using BabylonJS instead of React Three Fiber + UIKit
+
+**Rationale**:
+- **Unified Architecture**: Single library for 3D rendering + GUI (no library boundary friction)
+- **Built-in Raycasting**: Advanced `scene.pick()` system for coordinate queries and 3D interaction
+- **Procedural Generation Tools**: Built-in noise functions, procedural textures, terrain tools
+- **Mature GUI System**: Production-ready BabylonJS GUI with comprehensive controls
+- **Performance**: Optimized for complex scenes (LOD, culling, mobile optimization)
+- **Enterprise Maturity**: Proven in production, stable API, comprehensive documentation
+
+**Key Features**:
+- `AdvancedDynamicTexture` - Full-screen GUI container
+- `Rectangle` - Panels with styling (background, cornerRadius, opacity)
+- `Button` - Interactive buttons with text
+- `TextBlock` - Text rendering with CSS fonts (Lora, Inter, JetBrains Mono)
+- Built-in raycasting for 3D interaction
+- Procedural texture generation for planetary surfaces
+
+**Migration**: Greenfield frontend means minimal migration cost. All UI elements use BabylonJS GUI styling (no generated images for buttons/panels/text).
 
 ---
 
 ## File Structure
 
 ```
-src/
-├── systems/      # ECS systems (game logic)
-├── world/        # ECS schema (WorldSchema)
-├── components/   # React Three Fiber (rendering)
-├── stores/       # Zustand (UI state)
-└── App.tsx       # Entry point
+packages/
+├── backend/      # REST API + Gen0-Gen6 systems
+│   └── src/
+│       ├── gen0-6/  # Generation systems
+│       └── server.ts # Fastify server
+├── gen/          # AI archetype generation
+│   └── src/
+│       ├── workflows/  # WARP/WEFT agent
+│       └── schemas/    # Zod schemas (exported)
+└── frontend/     # BabylonJS frontend
+    ├── src/
+    │   ├── scenes/     # BabylonJS scenes (MainMenuScene, Gen0PlanetScene)
+    │   └── utils/      # Texture loaders, helpers
+    └── simulation/     # Simulation module (Gen0 rendering)
+        └── src/
+            └── scenes/ # Gen0PlanetScene
 ```
 
 ---
@@ -330,7 +370,7 @@ Tests: 57/57 passing.
 
 ## Critical Path
 
-1. **Generation 0** - Seed → planetary physics → material distribution
+1. **Generation 0** - ✅ COMPLETE - All components implemented (Core Type Selection, Hydrosphere/Atmosphere, Primordial Wells)
 2. **Tool Sphere** - Integrate with YukaSphereCoordinator
 3. **Inter-Sphere Communication** - Spheres signal each other
 4. **Material Refactor** - Remove hardcoding

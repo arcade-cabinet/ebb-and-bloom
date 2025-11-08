@@ -10,8 +10,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const GEN_DATA_PATH = join(__dirname, '../../data/archetypes');
-const TEXTURE_MANIFEST_PATH = join(__dirname, '../../public/textures/manifest.json');
+const GEN_DATA_PATH = join(__dirname, '../../../backend/data/archetypes');
+const TEXTURE_MANIFEST_PATH = join(__dirname, '../../../game/public/textures/manifest.json');
 // Output to root docs/ directory
 const OUTPUT_PATH = join(__dirname, '../../../../docs/GENERATION_REVIEW.md');
 
@@ -121,12 +121,12 @@ function generateTextureImageMarkdown(textureId: string, textureInfo: TextureAss
   // to relative path from docs/ folder
   let imagePath = textureInfo.localPath || textureInfo.filePath;
   
-  // If path starts with "src/" or "public/", use it as-is relative to packages/gen
+  // If path starts with "src/" or "public/", use it as-is relative to packages/game
   // Otherwise assume it's already relative
   if (imagePath.startsWith('src/') || imagePath.startsWith('public/')) {
-    imagePath = `../../packages/gen/${imagePath}`;
+    imagePath = `../../packages/game/${imagePath}`;
   } else if (!imagePath.startsWith('../')) {
-    imagePath = `../../packages/gen/public/textures/${imagePath}`;
+    imagePath = `../../packages/game/public/textures/${imagePath}`;
   }
   
   // Scale down images for review (width=200px)
@@ -407,9 +407,9 @@ export async function generateGenerationDocumentation(): Promise<void> {
         // Normalize path same way as generateTextureImageMarkdown
         let imagePath = textureInfo.localPath || textureInfo.filePath;
         if (imagePath.startsWith('src/') || imagePath.startsWith('public/')) {
-          imagePath = `../../packages/gen/${imagePath}`;
+          imagePath = `../../packages/game/${imagePath}`;
         } else if (!imagePath.startsWith('../')) {
-          imagePath = `../../packages/gen/public/textures/${imagePath}`;
+          imagePath = `../../packages/game/public/textures/${imagePath}`;
         }
         
         lines.push(`<div style="text-align: center;">`);

@@ -1,0 +1,43 @@
+/* Ebb & Bloom Fonts - Google Fonts CDN */
+/* Version: 2.0.0 */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;900:ital@0;1&family=Work+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* Playfair Display - Elegant, literary serif - perfect for meditative titles and poetic haikus. Aligns with contemplative, evolutionary brand identity. */
+/* Work Sans - Soft, approachable sans-serif - more organic than Inter, aligns with evolutionary theme. Excellent readability for UI. */
+/* JetBrains Mono - Monospace for seed identifiers and technical UI - clean, readable, perfect for data display */
+/* CSS Custom Properties for easy font usage */
+:root {
+  --font-playfairdisplay: 'Playfair Display';
+  --font-worksans: 'Work Sans';
+  --font-jetbrainsmono: 'JetBrains Mono';
+}
+
+/* Font classes */
+.font-playfair-display {
+  font-family: 'Playfair Display';
+}
+
+/* Elegant, literary serif - perfect for meditative titles and poetic haikus. Aligns with contemplative, evolutionary brand identity. */
+.font-playfair-display {
+  font-family: 'Playfair Display';
+}
+
+.font-work-sans {
+  font-family: 'Work Sans';
+}
+
+/* Soft, approachable sans-serif - more organic than Inter, aligns with evolutionary theme. Excellent readability for UI. */
+.font-work-sans {
+  font-family: 'Work Sans';
+}
+
+.font-jetbrains-mono {
+  font-family: 'JetBrains Mono';
+}
+
+/* Monospace for seed identifiers and technical UI - clean, readable, perfect for data display */
+.font-jetbrains-mono {
+  font-family: 'JetBrains Mono';
+}
+

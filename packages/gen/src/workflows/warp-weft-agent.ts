@@ -7,10 +7,10 @@ import { TEXT_MODEL } from '../config/ai-models';
 import { promises as fs } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import { getGenerationPrompt } from '../prompts/generation-prompts.js';
-import { GenerationScaleSchema } from '../schemas/visual-blueprint-schema.js';
+import { getGenerationPrompt } from '../prompts/generation-prompts';
+import { GenerationScaleSchema } from '../schemas/visual-blueprint-schema';
 // Note: Tools not yet supported with generateObject - using prompt instructions instead
-// import { textureQueryTool } from '../tools/structured-texture-tool.js';
+// import { textureQueryTool } from '../tools/structured-texture-tool';
 
 /**
  * Load archetype counts from manifest configuration
@@ -467,9 +467,11 @@ function isValidArchetypeStructure(archetype: any): boolean {
  * Load existing generation data if it exists AND is valid
  */
 async function loadExistingGeneration(gen: string): Promise<any | null> {
-  const macroPath = `data/archetypes/${gen}/macro.json`;
-  const mesoPath = `data/archetypes/${gen}/meso.json`;
-  const microPath = `data/archetypes/${gen}/micro.json`;
+  // Output directly to backend data directory
+  const outputBase = join(__dirname, '../../../backend/data/archetypes', gen);
+  const macroPath = join(outputBase, 'macro.json');
+  const mesoPath = join(outputBase, 'meso.json');
+  const microPath = join(outputBase, 'micro.json');
 
   const allExist = await fileExists(macroPath) &&
     await fileExists(mesoPath) &&
@@ -610,11 +612,11 @@ export async function executeWarpWeftGeneration(): Promise<void> {
         }
 
         // Save immediately after validation
-        const dirPath = `data/archetypes/${gen}`;
+        const dirPath = join(__dirname, '../../../backend/data/archetypes', gen);
         await fs.mkdir(dirPath, { recursive: true });
 
         await fs.writeFile(
-          `${dirPath}/${scale}.json`,
+          join(dirPath, `${scale}.json`),
           JSON.stringify(scaleData, null, 2)
         );
 
@@ -644,7 +646,7 @@ export async function executeWarpWeftGeneration(): Promise<void> {
   // Run holistic quality assessment and regeneration
   console.log('\n🔍 Running holistic quality assessment and regeneration...');
   try {
-    const { runQualityAssessmentAndRegeneration } = await import('../tools/quality-regenerator.js');
+    const { runQualityAssessmentAndRegeneration } = await import('../tools/quality-regenerator');
     const { reports, regenerations, redFlags } = await runQualityAssessmentAndRegeneration();
 
     if (redFlags.length > 0) {
@@ -661,6 +663,6 @@ export async function executeWarpWeftGeneration(): Promise<void> {
   }
 
   // Generate comprehensive documentation
-  const { generateGenerationDocumentation } = await import('./generate-documentation.js');
+  const { generateGenerationDocumentation } = await import('./generate-documentation');
   await generateGenerationDocumentation();
 }

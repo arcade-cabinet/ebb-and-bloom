@@ -272,7 +272,7 @@ async function generateQualityReport(
  * Assess all generations and generate comprehensive report
  */
 export async function assessAllGenerations(): Promise<void> {
-  const dataPath = join(__dirname, '../../data/archetypes');
+  const dataPath = join(__dirname, '../../../backend/data/archetypes');
   const generations = ['gen0', 'gen1', 'gen2', 'gen3', 'gen4', 'gen5', 'gen6'];
   const scales = ['macro', 'meso', 'micro'];
 

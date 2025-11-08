@@ -1,0 +1,521 @@
+{
+  "archetypes": [
+    {
+      "id": "archetype_001",
+      "name": "Core Drill Attachment",
+      "description": "A specialized attachment designed to enhance drilling into deep iron-nickel cores, optimized for seamless integration with the Deep Vein Network.",
+      "parameters": {
+        "effectivenessMultiplier": {
+          "min": 1.5,
+          "max": 3,
+          "default": 2.1
+        },
+        "durability": {
+          "min": 2000,
+          "max": 5000,
+          "default": 3500
+        },
+        "materialCost": {
+          "min": 150,
+          "max": 300,
+          "default": 200
+        },
+        "creationComplexity": {
+          "min": 4,
+          "max": 8,
+          "default": 6
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Metal049A",
+          "Rock025"
+        ],
+        "colorPalette": [
+          "#8B9AA3",
+          "#B0BEC5",
+          "#455A64",
+          "#78909C",
+          "#37474F"
+        ],
+        "pbrProperties": {
+          "baseColor": "#8B9AA3",
+          "roughness": 0.6,
+          "metallic": 0.9,
+          "normalStrength": 1.2,
+          "aoStrength": 0.9,
+          "heightScale": 0.02,
+          "emissive": "#455A64"
+        },
+        "proceduralRules": "Surface features exhibit subtle grooves and layered metallic textures similar to deep-metallurgical formations."
+      },
+      "textureReferences": [
+        "Metal049A",
+        "Rock025"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.3,
+        "seedModifiers": {
+          "high-metallicity": 2
+        },
+        "biasDescription": "More likely in metal-rich environments, especially near deep core deposits."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "macro_deep_vein_system",
+          "macro_thermal_bore"
+        ],
+        "incompatibleWith": [],
+        "adjacentTo": [
+          "archetype_002"
+        ],
+        "requires": [
+          "Gen0 Macro - Iron-Nickel Core Dominance"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Disassembling requires specialized de-torquing tools to safely reduce the tool to its base components.",
+        "compatibleDeconstructors": [
+          "DISASSEMBLER tools",
+          "high-precision manipulator creatures"
+        ],
+        "decomposesInto": [
+          "iron-alloys",
+          "circuit elements"
+        ],
+        "propertyUsage": {
+          "hardness": "high",
+          "volume": "medium",
+          "organic": "none"
+        }
+      },
+      "formation": {
+        "formationProcess": "The attachment is synthesized using advanced metallurgical techniques from iron alloys gathered from surface deposits.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen1 Macro - Chromatic Cartographer",
+            "Gen0 Micro - Iron-Nickel Core Dominance"
+          ],
+          "requirements": [
+            "manipulation > 0.6",
+            "thermal resistance > 0.7"
+          ],
+          "causalChain": "The product of combined geological expertise and advanced manipulation techniques."
+        },
+        "yukaGuidance": "Evaluate for installation where core access maximization is prioritized; consider resonance manipulation effects."
+      }
+    },
+    {
+      "id": "archetype_002",
+      "name": "Geothermal Resonator",
+      "description": "A tool designed to channel geothermal energy to enhance material extraction, particularly effective in hot accretion zones.",
+      "parameters": {
+        "effectivenessMultiplier": {
+          "min": 2,
+          "max": 4,
+          "default": 3
+        },
+        "durability": {
+          "min": 1500,
+          "max": 4000,
+          "default": 3000
+        },
+        "materialCost": {
+          "min": 200,
+          "max": 350,
+          "default": 275
+        },
+        "creationComplexity": {
+          "min": 5,
+          "max": 9,
+          "default": 7
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Metal049A",
+          "Rock030"
+        ],
+        "colorPalette": [
+          "#FF8F00",
+          "#FF6F00",
+          "#FF5722",
+          "#B71C1C",
+          "#BF360C"
+        ],
+        "pbrProperties": {
+          "baseColor": "#FF8F00",
+          "roughness": 0.7,
+          "metallic": 0.6,
+          "normalStrength": 1.4,
+          "aoStrength": 0.7,
+          "heightScale": 0.03,
+          "emissive": "#FF5722"
+        },
+        "proceduralRules": "Exhibits vibrant thermal animation effects with fluctuating emissive glow in response to geothermal sources."
+      },
+      "textureReferences": [
+        "Metal049A",
+        "Rock030"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.35,
+        "seedModifiers": {
+          "hot-accretion-zone": 2.5
+        },
+        "biasDescription": "Particularly favored in regions with active geothermal activity and high accretion dynamics."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "macro_thermal_bore_accelerator"
+        ],
+        "incompatibleWith": [],
+        "adjacentTo": [
+          "archetype_001"
+        ],
+        "requires": [
+          "Gen0 Meso - Hot Accretion Zone"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Deconstruction involves careful thermal disengagement to prevent structural weakening of active components.",
+        "compatibleDeconstructors": [
+          "creatures with thermal handling capabilities"
+        ],
+        "decomposesInto": [
+          "heat-resistant alloys",
+          "power conduits"
+        ],
+        "propertyUsage": {
+          "hardness": "medium",
+          "volume": "large",
+          "organic": "none"
+        }
+      },
+      "formation": {
+        "formationProcess": "Synthesized in areas abundant with geothermal activity using compounds with high thermal stability.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen1 Meso - Swarm Collective",
+            "Gen0 Macro - Population II Star System"
+          ],
+          "requirements": [
+            "thermal manipulation > 0.8",
+            "collective operation > 4 creatures"
+          ],
+          "causalChain": "Developed through necessity to maximize energy resource extraction for complex pack tasks."
+        },
+        "yukaGuidance": "Deploy in thermally rich environments; monitor geothermal fluctuations for optimal placement."
+      }
+    },
+    {
+      "id": "archetype_003",
+      "name": "Hydraulic Channel Carver",
+      "description": "An advanced tool designed for carving precise channels through subsurface water deposits for efficient volatile transport.",
+      "parameters": {
+        "effectivenessMultiplier": {
+          "min": 1.8,
+          "max": 3.5,
+          "default": 2.5
+        },
+        "durability": {
+          "min": 2500,
+          "max": 4500,
+          "default": 3500
+        },
+        "materialCost": {
+          "min": 175,
+          "max": 325,
+          "default": 250
+        },
+        "creationComplexity": {
+          "min": 6,
+          "max": 10,
+          "default": 8
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Metal049A",
+          "Rock025"
+        ],
+        "colorPalette": [
+          "#00796B",
+          "#004D40",
+          "#006064",
+          "#004D40",
+          "#005662"
+        ],
+        "pbrProperties": {
+          "baseColor": "#00796B",
+          "roughness": 0.8,
+          "metallic": 0.2,
+          "normalStrength": 1.4,
+          "aoStrength": 0.85,
+          "heightScale": 0.04,
+          "emissive": "#004D40"
+        },
+        "proceduralRules": "Surfaces display aquatically inspired undulating patterns, reacting dynamically with water presence."
+      },
+      "textureReferences": [
+        "Metal049A",
+        "Rock025"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.25,
+        "seedModifiers": {
+          "volatile-surface-waters": 2.2
+        },
+        "biasDescription": "Strategically designed for use in regions with subsurface aqueous deposits."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "macro_aqua_seep_extractor"
+        ],
+        "incompatibleWith": [],
+        "adjacentTo": [
+          "archetype_004"
+        ],
+        "requires": [
+          "Gen0 Micro - Volatile Surface Waters"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Water-resistant components can be dismantled using tools adapted for liquid environments.",
+        "compatibleDeconstructors": [
+          "aquatic-manipulators"
+        ],
+        "decomposesInto": [
+          "water-channel conduits",
+          "sealing flanges"
+        ],
+        "propertyUsage": {
+          "hardness": "medium",
+          "volume": "medium",
+          "organic": "none"
+        }
+      },
+      "formation": {
+        "formationProcess": "Developed with emphasis on hydraulic engineering, using materials adept at withoutstanding aquatic wear.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen1 Micro - Sand Sculptor",
+            "Gen0 Meso - Cold Accretion Zone"
+          ],
+          "requirements": [
+            "water manipulation > 0.75",
+            "resource allocation > 0.6"
+          ],
+          "causalChain": "Formation driven by the need for precise water channeling."
+        },
+        "yukaGuidance": "Install in proximity to subsurface aquifers; monitor for erosion impacts and channel integrity."
+      }
+    },
+    {
+      "id": "archetype_004",
+      "name": "Alloy Synthesizer",
+      "description": "Crafted to blend extracted metals into usable alloys, the Alloy Synthesizer powers the Chromatic Forge Array.",
+      "parameters": {
+        "effectivenessMultiplier": {
+          "min": 2.5,
+          "max": 5,
+          "default": 3.5
+        },
+        "durability": {
+          "min": 3000,
+          "max": 5000,
+          "default": 4000
+        },
+        "materialCost": {
+          "min": 250,
+          "max": 400,
+          "default": 325
+        },
+        "creationComplexity": {
+          "min": 7,
+          "max": 11,
+          "default": 9
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Metal049A",
+          "Metal050"
+        ],
+        "colorPalette": [
+          "#C5CAE9",
+          "#7986CB",
+          "#3F51B5",
+          "#1A237E",
+          "#283593"
+        ],
+        "pbrProperties": {
+          "baseColor": "#C5CAE9",
+          "roughness": 0.5,
+          "metallic": 0.8,
+          "normalStrength": 1.3,
+          "aoStrength": 0.75,
+          "heightScale": 0.06,
+          "emissive": "#283593"
+        },
+        "proceduralRules": "Creates vivid metallic sheen fluctuating across surfaces depending on ambient light and composition."
+      },
+      "textureReferences": [
+        "Metal049A",
+        "Metal050"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.4,
+        "seedModifiers": {
+          "high-metallicity": 2.7
+        },
+        "biasDescription": "Prefers richly metallic regions essential for crafting durable alloys."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "macro_chromatic_forge_array"
+        ],
+        "incompatibleWith": [],
+        "adjacentTo": [
+          "archetype_005"
+        ],
+        "requires": [
+          "Gen0 Meso - Giant Impact Phase"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Strategically breakdown into metallic components using high heat.",
+        "compatibleDeconstructors": [
+          "advanced metallurgical suites"
+        ],
+        "decomposesInto": [
+          "base metals",
+          "trace elements"
+        ],
+        "propertyUsage": {
+          "hardness": "high",
+          "volume": "variable",
+          "organic": "none"
+        }
+      },
+      "formation": {
+        "formationProcess": "Synthesized from refined raw materials using energetically efficient processes developed in metallic environments.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen1 Meso - Fabric Conclave",
+            "Gen0 Micro - Carbon Mantle Shimmer"
+          ],
+          "requirements": [
+            "alloy manipulation > 0.85",
+            "component assembly > 4 creatures"
+          ],
+          "causalChain": "Necessitated by advanced crafting needs in resource-dense areas."
+        },
+        "yukaGuidance": "Position within centralized processing hubs; align workflows for optimal alloy outputs."
+      }
+    },
+    {
+      "id": "archetype_005",
+      "name": "Elevated Transport System",
+      "description": "This system facilitates material movement between elevated and grounded positions, bridging the Skybridge Logistical Platform.",
+      "parameters": {
+        "effectivenessMultiplier": {
+          "min": 1.4,
+          "max": 3,
+          "default": 2.3
+        },
+        "durability": {
+          "min": 1800,
+          "max": 4000,
+          "default": 3000
+        },
+        "materialCost": {
+          "min": 200,
+          "max": 325,
+          "default": 275
+        },
+        "creationComplexity": {
+          "min": 5,
+          "max": 9,
+          "default": 7
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Metal050",
+          "Wood051"
+        ],
+        "colorPalette": [
+          "#BCAAA4",
+          "#8D6E63",
+          "#37474F",
+          "#546E7A",
+          "#263238"
+        ],
+        "pbrProperties": {
+          "baseColor": "#8D6E63",
+          "roughness": 0.6,
+          "metallic": 0.4,
+          "normalStrength": 1.1,
+          "aoStrength": 0.6,
+          "heightScale": 0.03,
+          "emissive": "#37474F"
+        },
+        "proceduralRules": "Exhibits organic textures with weathered markings reflecting the environmental transition process."
+      },
+      "textureReferences": [
+        "Metal050",
+        "Wood051"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.3,
+        "seedModifiers": {
+          "territorial-geography": 2
+        },
+        "biasDescription": "Commonly favored in regions with complex topography and high-altitude installations."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "macro_skybridge_logistical_platform"
+        ],
+        "incompatibleWith": [],
+        "adjacentTo": [
+          "archetype_003"
+        ],
+        "requires": [
+          "Gen2 Macro - Skyward Ridge Enclave"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Disassemble into transportable units using modular disassembly tools.",
+        "compatibleDeconstructors": [
+          "structural mechanics tools"
+        ],
+        "decomposesInto": [
+          "mounting fixtures",
+          "transport rails"
+        ],
+        "propertyUsage": {
+          "hardness": "medium",
+          "volume": "large",
+          "organic": "minimal"
+        }
+      },
+      "formation": {
+        "formationProcess": "Manufactured through combined efforts of automated and manual systems ensuring safe elevation handling.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen2 Meso - Age Hierarchy",
+            "Gen1 Macro - Silk Weaver"
+          ],
+          "requirements": [
+            "construction > 0.9",
+            "logistical acuity > 0.8"
+          ],
+          "causalChain": "Elevated transport was a necessity following diversified terrain usage."
+        },
+        "yukaGuidance": "Deploy across rough terrain emphasizing connectivity; routinely assess structural stability and load capacity."
+      }
+    }
+  ]
+}

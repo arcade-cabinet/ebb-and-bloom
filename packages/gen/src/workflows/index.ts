@@ -2,5 +2,5 @@
  * WORKFLOWS EXPORTS
  */
 
-export * from './warp-weft-agent.js';
+export * from './warp-weft-agent';
 

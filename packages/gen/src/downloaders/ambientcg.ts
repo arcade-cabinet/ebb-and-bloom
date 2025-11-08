@@ -530,6 +530,7 @@ class AmbientCGDownloader {
 }
 
 // Production configuration for game development
+// Outputs directly to frontend public directory
 const PRODUCTION_CONFIG: DownloaderConfig = {
   resolution: '2K',
   fileTypes: ['jpg'],
@@ -537,7 +538,7 @@ const PRODUCTION_CONFIG: DownloaderConfig = {
     'wood', 'metal', 'stone', 'concrete', 'bricks', 
     'grass', 'rock', 'fabric', 'leather'
   ],
-  outputDir: './src/textures/textures',
+  outputDir: '../../game/public/textures',
   maxConcurrent: 8,        // Reasonable parallelism
   maxRetries: 3,           // Give up after 3 attempts
   baseDelayMs: 1000,       // Start with 1 second delay

@@ -6,7 +6,7 @@
  * Extends MeshyBaseClient for shared functionality
  */
 
-import { MeshyBaseClient } from './base-client.js';
+import { MeshyBaseClient } from './base-client';
 
 export interface RetextureTaskParams {
   /**

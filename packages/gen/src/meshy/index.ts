@@ -12,15 +12,15 @@
  * - Character animations (rigging)
  */
 
-import { TextTo3DAPI } from './text_to_3d.js';
-import { RiggingAPI } from './rigging.js';
-import { RetextureAPI } from './retexture.js';
-import { AnimationsAPI } from './animations.js';
+import { TextTo3DAPI } from './text_to_3d';
+import { RiggingAPI } from './rigging';
+import { RetextureAPI } from './retexture';
+import { AnimationsAPI } from './animations';
 
-export * from './text_to_3d.js';
-export * from './rigging.js';
-export * from './retexture.js';
-export * from './animations.js';
+export * from './text_to_3d';
+export * from './rigging';
+export * from './retexture';
+export * from './animations';
 
 /**
  * Unified Meshy API with retry logic

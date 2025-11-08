@@ -211,126 +211,121 @@ Gamers (25-45) seeking meditative, discovery-focused experiences across platform
 
 ---
 
-## UIKit Integration
+## BabylonJS GUI Integration
 
-### Why UIKit
+### Why BabylonJS GUI
 
-**@react-three/uikit** renders UI INSIDE the Canvas as 3D elements, not DOM overlays.
+**BabylonJS GUI** provides unified 3D rendering + UI system, rendering UI INSIDE the Canvas as 3D elements, not DOM overlays.
 
 **Benefits**:
-- 3D-aware positioning
-- Mobile-optimized touch
-- Performance-optimized
-- Pre-styled components
-- Easy theming
+- Unified architecture (3D + UI in one library)
+- Built-in raycasting for 3D interaction
+- Procedural generation tools
+- Mature, production-ready GUI system
+- Better performance for complex 3D scenes
+- Mobile-optimized touch support
 
 ### Core Components
 
-**From @react-three/uikit**:
-- `Fullscreen` - Full-screen container for HUD
-- `Container` - Flexbox layout container
-- `Text` - MSDF font rendering
-- `Image` - Image component
-- `Portal` - Render 3D in UI panels
+**From @babylonjs/gui**:
+- `AdvancedDynamicTexture` - Full-screen GUI container
+- `Rectangle` - Panels, containers with styling
+- `Button` - Interactive buttons with text
+- `TextBlock` - Text rendering with proper fonts
+- `Control` - Base class for all UI elements
 
-**From @react-three/uikit-default**:
-- `Card`, `CardHeader`, `CardTitle`, `CardContent` - Panel containers
-- `Button` - Interactive buttons
-- `Progress` - Progress bars
-- `Input`, `Textarea` - Text input
-- `Slider` - Range sliders
-- `Dialog` - Modal dialogs
+**Styling Capabilities**:
+- `background` - Colors (rgba, hex)
+- `color` - Border/text colors
+- `cornerRadius` - Rounded corners
+- `thickness` - Border width
+- `opacity` - Transparency
+- `fontFamily`, `fontSize` - Typography (uses CSS fonts)
 
-### Responsive Design
+### Example Usage
 
-**Breakpoints** (based on root width):
-- `sm` - 640px
-- `md` - 768px
-- `lg` - 1024px
-- `xl` - 1280px
-- `2xl` - 1536px
+```typescript
+// Create fullscreen GUI
+const guiTexture = AdvancedDynamicTexture.CreateFullscreenUI('UI', true, scene);
 
-**Usage**:
-```tsx
-<Container
-  flexDirection="column"        // Mobile: stacked
-  md={{ flexDirection: "row" }} // Tablet+: side-by-side
-  lg={{ gap: 24 }}              // Desktop: larger gap
->
-```
+// Panel with styling
+const panel = new Rectangle('mainPanel');
+panel.width = 0.6;
+panel.height = 0.8;
+panel.cornerRadius = 20;
+panel.background = 'rgba(26, 32, 44, 0.9)'; // Deep background with transparency
+panel.color = '#4A5568'; // Ebb indigo border
+panel.thickness = 2;
 
-### Styling
+// Button with text
+const button = Button.CreateSimpleButton('observeButton', 'Observe');
+button.width = '240px';
+button.height = '60px';
+button.background = '#38A169'; // Bloom emerald
+button.color = '#F7FAFC'; // Text color
+button.fontSize = 18;
+button.fontFamily = 'Inter, sans-serif';
+button.cornerRadius = 10;
 
-**Props-based, NOT CSS**:
-```tsx
-<Container
-  backgroundColor={0x1a202c}  // Hex colors
-  padding={16}                // Pixels
-  borderRadius={8}            // Pixels
-  gap={12}                    // Flexbox gap
-  opacity={0.9}               // 0-1
->
-```
-
-**Conditional states**:
-```tsx
-<Button
-  hover={{ backgroundColor: 0x38A169 }}
-  active={{ opacity: 0.8 }}
-  dark={{ backgroundColor: 0x2d3748 }}
->
+// Text with typography
+const title = new TextBlock('title', 'Ebb & Bloom');
+title.fontSize = 48;
+title.fontFamily = 'Lora, serif';
+title.color = '#F7FAFC';
 ```
 
 ### Typography
 
-**Custom fonts via MSDF**:
-- Convert TTF → MSDF using `msdf-bmfont-xml`
-- Load via `fontFamilies` prop
-- Use `fontFamily`, `fontSize`, `fontWeight` props
+**Uses CSS fonts** (loaded via `fonts.css`):
+- `Lora` - Serif for titles, haikus
+- `Inter` - Sans-serif for UI text
+- `JetBrains Mono` - Monospace for data/technical
 
-**Default**: Inter font provided by uikit-default
+**No MSDF conversion needed** - BabylonJS GUI uses standard web fonts.
 
-### Positioning
+---
 
-**Absolute positioning**:
-```tsx
-<Card
-  positionType="absolute"
-  positionTop={20}
-  positionRight={20}
-  width={280}
->
-```
+## UI Asset Generation Strategy
 
-**Centering**:
-```tsx
-<Card
-  positionType="absolute"
-  positionLeft="50%"
-  positionTop="50%"
-  transformTranslateX="-50%"
-  transformTranslateY="-50%"
->
-```
+### Principle: Only Generate What Can't Be Rendered
 
-### HUD Pattern
+**BabylonJS GUI can handle**:
+- ✅ Panels/containers (Rectangle with styling)
+- ✅ Buttons with text (Button.CreateSimpleButton)
+- ✅ Text rendering (TextBlock with fonts)
+- ✅ Basic shapes, colors, gradients
+- ✅ Transparency, borders, rounded corners
 
-```tsx
-<Canvas>
-  {/* 3D Scene */}
-  <mesh />
-  
-  {/* UI Layer */}
-  <Defaults>
-    <Fullscreen distanceToCamera={100}>
-      {/* All UI components here */}
-      <Card positionType="absolute" positionTop={20} positionRight={20}>
-        {/* Generation Display */}
-      </Card>
-    </Fullscreen>
-  </Defaults>
-</Canvas>
-```
+**We only generate images for**:
+- 🎨 **Iconography** - Trait icons, seed/DNA icons, creature/tool icons (symbolic, needs artistic interpretation)
+- 🎨 **Stylized HUD Elements** - Scroll/parchment decorative elements (organic texture, can't be CSS'd)
+- 🎨 **Ornate Frames** - Decorative borders for panels (artistic detail)
+- 🎨 **Textured Backgrounds** - Artistic textures (not simple CSS gradients)
+- 🎨 **Splash Screens** - Artistic scenes with atmosphere
+
+### Asset Categories
+
+1. **splash** - Artistic splash screens (1 asset)
+2. **icon** - Iconography (trait icons, seed icons, etc.)
+3. **hud** - Stylized HUD decorative elements (scrolls, parchment)
+4. **frame** - Ornate decorative frames
+5. **banner** - Textured artistic banners
+6. **background** - Textured backgrounds
+
+### Benefits
+
+- **Performance** - Fewer images to load, faster rendering
+- **Maintainability** - Dynamic styling, responsive, theme-switchable
+- **Flexibility** - Text is selectable, scalable, localizable
+- **Accessibility** - Screen-reader friendly, proper semantic structure
+
+### Format
+
+All UI assets use **WebP** format:
+- 25-35% better compression than PNG
+- Supports transparency (unlike JPEG)
+- Better quality than JPEG at same file size
+- Widely supported in modern browsers
 
 ---
 

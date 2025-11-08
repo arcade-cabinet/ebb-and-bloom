@@ -165,3 +165,6 @@ export type ParameterRange = z.infer<typeof ParameterRangeSchema>;
 export type SelectionBias = z.infer<typeof SelectionBiasSchema>;
 export type Adjacency = z.infer<typeof AdjacencySchema>;
 export type PBRProperties = z.infer<typeof PBRPropertiesSchema>;
+
+// Re-export texture manifest schema
+export * from './texture-manifest-schema';

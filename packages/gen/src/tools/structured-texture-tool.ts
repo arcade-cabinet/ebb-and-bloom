@@ -15,8 +15,8 @@ const __dirname = dirname(__filename);
 
 const textureQueryToolImpl = async ({ category, count = 5 }: { category: string; count?: number }) => {
     try {
-      // Resolve manifest path relative to package root
-      const manifestPath = join(__dirname, '../../public/textures/manifest.json');
+      // Resolve manifest path - textures are in frontend public directory
+      const manifestPath = join(__dirname, '../../../game/public/textures/manifest.json');
       const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8'));
       
       // Category names in manifest are capitalized, convert to match
@@ -60,7 +60,7 @@ const textureQueryToolImpl = async ({ category, count = 5 }: { category: string;
     } catch (error: any) {
       return { 
         error: `Failed to load textures: ${error.message}`,
-        path: `Attempted path: ${join(__dirname, '../../public/textures/manifest.json')}`
+        path: `Attempted path: ${join(__dirname, '../../../game/public/textures/manifest.json')}`
       };
     }
 };

@@ -4,7 +4,7 @@
  */
 
 import fetch from 'node-fetch';
-import { MeshyBaseClient } from './base-client.js';
+import { MeshyBaseClient } from './base-client';
 
 export interface CreateTaskParams {
   text_prompt: string;

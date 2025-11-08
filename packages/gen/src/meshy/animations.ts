@@ -5,7 +5,7 @@
  * https://docs.meshy.ai/en/api/animation-library
  */
 
-import { MeshyBaseClient } from './base-client.js';
+import { MeshyBaseClient } from './base-client';
 
 export interface AnimationTaskParams {
   rig_task_id: string;  // From rigging task

@@ -9,7 +9,7 @@ import { fileURLToPath } from 'url';
 // Note: We'll import dynamically to avoid circular dependencies
 type GenerationQualityReport = any;
 type ArchetypeQualityMetrics = any;
-import { WarpWeftAgent } from '../workflows/warp-weft-agent.js';
+import { WarpWeftAgent } from '../workflows/warp-weft-agent';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -36,7 +36,7 @@ async function regenerateAnemicArchetypes(
   console.log(`\n🔄 Regenerating ${generation}/${scale} - ${anemicArchetypes.length} anemic archetypes detected`);
   
   // Load existing data
-  const filePath = join(__dirname, '../../data/archetypes', generation, `${scale}.json`);
+  const filePath = join(__dirname, '../../../backend/data/archetypes', generation, `${scale}.json`);
   const existingData = JSON.parse(await fs.readFile(filePath, 'utf8'));
   const existingArchetypes = existingData.archetypes || [];
   
@@ -52,14 +52,14 @@ async function regenerateAnemicArchetypes(
   // Build context from completed scales
   const currentScales: { macro?: any; meso?: any } = {};
   if (scale === 'meso') {
-    const macroPath = join(__dirname, '../../data/archetypes', generation, 'macro.json');
+    const macroPath = join(__dirname, '../../../backend/data/archetypes', generation, 'macro.json');
     if (await fs.access(macroPath).then(() => true).catch(() => false)) {
       currentScales.macro = JSON.parse(await fs.readFile(macroPath, 'utf8'));
     }
   }
   if (scale === 'micro') {
-    const macroPath = join(__dirname, '../../data/archetypes', generation, 'macro.json');
-    const mesoPath = join(__dirname, '../../data/archetypes', generation, 'meso.json');
+    const macroPath = join(__dirname, '../../../backend/data/archetypes', generation, 'macro.json');
+    const mesoPath = join(__dirname, '../../../backend/data/archetypes', generation, 'meso.json');
     if (await fs.access(macroPath).then(() => true).catch(() => false)) {
       currentScales.macro = JSON.parse(await fs.readFile(macroPath, 'utf8'));
     }
@@ -89,7 +89,7 @@ async function regenerateAnemicArchetypes(
     console.log(`   ✅ Regenerated: ${newArchetypes.length} new archetypes, ${mergedArchetypes.length} total`);
     
     // Re-assess quality
-    const { assessAllGenerations } = await import('./quality-assessor.js');
+    const { assessAllGenerations } = await import('./quality-assessor');
     // We'll assess after all regenerations
     
     return {
@@ -156,9 +156,9 @@ export async function runQualityAssessmentAndRegeneration(): Promise<{
   const generations = ['gen0', 'gen1', 'gen2', 'gen3', 'gen4', 'gen5', 'gen6'];
   
   for (const gen of generations) {
-    const macroPath = join(__dirname, '../../data/archetypes', gen, 'macro.json');
-    const mesoPath = join(__dirname, '../../data/archetypes', gen, 'meso.json');
-    const microPath = join(__dirname, '../../data/archetypes', gen, 'micro.json');
+    const macroPath = join(__dirname, '../../../backend/data/archetypes', gen, 'macro.json');
+    const mesoPath = join(__dirname, '../../../backend/data/archetypes', gen, 'meso.json');
+    const microPath = join(__dirname, '../../../backend/data/archetypes', gen, 'micro.json');
     
     try {
       const macro = JSON.parse(await fs.readFile(macroPath, 'utf8'));

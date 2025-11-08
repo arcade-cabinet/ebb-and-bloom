@@ -20,6 +20,10 @@
     "evolution:validate": "pnpm test && pnpm build"
   },
   "devDependencies": {
+    "@capacitor/app": "^7.1.0",
+    "@capacitor/cli": "^7.4.4",
+    "@capacitor/core": "^7.4.4",
+    "@capacitor/haptics": "^7.0.2",
     "google-fonts-helper": "^3.7.3",
     "tsx": "^4.20.6",
     "typescript": "^5.7.2"

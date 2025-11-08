@@ -1,0 +1,844 @@
+{
+  "archetypes": [
+    {
+      "id": "macro_1",
+      "name": "Deep Vein Network",
+      "description": "A comprehensive mining system engineered to access deep iron-nickel cores, unlocking vital metallic resources previously unreachable by standard excavation methods.",
+      "parameters": {
+        "stellarMass": {
+          "min": 0.9,
+          "max": 1.2,
+          "default": 1
+        },
+        "metallicity": {
+          "min": 0.7,
+          "max": 1,
+          "default": 0.85
+        },
+        "age": {
+          "min": 2,
+          "max": 7,
+          "default": 4.5
+        },
+        "orbitalDistance": {
+          "min": 0.6,
+          "max": 2,
+          "default": 1.2
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Metal049A",
+          "Rock030"
+        ],
+        "colorPalette": [
+          "#4B4B4B",
+          "#313131",
+          "#525252",
+          "#787878",
+          "#A0A0A0"
+        ],
+        "pbrProperties": {
+          "baseColor": "#4B4B4B",
+          "roughness": 0.85,
+          "metallic": 0.95,
+          "normalStrength": 1,
+          "aoStrength": 0.7,
+          "heightScale": 0.08,
+          "emissive": "#313131"
+        },
+        "proceduralRules": "Variable node branching to simulate natural fissures and cracking."
+      },
+      "textureReferences": [
+        "Metal049A",
+        "Rock030"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.3,
+        "seedModifiers": {
+          "high-metallicity": 1.5,
+          "low-metallicity": 0.5
+        },
+        "biasDescription": "Frequently found in metal-rich stellar systems with a history of high accretion rates."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "macro_3",
+          "macro_5"
+        ],
+        "incompatibleWith": [],
+        "adjacentTo": [
+          "macro_4"
+        ],
+        "requires": [
+          "Gen1 creatures"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Extraction and fragmentation utilizing core dissolution and selective pressure release techniques.",
+        "compatibleDeconstructors": [
+          "DISASSEMBLER tools",
+          "creatures with manipulation > 0.8"
+        ],
+        "decomposesInto": [
+          "metal fragments",
+          "rock debris"
+        ],
+        "propertyUsage": {
+          "hardness": "armor potential",
+          "volume": "container potential",
+          "organic": "n/a"
+        }
+      },
+      "formation": {
+        "formationProcess": "Advanced packs strategically harness resource allocation and teamwork to initiate deep drilling and extraction.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen1 creature archetypes",
+            "Gen0 materials"
+          ],
+          "requirements": [
+            "creature manipulation > 0.9",
+            "pack size > 5"
+          ],
+          "causalChain": "Combines advanced sensory mapping with resource-intensive excavation implements."
+        },
+        "yukaGuidance": "Enable when critical metal resources are detected deep underground, and manipulation skills peak among pack members."
+      }
+    },
+    {
+      "id": "macro_2",
+      "name": "Thermal Bore Accelerator",
+      "description": "Utilizes geothermal energy to accelerate drill penetration into the carbon mantle, unlocking subterranean carbon-based resources.",
+      "parameters": {
+        "stellarMass": {
+          "min": 1,
+          "max": 1.4,
+          "default": 1.1
+        },
+        "metallicity": {
+          "min": 0.4,
+          "max": 0.9,
+          "default": 0.6
+        },
+        "age": {
+          "min": 3,
+          "max": 8,
+          "default": 5.5
+        },
+        "orbitalDistance": {
+          "min": 1,
+          "max": 3,
+          "default": 2
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Rock025",
+          "Metal050"
+        ],
+        "colorPalette": [
+          "#866143",
+          "#564334",
+          "#7C5F38",
+          "#A17A50",
+          "#492B20"
+        ],
+        "pbrProperties": {
+          "baseColor": "#866143",
+          "roughness": 0.7,
+          "metallic": 0.5,
+          "normalStrength": 1.5,
+          "aoStrength": 0.9,
+          "heightScale": 0.07,
+          "emissive": "#564334"
+        },
+        "proceduralRules": "Fractal surfaces simulate thermal stress and heat-induced coloration variations."
+      },
+      "textureReferences": [
+        "Rock025",
+        "Metal050"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.25,
+        "seedModifiers": {
+          "high-temperature": 1.2,
+          "low-temperature": 0.7
+        },
+        "biasDescription": "Common in geothermal active regions where heat diffusion is economically favorable."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "macro_6"
+        ],
+        "incompatibleWith": [],
+        "adjacentTo": [
+          "macro_4"
+        ],
+        "requires": [
+          "Gen0 geothermal materials"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Thermal dissipation followed by mechanical disassembly is required to safely deconstruct.",
+        "compatibleDeconstructors": [
+          "heat-absorbing tools",
+          "creatures with heat resistance traits"
+        ],
+        "decomposesInto": [
+          "carbon fragments",
+          "thermal cores"
+        ],
+        "propertyUsage": {
+          "hardness": "insulation potential",
+          "volume": "cavity creation",
+          "organic": "n/a"
+        }
+      },
+      "formation": {
+        "formationProcess": "Develops from geothermal hotspots with coordinated pack drilling into high carbon layers.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen0 geothermal materials",
+            "Gen1 thermally-adapted creatures"
+          ],
+          "requirements": [
+            "creature adaptation to heat",
+            "geothermal activity > 0.6"
+          ],
+          "causalChain": "Synergistic interaction of geothermal activity and carbon-rich zone utilization."
+        },
+        "yukaGuidance": "Trigger when geothermal temperature data suggests deep carbon deposits accessible with high-energy tools."
+      }
+    },
+    {
+      "id": "macro_3",
+      "name": "Aqua-Seep Extractor",
+      "description": "Designed for deep extraction of volatile compounds from subsurface water channels, retrieving essential life-supporting resources.",
+      "parameters": {
+        "stellarMass": {
+          "min": 0.8,
+          "max": 1.1,
+          "default": 0.9
+        },
+        "metallicity": {
+          "min": 0.3,
+          "max": 0.8,
+          "default": 0.5
+        },
+        "age": {
+          "min": 1,
+          "max": 5,
+          "default": 3
+        },
+        "orbitalDistance": {
+          "min": 0.7,
+          "max": 2.5,
+          "default": 1.5
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Metal049A",
+          "Wood051"
+        ],
+        "colorPalette": [
+          "#2F729C",
+          "#1D4C73",
+          "#4196B4",
+          "#6CB6D8",
+          "#145A74"
+        ],
+        "pbrProperties": {
+          "baseColor": "#2F729C",
+          "roughness": 0.6,
+          "metallic": 0.4,
+          "normalStrength": 1.2,
+          "aoStrength": 0.7,
+          "heightScale": 0.03,
+          "emissive": "#1D4C73"
+        },
+        "proceduralRules": "Varying reflective patterns to simulate surface refractions and wetness."
+      },
+      "textureReferences": [
+        "Metal049A",
+        "Wood051"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.35,
+        "seedModifiers": {
+          "liquid-water-present": 1.7
+        },
+        "biasDescription": "More likely near subsurface water sources where liquid accumulation is significant."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "macro_5",
+          "macro_7"
+        ],
+        "incompatibleWith": [],
+        "adjacentTo": [
+          "macro_2"
+        ],
+        "requires": [
+          "liquid water presence"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Sequential evaporation and extraction cycle separation followed by dematerialization.",
+        "compatibleDeconstructors": [
+          "aqua tools with adaptive coolant systems"
+        ],
+        "decomposesInto": [
+          "volatile liquids",
+          "gas emissions"
+        ],
+        "propertyUsage": {
+          "hardness": "n/a",
+          "volume": "storage potential",
+          "organic": "water purification potential"
+        }
+      },
+      "formation": {
+        "formationProcess": "Leveraging nearby aqueous networks, packs engineer sophisticated water channels to facilitate extraction.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen1 aquatic navigators",
+            "Gen0 volatile-rich layers"
+          ],
+          "requirements": [
+            "proficiency in liquid manipulation",
+            "waterway proximity > 0.8"
+          ],
+          "causalChain": "Emerging from constant contact with subsurface water channels."
+        },
+        "yukaGuidance": "Activate when exploratory drilled processes show significant volatile compound presence with potential for extraction."
+      }
+    },
+    {
+      "id": "macro_4",
+      "name": "Chromatic Forge Array",
+      "description": "An expansive system capable of synthesizing complex materials by fusing small metal particles utilizing fusion-powered processes.",
+      "parameters": {
+        "stellarMass": {
+          "min": 1.2,
+          "max": 1.5,
+          "default": 1.35
+        },
+        "metallicity": {
+          "min": 0.5,
+          "max": 1,
+          "default": 0.75
+        },
+        "age": {
+          "min": 2.5,
+          "max": 7.5,
+          "default": 5
+        },
+        "orbitalDistance": {
+          "min": 1,
+          "max": 3,
+          "default": 1.5
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Metal050",
+          "Rock025"
+        ],
+        "colorPalette": [
+          "#D3B782",
+          "#9B7A3C",
+          "#593A1B",
+          "#A67C52",
+          "#744E25",
+          "#5C3C20"
+        ],
+        "pbrProperties": {
+          "baseColor": "#D3B782",
+          "roughness": 0.4,
+          "metallic": 0.85,
+          "normalStrength": 1.3,
+          "aoStrength": 0.8,
+          "heightScale": 0.06,
+          "emissive": "#9B7A3C"
+        },
+        "proceduralRules": "Synthetic augmented designs with metallic sheen and mineral overlay to signify harmonic metal syntheses."
+      },
+      "textureReferences": [
+        "Metal050",
+        "Rock025"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.22,
+        "seedModifiers": {
+          "stellar-activity-high": 1.3
+        },
+        "biasDescription": "Favors proximity to stellar regions with high fusion activity and heavy metal abundance."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "macro_2"
+        ],
+        "incompatibleWith": [],
+        "adjacentTo": [
+          "macro_1",
+          "macro_2"
+        ],
+        "requires": [
+          "Gen1 processing skills"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Dismantling of fused materials into individuated particles; systematic demolecularization necessary.",
+        "compatibleDeconstructors": [
+          "ENERGY tools",
+          "creatures with fusion capabilities"
+        ],
+        "decomposesInto": [
+          "synthesized metals",
+          "metallic dust"
+        ],
+        "propertyUsage": {
+          "hardness": "structural reinforcement",
+          "volume": "compressed retention",
+          "organic": "n/a"
+        }
+      },
+      "formation": {
+        "formationProcess": "Arising from innovative experimentation with fusion conducted by skilled craftsmen and theoretical pack researchers.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen0 high-metallicity environments",
+            "Gen1 metallurgical proficiency"
+          ],
+          "requirements": [
+            "fusion technology use",
+            "metalworking skills"
+          ],
+          "causalChain": "Driven by creative and meticulous material coupling efforts aligning around high-energy environments."
+        },
+        "yukaGuidance": "Initiate within enclaves emphasizing metallurgical skill, when synthesis of new materials becomes strategical necessity."
+      }
+    },
+    {
+      "id": "macro_5",
+      "name": "Skybridge Logistical Platform",
+      "description": "Infrastructure utilizing interconnected pathways and platforms to unlock tough-to-access cliffside ores and enhance vertical mobility.",
+      "parameters": {
+        "stellarMass": {
+          "min": 0.8,
+          "max": 1.2,
+          "default": 1
+        },
+        "metallicity": {
+          "min": 0.2,
+          "max": 0.7,
+          "default": 0.4
+        },
+        "age": {
+          "min": 4,
+          "max": 9,
+          "default": 6.5
+        },
+        "orbitalDistance": {
+          "min": 1.3,
+          "max": 3.5,
+          "default": 2.4
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Wood094",
+          "Metal049A"
+        ],
+        "colorPalette": [
+          "#8D6F4E",
+          "#5E4731",
+          "#B7946E",
+          "#9C8360",
+          "#C9A57E",
+          "#D6B585"
+        ],
+        "pbrProperties": {
+          "baseColor": "#8D6F4E",
+          "roughness": 0.5,
+          "metallic": 0.3,
+          "normalStrength": 1,
+          "aoStrength": 0.7,
+          "heightScale": 0.05,
+          "emissive": "#5E4731"
+        },
+        "proceduralRules": "Natural wood textures integrated with polished metal keystones, promoting aesthetic functionality."
+      },
+      "textureReferences": [
+        "Wood094",
+        "Metal049A"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.28,
+        "seedModifiers": {
+          "high-altitude-ore": 1.4,
+          "flat-terrain": 0.6
+        },
+        "biasDescription": "Typically constructed in regions rich in elevated material deposits requiring complex access."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "macro_6",
+          "macro_8"
+        ],
+        "incompatibleWith": [],
+        "adjacentTo": [
+          "macro_3"
+        ],
+        "requires": [
+          "elevation-focused projects"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Disassembly through focus technique on load-bearing segments; controlled material repurpose advised.",
+        "compatibleDeconstructors": [
+          "mechanical tools and devices",
+          "height-manipulating creatures"
+        ],
+        "decomposesInto": [
+          "lumber sections",
+          "metal strapping"
+        ],
+        "propertyUsage": {
+          "hardness": "support beam safeguarding",
+          "volume": "spatial partitioning",
+          "organic": "n/a"
+        }
+      },
+      "formation": {
+        "formationProcess": "Commissions by specialized task-force units coordinating construction across treacherous terrain.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen2 specialized tribes",
+            "Gen1 net-building skills"
+          ],
+          "requirements": [
+            "creature expertise in structure assembly",
+            "strategic platform locations"
+          ],
+          "causalChain": "Developed as an emergent response to systemic elevation needs and refined structural capabilities."
+        },
+        "yukaGuidance": "Introduce platforms when vertical resource alignment emphasizes cliff-mining experiences requiring cooperative scaling solutions."
+      }
+    },
+    {
+      "id": "macro_6",
+      "name": "Lunar Resonance Facility",
+      "description": "Advanced harvesting of lunar elements by synchronizing orbital alignments and employing resonant frequency technology.",
+      "parameters": {
+        "stellarMass": {
+          "min": 0.9,
+          "max": 1.3,
+          "default": 1.1
+        },
+        "metallicity": {
+          "min": 0.4,
+          "max": 0.9,
+          "default": 0.65
+        },
+        "age": {
+          "min": 2.5,
+          "max": 6.5,
+          "default": 4
+        },
+        "orbitalDistance": {
+          "min": 2,
+          "max": 3.5,
+          "default": 2.7
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Rock030",
+          "Metal050"
+        ],
+        "colorPalette": [
+          "#21374A",
+          "#587C91",
+          "#2C4F61",
+          "#4B7D8A",
+          "#1E566E"
+        ],
+        "pbrProperties": {
+          "baseColor": "#21374A",
+          "roughness": 0.65,
+          "metallic": 0.2,
+          "normalStrength": 1.4,
+          "aoStrength": 0.9,
+          "heightScale": 0.07,
+          "emissive": "#587C91"
+        },
+        "proceduralRules": "Reflective luminescent pads illuminate surface when engaging orbital extraction protocols."
+      },
+      "textureReferences": [
+        "Rock030",
+        "Metal050"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.24,
+        "seedModifiers": {
+          "orbital-periodicity": 1.5
+        },
+        "biasDescription": "Emergent in environments with periodic orbital resonances enabling unique resource extraction techniques."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "macro_4"
+        ],
+        "incompatibleWith": [],
+        "adjacentTo": [
+          "macro_7"
+        ],
+        "requires": [
+          "Gen0 lunar minerals"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Deconstruction advised during low-orbit resonance to ensure minimal material perturbation and safe component retrieval.",
+        "compatibleDeconstructors": [
+          "harmonic frequency tools",
+          "orbital pathway engineers"
+        ],
+        "decomposesInto": [
+          "moon rocks",
+          "lunar components"
+        ],
+        "propertyUsage": {
+          "hardness": "reflective apparatus creation",
+          "volume": "orbital setup flexibility",
+          "organic": "n/a"
+        }
+      },
+      "formation": {
+        "formationProcess": "Synergizes around orbital precision technology, built by harmonic-sensitive entities converging forces regularly throughout celestial cycles.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen1 orbital specialists",
+            "Gen0 lunar deposits"
+          ],
+          "requirements": [
+            "resonance proficiency > 0.5",
+            "internal gravitational calibration"
+          ],
+          "causalChain": "Develops alongside celestial navigation skills as synchronized lunar events reveal new elemental resources."
+        },
+        "yukaGuidance": "Engage during peak resonance with celestial bodies aligned, maximizing return on elemental harvesting from orbital positions."
+      }
+    },
+    {
+      "id": "macro_7",
+      "name": "Stellar Fusion Hub",
+      "description": "A centralized location where stellar materials are synthesized into advanced components, utilizing plasma-based heating and elemental fusion processes.",
+      "parameters": {
+        "stellarMass": {
+          "min": 1.1,
+          "max": 1.5,
+          "default": 1.3
+        },
+        "metallicity": {
+          "min": 0.5,
+          "max": 1,
+          "default": 0.8
+        },
+        "age": {
+          "min": 4,
+          "max": 10,
+          "default": 6
+        },
+        "orbitalDistance": {
+          "min": 1.5,
+          "max": 4,
+          "default": 2.5
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Metal049A",
+          "Rock025"
+        ],
+        "colorPalette": [
+          "#FF7F00",
+          "#FF4000",
+          "#FF9F40",
+          "#CC3300",
+          "#FF5500"
+        ],
+        "pbrProperties": {
+          "baseColor": "#FF7F00",
+          "roughness": 0.3,
+          "metallic": 0.9,
+          "normalStrength": 1.6,
+          "aoStrength": 1,
+          "heightScale": 0.06,
+          "emissive": "#FF4000"
+        },
+        "proceduralRules": "Generates fusion colors across compound surfaces emitting radiant volcanic-like glow during synthesis."
+      },
+      "textureReferences": [
+        "Metal049A",
+        "Rock025"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.26,
+        "seedModifiers": {
+          "high-stellar-activity": 1.6
+        },
+        "biasDescription": "Optimal in proximity to high energy stellar release events, where fusion reactions readily occur."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "macro_8"
+        ],
+        "incompatibleWith": [],
+        "adjacentTo": [
+          "macro_6"
+        ],
+        "requires": [
+          "fusion technology understanding"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Controlled disbandment utilizing safe stellar energy siphoning mechanisms and material vacuum techniques.",
+        "compatibleDeconstructors": [
+          "plasma-resistant devices",
+          "starship components"
+        ],
+        "decomposesInto": [
+          "fusion elements",
+          "reactive cores"
+        ],
+        "propertyUsage": {
+          "hardness": "heat protection layers",
+          "volume": "mass accumulation",
+          "organic": "n/a"
+        }
+      },
+      "formation": {
+        "formationProcess": "Requires collaborative tiered expertise among alliance members integrating fusion theory and material kinetics.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen1 plasma manipulators",
+            "Gen0 star formation remnants"
+          ],
+          "requirements": [
+            "energy proficiency > 0.7",
+            "plasma conductivity sensors"
+          ],
+          "causalChain": "Intricately woven circuits developed by collective hubs leveraging advanced comprehension of fusion methodologies tied to stellar activity."
+        },
+        "yukaGuidance": "Activate upon gathering of skilled plasma-manipulating units with adequate safety protocols for synthesizing high-risk materials."
+      }
+    },
+    {
+      "id": "macro_8",
+      "name": "Gem Vein Expander",
+      "description": "A network designed for the systematic expansion and controlled exploitation of gem-rich veins extending deep below the surface.",
+      "parameters": {
+        "stellarMass": {
+          "min": 0.7,
+          "max": 1.3,
+          "default": 0.9
+        },
+        "metallicity": {
+          "min": 0.6,
+          "max": 0.9,
+          "default": 0.75
+        },
+        "age": {
+          "min": 2,
+          "max": 6,
+          "default": 4
+        },
+        "orbitalDistance": {
+          "min": 0.5,
+          "max": 2,
+          "default": 1
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Rock025",
+          "Metal050"
+        ],
+        "colorPalette": [
+          "#B92323",
+          "#FF4040",
+          "#CF3232",
+          "#A51A1A",
+          "#C85757"
+        ],
+        "pbrProperties": {
+          "baseColor": "#B92323",
+          "roughness": 0.8,
+          "metallic": 0.4,
+          "normalStrength": 1.2,
+          "aoStrength": 0.7,
+          "heightScale": 0.05,
+          "emissive": "#FF4040"
+        },
+        "proceduralRules": "Vein conduits show crystalline fractal formations mimicking geometric repetition of gems."
+      },
+      "textureReferences": [
+        "Rock025",
+        "Metal050"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.32,
+        "seedModifiers": {
+          "gem-rich-environments": 1.8
+        },
+        "biasDescription": "Highly prevalent in areas with significant subsurface gemstone deposits."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "macro_4"
+        ],
+        "incompatibleWith": [],
+        "adjacentTo": [
+          "macro_3"
+        ],
+        "requires": [
+          "Gem excavation expertise"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Gemstone retrieval via precision shearing and mineral siftout techniques.",
+        "compatibleDeconstructors": [
+          "gem-cutting implements",
+          "spatial analysis drones"
+        ],
+        "decomposesInto": [
+          "crystalline shards",
+          "gem fragments"
+        ],
+        "propertyUsage": {
+          "hardness": "jewelry settings",
+          "volume": "gem mold constructions",
+          "organic": "n/a"
+        }
+      },
+      "formation": {
+        "formationProcess": "Targeted efforts center on extending subterranean mining operations into recognized gem clusters, requiring precise navigation within geological layers.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen1 geologists",
+            "Gen0 mineral wealth expanse"
+          ],
+          "requirements": [
+            "accuracy in gemstone identification",
+            "mineral mapping proficiency"
+          ],
+          "causalChain": "Methodical mapping of tectonic splitplanes allows for incremental valuable mineral expansion."
+        },
+        "yukaGuidance": "Deploy for strategic partnerships with gem-identifying entities when bright gemstone deposits are revealed and economically beneficial."
+      }
+    }
+  ]
+}

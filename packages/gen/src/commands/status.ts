@@ -10,12 +10,12 @@ export async function executeStatusCommand(): Promise<void> {
   
   // Check archetype pools
   try {
-    const gens = await fs.readdir('data/archetypes/');
+    const gens = await fs.readdir('../../backend/data/archetypes/');
     const genDirs = gens.filter(g => g.startsWith('gen'));
     console.log(`✅ Archetype pools: ${genDirs.length} generations ready`);
     
     for (const gen of genDirs.slice(0, 3)) { // Show first 3
-      const files = await fs.readdir(`data/archetypes/${gen}/`);
+      const files = await fs.readdir(`../../backend/data/archetypes/${gen}/`);
       console.log(`   ${gen}: ${files.length} scale files`);
     }
     
@@ -25,7 +25,7 @@ export async function executeStatusCommand(): Promise<void> {
   
   // Check texture catalog  
   try {
-    const manifest = JSON.parse(await fs.readFile('./public/textures/manifest.json', 'utf8'));
+    const manifest = JSON.parse(await fs.readFile('../../game/public/textures/manifest.json', 'utf8'));
     console.log(`✅ Texture catalog: ${manifest.totalTextures} textures across ${Object.keys(manifest.categories).length} categories`);
   } catch (error) {
     console.log('❌ Texture catalog: Missing or invalid');

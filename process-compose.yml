@@ -1,56 +1,47 @@
 # Process Compose Configuration
-# Run multiple development processes in parallel
+# Unified game package - single dev server
+# 
+# To access from your phone:
+# 1. Find your computer's IP: ifconfig | grep "inet " | grep -v 127.0.0.1
+# 2. Access game: http://<your-ip>:5173
+# 
+# Make sure your phone is on the same WiFi network!
 
 version: '0.5'
 
 processes:
-  # Backend API Server
-  dev-backend:
-    command: "cd packages/backend && pnpm dev"
+  # Unified Game Package (Frontend + Backend in one)
+  dev-game:
+    command: "cd packages/game && pnpm dev --host"
     working_dir: "."
     restart: "on-failure"
-    depends_on:
-      - typecheck-backend
-
-  # Frontend Dev Server
-  dev-frontend:
-    command: "cd packages/simulation && pnpm dev"
-    working_dir: "."
-    restart: "on-failure"
-    depends_on:
-      - typecheck-frontend
+    readiness_probe:
+      http:
+        path: /
+        port: 5173
+        initial_delay_seconds: 5
+        period_seconds: 2
+        timeout_seconds: 3
 
   # Type Checking
-  typecheck-backend:
-    command: "cd packages/backend && pnpm exec tsc --noEmit --watch"
-    working_dir: "."
-    restart: "on-failure"
-
-  typecheck-frontend:
-    command: "cd packages/simulation && pnpm exec tsc --noEmit --watch"
+  typecheck-game:
+    command: "cd packages/game && pnpm exec tsc --noEmit --watch"
     working_dir: "."
     restart: "on-failure"
 
   # Test Watcher
   test-watch:
-    command: "cd packages/backend && pnpm test:watch"
+    command: "cd packages/game && pnpm test:watch"
     working_dir: "."
     restart: "on-failure"
 
-  # E2E Tests (Backend)
-  test-e2e-backend:
-    command: "cd packages/backend && pnpm test:e2e"
-    working_dir: "."
-    restart: "never"
-
-  # E2E Tests (Frontend - Playwright)
-  test-e2e-frontend:
-    command: "cd packages/simulation && pnpm test:e2e"
+  # E2E Tests (Playwright)
+  test-e2e:
+    command: "cd packages/game && pnpm test:e2e"
     working_dir: "."
     restart: "never"
     depends_on:
-      - dev-backend
-      - dev-frontend
+      - dev-game
 
   # Gen Pipeline
   gen-archetypes:

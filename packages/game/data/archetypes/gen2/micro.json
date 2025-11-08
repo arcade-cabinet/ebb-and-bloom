@@ -1,0 +1,836 @@
+{
+  "archetypes": [
+    {
+      "id": "alpha_coordinator",
+      "name": "Alpha Coordinator",
+      "description": "An individual who takes on the leadership role within the pack, utilizing advanced problem-solving skills and adaptive communication to steer the pack's direction effectively.",
+      "parameters": {
+        "leadershipPresence": {
+          "min": 0.7,
+          "max": 1,
+          "default": 0.9
+        },
+        "communicationComplexity": {
+          "min": 0.8,
+          "max": 1,
+          "default": 0.9
+        },
+        "strategicVision": {
+          "min": 0.6,
+          "max": 1,
+          "default": 0.8
+        },
+        "empathy": {
+          "min": 0.5,
+          "max": 0.9,
+          "default": 0.7
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Leather011",
+          "Fabric023"
+        ],
+        "colorPalette": [
+          "#3A3A3A",
+          "#D1BEB0",
+          "#F2E8C9",
+          "#88624F",
+          "#362C28"
+        ],
+        "pbrProperties": {
+          "baseColor": "#3A3A3A",
+          "roughness": 0.5,
+          "metallic": 0,
+          "normalStrength": 1,
+          "aoStrength": 0.9,
+          "heightScale": 0.05,
+          "emissive": "#D1BEB0"
+        },
+        "proceduralRules": "Variations in leadership markings are more pronounced, with accents highlighting dominance."
+      },
+      "textureReferences": [
+        "Leather011",
+        "Fabric023"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.6,
+        "seedModifiers": {
+          "high-cognitive": 1.2
+        },
+        "biasDescription": "More likely in packs with high cognitive demands."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "skill_specialists",
+          "age_hierarchy"
+        ],
+        "incompatibleWith": [],
+        "adjacentTo": [
+          "meritocracy_ring",
+          "egalitarian_swarm"
+        ],
+        "requires": []
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Hierarchical collapse into smaller units or supportive roles.",
+        "compatibleDeconstructors": [
+          "creatures with high cunning",
+          "environmental shifts"
+        ],
+        "decomposesInto": [
+          "support roles",
+          "sub-leaders"
+        ],
+        "propertyUsage": {
+          "hardness": "armor potential",
+          "volume": "container potential",
+          "organic": "food potential"
+        }
+      },
+      "formation": {
+        "formationProcess": "Emerge through social dynamics and internal challenges.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "skill_specialists",
+            "high intelligence creatures"
+          ],
+          "requirements": [
+            "strong social bonds",
+            "pack size > 5"
+          ],
+          "causalChain": "Emerges as internal complexities necessitate a central figure."
+        },
+        "yukaGuidance": "Identify and promote individuals who demonstrate leadership qualities in dynamic environments."
+      }
+    },
+    {
+      "id": "resource_allocator",
+      "name": "Resource Allocator",
+      "description": "An individual responsible for the management and distribution of resources within the pack, ensuring equitable access and strategic reserves.",
+      "parameters": {
+        "resourceManagement": {
+          "min": 0.6,
+          "max": 1,
+          "default": 0.8
+        },
+        "communicationComplexity": {
+          "min": 0.6,
+          "max": 0.9,
+          "default": 0.75
+        },
+        "observationSkills": {
+          "min": 0.5,
+          "max": 0.9,
+          "default": 0.7
+        },
+        "fairness": {
+          "min": 0.7,
+          "max": 1,
+          "default": 0.85
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Fabric019",
+          "Leather012"
+        ],
+        "colorPalette": [
+          "#5B8B6C",
+          "#99C5B5",
+          "#E6A57E",
+          "#846747",
+          "#B9CBB6"
+        ],
+        "pbrProperties": {
+          "baseColor": "#5B8B6C",
+          "roughness": 0.6,
+          "metallic": 0,
+          "normalStrength": 1,
+          "aoStrength": 0.8,
+          "heightScale": 0.04,
+          "emissive": "#99C5B5"
+        },
+        "proceduralRules": "Subtle variations in texture indicate resource-specific roles."
+      },
+      "textureReferences": [
+        "Fabric019",
+        "Leather012"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.5,
+        "seedModifiers": {
+          "resource-abundant": 1.3
+        },
+        "biasDescription": "More likely in environments with abundant, fluctuating resources."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "egalitarian_swarm",
+          "meritocracy_ring"
+        ],
+        "incompatibleWith": [],
+        "adjacentTo": [
+          "kinship_tribe",
+          "skill_specialists"
+        ],
+        "requires": []
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Transfers responsibility and knowledge to identified successors.",
+        "compatibleDeconstructors": [
+          "demographic transitions",
+          "resource constraints"
+        ],
+        "decomposesInto": [
+          "junior allocators",
+          "resource maps"
+        ],
+        "propertyUsage": {
+          "hardness": "storage potential",
+          "volume": "spatial analysis",
+          "organic": "growth potential"
+        }
+      },
+      "formation": {
+        "formationProcess": "Natural evolution in resource management as pack meets diverse needs.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "herbal_forager",
+            "fiber_forager"
+          ],
+          "requirements": [
+            "resource fluctuation",
+            "pack size > 5"
+          ],
+          "causalChain": "Demand for resource management leads to specialized role formation."
+        },
+        "yukaGuidance": "Identify members exhibiting resource mindfulness and organizational ability."
+      }
+    },
+    {
+      "id": "empathy_signalers",
+      "name": "Empathy Signalers",
+      "description": "Individuals engaging in communicating emotional and cognitive states between pack members, enhancing coordination and cohesion.",
+      "parameters": {
+        "empathy": {
+          "min": 0.8,
+          "max": 1,
+          "default": 0.9
+        },
+        "communicationComplexity": {
+          "min": 0.7,
+          "max": 1,
+          "default": 0.85
+        },
+        "sensitivity": {
+          "min": 0.6,
+          "max": 0.9,
+          "default": 0.75
+        },
+        "synchronization": {
+          "min": 0.5,
+          "max": 0.8,
+          "default": 0.65
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Fabric023",
+          "Leather011"
+        ],
+        "colorPalette": [
+          "#A69076",
+          "#FFDDC1",
+          "#FBD4B4",
+          "#F7BFA7",
+          "#CE796B"
+        ],
+        "pbrProperties": {
+          "baseColor": "#A69076",
+          "roughness": 0.7,
+          "metallic": 0,
+          "normalStrength": 0.8,
+          "aoStrength": 0.6,
+          "heightScale": 0.03,
+          "emissive": "#FBD4B4"
+        },
+        "proceduralRules": "Texture blends and color gradients reflect emotional states."
+      },
+      "textureReferences": [
+        "Fabric023",
+        "Leather011"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.4,
+        "seedModifiers": {
+          "socially-complex": 1.4
+        },
+        "biasDescription": "Common in packs requiring non-verbal coordination."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "age_hierarchy",
+          "egalitarian_swarm"
+        ],
+        "incompatibleWith": [],
+        "adjacentTo": [
+          "alpha_coordinator",
+          "resource_allocator"
+        ],
+        "requires": []
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Roles integrate into broader communication network.",
+        "compatibleDeconstructors": [
+          "behavioral simplification",
+          "environmental stability"
+        ],
+        "decomposesInto": [
+          "basic communicators",
+          "emotional nodes"
+        ],
+        "propertyUsage": {
+          "hardness": "protective layers",
+          "volume": "acoustic modulation",
+          "organic": "biomimetic potential"
+        }
+      },
+      "formation": {
+        "formationProcess": "Evolves as packs increase in complexity, necessitating deeper social bonds.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "sand_sculptor",
+            "fiber_forager"
+          ],
+          "requirements": [
+            "high social intelligence",
+            "inter-pack communication"
+          ],
+          "causalChain": "Social dynamics and environmental challenges foster this specialization."
+        },
+        "yukaGuidance": "Promote individuals synthesizing and synchronizing emotional data."
+      }
+    },
+    {
+      "id": "tactical_hunter",
+      "name": "Tactical Hunter",
+      "description": "Individuals specialized in strategic prey handling and hunting coordination, using keen senses and adaptive tactics.",
+      "parameters": {
+        "predatorySkills": {
+          "min": 0.7,
+          "max": 1,
+          "default": 0.85
+        },
+        "stealth": {
+          "min": 0.6,
+          "max": 0.9,
+          "default": 0.75
+        },
+        "teamCoordination": {
+          "min": 0.5,
+          "max": 0.8,
+          "default": 0.7
+        },
+        "adaptiveThinking": {
+          "min": 0.5,
+          "max": 0.9,
+          "default": 0.7
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Leather012",
+          "Fabric019"
+        ],
+        "colorPalette": [
+          "#6B4C3A",
+          "#A07E5E",
+          "#D9C8B2",
+          "#402218",
+          "#7B6D62"
+        ],
+        "pbrProperties": {
+          "baseColor": "#6B4C3A",
+          "roughness": 0.8,
+          "metallic": 0,
+          "normalStrength": 1.3,
+          "aoStrength": 0.85,
+          "heightScale": 0.06,
+          "emissive": "#A07E5E"
+        },
+        "proceduralRules": "Camouflage variations align with environmental textures for optimum concealment."
+      },
+      "textureReferences": [
+        "Leather012",
+        "Fabric019"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.55,
+        "seedModifiers": {
+          "high-predation": 1.2
+        },
+        "biasDescription": "Favored in environments with prey specialization."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "skill_specialists",
+          "age_hierarchy"
+        ],
+        "incompatibleWith": [],
+        "adjacentTo": [
+          "empathy_signalers",
+          "resource_allocator"
+        ],
+        "requires": []
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Disperses predation roles across broader pack framework.",
+        "compatibleDeconstructors": [
+          "environmental shifts",
+          "prey scarcity"
+        ],
+        "decomposesInto": [
+          "trackers",
+          "scouts"
+        ],
+        "propertyUsage": {
+          "hardness": "weaponry",
+          "volume": "containment",
+          "organic": "nutritional release"
+        }
+      },
+      "formation": {
+        "formationProcess": "Formed by environmental pressures demanding advanced hunting capabilities.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "pulse_predator",
+            "chromatic_cartographer"
+          ],
+          "requirements": [
+            "adaptive environment",
+            "complex prey behavior"
+          ],
+          "causalChain": "Requires coordination and adaptability, driving tactical specialization."
+        },
+        "yukaGuidance": "Enable members with strong hunting instincts and tactical awareness."
+      }
+    },
+    {
+      "id": "herbal_healer",
+      "name": "Herbal Healer",
+      "description": "Individuals specializing in the identification and use of plants for medicinal purposes, supporting overall pack health.",
+      "parameters": {
+        "botanicalKnowledge": {
+          "min": 0.7,
+          "max": 1,
+          "default": 0.85
+        },
+        "healingAbility": {
+          "min": 0.6,
+          "max": 1,
+          "default": 0.8
+        },
+        "communicationComplexity": {
+          "min": 0.5,
+          "max": 0.8,
+          "default": 0.7
+        },
+        "agility": {
+          "min": 0.5,
+          "max": 0.8,
+          "default": 0.65
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Leather011",
+          "Fabric023"
+        ],
+        "colorPalette": [
+          "#A3B18A",
+          "#DAD7CD",
+          "#F6F0E6",
+          "#C2C5BB",
+          "#828C74"
+        ],
+        "pbrProperties": {
+          "baseColor": "#A3B18A",
+          "roughness": 0.9,
+          "metallic": 0,
+          "normalStrength": 0.7,
+          "aoStrength": 0.8,
+          "heightScale": 0.04,
+          "emissive": "#DAD7CD"
+        },
+        "proceduralRules": "Herb outlines and medicinal patterns vary with regional plant diversity."
+      },
+      "textureReferences": [
+        "Leather011",
+        "Fabric023"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.5,
+        "seedModifiers": {
+          "plant-rich": 1.3
+        },
+        "biasDescription": "Common in plant-abundant areas."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "egalitarian_swarm",
+          "skill_specialists"
+        ],
+        "incompatibleWith": [],
+        "adjacentTo": [
+          "resource_allocator",
+          "empathy_signalers"
+        ],
+        "requires": []
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Herbal roles transition into general wellness and nurturing roles.",
+        "compatibleDeconstructors": [
+          "disease spread",
+          "environmental symbiosis"
+        ],
+        "decomposesInto": [
+          "nutrient gatherers",
+          "caregivers"
+        ],
+        "propertyUsage": {
+          "hardness": "healing balms",
+          "volume": "medicinal reservoirs",
+          "organic": "vital growth"
+        }
+      },
+      "formation": {
+        "formationProcess": "Emerges as pack encounters diverse flora requiring medicinal expertise.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "herbal_forager",
+            "chromatic_cartographer"
+          ],
+          "requirements": [
+            "botanical diversity",
+            "health challenges"
+          ],
+          "causalChain": "Environmental health demands medicinal knowledge, fostering healer roles."
+        },
+        "yukaGuidance": "Foster individuals capable of recognizing and utilizing botanical resources."
+      }
+    },
+    {
+      "id": "defensive_guardian",
+      "name": "Defensive Guardian",
+      "description": "Individuals focused on protecting pack territory and ensuring safety from external threats, using physical prowess and strategic barriers.",
+      "parameters": {
+        "strength": {
+          "min": 0.8,
+          "max": 1,
+          "default": 0.9
+        },
+        "awareness": {
+          "min": 0.6,
+          "max": 0.9,
+          "default": 0.75
+        },
+        "territorialInstinct": {
+          "min": 0.7,
+          "max": 1,
+          "default": 0.85
+        },
+        "decisionMaking": {
+          "min": 0.5,
+          "max": 0.8,
+          "default": 0.65
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Leather012",
+          "Fabric023"
+        ],
+        "colorPalette": [
+          "#506266",
+          "#A7BBC7",
+          "#C3D3E1",
+          "#798A99",
+          "#3D4C54"
+        ],
+        "pbrProperties": {
+          "baseColor": "#506266",
+          "roughness": 0.9,
+          "metallic": 0.1,
+          "normalStrength": 1.4,
+          "aoStrength": 0.9,
+          "heightScale": 0.07,
+          "emissive": "#A7BBC7"
+        },
+        "proceduralRules": "Defensive markings emphasize deterrence through illusionary displays."
+      },
+      "textureReferences": [
+        "Leather012",
+        "Fabric023"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.6,
+        "seedModifiers": {
+          "high-confrontation": 1.4
+        },
+        "biasDescription": "Presence is prioritized in contested territories."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "kinship_tribe",
+          "meritocracy_ring"
+        ],
+        "incompatibleWith": [],
+        "adjacentTo": [
+          "tactical_hunter",
+          "resource_allocator"
+        ],
+        "requires": []
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Defense roles amalgamate into adaptive security systems.",
+        "compatibleDeconstructors": [
+          "peaceful transitions",
+          "resource stability"
+        ],
+        "decomposesInto": [
+          "watchers",
+          "patrollers"
+        ],
+        "propertyUsage": {
+          "hardness": "shield reinforcement",
+          "volume": "barrier construction",
+          "organic": "armor enhancement"
+        }
+      },
+      "formation": {
+        "formationProcess": "Forms as a response to ongoing threats, solidifying pack protection roles.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "pulse_predator",
+            "silk_weaver"
+          ],
+          "requirements": [
+            "territorial threats",
+            "resource vulnerability"
+          ],
+          "causalChain": "Need to defend resources and territory solidifies this role."
+        },
+        "yukaGuidance": "Support individuals with high strength and vigilance for defense tasks."
+      }
+    },
+    {
+      "id": "exploratory_tracker",
+      "name": "Exploratory Tracker",
+      "description": "Individuals devoted to exploring new terrains and gathering information about unfamiliar territories, paving the way for pack expansion.",
+      "parameters": {
+        "explorationSkills": {
+          "min": 0.7,
+          "max": 1,
+          "default": 0.85
+        },
+        "navigation": {
+          "min": 0.6,
+          "max": 0.9,
+          "default": 0.75
+        },
+        "resourceDiscovery": {
+          "min": 0.6,
+          "max": 0.9,
+          "default": 0.75
+        },
+        "endurance": {
+          "min": 0.5,
+          "max": 0.8,
+          "default": 0.7
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Leather011",
+          "Fabric023"
+        ],
+        "colorPalette": [
+          "#2E3A44",
+          "#687D8B",
+          "#8FA6B8",
+          "#B1C3D0",
+          "#405C67"
+        ],
+        "pbrProperties": {
+          "baseColor": "#2E3A44",
+          "roughness": 0.7,
+          "metallic": 0,
+          "normalStrength": 1.1,
+          "aoStrength": 0.8,
+          "heightScale": 0.05,
+          "emissive": "#8FA6B8"
+        },
+        "proceduralRules": "Explorer patterns mimic movement shadows and geographical textures."
+      },
+      "textureReferences": [
+        "Leather011",
+        "Fabric023"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.5,
+        "seedModifiers": {
+          "unexplored-terrain": 1.5
+        },
+        "biasDescription": "Critical in unexplored or shifting landscapes."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "egalitarian_swarm",
+          "kinship_tribe"
+        ],
+        "incompatibleWith": [],
+        "adjacentTo": [
+          "alpha_coordinator",
+          "resource_allocator"
+        ],
+        "requires": []
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Dissolution into scouts and educators, spreading gathered knowledge.",
+        "compatibleDeconstructors": [
+          "stabilized regions",
+          "knowledge diffusion"
+        ],
+        "decomposesInto": [
+          "scouts",
+          "information networks"
+        ],
+        "propertyUsage": {
+          "hardness": "exploratory tools",
+          "volume": "navigation aids",
+          "organic": "growth enhancers"
+        }
+      },
+      "formation": {
+        "formationProcess": "Materializes from necessity to harness unknown regions for pack benefit.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "chromatic_cartographer",
+            "fiber_forager"
+          ],
+          "requirements": [
+            "unexplored territories",
+            "resource expansions"
+          ],
+          "causalChain": "Pack expansion and resource quests trigger this formation."
+        },
+        "yukaGuidance": "Encourage members with endurance and curiosity for exploration tasks."
+      }
+    },
+    {
+      "id": "conflict_mediator",
+      "name": "Conflict Mediator",
+      "description": "Individuals skilled in resolving disputes within the pack, aiding in maintaining harmony and cooperative functionality.",
+      "parameters": {
+        "mediationSkills": {
+          "min": 0.7,
+          "max": 1,
+          "default": 0.85
+        },
+        "emotionalIntelligence": {
+          "min": 0.6,
+          "max": 1,
+          "default": 0.8
+        },
+        "communicationComplexity": {
+          "min": 0.5,
+          "max": 0.9,
+          "default": 0.75
+        },
+        "persuasion": {
+          "min": 0.5,
+          "max": 0.9,
+          "default": 0.7
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Fabric019",
+          "Leather011"
+        ],
+        "colorPalette": [
+          "#775A4D",
+          "#B79D87",
+          "#DAC3AC",
+          "#ECE2D0",
+          "#947264"
+        ],
+        "pbrProperties": {
+          "baseColor": "#775A4D",
+          "roughness": 0.8,
+          "metallic": 0,
+          "normalStrength": 0.9,
+          "aoStrength": 0.7,
+          "heightScale": 0.04,
+          "emissive": "#DAC3AC"
+        },
+        "proceduralRules": "Patterns highlight diplomatic markings and communication focus points."
+      },
+      "textureReferences": [
+        "Fabric019",
+        "Leather011"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.55,
+        "seedModifiers": {
+          "high-population-density": 1.2
+        },
+        "biasDescription": "Essential in densely populated or highly social packs."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "age_hierarchy",
+          "meritocracy_ring"
+        ],
+        "incompatibleWith": [],
+        "adjacentTo": [
+          "empathy_signalers",
+          "herbal_healer"
+        ],
+        "requires": []
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Mediative traits disperse into communal roles emphasizing peace.",
+        "compatibleDeconstructors": [
+          "hierarchical simplification",
+          "stable coexistence"
+        ],
+        "decomposesInto": [
+          "peacemakers",
+          "counselors"
+        ],
+        "propertyUsage": {
+          "hardness": "diplomatic relics",
+          "volume": "negotiation platforms",
+          "organic": "harmony sustainers"
+        }
+      },
+      "formation": {
+        "formationProcess": "Emerges through social evolution in response to internal conflicts.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "solo_vigilant",
+            "swarm_collective"
+          ],
+          "requirements": [
+            "inter-pack tension",
+            "social complexity"
+          ],
+          "causalChain": "As social complexities rise, the mediator role becomes pivotal."
+        },
+        "yukaGuidance": "Train members with high emotional insight and communication ability for conflict resolution."
+      }
+    }
+  ]
+}

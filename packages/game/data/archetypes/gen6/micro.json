@@ -1,0 +1,509 @@
+{
+  "archetypes": [
+    {
+      "id": "devotional-practices",
+      "name": "Devotional Practices",
+      "description": "Personal rituals that express commitment to the Iron Harmony Doctrine, involving rhythmic chants and harmonized movements resonating with metal and stone landscapes.",
+      "parameters": {
+        "beliefIntensity": {
+          "min": 0.7,
+          "max": 1,
+          "default": 0.85
+        },
+        "participationLevel": {
+          "min": 0.6,
+          "max": 1,
+          "default": 0.8
+        },
+        "identityStrength": {
+          "min": 0.5,
+          "max": 0.9,
+          "default": 0.7
+        },
+        "socialBonding": {
+          "min": 0.4,
+          "max": 0.8,
+          "default": 0.6
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Metal049A",
+          "Fabric019"
+        ],
+        "colorPalette": [
+          "#708090",
+          "#A9A9A9",
+          "#778899",
+          "#D3D3D3",
+          "#C0C0C0"
+        ],
+        "pbrProperties": {
+          "baseColor": "#708090",
+          "roughness": 0.4,
+          "metallic": 0.5,
+          "normalStrength": 1,
+          "aoStrength": 0.5,
+          "heightScale": 0.03,
+          "emissive": "#A9A9A9"
+        },
+        "proceduralRules": "Surfaces feature intertwining metallic threads creating harmonic patterns."
+      },
+      "textureReferences": [
+        "Metal049A",
+        "Fabric019"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.3,
+        "seedModifiers": {
+          "high-metallicity": 1.4
+        },
+        "biasDescription": "More likely among those deeply integrated with metal environments."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "cultural-preservation-society"
+        ],
+        "incompatibleWith": [],
+        "adjacentTo": [],
+        "requires": [
+          "iron-harmony-doctrine"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Rituals dissipate naturally over time.",
+        "compatibleDeconstructors": [
+          "time-based degradation"
+        ],
+        "decomposesInto": [
+          "cultural fragments"
+        ],
+        "propertyUsage": {
+          "hardness": "symbolic",
+          "volume": "intangible",
+          "organic": "n/a"
+        }
+      },
+      "formation": {
+        "formationProcess": "Developed through generations of harmonic practices aligning with doctrinal beliefs.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen4 cultural artisans"
+          ],
+          "requirements": [
+            "cultural alignment",
+            "communal rituals"
+          ],
+          "causalChain": "Cultural artisans passed rhythmic practices that aligned with stone and metal environment symphonies."
+        },
+        "yukaGuidance": "Encourage communities to foster ritual traditions through environment observation."
+      }
+    },
+    {
+      "id": "civic-duties",
+      "name": "Civic Duties",
+      "description": "Structured communal responsibilities that individuals perform regularly to maintain alignment with Stone Pattern Allegiance, emphasizing civic engineering and stonework maintenance.",
+      "parameters": {
+        "beliefIntensity": {
+          "min": 0.5,
+          "max": 0.8,
+          "default": 0.65
+        },
+        "participationLevel": {
+          "min": 0.7,
+          "max": 1,
+          "default": 0.85
+        },
+        "identityStrength": {
+          "min": 0.6,
+          "max": 0.9,
+          "default": 0.75
+        },
+        "socialBonding": {
+          "min": 0.7,
+          "max": 0.9,
+          "default": 0.8
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Rock025",
+          "Leather011"
+        ],
+        "colorPalette": [
+          "#2C3E50",
+          "#34495E",
+          "#5D6D7E",
+          "#AAB7B8",
+          "#EAEDED"
+        ],
+        "pbrProperties": {
+          "baseColor": "#2C3E50",
+          "roughness": 0.8,
+          "metallic": 0,
+          "normalStrength": 1.5,
+          "aoStrength": 0.7,
+          "heightScale": 0.05,
+          "emissive": "#34495E"
+        },
+        "proceduralRules": "Stone surfaces display procedural engravings reflecting community involvement."
+      },
+      "textureReferences": [
+        "Rock025",
+        "Leather011"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.35,
+        "seedModifiers": {
+          "structural-complexity": 1.3
+        },
+        "biasDescription": "High participation where stone patterns dictate urban alignment."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "stone-pattern-university"
+        ],
+        "incompatibleWith": [
+          "uncoordinated-anarchies"
+        ],
+        "adjacentTo": [
+          "structural-artisanal-duties"
+        ],
+        "requires": [
+          "stone-pattern-allegiance"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Duties redistribute over time as community needs shift.",
+        "compatibleDeconstructors": [
+          "policy changes"
+        ],
+        "decomposesInto": [
+          "historical records",
+          "guidelines"
+        ],
+        "propertyUsage": {
+          "hardness": "civic structure",
+          "volume": "population capacity",
+          "organic": "citizen-driven"
+        }
+      },
+      "formation": {
+        "formationProcess": "Formed from collective efforts to structure urban areas around stone alignments.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen5 stone filigree masonry"
+          ],
+          "requirements": [
+            "structural planning",
+            "population distribution"
+          ],
+          "causalChain": "Stone masonry techniques led to civic responsibilities centered around stone alignments."
+        },
+        "yukaGuidance": "Guide urban planning initiatives through stone pattern education and civic engagement encouragement."
+      }
+    },
+    {
+      "id": "cultural-identities",
+      "name": "Cultural Identities",
+      "description": "Strongly held personal and collective identities rooted in the Metal Exchange Reverence, exhibiting decorative attire and unique dialects associated with trade interactions.",
+      "parameters": {
+        "beliefIntensity": {
+          "min": 0.6,
+          "max": 0.9,
+          "default": 0.75
+        },
+        "participationLevel": {
+          "min": 0.6,
+          "max": 1,
+          "default": 0.9
+        },
+        "identityStrength": {
+          "min": 0.7,
+          "max": 0.95,
+          "default": 0.85
+        },
+        "socialBonding": {
+          "min": 0.8,
+          "max": 1,
+          "default": 0.9
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Leather012",
+          "Metal050"
+        ],
+        "colorPalette": [
+          "#B0C4DE",
+          "#4682B4",
+          "#6495ED",
+          "#B0E0E6",
+          "#00CED1"
+        ],
+        "pbrProperties": {
+          "baseColor": "#B0C4DE",
+          "roughness": 0.5,
+          "metallic": 0.6,
+          "normalStrength": 1.2,
+          "aoStrength": 0.7,
+          "heightScale": 0.04,
+          "emissive": "#4682B4"
+        },
+        "proceduralRules": "Layered fabrics mixed with metallic adornments form a distinct identity appearance."
+      },
+      "textureReferences": [
+        "Leather012",
+        "Metal050"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.4,
+        "seedModifiers": {
+          "economic-vibrancy": 1.6
+        },
+        "biasDescription": "Predominant in regions thriving on trade and barter."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "metal-trade-network"
+        ],
+        "incompatibleWith": [],
+        "adjacentTo": [
+          "economic-exchange-rituals"
+        ],
+        "requires": [
+          "metal-exchange-reverence"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Identity elements dissolve as trade patterns fluctuate.",
+        "compatibleDeconstructors": [
+          "cultural shifts"
+        ],
+        "decomposesInto": [
+          "cultural relics",
+          "linguistic archives"
+        ],
+        "propertyUsage": {
+          "hardness": "decorative",
+          "volume": "identity resources",
+          "organic": "expressive"
+        }
+      },
+      "formation": {
+        "formationProcess": "Derived from generations of trade interactions solidifying distinct identities through exchange.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen5 metal exchange port"
+          ],
+          "requirements": [
+            "socio-economic influence",
+            "cultural literacy"
+          ],
+          "causalChain": "Trade hubs gave rise to unique cultural identities that mirrored metal exchange practices."
+        },
+        "yukaGuidance": "Monitor trade network dynamics to understand variations in cultural expressions."
+      }
+    },
+    {
+      "id": "philosophical-commitments",
+      "name": "Philosophical Commitments",
+      "description": "Deep contemplative practices driven by the understanding of universal harmony under the Iron Harmony Doctrine, focusing on self-awareness and cosmic alignment through minimalistic living.",
+      "parameters": {
+        "beliefIntensity": {
+          "min": 0.8,
+          "max": 1,
+          "default": 0.9
+        },
+        "participationLevel": {
+          "min": 0.5,
+          "max": 1,
+          "default": 0.7
+        },
+        "identityStrength": {
+          "min": 0.7,
+          "max": 0.95,
+          "default": 0.85
+        },
+        "socialBonding": {
+          "min": 0.3,
+          "max": 0.6,
+          "default": 0.5
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Fabric023",
+          "Metal049A"
+        ],
+        "colorPalette": [
+          "#483D8B",
+          "#6A5ACD",
+          "#7B68EE",
+          "#4682B4",
+          "#8A2BE2"
+        ],
+        "pbrProperties": {
+          "baseColor": "#483D8B",
+          "roughness": 0.3,
+          "metallic": 0.2,
+          "normalStrength": 1.3,
+          "aoStrength": 0.6,
+          "heightScale": 0.02,
+          "emissive": "#6A5ACD"
+        },
+        "proceduralRules": "Flowing fabric textures with subtle iron inlays signify philosophical commitments."
+      },
+      "textureReferences": [
+        "Fabric023",
+        "Metal049A"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.25,
+        "seedModifiers": {
+          "cosmic-awareness": 1.7
+        },
+        "biasDescription": "Most common among introspective individuals attuned to universal patterns."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "doctrine-council"
+        ],
+        "incompatibleWith": [
+          "dogmatic-rituals"
+        ],
+        "adjacentTo": [
+          "meditative-practices"
+        ],
+        "requires": [
+          "iron-harmony-doctrine"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Commitments become abstract when societal priorities change.",
+        "compatibleDeconstructors": [
+          "philosophical inquiry"
+        ],
+        "decomposesInto": [
+          "philosophical texts"
+        ],
+        "propertyUsage": {
+          "hardness": "thoughtful",
+          "volume": "mindful",
+          "organic": "conceptual"
+        }
+      },
+      "formation": {
+        "formationProcess": "Emerged from alignment with cosmic and doctrinal principles encouraging introspection.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen2 empathy signalers"
+          ],
+          "requirements": [
+            "contemplative environments"
+          ],
+          "causalChain": "Societal alignment with universal harmonics fostered philosophical exploration."
+        },
+        "yukaGuidance": "Promote environments conducive to reflective practices and cosmic observation."
+      }
+    },
+    {
+      "id": "ideological-alignment",
+      "name": "Ideological Alignment",
+      "description": "The practice of consciously aligning personal beliefs with the overarching principles of Metal Exchange Reverence, involving continuous adaptation to dynamic trade flows.",
+      "parameters": {
+        "beliefIntensity": {
+          "min": 0.7,
+          "max": 1,
+          "default": 0.85
+        },
+        "participationLevel": {
+          "min": 0.3,
+          "max": 0.7,
+          "default": 0.5
+        },
+        "identityStrength": {
+          "min": 0.5,
+          "max": 0.8,
+          "default": 0.65
+        },
+        "socialBonding": {
+          "min": 0.4,
+          "max": 0.7,
+          "default": 0.55
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Fabric019",
+          "Metal049A"
+        ],
+        "colorPalette": [
+          "#4682B4",
+          "#5F9EA0",
+          "#B0E0E6",
+          "#00CED1",
+          "#AFEEEE"
+        ],
+        "pbrProperties": {
+          "baseColor": "#4682B4",
+          "roughness": 0.4,
+          "metallic": 0.5,
+          "normalStrength": 1.1,
+          "aoStrength": 0.6,
+          "heightScale": 0.03,
+          "emissive": "#5F9EA0"
+        },
+        "proceduralRules": "Fabric mixed with metallic threads creates adaptive ideological symbols."
+      },
+      "textureReferences": [
+        "Fabric019",
+        "Metal049A"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.2,
+        "seedModifiers": {
+          "trade-fluctuation": 1.4
+        },
+        "biasDescription": "Prevails where trade fluidity dictates philosophical adherence."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "metal-trade-network"
+        ],
+        "incompatibleWith": [],
+        "adjacentTo": [],
+        "requires": [
+          "metal-exchange-reverence"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Alignments shift with economic tides and societal changes.",
+        "compatibleDeconstructors": [
+          "market analysis"
+        ],
+        "decomposesInto": [
+          "ideological fragments"
+        ],
+        "propertyUsage": {
+          "hardness": "flexible",
+          "volume": "variable",
+          "organic": "contextual"
+        }
+      },
+      "formation": {
+        "formationProcess": "Developed through ongoing interactions that refine and challenge existing beliefs.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen4 resource strategists"
+          ],
+          "requirements": [
+            "dynamic trade environments"
+          ],
+          "causalChain": "Regular trade interactions shaped adaptable ideological beliefs."
+        },
+        "yukaGuidance": "Facilitate environments that encourage ideological evaluations amidst trade variations."
+      }
+    }
+  ]
+}

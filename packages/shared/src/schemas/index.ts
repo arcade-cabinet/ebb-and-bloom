@@ -104,13 +104,57 @@ export const PlanetaryLayerSchema = z.object({
   pressure: z.number().min(0).finite(),
 });
 
+export const CoreTypeSchema = z.enum([
+  'molten',      // Liquid core, high temperature
+  'iron',        // Solid iron core
+  'diamond',     // Carbon-rich, crystalline
+  'living_wood', // Organic, biological core
+  'water',       // Ice/water core
+  'ice',         // Frozen core
+  'void',        // Hollow or low-density core
+  'dual',        // Mixed composition (e.g., iron + molten)
+]);
+
+export const PrimordialWellSchema = z.object({
+  id: z.string(),
+  location: z.object({
+    latitude: z.number().min(-90).max(90), // degrees
+    longitude: z.number().min(-180).max(180), // degrees
+    depth: z.number().min(0).finite(), // meters below surface
+  }),
+  type: z.enum(['thermal_vent', 'chemical_pool', 'geothermal_spring', 'mineral_rich']),
+  temperature: z.number().finite(), // Kelvin
+  pressure: z.number().min(0).finite(), // Pascals
+  composition: MaterialCompositionSchema,
+  energyLevel: z.number().min(0).max(1), // 0-1, probability of life emergence
+});
+
 export const PlanetSchema = z.object({
   id: z.string(),
   seed: z.string(),
   radius: z.number().min(0).finite(),
   mass: z.number().min(0).finite(),
   rotationPeriod: z.number().min(0).finite(), // seconds
+  coreType: CoreTypeSchema,
   layers: z.array(PlanetaryLayerSchema),
+  hydrosphere: z.object({
+    coverage: z.number().min(0).max(1), // 0-1, fraction of surface covered
+    averageDepth: z.number().min(0).finite(), // meters
+    composition: MaterialCompositionSchema,
+  }).optional(),
+  atmosphere: z.object({
+    pressure: z.number().min(0).finite(), // Pascals at surface
+    composition: z.object({
+      N2: z.number().min(0).max(1).optional(),
+      O2: z.number().min(0).max(1).optional(),
+      CO2: z.number().min(0).max(1).optional(),
+      H2O: z.number().min(0).max(1).optional(),
+      CH4: z.number().min(0).max(1).optional(),
+      Other: z.number().min(0).max(1).optional(),
+    }),
+    thickness: z.number().min(0).finite(), // meters
+  }).optional(),
+  primordialWells: z.array(PrimordialWellSchema),
   compositionHistory: z.array(AccretionEventSchema),
   status: z.enum(['forming', 'formed', 'stable']),
 });
@@ -332,6 +376,8 @@ export type MaterialComposition = z.infer<typeof MaterialCompositionSchema>;
 export type DebrisObject = z.infer<typeof DebrisObjectSchema>;
 export type AccretionEvent = z.infer<typeof AccretionEventSchema>;
 export type PlanetaryLayer = z.infer<typeof PlanetaryLayerSchema>;
+export type CoreType = z.infer<typeof CoreTypeSchema>;
+export type PrimordialWell = z.infer<typeof PrimordialWellSchema>;
 export type Planet = z.infer<typeof PlanetSchema>;
 export type Archetype = z.infer<typeof ArchetypeSchema>;
 export type Traits = z.infer<typeof TraitsSchema>;

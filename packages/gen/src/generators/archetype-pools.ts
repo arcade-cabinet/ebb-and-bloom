@@ -4,6 +4,12 @@
  */
 
 import { promises as fs } from 'fs';
+import { join } from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export class ArchetypePoolGenerator {
   
@@ -29,10 +35,12 @@ export class ArchetypePoolGenerator {
   
   private async generateGenerationPools(genKey: string, genName: string, scales: string[]): Promise<void> {
     // Create directory if it doesn't exist
-    await fs.mkdir(`data/archetypes/${genKey}`, { recursive: true });
+    // Output directly to backend data directory
+    const outputDir = join(__dirname, '../../../backend/data/archetypes', genKey);
+    await fs.mkdir(outputDir, { recursive: true });
     
     for (const scale of scales) {
-      const filePath = `data/archetypes/${genKey}/${scale}.json`;
+      const filePath = join(outputDir, `${scale}.json`);
       
       // Check if file already exists (idempotent)
       try {
@@ -52,8 +60,8 @@ export class ArchetypePoolGenerator {
   private async createArchetypesForScale(genKey: string, genName: string, scale: string): Promise<any> {
     const { generateObject } = await import('ai');
     const { TEXT_MODEL } = await import('../config/ai-models');
-    const { GenerationScaleSchema } = await import('../schemas/visual-blueprint-schema.js');
-    const { getGenerationPrompt } = await import('../prompts/generation-prompts.js');
+    const { GenerationScaleSchema } = await import('../schemas/visual-blueprint-schema');
+    const { getGenerationPrompt } = await import('../prompts/generation-prompts');
     
     try {
       const prompts = getGenerationPrompt(genKey, scale as 'macro' | 'meso' | 'micro');

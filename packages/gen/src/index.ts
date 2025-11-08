@@ -4,13 +4,13 @@
  */
 
 // AI Workflows
-export * from './workflows/index.js';
+export * from './workflows/index';
 
 // Content Downloaders  
-export * from './downloaders/ambientcg.js';
+export * from './downloaders/ambientcg';
 
 // Meshy 3D Generation
-export * from './meshy/index.js';
+export * from './meshy/index';
 
 // Schemas (exported for backend to use types)
-export * from './schemas/visual-blueprint-schema.js';
+export * from './schemas/visual-blueprint-schema';

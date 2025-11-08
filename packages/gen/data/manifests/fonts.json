@@ -1,42 +1,42 @@
 {
-  "version": "1.0.0",
-  "description": "Google Fonts manifest for Ebb & Bloom UI typography",
+  "version": "2.0.0",
+  "description": "Google Fonts manifest for Ebb & Bloom - Brand-aligned meditative, contemplative, evolutionary typography",
   "fonts": [
     {
-      "id": "lora",
-      "family": "Lora",
+      "id": "playfair-display",
+      "family": "Playfair Display",
       "category": "serif",
-      "usage": "Titles, headings, poetic text",
-      "weights": [400, 500, 600, 700],
+      "usage": "Titles, headings, haikus, poetic text",
+      "weights": [400, 500, 600, 700, 900],
       "styles": ["normal", "italic"],
       "subsets": ["latin"],
-      "url": "https://fonts.google.com/specimen/Lora",
-      "description": "Elegant serif for contemplative, meditative titles"
+      "url": "https://fonts.google.com/specimen/Playfair+Display",
+      "description": "Elegant, literary serif - perfect for meditative titles and poetic haikus. Aligns with contemplative, evolutionary brand identity."
     },
     {
-      "id": "inter",
-      "family": "Inter",
+      "id": "work-sans",
+      "family": "Work Sans",
       "category": "sans-serif",
-      "usage": "Body text, UI labels, buttons",
+      "usage": "Body text, UI labels, buttons, readable interface",
       "weights": [300, 400, 500, 600],
       "styles": ["normal"],
       "subsets": ["latin"],
-      "url": "https://fonts.google.com/specimen/Inter",
-      "description": "Clean, modern sans-serif for UI readability"
+      "url": "https://fonts.google.com/specimen/Work+Sans",
+      "description": "Soft, approachable sans-serif - more organic than Inter, aligns with evolutionary theme. Excellent readability for UI."
     },
     {
       "id": "jetbrains-mono",
       "family": "JetBrains Mono",
       "category": "monospace",
-      "usage": "Seed codes, technical data, coordinates",
+      "usage": "Seed codes, technical data, coordinates, numbers",
       "weights": [400, 500],
       "styles": ["normal"],
       "subsets": ["latin"],
       "url": "https://fonts.google.com/specimen/JetBrains+Mono",
-      "description": "Monospace for seed identifiers and technical UI"
+      "description": "Monospace for seed identifiers and technical UI - clean, readable, perfect for data display"
     }
   ],
   "outputFormats": ["woff2", "woff"],
-  "cssOutputPath": "packages/frontend/public/fonts/fonts.css",
-  "fontsOutputPath": "packages/frontend/public/fonts"
+  "cssOutputPath": "packages/game/public/fonts/fonts.css",
+  "fontsOutputPath": "packages/game/public/fonts"
 }
