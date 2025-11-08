@@ -12,6 +12,18 @@ process-compose up dev-backend dev-frontend
 cd packages/simulation && pnpm test:e2e
 ```
 
+## Server Access
+
+Both servers bind to **0.0.0.0** for network access:
+
+- **Backend**: http://0.0.0.0:3001 or http://YOUR_IP:3001
+- **Frontend**: http://0.0.0.0:5173 or http://YOUR_IP:5173
+
+**Access from phone:**
+1. Find your computer's IP: `ifconfig | grep 'inet '` (Mac/Linux) or `ipconfig` (Windows)
+2. Connect phone to same WiFi network
+3. Open browser: `http://YOUR_IP:5173`
+
 ## Using Justfile Commands
 
 ```bash
@@ -39,11 +51,6 @@ just test-e2e-debug
 4. **Resource Management**: Single process manager for all dev services
 5. **Easy Cleanup**: `Ctrl+C` stops everything
 
-## Server URLs
-
-- **Backend**: http://localhost:3001
-- **Frontend**: http://localhost:5173
-
 ## Verification
 
 Check servers are running:
@@ -68,3 +75,7 @@ process-compose logs dev-backend
 process-compose logs dev-frontend
 ```
 
+**Can't access from phone:**
+- Ensure phone and computer are on same WiFi network
+- Check firewall isn't blocking ports 3001/5173
+- Verify server is binding to 0.0.0.0 (not localhost)
