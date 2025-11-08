@@ -259,29 +259,28 @@ BREAKING CHANGE: REST API removed, Fastify removed, React removed
 
 ## Current Status (Updated: 2025-11-08)
 
-### Latest Achievement: Celestial View System
+### Latest Achievement: Full 3D Creature Rendering
 
-**Implemented multi-scale camera and LOD system** - The core visual innovation:
-- Camera zooms from 5 to 500 units (surface → celestial view)
-- Creatures automatically switch between point lights (distant) and 3D meshes (close)
-- Addresses all player archetype engagement issues identified in playthroughs
-- See: `docs/CELESTIAL_VIEW_SYSTEM.md` for complete documentation
+**Implemented complete creature mesh generation system** - Real 3D models from archetypes:
+- Four distinct body plans: Cursorial (runner), Burrowing (digger), Arboreal (climber), Littoral (wader)
+- Procedural mesh generation based on locomotion traits
+- Anatomically appropriate features (limbs, claws, webbed feet, grasping hands)
+- Idle breathing animations
+- Proper surface orientation (creatures stand on planet)
+- Color from lineage (green/red/blue)
 
-**Technical changes**:
-- Extended `ArcRotateCamera` limits in `GameScene.ts`
-- Implemented LOD system in `CreatureRenderer.ts`
-- Automatic distance-based rendering in animation loop
-- Point lights show population spread, 3D meshes show individual behavior
+**Combined with Celestial View System**:
+- Distance > 100: Point lights (macro view)
+- Distance < 100: Full 3D creature models (micro view)
+- Seamless LOD transitions
+- Performance optimized for both modes
 
-**Player impact**:
-- Casual players: Watch population spread from planetary view
-- Strategy players: Zoom in/out for analysis
-- Narrative players: Camera journey is metaphorical
-- Chaos players: See cascading failures from orbit
+**Files changed**:
+- `packages/game/src/renderers/gen1/CreatureRenderer.ts` - Complete rewrite (600+ lines)
+- `packages/game/src/scenes/GameScene.ts` - Extended camera limits
+- `packages/game/src/engine/GameEngineBackend.ts` - Fixed creature data structure
 
-**Visual progression**: Dark lifeless planet → Glowing with civilization (Gen0 → Gen6)
-
-## Previous Status: GREEN 🟢
+### Previous: Celestial View System Implementation: GREEN 🟢
 
 **Code Quality**: ✅ PASSING (0 TS errors)  
 **Tests**: ⚠️ MOSTLY GOOD (35/46 passing - 76% - need to fix gen1-6 archetype bugs)  
