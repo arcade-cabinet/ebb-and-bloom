@@ -109,34 +109,32 @@
 
 ### Test Commands
 
-**Recommended: Use process-compose**
+**Primary: Process-compose workflow**
 ```bash
 # Terminal 1: Start servers
 process-compose up dev-backend dev-frontend
+# OR use justfile:
+just test-e2e-servers
 
 # Terminal 2: Run tests (reuses existing servers)
 cd packages/simulation && pnpm test:e2e
+# OR use justfile:
+just test-e2e
 ```
 
-**Alternative: Playwright auto-manages servers**
+**Justfile shortcuts:**
 ```bash
-# Playwright will start both servers automatically
+just test-e2e-servers  # Start servers
+just test-e2e          # Run tests
+just test-e2e-ui       # Run with Playwright UI
+just test-e2e-headed   # Run with browser visible
+just test-e2e-debug    # Debug mode
+```
+
+**Fallback: Playwright auto-manages servers**
+```bash
+# If process-compose not running, Playwright will start servers automatically
 cd packages/simulation && pnpm test:e2e
-```
-
-**Other options:**
-```bash
-# Run with UI (interactive)
-pnpm test:e2e:ui
-
-# Run with browser visible
-pnpm test:e2e:headed
-
-# Debug mode
-pnpm test:e2e:debug
-
-# Use process-compose script
-pnpm test:e2e:with-servers
 ```
 
 ### Test Coverage
