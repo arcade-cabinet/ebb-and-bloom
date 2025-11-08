@@ -5,7 +5,7 @@
  * to demonstrate the complete Gen0 flow visually.
  */
 
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 
 test('Capture application screenshots', async ({ page }) => {
   // Capture console messages
@@ -23,7 +23,10 @@ test('Capture application screenshots', async ({ page }) => {
   // Step 1: Capture main menu
   await test.step('Main menu', async () => {
     await page.goto('/');
-    await page.waitForTimeout(3000);
+    
+    // Wait for canvas to be visible
+    await page.locator('#renderCanvas').waitFor({ state: 'visible' });
+    await page.waitForTimeout(1000);
     
     await page.screenshot({ 
       path: 'test-results/screenshot-01-main-menu.png',

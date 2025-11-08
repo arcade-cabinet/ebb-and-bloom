@@ -14,19 +14,20 @@
  * 10. Celestial scene assembled (planet, moons, lighting, camera)
  */
 
-import { test, expect, Page } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
 test.describe('Gen0 Complete Flow', () => {
   test('should demonstrate full flow from menu to playable simulation', async ({ page }) => {
-    // Take screenshot at each step for documentation
-    const screenshots: string[] = [];
-    
     // Step 1: Navigate to main menu
     await test.step('Load main menu', async () => {
       await page.goto('/');
       
-      // Wait for BabylonJS to initialize
-      await page.waitForTimeout(3000);
+      // Wait for canvas to be visible instead of fixed timeout
+      const canvas = page.locator('#renderCanvas');
+      await canvas.waitFor({ state: 'visible' });
+      
+      // Wait a bit for BabylonJS to fully initialize
+      await page.waitForTimeout(1000);
       
       // Wait for canvas to be visible
       const canvas = page.locator('#renderCanvas');
@@ -138,39 +139,24 @@ test.describe('Gen0 Complete Flow', () => {
     
     // Step 6: Verify navigation to game scene
     await test.step('Verify game navigation', async () => {
-      // Wait for navigation (hash-based routing)
-      // GameEngine initialization might take time
-      await page.waitForTimeout(5000);
-      
-      // Check URL contains gameId in hash
-      let url = page.url();
-      
-      // If no navigation yet, wait a bit more
-      if (!url.includes('gameId=')) {
-        console.log('Waiting longer for navigation...');
-        await page.waitForTimeout(5000);
-        url = page.url();
-      }
-      
-      // Check console for errors
-      const consoleMessages = await page.evaluate(() => {
-        return (window as any).consoleErrors || [];
-      });
-      
-      console.log('Current URL:', url);
-      console.log('Console errors:', consoleMessages);
-      
-      // For now, let's continue even if navigation didn't happen
-      // to capture what state the app is in
-      if (!url.includes('gameId=')) {
-        console.log('⚠️  Navigation did not occur, but continuing to capture state');
-        // Take screenshot of current state
+      // Wait for hash-based navigation using waitForFunction
+      try {
+        await page.waitForFunction(() => {
+          return window.location.hash.includes('gameId=');
+        }, { timeout: 10000 });
+        
+        const url = page.url();
+        console.log('✅ Navigated to game scene:', url);
+      } catch (error) {
+        console.log('⚠️ Navigation did not occur within timeout');
+        const url = page.url();
+        console.log('Current URL:', url);
+        
+        // Take screenshot of current state for debugging
         await page.screenshot({ 
           path: 'test-results/06-navigation-debug.png',
           fullPage: true 
         });
-      } else {
-        console.log('✅ Navigated to game scene:', url);
       }
     });
     
