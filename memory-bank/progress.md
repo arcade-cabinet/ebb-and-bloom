@@ -257,7 +257,31 @@ BREAKING CHANGE: REST API removed, Fastify removed, React removed
 
 ---
 
-## Current Status: GREEN 🟢
+## Current Status (Updated: 2025-11-08)
+
+### Latest Achievement: Celestial View System
+
+**Implemented multi-scale camera and LOD system** - The core visual innovation:
+- Camera zooms from 5 to 500 units (surface → celestial view)
+- Creatures automatically switch between point lights (distant) and 3D meshes (close)
+- Addresses all player archetype engagement issues identified in playthroughs
+- See: `docs/CELESTIAL_VIEW_SYSTEM.md` for complete documentation
+
+**Technical changes**:
+- Extended `ArcRotateCamera` limits in `GameScene.ts`
+- Implemented LOD system in `CreatureRenderer.ts`
+- Automatic distance-based rendering in animation loop
+- Point lights show population spread, 3D meshes show individual behavior
+
+**Player impact**:
+- Casual players: Watch population spread from planetary view
+- Strategy players: Zoom in/out for analysis
+- Narrative players: Camera journey is metaphorical
+- Chaos players: See cascading failures from orbit
+
+**Visual progression**: Dark lifeless planet → Glowing with civilization (Gen0 → Gen6)
+
+## Previous Status: GREEN 🟢
 
 **Code Quality**: ✅ PASSING (0 TS errors)  
 **Tests**: ⚠️ MOSTLY GOOD (35/46 passing - 76% - need to fix gen1-6 archetype bugs)  
