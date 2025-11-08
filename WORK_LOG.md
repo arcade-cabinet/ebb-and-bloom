@@ -108,10 +108,24 @@
 - ✅ Visual blueprint rendering
 
 ### Test Commands
-```bash
-# Run all integration tests
-cd packages/simulation && pnpm test:e2e
 
+**Recommended: Use process-compose**
+```bash
+# Terminal 1: Start servers
+process-compose up dev-backend dev-frontend
+
+# Terminal 2: Run tests (reuses existing servers)
+cd packages/simulation && pnpm test:e2e
+```
+
+**Alternative: Playwright auto-manages servers**
+```bash
+# Playwright will start both servers automatically
+cd packages/simulation && pnpm test:e2e
+```
+
+**Other options:**
+```bash
 # Run with UI (interactive)
 pnpm test:e2e:ui
 
@@ -120,6 +134,9 @@ pnpm test:e2e:headed
 
 # Debug mode
 pnpm test:e2e:debug
+
+# Use process-compose script
+pnpm test:e2e:with-servers
 ```
 
 ### Test Coverage
