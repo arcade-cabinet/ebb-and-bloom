@@ -30,15 +30,16 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-  // Use process-compose to manage servers (recommended)
+  // Process-compose manages servers (recommended approach)
   // Run: process-compose up dev-backend dev-frontend
   // Then Playwright will reuse existing servers
+  // Fallback: Playwright can auto-start servers if not running (for CI)
   webServer: [
     // Backend server (required for API calls)
     {
       command: 'cd ../../packages/backend && pnpm dev',
       url: 'http://localhost:3001/health',
-      reuseExistingServer: !process.env.CI,
+      reuseExistingServer: true, // Always reuse if process-compose is running
       timeout: 120 * 1000,
       stdout: 'pipe',
       stderr: 'pipe',
@@ -47,7 +48,7 @@ export default defineConfig({
     {
       command: 'pnpm dev',
       url: 'http://localhost:5173',
-      reuseExistingServer: !process.env.CI,
+      reuseExistingServer: true, // Always reuse if process-compose is running
       timeout: 120 * 1000,
       stdout: 'pipe',
       stderr: 'pipe',

@@ -74,15 +74,27 @@ coverage:
 
 # Install Playwright browsers
 playwright-install:
-    pnpm exec playwright install
+    cd packages/simulation && pnpm exec playwright install
 
-# Run E2E tests
+# Start servers for E2E testing (process-compose)
+test-e2e-servers:
+    process-compose up dev-backend dev-frontend
+
+# Run E2E tests (assumes servers are running via process-compose)
 test-e2e:
-    cd packages/backend && pnpm test:e2e || echo "E2E tests not configured"
+    cd packages/simulation && pnpm test:e2e
 
 # Run E2E tests with UI
 test-e2e-ui:
-    cd packages/backend && pnpm test:e2e:ui || echo "E2E tests not configured"
+    cd packages/simulation && pnpm test:e2e:ui
+
+# Run E2E tests with browser visible
+test-e2e-headed:
+    cd packages/simulation && pnpm test:e2e:headed
+
+# Run E2E tests in debug mode
+test-e2e-debug:
+    cd packages/simulation && pnpm test:e2e:debug
 
 # Type checking and linting
 # =========================
