@@ -1,0 +1,538 @@
+{
+  "archetypes": [
+    {
+      "id": "pulse_predator",
+      "name": "Pulse Predator",
+      "description": "A dynamic creature with rapid metabolic cycles, adapted for intense bursts of activity. Its physiology is optimized for hunting and swift responses in metal-rich environments.",
+      "parameters": {
+        "metabolicRate": {
+          "min": 1.5,
+          "max": 2.5,
+          "default": 2
+        },
+        "sensoryRange": {
+          "min": 1.2,
+          "max": 2,
+          "default": 1.6
+        },
+        "immuneStrength": {
+          "min": 0.7,
+          "max": 1.2,
+          "default": 0.9
+        },
+        "reproductiveRate": {
+          "min": 0.6,
+          "max": 1.2,
+          "default": 0.9
+        },
+        "energyEfficiency": {
+          "min": 0.5,
+          "max": 0.8,
+          "default": 0.65
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Leather011",
+          "Fabric019"
+        ],
+        "colorPalette": [
+          "#1F1A10",
+          "#535652",
+          "#90928F",
+          "#7A5C39",
+          "#CAC3BD"
+        ],
+        "pbrProperties": {
+          "baseColor": "#535652",
+          "roughness": 0.7,
+          "metallic": 0.2,
+          "normalStrength": 1,
+          "aoStrength": 0.6,
+          "heightScale": 0.1,
+          "emissive": "#7A5C39"
+        },
+        "proceduralRules": "Coloration changes based on temperature and proximity to prey."
+      },
+      "textureReferences": [
+        "Leather011",
+        "Fabric019"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.3,
+        "seedModifiers": {
+          "high-energy": 1.8
+        },
+        "biasDescription": "Selected in high-energy environments where quick action is critical."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "Chromatic Cartographer",
+          "Nocturnal Chaser"
+        ],
+        "incompatibleWith": [
+          "Herbal Forager"
+        ],
+        "adjacentTo": [
+          "Nocturnal Chaser"
+        ],
+        "requires": []
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Energetic breakdown results in release of stored energy and nutrients.",
+        "compatibleDeconstructors": [
+          "predator digestion",
+          "tools using acid"
+        ],
+        "decomposesInto": [
+          "organic residue",
+          "metal ions"
+        ],
+        "propertyUsage": {
+          "hardness": "elastic potential",
+          "volume": "energy storage",
+          "organic": "nutrient source"
+        }
+      },
+      "formation": {
+        "formationProcess": "Evolves through selection for rapid energy use and efficient predation in dynamic ecosystems.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Chromatic Cartographer",
+            "Nocturnal Chaser"
+          ],
+          "requirements": [
+            "high mobility",
+            "high sensory"
+          ],
+          "causalChain": "Evolution favored traits that balanced speed and acute senses for metal environments."
+        },
+        "yukaGuidance": "Evolve in environments with fluctuating resource availability requiring swift movements."
+      }
+    },
+    {
+      "id": "sand_sculptor",
+      "name": "Sand Sculptor",
+      "description": "A creature adept at reshaping sandy and rocky environments using adapted appendages, forming intricate structures and nests.",
+      "parameters": {
+        "metabolicRate": {
+          "min": 0.8,
+          "max": 1.2,
+          "default": 1
+        },
+        "sensoryRange": {
+          "min": 1,
+          "max": 1.5,
+          "default": 1.25
+        },
+        "immuneStrength": {
+          "min": 1,
+          "max": 1.5,
+          "default": 1.25
+        },
+        "reproductiveRate": {
+          "min": 0.7,
+          "max": 1.3,
+          "default": 1
+        },
+        "energyEfficiency": {
+          "min": 1,
+          "max": 1.5,
+          "default": 1.25
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Leather012",
+          "Fabric023"
+        ],
+        "colorPalette": [
+          "#F4E8C1",
+          "#C2A477",
+          "#8F746C",
+          "#B49768",
+          "#DECBA4"
+        ],
+        "pbrProperties": {
+          "baseColor": "#B49768",
+          "roughness": 0.9,
+          "metallic": 0.2,
+          "normalStrength": 1.2,
+          "aoStrength": 0.7,
+          "heightScale": 0.02,
+          "emissive": "#C2A477"
+        },
+        "proceduralRules": "Surface patterns vary with humidity and temperature."
+      },
+      "textureReferences": [
+        "Leather012",
+        "Fabric023"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.4,
+        "seedModifiers": {
+          "sand-rich": 1.3
+        },
+        "biasDescription": "Favored in sandy environments where reshaping landscapes provides advantages."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "Arid Engineers",
+          "Swarm Collective"
+        ],
+        "incompatibleWith": [
+          "Nocturnal Chaser"
+        ],
+        "adjacentTo": [
+          "Territorial Pair"
+        ],
+        "requires": []
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Gradual erosion integrates materials back into sandy landscapes.",
+        "compatibleDeconstructors": [
+          "erosion",
+          "wind-driven processes"
+        ],
+        "decomposesInto": [
+          "silicate particles",
+          "organic matter"
+        ],
+        "propertyUsage": {}
+      },
+      "formation": {
+        "formationProcess": "Develops cooperative structures as social bonds increase among populations in sandy environs.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Arid Engineers",
+            "Swarm Collective"
+          ],
+          "requirements": [
+            "social cohesion",
+            "construction ability"
+          ],
+          "causalChain": "Structured environments supported by increased social cooperation."
+        },
+        "yukaGuidance": "Develop in environments requiring manipulation of loose substrates."
+      }
+    },
+    {
+      "id": "fiber_forager",
+      "name": "Fiber Forager",
+      "description": "A herbivorous creature specialized in digesting high-fiber diets extracted from wood-like materials, supporting efficient community dynamics.",
+      "parameters": {
+        "metabolicRate": {
+          "min": 1.2,
+          "max": 1.5,
+          "default": 1.35
+        },
+        "sensoryRange": {
+          "min": 0.8,
+          "max": 1.2,
+          "default": 1
+        },
+        "immuneStrength": {
+          "min": 1.2,
+          "max": 1.8,
+          "default": 1.5
+        },
+        "reproductiveRate": {
+          "min": 1,
+          "max": 1.5,
+          "default": 1.25
+        },
+        "energyEfficiency": {
+          "min": 1,
+          "max": 1.5,
+          "default": 1.25
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Fabric023",
+          "Leather011"
+        ],
+        "colorPalette": [
+          "#897D68",
+          "#D2CCA1",
+          "#A79956",
+          "#AC8D6F",
+          "#766C5B"
+        ],
+        "pbrProperties": {
+          "baseColor": "#897D68",
+          "roughness": 0.85,
+          "metallic": 0.1,
+          "normalStrength": 1.1,
+          "aoStrength": 0.7,
+          "heightScale": 0.04,
+          "emissive": "#D2CCA1"
+        },
+        "proceduralRules": "Fibrous textures evolve with age, reflecting the maturity of individual's diet."
+      },
+      "textureReferences": [
+        "Fabric023",
+        "Leather011"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.4,
+        "seedModifiers": {
+          "high-fiber": 1.5
+        },
+        "biasDescription": "Success in environments with abundant fibrous vegetation."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "Herbal Forager",
+          "Herd Nomads"
+        ],
+        "incompatibleWith": [
+          "Pulse Predator"
+        ],
+        "adjacentTo": [
+          "Fabric Conclave"
+        ],
+        "requires": []
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Breaks down through microbial activity, converting to nutrient-rich soil.",
+        "compatibleDeconstructors": [
+          "decay organisms",
+          "herbivore digestion"
+        ],
+        "decomposesInto": [
+          "compost",
+          "nutrient substrates"
+        ],
+        "propertyUsage": {}
+      },
+      "formation": {
+        "formationProcess": "Replaces less efficient digestive traits with high-fiber digestion in plant-rich zones.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Herbal Forager",
+            "Herd Nomads"
+          ],
+          "requirements": [
+            "high digestive efficiency",
+            "group feeding"
+          ],
+          "causalChain": "Evolved digestive efficiency to maximize energy from available resources."
+        },
+        "yukaGuidance": "Adapt to environments rich in fibrous vegetation needing efficient processing."
+      }
+    },
+    {
+      "id": "resilient_rambler",
+      "name": "Resilient Rambler",
+      "description": "Designed for long-distance travel across diverse terrains, this creature's physiology allows for minimal energy usage during migration.",
+      "parameters": {
+        "metabolicRate": {
+          "min": 0.5,
+          "max": 0.8,
+          "default": 0.65
+        },
+        "sensoryRange": {
+          "min": 1,
+          "max": 1.4,
+          "default": 1.2
+        },
+        "immuneStrength": {
+          "min": 1.4,
+          "max": 2,
+          "default": 1.7
+        },
+        "reproductiveRate": {
+          "min": 0.6,
+          "max": 1.1,
+          "default": 0.85
+        },
+        "energyEfficiency": {
+          "min": 1.5,
+          "max": 2,
+          "default": 1.75
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Leather012",
+          "Fabric019"
+        ],
+        "colorPalette": [
+          "#A39485",
+          "#675B45",
+          "#3C3C3A",
+          "#B9B8AB",
+          "#8F827D"
+        ],
+        "pbrProperties": {
+          "baseColor": "#675B45",
+          "roughness": 0.88,
+          "metallic": 0.15,
+          "normalStrength": 0.7,
+          "aoStrength": 0.5,
+          "heightScale": 0.03,
+          "emissive": "#8F827D"
+        },
+        "proceduralRules": "Visual patterns alter with their extensive travel across varied terrains."
+      },
+      "textureReferences": [
+        "Leather012",
+        "Fabric019"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.5,
+        "seedModifiers": {
+          "nomadic-ecologies": 1.9
+        },
+        "biasDescription": "Selected in ecosystems demanding extensive territory coverage."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "Herd Nomads",
+          "Solo Vigilant"
+        ],
+        "incompatibleWith": [
+          "Swarm Collective"
+        ],
+        "adjacentTo": [
+          "Territorial Pair"
+        ],
+        "requires": []
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Naturally decomposes through environmental exposure, returning nutrients to soil.",
+        "compatibleDeconstructors": [
+          "weathering",
+          "predation"
+        ],
+        "decomposesInto": [
+          "soil amendment",
+          "nutrients"
+        ],
+        "propertyUsage": {}
+      },
+      "formation": {
+        "formationProcess": "Evolution selected for energy preservation and mobility in wide-ranging climates.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Herd Nomads",
+            "Solo Vigilant"
+          ],
+          "requirements": [
+            "endurance traits",
+            "ecological breadth"
+          ],
+          "causalChain": "Functional adaptations arose for covering massive landscapes efficiently."
+        },
+        "yukaGuidance": "Favor conditions requiring vast range traversal with minimal energy depletion."
+      }
+    },
+    {
+      "id": "covert_cloaker",
+      "name": "Covert Cloaker",
+      "description": "Possesses advanced systems for camouflage, integrating sophisticated hormonal responses controlling skin and fur textures and colors.",
+      "parameters": {
+        "metabolicRate": {
+          "min": 0.9,
+          "max": 1.3,
+          "default": 1.1
+        },
+        "sensoryRange": {
+          "min": 1.5,
+          "max": 2,
+          "default": 1.75
+        },
+        "immuneStrength": {
+          "min": 0.8,
+          "max": 1.3,
+          "default": 1.05
+        },
+        "reproductiveRate": {
+          "min": 0.7,
+          "max": 1.2,
+          "default": 0.95
+        },
+        "energyEfficiency": {
+          "min": 1.2,
+          "max": 1.8,
+          "default": 1.5
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Leather011",
+          "Fabric019"
+        ],
+        "colorPalette": [
+          "#2E2E28",
+          "#4C4C47",
+          "#6B6B60",
+          "#EFEDEB",
+          "#D2D0CA"
+        ],
+        "pbrProperties": {
+          "baseColor": "#6B6B60",
+          "roughness": 0.92,
+          "metallic": 0.05,
+          "normalStrength": 1.3,
+          "aoStrength": 0.8,
+          "heightScale": 0.05,
+          "emissive": "#EFEDEB"
+        },
+        "proceduralRules": "Color and texture adaptation occurs via local hormonal modulation based on threat level."
+      },
+      "textureReferences": [
+        "Leather011",
+        "Fabric019"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.2,
+        "seedModifiers": {
+          "camouflage": 1.6
+        },
+        "biasDescription": "Preferred in hostile environments requiring stealth for survival."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "Nocturnal Chaser",
+          "Fabric Conclave"
+        ],
+        "incompatibleWith": [
+          "Pulse Predator"
+        ],
+        "adjacentTo": [
+          "Solo Vigilant"
+        ],
+        "requires": []
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Reverts to simple pigments and organic compounds through decomposition.",
+        "compatibleDeconstructors": [
+          "solar degradation",
+          "chemical breakdown"
+        ],
+        "decomposesInto": [
+          "pigments",
+          "simple proteins"
+        ],
+        "propertyUsage": {}
+      },
+      "formation": {
+        "formationProcess": "Camouflage specialization emerged as a response to predatory pressures in varied habitats.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Nocturnal Chaser",
+            "Fabric Conclave"
+          ],
+          "requirements": [
+            "camouflage skills",
+            "pressure from predators"
+          ],
+          "causalChain": "Adaptive skin properties became prevalent under strong predation pressure."
+        },
+        "yukaGuidance": "Increase occurrence in environments with significant predator presence and high survival stakes."
+      }
+    }
+  ]
+}

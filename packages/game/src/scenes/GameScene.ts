@@ -17,10 +17,11 @@ import {
   DirectionalLight,
   Vector3,
   Color3,
+  Color4,
   MeshBuilder,
   Mesh,
+  PBRMaterial,
 } from '@babylonjs/core';
-import { PBRMaterial } from '@babylonjs/materials';
 import { loadTexture } from '../utils/textureLoader';
 import type { VisualRepresentation, PBRProperties } from '@ebb/gen/schemas';
 import { GameEngine } from '../engine/GameEngine';
@@ -102,7 +103,7 @@ export class GameScene {
       Vector3.Zero(),
       this.scene
     );
-    camera.attachToCanvas(this.engine.getRenderingCanvas()!, true);
+    camera.attachControl(this.engine.getRenderingCanvas()!, true);
     camera.setTarget(Vector3.Zero());
     camera.lowerRadiusLimit = 5;
     camera.upperRadiusLimit = 50;
@@ -120,7 +121,7 @@ export class GameScene {
     dirLight.specular = new Color3(1, 1, 1);
 
     // Background - deep space with subtle gradient
-    this.scene.clearColor = new Color3(0.05, 0.05, 0.1); // Deep indigo space
+    this.scene.clearColor = new Color4(0.05, 0.05, 0.1, 1); // Deep indigo space
     this.scene.fogMode = Scene.FOGMODE_EXP;
     this.scene.fogDensity = 0.01;
     this.scene.fogColor = new Color3(0, 0, 0);
@@ -147,7 +148,7 @@ export class GameScene {
       this.renderData = {
         generation: currentGen,
         planet: renderData.planet,
-        visualBlueprint: renderData.visualBlueprint,
+        visualBlueprint: renderData.visualBlueprint as any,
         moons: renderData.moons,
         stellarContext: state.gen0Data?.stellarContext,
         // Gen1+ entities (will be populated when those generations exist)
@@ -160,7 +161,7 @@ export class GameScene {
       await this.renderGen0();
       
       // Render moons if present
-      if (this.renderData.moons && this.renderData.moons.length > 0) {
+      if (this.renderData.moons && Array.isArray(this.renderData.moons) && this.renderData.moons.length > 0) {
         await this.renderMoons();
       }
       
@@ -218,7 +219,7 @@ export class GameScene {
     // Apply PBR properties
     if (pbr) {
       // Base color (albedo)
-      material.baseColor = Color3.FromHexString(pbr.baseColor);
+      material.albedoColor = Color3.FromHexString(pbr.baseColor);
       material.roughness = pbr.roughness ?? 0.7;
       material.metallic = pbr.metallic ?? 0.1;
       
@@ -228,10 +229,10 @@ export class GameScene {
         material.emissiveIntensity = 0.2;
       }
       
-      // Normal map strength
-      if (pbr.normalStrength !== undefined) {
-        material.bumpTextureLevel = pbr.normalStrength;
-      }
+      // Normal map strength (bump texture level not available in PBRMaterial)
+      // if (pbr.normalStrength !== undefined) {
+      //   material.bumpTexture.level = pbr.normalStrength;
+      // }
       
       // Ambient occlusion strength
       if (pbr.aoStrength !== undefined) {
@@ -244,7 +245,7 @@ export class GameScene {
       }
     } else {
       // Default material if no PBR properties found
-      material.baseColor = Color3.FromHexString('#4A5568'); // Ebb indigo
+      material.albedoColor = Color3.FromHexString('#4A5568'); // Ebb indigo
       material.roughness = 0.7;
       material.metallic = 0.1;
     }
@@ -276,7 +277,7 @@ export class GameScene {
     if (visualBlueprint.visualProperties?.colorPalette && visualBlueprint.visualProperties.colorPalette.length > 0) {
       // Use first color from palette as base if no PBR baseColor was set
       if (!pbr || !pbr.baseColor) {
-        material.baseColor = Color3.FromHexString(visualBlueprint.visualProperties.colorPalette[0]);
+        material.albedoColor = Color3.FromHexString(visualBlueprint.visualProperties.colorPalette[0]);
       }
     }
 
@@ -300,10 +301,8 @@ export class GameScene {
     // Clear existing moons
     this.moonMeshes.forEach(moon => moon.dispose());
     this.moonMeshes = [];
-
-    const planetRadius = this.planetMesh.getBoundingInfo().boundingSphere.radius;
     
-    for (const moon of this.renderData.moons) {
+    for (const moon of this.renderData.moons!) {
       // Create moon sphere
       const moonMesh = MeshBuilder.CreateSphere(`moon_${moon.id}`, {
         segments: 32,
@@ -318,7 +317,7 @@ export class GameScene {
 
       // Create simple material for moon (can be enhanced with visual blueprints later)
       const moonMaterial = new PBRMaterial(`moonMaterial_${moon.id}`, this.scene);
-      moonMaterial.baseColor = new Color3(0.6, 0.6, 0.6); // Gray moon
+      moonMaterial.albedoColor = new Color3(0.6, 0.6, 0.6); // Gray moon
       moonMaterial.roughness = 0.9;
       moonMaterial.metallic = 0.0;
       moonMesh.material = moonMaterial;

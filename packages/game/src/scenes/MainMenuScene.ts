@@ -9,8 +9,7 @@ import {
   ArcRotateCamera,
   HemisphericLight,
   Vector3,
-  Color3,
-  MeshBuilder,
+  Color4,
 } from '@babylonjs/core';
 import {
   AdvancedDynamicTexture,
@@ -18,14 +17,18 @@ import {
   TextBlock,
   Rectangle,
   Control,
+  InputText,
 } from '@babylonjs/gui';
 import { GameEngine } from '../engine/GameEngine';
+import { getItem, setItem, removeItem } from '../utils/storage';
+import { navigateTo } from '../utils/router';
+import { COLORS } from '../constants';
 
 export class MainMenuScene {
   private scene: Scene;
   private engine: Engine;
   private guiTexture: AdvancedDynamicTexture | null = null;
-  private seedInput: HTMLInputElement | null = null;
+  private seedInput: InputText | null = null;
   private currentSeed: string = '';
   private seedModal: Rectangle | null = null;
   private settingsModal: Rectangle | null = null;
@@ -48,14 +51,25 @@ export class MainMenuScene {
       Vector3.Zero(),
       this.scene
     );
-    camera.attachToCanvas(this.engine.getRenderingCanvas()!, true);
+    camera.attachControl(this.engine.getRenderingCanvas()!, true);
 
     // Light
     const light = new HemisphericLight('light', new Vector3(0, 1, 0), this.scene);
     light.intensity = 0.7;
 
-    // Background color
-    this.scene.clearColor = new Color3(0.1, 0.12, 0.18); // Deep indigo background
+    // Background color - use design constants
+    const bgColor = COLORS.background.deep;
+    const rgb = this.hexToRgb(bgColor);
+    this.scene.clearColor = new Color4(rgb.r, rgb.g, rgb.b, 1);
+  }
+
+  private hexToRgb(hex: string): { r: number; g: number; b: number } {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16) / 255,
+      g: parseInt(result[2], 16) / 255,
+      b: parseInt(result[3], 16) / 255
+    } : { r: 0, g: 0, b: 0 };
   }
 
   private setupGUI(): void {
@@ -104,8 +118,8 @@ export class MainMenuScene {
     startNewButton.background = '#38A169'; // Bloom emerald
     startNewButton.cornerRadius = 10;
     startNewButton.top = '-50px';
-    startNewButton.onPointerClickObservable.add(() => {
-      this.showSeedInputModal();
+    startNewButton.onPointerClickObservable.add(async () => {
+      await this.showSeedInputModal();
     });
     panel.addControl(startNewButton);
 
@@ -155,11 +169,16 @@ export class MainMenuScene {
     panel.addControl(creditsButton);
   }
 
-  private showSeedInputModal(): void {
+  private async showSeedInputModal(): Promise<void> {
     if (this.seedModal) {
       this.seedModal.isVisible = true;
       if (this.seedInput) {
-        this.seedInput.style.display = 'block';
+        // Load saved seed from Capacitor Preferences
+        const savedSeed = await this.loadSeedCookie();
+        if (savedSeed) {
+          this.seedInput.text = savedSeed;
+          this.currentSeed = savedSeed;
+        }
         this.seedInput.focus();
       }
       return;
@@ -191,59 +210,32 @@ export class MainMenuScene {
     seedLabel.fontSize = 16;
     seedLabel.fontFamily = 'Work Sans, sans-serif';
     seedLabel.color = '#F7FAFC';
-    seedLabel.top = '-30px';
+    seedLabel.top = '-80px';
     seedLabel.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
     this.seedModal.addControl(seedLabel);
 
-    // Create HTML input overlay for seed
-    this.seedInput = document.createElement('input');
-    this.seedInput.type = 'text';
-    this.seedInput.value = this.loadSeedCookie() || 'v1-word-word-word';
-    this.seedInput.style.position = 'absolute';
-    this.seedInput.style.width = '400px';
-    this.seedInput.style.height = '44px';
-    this.seedInput.style.padding = '8px 12px';
-    this.seedInput.style.fontSize = '14px';
-    this.seedInput.style.fontFamily = 'JetBrains Mono, monospace';
-    this.seedInput.style.color = '#D69E2E';
-    this.seedInput.style.background = 'rgba(74, 85, 104, 0.9)';
-    this.seedInput.style.border = '2px solid #38A169';
-    this.seedInput.style.borderRadius = '8px';
-    this.seedInput.style.outline = 'none';
-    this.seedInput.style.textAlign = 'center';
-    this.seedInput.style.zIndex = '1000';
-    this.seedInput.placeholder = 'v1-word-word-word';
-    document.body.appendChild(this.seedInput);
-
-    // Position input
-    const updateInputPosition = () => {
-      const canvas = this.engine.getRenderingCanvas();
-      if (canvas && this.seedInput) {
-        const rect = canvas.getBoundingClientRect();
-        this.seedInput.style.left = `${rect.left + rect.width / 2 - 200}px`;
-        this.seedInput.style.top = `${rect.top + rect.height / 2 - 20}px`;
-      }
-    };
-    updateInputPosition();
-    window.addEventListener('resize', updateInputPosition);
-    this.seedInput.focus();
-
-    // Update seed on input change
-    this.seedInput.addEventListener('input', (e) => {
-      this.currentSeed = (e.target as HTMLInputElement).value;
+    // Create BabylonJS GUI InputText (cross-platform compatible)
+    this.seedInput = new InputText('seedInput');
+    this.seedInput.width = '400px';
+    this.seedInput.height = '44px';
+    this.seedInput.fontSize = 14;
+    this.seedInput.fontFamily = 'JetBrains Mono, monospace';
+    this.seedInput.color = '#D69E2E'; // Seed gold
+    this.seedInput.background = 'rgba(74, 85, 104, 0.9)'; // Ebb indigo
+    this.seedInput.focusedBackground = 'rgba(74, 85, 104, 1)';
+    this.seedInput.thickness = 2;
+    this.seedInput.placeholderText = 'v1-word-word-word';
+    this.seedInput.placeholderColor = '#A0AEC0';
+    this.seedInput.text = 'v1-word-word-word';
+    this.seedInput.top = '-20px';
+    this.seedInput.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
+    this.seedInput.onTextChangedObservable.add((inputText) => {
+      this.currentSeed = inputText.text;
     });
-
-    // Enter key to submit
-    this.seedInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        this.handleStartNew();
-      } else if (e.key === 'Escape') {
-        this.hideSeedInputModal();
-      }
-    });
+    this.seedModal.addControl(this.seedInput);
 
     // Initialize seed
-    this.currentSeed = this.seedInput.value;
+    this.currentSeed = this.seedInput.text;
 
     // Create button
     const createButton = Button.CreateSimpleButton('createButton', 'Create World');
@@ -280,13 +272,11 @@ export class MainMenuScene {
     if (this.seedModal) {
       this.seedModal.isVisible = false;
     }
-    if (this.seedInput) {
-      this.seedInput.style.display = 'none';
-    }
+    // BabylonJS GUI control visibility is handled by modal visibility
   }
 
   private async handleStartNew(): Promise<void> {
-    const seed = this.seedInput?.value || this.currentSeed || 'v1-test-world-seed';
+    const seed = this.seedInput?.text || this.currentSeed || 'v1-test-world-seed';
     
     if (!seed || seed.trim().length === 0) {
       alert('Please enter a seed (3 words)');
@@ -301,12 +291,12 @@ export class MainMenuScene {
       const engine = new GameEngine(gameId);
       await engine.initialize(seed);
 
-      // Save gameId to localStorage
-      localStorage.setItem('ebb-bloom-gameId', gameId);
-      this.saveSeedCookie(seed);
+      // Save gameId and seed using Capacitor Preferences (cross-platform)
+      await setItem('ebb-bloom-gameId', gameId);
+      await this.saveSeedCookie(seed);
 
-      // Navigate to game scene with gameId
-      window.location.href = `?gameId=${gameId}`;
+      // Navigate to game scene with gameId (hash-based for Capacitor)
+      navigateTo({ gameId });
     } catch (error) {
       console.error('Failed to create game:', error);
       alert('Failed to create game. Please try again.');
@@ -314,7 +304,7 @@ export class MainMenuScene {
   }
 
   private async handleContinue(): Promise<void> {
-    const gameId = localStorage.getItem('ebb-bloom-gameId');
+    const gameId = await getItem('ebb-bloom-gameId');
     
     if (!gameId) {
       alert('No saved game found. Please start a new game.');
@@ -330,12 +320,12 @@ export class MainMenuScene {
         throw new Error('Saved game not found or invalid');
       }
 
-      // Navigate to game scene
-      window.location.href = `?gameId=${gameId}`;
+      // Navigate to game scene (hash-based for Capacitor)
+      navigateTo({ gameId });
     } catch (error) {
       console.error('Failed to load game:', error);
       alert('Failed to load saved game. Please start a new game.');
-      localStorage.removeItem('ebb-bloom-gameId');
+      await removeItem('ebb-bloom-gameId');
     }
   }
 
@@ -508,11 +498,11 @@ export class MainMenuScene {
     }
   }
 
-  private saveSeedCookie(seed: string): void {
-    localStorage.setItem('ebb-bloom-seed', seed);
+  private async saveSeedCookie(seed: string): Promise<void> {
+    await setItem('ebb-bloom-seed', seed);
   }
 
-  public loadSeedCookie(): string | null {
-    return localStorage.getItem('ebb-bloom-seed');
+  public async loadSeedCookie(): Promise<string | null> {
+    return await getItem('ebb-bloom-seed');
   }
 }

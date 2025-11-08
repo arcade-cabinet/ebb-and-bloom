@@ -7,12 +7,17 @@ import seedrandom from 'seedrandom';
 import { CohesionBehavior, SeparationBehavior, Vector3, Vehicle } from 'yuka';
 import { generateGen0DataPools } from '../gen-systems/loadGenData.js';
 import { AccretionEvent, MaterialType, Planet, PlanetaryLayer, CoreType, PrimordialWell } from '../schemas/index.js';
-import { calculateMoons } from './MoonCalculation.js';
-import type { Moon } from './MoonCalculation.js';
+import { calculateMoons, type Moon } from './MoonCalculation.js';
 
 export interface AccretionConfig {
   seed: string;
   useAI?: boolean; // If false, skips OpenAI call for testing
+}
+
+// Extended Planet type with visualization data and moons
+export interface PlanetWithExtras extends Planet {
+  visualBlueprints?: any;
+  moons?: Moon[];
 }
 
 /**
@@ -175,14 +180,14 @@ export class AccretionSimulation {
     for (let i = 0; i < particleCount; i++) {
       // Select material based on distribution
       const material = this.selectMaterial(elementDist);
-      const mass = (totalMassNeeded / particleCount) * (0.5 + this.wellRng()); // Vary mass
+      const mass = (totalMassNeeded / particleCount) * (0.5 + this.rng()); // Vary mass
 
       // Random position in debris disk (simplified - planar)
-      const angle = this.wellRng() * Math.PI * 2;
-      const distance = 1e9 + this.wellRng() * 5e9; // 1-6 million km
+      const angle = this.rng() * Math.PI * 2;
+      const distance = 1e9 + this.rng() * 5e9; // 1-6 million km
       const position = new Vector3(
         Math.cos(angle) * distance,
-        (this.wellRng() - 0.5) * 1e8, // Thin disk
+        (this.rng() - 0.5) * 1e8, // Thin disk
         Math.sin(angle) * distance
       );
 
@@ -196,7 +201,7 @@ export class AccretionSimulation {
    * Select material based on distribution
    */
   private selectMaterial(dist: Record<string, number>): string {
-    const rand = this.wellRng();
+    const rand = this.rng();
     let cumulative = 0;
 
     for (const [material, probability] of Object.entries(dist)) {
@@ -241,9 +246,6 @@ export class AccretionSimulation {
       separation.neighborhoodRadius = 1e6; // 1000 km
       p.steering.add(separation);
     });
-
-    // Track initial angular momentum for conservation
-    const initialAngularMomentum = this.calculateAngularMomentum(particles);
 
     // Simulate cycles (each cycle = ~45 million years)
     for (let cycle = 0; cycle < cycles; cycle++) {
@@ -602,9 +604,6 @@ export class AccretionSimulation {
     const temp = innerCore.temperature;
     const density = innerCore.density;
 
-    // Use seed-based RNG for deterministic selection
-    const rng = seedrandom(this.seed + '-core-type');
-
     // Molten: High temperature (>4000K) and low density (<8000)
     if (temp > 4000 && density < 8000) {
       return 'molten';
@@ -656,7 +655,7 @@ export class AccretionSimulation {
     materialComposition: Record<string, number>,
     layers: PlanetaryLayer[],
     radius: number,
-    dataPools?: any
+    _dataPools?: any
   ): { hydrosphere?: Planet['hydrosphere']; atmosphere?: Planet['atmosphere'] } {
     const crust = layers.find(l => l.name === 'crust');
     const surfaceTemp = crust?.temperature || 300; // Kelvin
@@ -672,7 +671,7 @@ export class AccretionSimulation {
     let hydrosphere: Planet['hydrosphere'] | undefined;
     if (H2O > 0.01 && surfaceTemp > 273 && surfaceTemp < 373) {
       // Water can exist as liquid
-      const coverage = Math.min(0.95, H2O * 10 + wellRng() * 0.2); // 0-95% coverage
+      const coverage = Math.min(0.95, H2O * 10 + rng() * 0.2); // 0-95% coverage
       const averageDepth = (H2O * totalMass * 0.001) / (4 * Math.PI * radius * radius); // meters
       
       hydrosphere = {
@@ -685,7 +684,7 @@ export class AccretionSimulation {
     } else if (H2O > 0.01 && surfaceTemp < 273) {
       // Ice world
       hydrosphere = {
-        coverage: Math.min(0.95, H2O * 10 + wellRng() * 0.2),
+        coverage: Math.min(0.95, H2O * 10 + rng() * 0.2),
         averageDepth: 1000, // Ice sheet depth
         composition: {
           water: H2O * totalMass,
@@ -754,7 +753,7 @@ export class AccretionSimulation {
     // Number of wells based on planet size and geological activity
     const surfaceArea = 4 * Math.PI * radius * radius;
     const wellDensity = 1e-10; // 1 well per 10 billion m² (roughly 1 per 10,000 km²)
-    const numWells = Math.max(3, Math.min(12, Math.floor(surfaceArea * wellDensity + wellRng() * 5)));
+    const numWells = Math.max(3, Math.min(12, Math.floor(surfaceArea * wellDensity + rng() * 5)));
 
     const wells: PrimordialWell[] = [];
     const totalMass = Object.values(materialComposition).reduce((sum, m) => sum + m, 0);
@@ -766,14 +765,14 @@ export class AccretionSimulation {
 
     for (let i = 0; i < numWells; i++) {
       // Random location on sphere surface
-      const latitude = (wellRng() - 0.5) * 180; // -90 to 90 degrees
-      const longitude = (wellRng() - 0.5) * 360; // -180 to 180 degrees
+      const latitude = (rng() - 0.5) * 180; // -90 to 90 degrees
+      const longitude = (rng() - 0.5) * 360; // -180 to 180 degrees
       
       // Depth: 100m to 5000m below surface (crust depth)
-      const depth = 100 + wellRng() * (crust.maxRadius - crust.minRadius - 100);
+      const depth = 100 + rng() * (crust.maxRadius - crust.minRadius - 100);
 
       // Well type based on local conditions
-      const wellTypeRng = wellRng();
+      const wellTypeRng = rng();
       let type: PrimordialWell['type'];
       if (wellTypeRng < 0.3) type = 'thermal_vent';
       else if (wellTypeRng < 0.6) type = 'chemical_pool';

@@ -5,7 +5,7 @@
  * All functions are testable and callable directly
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from '../utils/EventEmitter.js';
 import { AccretionSimulation } from '../gen0/AccretionSimulation.js';
 import { Gen1System } from '../gen1/CreatureSystem.js';
 import { Gen2System } from '../gen2/PackSystem.js';

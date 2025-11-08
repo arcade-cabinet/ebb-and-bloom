@@ -9,6 +9,7 @@ import { Engine, Scene } from '@babylonjs/core';
 import { SplashScreenScene } from './scenes/SplashScreenScene';
 import { MainMenuScene } from './scenes/MainMenuScene';
 import { GameScene } from './scenes/GameScene';
+import { getParam, getRouteParams } from './utils/router';
 
 // Get canvas element
 const canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
@@ -25,9 +26,25 @@ const engine = new Engine(canvas, true, {
 // Create scene
 const scene = new Scene(engine);
 
-// Determine initial scene based on URL
-const urlParams = new URLSearchParams(window.location.search);
-const gameId = urlParams.get('gameId');
+// Determine initial scene based on URL (hash-based routing for Capacitor)
+let gameId = getParam('gameId');
+
+// Listen for hash changes (route changes)
+window.addEventListener('hashchange', () => {
+  const params = getRouteParams();
+  const newGameId = params.get('gameId');
+  
+  if (newGameId && newGameId !== gameId) {
+    // Navigate to game scene
+    gameId = newGameId;
+    if (currentScene) {
+      if ('dispose' in currentScene) {
+        (currentScene as any).dispose();
+      }
+    }
+    currentScene = new GameScene(scene, engine, gameId);
+  }
+});
 
 let currentScene: SplashScreenScene | MainMenuScene | GameScene | null = null;
 

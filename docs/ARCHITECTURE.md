@@ -291,15 +291,20 @@ Gen 3 creature (complex)
 
 ---
 
-## Technology Stack
+## Technology Stack (UPDATED 2025-11-08)
 
-- **ECS**: Miniplex (game logic)
+- **Game Logic**: GameEngine (internal API, direct function calls)
 - **Rendering**: BabylonJS (3D engine + GUI)
-- **UI**: BabylonJS GUI (NO DOM, integrated with 3D scene)
-- **AI**: Yuka (creature behavior)
-- **State**: Zustand (read-only from ECS)
-- **Platform**: Capacitor (mobile)
-- **Seed**: seedrandom (TO BE ADDED)
+- **UI**: BabylonJS GUI (NO DOM, cross-platform native)
+- **AI**: Yuka (Gen0-6 systems, fuzzy logic, steering behaviors)
+- **State**: GameEngine state (no React, no Zustand)
+- **Platform**: Capacitor (Web, iOS, Android)
+- **Storage**: @capacitor/preferences (cross-platform)
+- **File Loading**: @capacitor/filesystem (platform-aware)
+- **Routing**: Hash-based routing (Capacitor-compatible)
+- **Events**: Custom EventEmitter (browser-compatible)
+- **Seed**: seedrandom (deterministic RNG)
+- **Design**: Constants system (COLORS, FONTS, LAYOUT)
 
 ### Frontend Architecture Decision: BabylonJS
 
@@ -325,25 +330,41 @@ Gen 3 creature (complex)
 
 ---
 
-## File Structure
+## File Structure (UPDATED 2025-11-08)
 
 ```
 packages/
-├── backend/      # REST API + Gen0-Gen6 systems
-│   └── src/
-│       ├── gen0-6/  # Generation systems
-│       └── server.ts # Fastify server
+├── game/         # ✅ UNIFIED PACKAGE (Frontend + Backend)
+│   ├── src/
+│   │   ├── engine/        # GameEngine (internal API)
+│   │   ├── gen0-6/        # Generation systems (Yuka AI)
+│   │   ├── scenes/        # BabylonJS scenes
+│   │   ├── gen-systems/   # WARP/WEFT data loaders
+│   │   ├── planetary/     # Physics systems
+│   │   ├── seed/          # Seed management
+│   │   ├── utils/         # Cross-platform utilities
+│   │   │   ├── storage.ts    # @capacitor/preferences wrapper
+│   │   │   ├── router.ts     # Hash-based routing
+│   │   │   └── EventEmitter.ts # Browser-compatible events
+│   │   ├── constants/     # Design system
+│   │   │   └── design.ts     # Colors, fonts, layout
+│   │   ├── schemas/       # Type re-exports
+│   │   └── index.ts       # Entry point
+│   ├── data/archetypes/   # Gen0-6 WARP/WEFT data
+│   ├── public/            # Assets (bundled for web/iOS/Android)
+│   │   ├── data/          # Archetypes (for web fetch)
+│   │   ├── fonts/         # Google Fonts CSS
+│   │   ├── textures/      # AmbientCG materials
+│   │   └── ui/            # UI assets
+│   ├── test-backend/      # Backend tests
+│   ├── test-frontend/     # Frontend tests
+│   └── test-e2e/          # E2E tests (Playwright)
 ├── gen/          # AI archetype generation
 │   └── src/
 │       ├── workflows/  # WARP/WEFT agent
 │       └── schemas/    # Zod schemas (exported)
-└── frontend/     # BabylonJS frontend
-    ├── src/
-    │   ├── scenes/     # BabylonJS scenes (MainMenuScene, Gen0PlanetScene)
-    │   └── utils/      # Texture loaders, helpers
-    └── simulation/     # Simulation module (Gen0 rendering)
-        └── src/
-            └── scenes/ # Gen0PlanetScene
+└── shared/       # Schemas only (DB removed)
+    └── src/schemas/
 ```
 
 ---

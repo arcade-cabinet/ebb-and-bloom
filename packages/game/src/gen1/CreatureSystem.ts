@@ -27,15 +27,26 @@ export interface Gen1Config {
  */
 const FALLBACK_ARCHETYPES = {
   cursorial_forager: {
+    id: 'cursorial_forager',
     name: 'Cursorial Forager',
     traits: {
       locomotion: 'cursorial' as const,
       foraging: 'surface' as const,
       social: 'solitary' as const,
       intelligence: 0.3,
+      excavation: 0.1,
+      maxReach: 0.5,
+      speed: 1.0,
+      strength: 0.5,
     },
+    visualBlueprint: {},
+    parameters: {},
+    formation: {},
+    deconstruction: {},
+    adjacency: {},
   },
   arboreal_opportunist: {
+    id: 'arboreal_opportunist',
     name: 'Arboreal Opportunist',
     traits: {
       locomotion: 'arboreal' as const,
@@ -46,6 +57,11 @@ const FALLBACK_ARCHETYPES = {
       speed: 1.25,
       strength: 0.65,
     },
+    visualBlueprint: {},
+    parameters: {},
+    formation: {},
+    deconstruction: {},
+    adjacency: {},
   },
 };
 
@@ -84,7 +100,7 @@ export class Gen1System {
       // Extract base seed from generation seed (remove -gen1 suffix)
       const baseSeed = this.seed.replace(/-gen\d+$/, '');
       dataPools = await generateGen1DataPools(baseSeed, this.planet, this.gen0Data);
-      const { macro } = extractSeedComponents(this.seed);
+      const { macro: _macro } = extractSeedComponents(this.seed);
       archetypeOptions = dataPools.macro.archetypeOptions.map((a: any) => ({
         id: a.id,
         name: a.name,
@@ -121,7 +137,7 @@ export class Gen1System {
   /**
    * Parse traits from AI blueprint description
    */
-  private parseTraitsFromBlueprint(traitDesc: string, blueprint: any): Traits {
+  private parseTraitsFromBlueprint(traitDesc: string, _blueprint: any): Traits {
     // Extract traits from AI description
     const intelligenceScore = traitDesc.includes('intelligent') || traitDesc.includes('clever') ? 0.7 :
       traitDesc.includes('smart') ? 0.5 : 0.3;
@@ -164,9 +180,6 @@ export class Gen1System {
       lon,
     };
 
-    // Query materials at spawn location (using lat/lon, altitude calculated from planet radius)
-    const materials = this.queryMaterialsAt({ lat, lon, altitude: this.planet.radius / 1000 });
-
     // Initial needs (using MaterialType, not 'food'/'water')
     const needs: Need[] = [
       { type: 'organic_matter', current: 50, max: 100, depletionRate: 0.01, urgency: 0.3 + this.rng() * 0.3 },
@@ -194,7 +207,6 @@ export class Gen1System {
   private queryMaterialsAt(coord: { lat: number; lon: number; altitude?: number }): Material[] {
     // Find appropriate layer (simplified - uses altitude)
     const altitudeKm = coord.altitude || 0;
-    const radiusKm = this.planet.radius / 1000;
 
     const layer = this.planet.layers.find(
       (l) => altitudeKm >= l.minRadius && altitudeKm <= l.maxRadius

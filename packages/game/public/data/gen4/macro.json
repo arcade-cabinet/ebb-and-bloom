@@ -1,0 +1,533 @@
+{
+  "archetypes": [
+    {
+      "id": "trade_winds_01",
+      "name": "Trade Winds Network",
+      "description": "A vast system of inter-tribal trade routes connecting multiple territories across metal-rich zones. Tribes exchange resources like iron and rare minerals using specialized communication signals and guided rail systems.",
+      "parameters": {
+        "networkSize": {
+          "min": 8,
+          "max": 20,
+          "default": 15
+        },
+        "tradeVolume": {
+          "min": 50,
+          "max": 200,
+          "default": 100
+        },
+        "allianceStrength": {
+          "min": 0.3,
+          "max": 0.7,
+          "default": 0.5
+        },
+        "conflictFrequency": {
+          "min": 0.1,
+          "max": 0.4,
+          "default": 0.2
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Metal049A",
+          "Rock025"
+        ],
+        "colorPalette": [
+          "#476A75",
+          "#739391",
+          "#A4C4C3",
+          "#DCEAEF",
+          "#333B40"
+        ],
+        "pbrProperties": {
+          "baseColor": "#739391",
+          "roughness": 0.7,
+          "metallic": 0.6,
+          "normalStrength": 1.4,
+          "aoStrength": 0.5,
+          "heightScale": 0.1,
+          "emissive": "#A4C4C3"
+        },
+        "proceduralRules": "Trade routes vary procedurally with terrain; rail systems adapt to valleys and inclines."
+      },
+      "textureReferences": [
+        "Metal049A",
+        "Rock025"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.3,
+        "seedModifiers": {
+          "high-metallicity": 1.2
+        },
+        "biasDescription": "Favors metal-rich regions with established trade hubs"
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "alliance_network_02",
+          "cultural_exchange_01"
+        ],
+        "incompatibleWith": [],
+        "adjacentTo": [
+          "conflict_zone_03"
+        ],
+        "requires": [
+          "Gen2 pack territories"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Gradually dismantled by ongoing resource depletion and maintenance deterioration.",
+        "compatibleDeconstructors": [
+          "corrosion-resistant tools",
+          "creatures with excavation > 0.6"
+        ],
+        "decomposesInto": [
+          "raw metal",
+          "strategic minerals"
+        ],
+        "propertyUsage": {
+          "hardness": "medium",
+          "volume": "extensive",
+          "organic": "none"
+        }
+      },
+      "formation": {
+        "formationProcess": "Emerges through collective negotiations and resource mapping; rail systems are reinforced by participating tribes.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen2 pack territories",
+            "Gen3 tool systems"
+          ],
+          "requirements": [
+            "large pack size",
+            "advanced communication arrays"
+          ],
+          "causalChain": "Trade networks were established as packs negotiated routes and engineered transport mechanisms."
+        },
+        "yukaGuidance": "Yuka AI evaluates territory compatibility for new trade route expansions."
+      }
+    },
+    {
+      "id": "alliance_network_02",
+      "name": "Alliance Network",
+      "description": "A structured alliance of tribes across territories, providing mutual defense and technological sharing. Tribes contribute to a central knowledge pool accessible through shared hubs.",
+      "parameters": {
+        "networkSize": {
+          "min": 5,
+          "max": 15,
+          "default": 10
+        },
+        "tradeVolume": {
+          "min": 20,
+          "max": 100,
+          "default": 60
+        },
+        "allianceStrength": {
+          "min": 0.5,
+          "max": 1,
+          "default": 0.8
+        },
+        "conflictFrequency": {
+          "min": 0.05,
+          "max": 0.2,
+          "default": 0.1
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Fabric019",
+          "Wood094"
+        ],
+        "colorPalette": [
+          "#7E9988",
+          "#B7CAB1",
+          "#3D5B59",
+          "#96B2A6",
+          "#EBF0E0"
+        ],
+        "pbrProperties": {
+          "baseColor": "#96B2A6",
+          "roughness": 0.8,
+          "metallic": 0.2,
+          "normalStrength": 1.3,
+          "aoStrength": 0.6,
+          "heightScale": 0.05,
+          "emissive": "#B7CAB1"
+        },
+        "proceduralRules": "Alliance hubs adapt visually to geological features, symbolized by shared banners and technologies."
+      },
+      "textureReferences": [
+        "Fabric019",
+        "Wood094"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.4,
+        "seedModifiers": {
+          "low-conflict-areas": 1.3
+        },
+        "biasDescription": "Favors peaceful regions with high cooperation incentives"
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "trade_winds_01",
+          "cultural_exchange_01"
+        ],
+        "incompatibleWith": [
+          "conflict_zone_03"
+        ],
+        "adjacentTo": [
+          "diplomatic_hub_04"
+        ],
+        "requires": [
+          "Gen3 tool specialization"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Decentralization occurs when tribal cooperation wanes, leading to independence or dissolution.",
+        "compatibleDeconstructors": [
+          "creatures with negotiation > 0.7"
+        ],
+        "decomposesInto": [
+          "independent tribes",
+          "localized technologies"
+        ],
+        "propertyUsage": {
+          "hardness": "low",
+          "volume": "varied",
+          "organic": "low"
+        }
+      },
+      "formation": {
+        "formationProcess": "Evolves through strategic treaties and shared technological advancements, forming cooperative entities.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen2 pack cooperation",
+            "Gen3 technological pathways"
+          ],
+          "requirements": [
+            "technological proficiency",
+            "shared defense needs"
+          ],
+          "causalChain": "Shared technical advancement and mutual defense policies lead to centralized alliance hubs."
+        },
+        "yukaGuidance": "Encourages Yuka AI to recognize shared defense contexts and mutual tech benefits."
+      }
+    },
+    {
+      "id": "conflict_zone_03",
+      "name": "Conflict Zone",
+      "description": "Areas where territorial disputes and resource contention lead to frequent skirmishes. Tribes employ defensive fortifications and engage in tactical maneuvers to control strategic resources.",
+      "parameters": {
+        "networkSize": {
+          "min": 3,
+          "max": 8,
+          "default": 5
+        },
+        "tradeVolume": {
+          "min": 0,
+          "max": 20,
+          "default": 10
+        },
+        "allianceStrength": {
+          "min": 0,
+          "max": 0.3,
+          "default": 0.1
+        },
+        "conflictFrequency": {
+          "min": 0.6,
+          "max": 1,
+          "default": 0.8
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Rock030",
+          "Metal050"
+        ],
+        "colorPalette": [
+          "#5C5E60",
+          "#8A8B8D",
+          "#B8B8B8",
+          "#37383A",
+          "#1C1D1E"
+        ],
+        "pbrProperties": {
+          "baseColor": "#37383A",
+          "roughness": 0.9,
+          "metallic": 0.4,
+          "normalStrength": 1.6,
+          "aoStrength": 0.7,
+          "heightScale": 0.07,
+          "emissive": "#B8B8B8"
+        },
+        "proceduralRules": "Rock formations and metal fortifications adapt to topography for strategic advantage."
+      },
+      "textureReferences": [
+        "Rock030",
+        "Metal050"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.2,
+        "seedModifiers": {
+          "resource-rich": 1.5
+        },
+        "biasDescription": "High likelihood in contested, resource-abundant regions"
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "trade_winds_01"
+        ],
+        "incompatibleWith": [
+          "alliance_network_02"
+        ],
+        "adjacentTo": [],
+        "requires": [
+          "strategic resources",
+          "Gen2 pack organization"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Dismantled through peace treaties or resource exhaustion, leading to territorial stability.",
+        "compatibleDeconstructors": [
+          "negotiation tools",
+          "creatures with diplomacy > 0.8"
+        ],
+        "decomposesInto": [
+          "localized resources",
+          "abandoned structures"
+        ],
+        "propertyUsage": {
+          "hardness": "high",
+          "volume": "density-driven",
+          "organic": "none"
+        }
+      },
+      "formation": {
+        "formationProcess": "Arises from contentious territory claims and the need for strategic control over resources.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen2 territorial disputes",
+            "Gen3 conflict strategies"
+          ],
+          "requirements": [
+            "scarce resources",
+            "tactical superiority"
+          ],
+          "causalChain": "Conflict zones form as tribes compete for dominance in resource-rich areas."
+        },
+        "yukaGuidance": "Yuka AI identifies areas of high resource contention for potential conflict prevention."
+      }
+    },
+    {
+      "id": "cultural_exchange_01",
+      "name": "Cultural Exchange Hubs",
+      "description": "Central points of cultural and knowledge sharing among tribes. These hubs facilitate the exchange of art, technology, and traditions, strengthening inter-tribal connections.",
+      "parameters": {
+        "networkSize": {
+          "min": 5,
+          "max": 12,
+          "default": 8
+        },
+        "tradeVolume": {
+          "min": 10,
+          "max": 50,
+          "default": 30
+        },
+        "allianceStrength": {
+          "min": 0.4,
+          "max": 0.8,
+          "default": 0.6
+        },
+        "conflictFrequency": {
+          "min": 0.1,
+          "max": 0.3,
+          "default": 0.15
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Fabric023",
+          "Wood051"
+        ],
+        "colorPalette": [
+          "#6D5D4E",
+          "#A09E8B",
+          "#D6D5C7",
+          "#857864",
+          "#BFABA0"
+        ],
+        "pbrProperties": {
+          "baseColor": "#A09E8B",
+          "roughness": 0.6,
+          "metallic": 0.1,
+          "normalStrength": 1.3,
+          "aoStrength": 0.5,
+          "heightScale": 0.04,
+          "emissive": "#D6D5C7"
+        },
+        "proceduralRules": "Cultural motifs and architectural designs vary with the artistic influences of participating tribes."
+      },
+      "textureReferences": [
+        "Fabric023",
+        "Wood051"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.4,
+        "seedModifiers": {
+          "cultural-rich-zones": 1.4
+        },
+        "biasDescription": "Thrives in areas with diverse cultural influences and peaceful interactions"
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "alliance_network_02",
+          "trade_winds_01"
+        ],
+        "incompatibleWith": [
+          "conflict_zone_03"
+        ],
+        "adjacentTo": [
+          "diplomatic_hub_04"
+        ],
+        "requires": [
+          "Gen3 communication technologies"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Dissolves when cultural exchanges dwindle or transformative technologies replace traditional practices.",
+        "compatibleDeconstructors": [
+          "technological archives",
+          "creatures with creativity > 0.7"
+        ],
+        "decomposesInto": [
+          "artifacts",
+          "documented traditions"
+        ],
+        "propertyUsage": {
+          "hardness": "low",
+          "volume": "cultural significance",
+          "organic": "minimal"
+        }
+      },
+      "formation": {
+        "formationProcess": "Emerges from the mutual desire to share and preserve cultural heritage, spurred by interactive gatherings.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen2 cultural influences",
+            "Gen3 communicative arts"
+          ],
+          "requirements": [
+            "artistic expression",
+            "technological exchange"
+          ],
+          "causalChain": "Shared heritage and artistic practices create centralized hubs of cultural dissemination."
+        },
+        "yukaGuidance": "Yuka AI recognizes social dynamics and fosters environments for cultural interaction."
+      }
+    },
+    {
+      "id": "diplomatic_hub_04",
+      "name": "Diplomatic Hub",
+      "description": "Key centers for negotiation and treaty formation between tribes. Facilitates long-term alliances and policies addressing environmental and resource challenges.",
+      "parameters": {
+        "networkSize": {
+          "min": 4,
+          "max": 10,
+          "default": 6
+        },
+        "tradeVolume": {
+          "min": 5,
+          "max": 30,
+          "default": 15
+        },
+        "allianceStrength": {
+          "min": 0.6,
+          "max": 1,
+          "default": 0.9
+        },
+        "conflictFrequency": {
+          "min": 0.05,
+          "max": 0.2,
+          "default": 0.1
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Leather011",
+          "Concrete025"
+        ],
+        "colorPalette": [
+          "#4B5539",
+          "#727B57",
+          "#939985",
+          "#BCC3A7",
+          "#DDE4C2"
+        ],
+        "pbrProperties": {
+          "baseColor": "#727B57",
+          "roughness": 0.7,
+          "metallic": 0.3,
+          "normalStrength": 1.2,
+          "aoStrength": 0.5,
+          "heightScale": 0.06,
+          "emissive": "#BCC3A7"
+        },
+        "proceduralRules": "Diplomatic buildings exhibit a blend of architectural styles, signifying cross-cultural influence."
+      },
+      "textureReferences": [
+        "Leather011",
+        "Concrete025"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.5,
+        "seedModifiers": {
+          "high-cooperation-areas": 1.5
+        },
+        "biasDescription": "Ideal in politically stable regions fostering negotiation"
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "alliance_network_02",
+          "cultural_exchange_01"
+        ],
+        "incompatibleWith": [
+          "conflict_zone_03"
+        ],
+        "adjacentTo": [],
+        "requires": [
+          "Gen2 leadership structures",
+          "Gen3 decision-making tools"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Diplomatic hubs fade as policies lose relevance or societal shifts occur, prompting reorganization.",
+        "compatibleDeconstructors": [
+          "legislative reforms",
+          "creatures with negotiation > 0.8"
+        ],
+        "decomposesInto": [
+          "agreements",
+          "policy fragments"
+        ],
+        "propertyUsage": {
+          "hardness": "moderate",
+          "volume": "adaptive",
+          "organic": "low"
+        }
+      },
+      "formation": {
+        "formationProcess": "Develops from a need to resolve conflicts and establish shared governance mechanisms.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen2 leadership structures",
+            "Gen3 strategic negotiations"
+          ],
+          "requirements": [
+            "advanced decision-making",
+            "mutual interests"
+          ],
+          "causalChain": "Negotiated solutions and collective interests lead to the creation of centralized diplomatic hubs."
+        },
+        "yukaGuidance": "Yuka AI evaluates cooperative outcomes and policy impacts to enhance tribal peace efforts."
+      }
+    }
+  ]
+}

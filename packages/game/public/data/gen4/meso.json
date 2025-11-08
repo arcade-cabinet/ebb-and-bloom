@@ -1,0 +1,830 @@
+{
+  "archetypes": [
+    {
+      "id": "archetype_001",
+      "name": "Iron Nexus Council",
+      "description": "A centralized council governance structure where elected representatives from each tribe come together to make decisions for the greater community. This governance model balances local autonomy with central decision-making, ideal for regions with interconnected trade routes.",
+      "parameters": {
+        "governanceComplexity": {
+          "min": 0.5,
+          "max": 0.9,
+          "default": 0.7
+        },
+        "decisionSpeed": {
+          "min": 0.4,
+          "max": 0.8,
+          "default": 0.6
+        },
+        "resourceEfficiency": {
+          "min": 0.6,
+          "max": 0.9,
+          "default": 0.75
+        },
+        "socialStability": {
+          "min": 0.7,
+          "max": 1,
+          "default": 0.85
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Metal049A",
+          "Fabric019"
+        ],
+        "colorPalette": [
+          "#34495E",
+          "#2ECC71",
+          "#3498DB",
+          "#E74C3C",
+          "#9B59B6"
+        ],
+        "pbrProperties": {
+          "baseColor": "#34495E",
+          "roughness": 0.5,
+          "metallic": 0.3,
+          "normalStrength": 1.2,
+          "aoStrength": 0.7,
+          "heightScale": 0.03,
+          "emissive": "#3498DB"
+        },
+        "proceduralRules": "Fabric patterns vary by tribal symbol, metal sheen reflects council diversity."
+      },
+      "textureReferences": [
+        "Metal049A",
+        "Fabric019"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.4,
+        "seedModifiers": {
+          "interconnectivity-high": 1.3
+        },
+        "biasDescription": "Favored in highly interconnected trade regions."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "Trade Winds Network",
+          "Alliance Network"
+        ],
+        "incompatibleWith": [
+          "Conflict Zone"
+        ],
+        "adjacentTo": [
+          "Cultural Exchange Hubs"
+        ],
+        "requires": [
+          "Trade Winds Network"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "The council disbands and representatives return to their tribes.",
+        "compatibleDeconstructors": [
+          "Diplomatic Mediators"
+        ],
+        "decomposesInto": [
+          "local governance structures"
+        ],
+        "propertyUsage": {
+          "hardness": "low",
+          "volume": "high",
+          "organic": "medium"
+        }
+      },
+      "formation": {
+        "formationProcess": "Tribes elect representatives during inter-tribal gatherings.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen2 Kinship Tribe"
+          ],
+          "requirements": [
+            "communication systems",
+            "inter-tribal trust"
+          ],
+          "causalChain": "Increased trade necessitated central coordination, leading to the creation of a council."
+        },
+        "yukaGuidance": "Evaluate tribe connectivity and trade interdependence."
+      }
+    },
+    {
+      "id": "archetype_002",
+      "name": "Metal Tapestry Confederation",
+      "description": "A confederation model that emphasizes loose alliance among tribes, focusing on shared cultural heritage and defensive collaborations.",
+      "parameters": {
+        "governanceComplexity": {
+          "min": 0.3,
+          "max": 0.6,
+          "default": 0.5
+        },
+        "decisionSpeed": {
+          "min": 0.5,
+          "max": 0.9,
+          "default": 0.7
+        },
+        "resourceEfficiency": {
+          "min": 0.4,
+          "max": 0.7,
+          "default": 0.6
+        },
+        "socialStability": {
+          "min": 0.6,
+          "max": 0.9,
+          "default": 0.75
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Fabric023",
+          "Metal050"
+        ],
+        "colorPalette": [
+          "#1ABC9C",
+          "#F39C12",
+          "#E67E22",
+          "#C0392B",
+          "#8E44AD"
+        ],
+        "pbrProperties": {
+          "baseColor": "#1ABC9C",
+          "roughness": 0.4,
+          "metallic": 0.2,
+          "normalStrength": 1,
+          "aoStrength": 0.6,
+          "heightScale": 0.04,
+          "emissive": "#F39C12"
+        },
+        "proceduralRules": "Fabric colors weave together to represent unified tribal identity."
+      },
+      "textureReferences": [
+        "Fabric023",
+        "Metal050"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.3,
+        "seedModifiers": {
+          "cultural-homogeneity": 1.2
+        },
+        "biasDescription": "More likely in culturally homogenous regions."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "Cultural Exchange Hubs"
+        ],
+        "incompatibleWith": [
+          "Diplomatic Hub"
+        ],
+        "adjacentTo": [
+          "Cultural Exchange Hubs"
+        ],
+        "requires": [
+          "Cultural Exchange Hubs"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Disbands into independent tribes retaining cultural symbols.",
+        "compatibleDeconstructors": [
+          "Cultural Analysts"
+        ],
+        "decomposesInto": [
+          "tribal cultures"
+        ],
+        "propertyUsage": {
+          "hardness": "low",
+          "volume": "high",
+          "organic": "medium"
+        }
+      },
+      "formation": {
+        "formationProcess": "Tribes loosely align based on shared culture and threats.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen2 Skill Specialists"
+          ],
+          "requirements": [
+            "cultural alignment",
+            "regional threats"
+          ],
+          "causalChain": "External threats and shared heritage led to a confederation."
+        },
+        "yukaGuidance": "Assess cultural unity and threat presence."
+      }
+    },
+    {
+      "id": "archetype_003",
+      "name": "Harmonic Council",
+      "description": "A council system where decision-making is based on harmonizing differing perspectives into a cohesive strategy, ideal for diplomatic hubs.",
+      "parameters": {
+        "governanceComplexity": {
+          "min": 0.6,
+          "max": 0.9,
+          "default": 0.8
+        },
+        "decisionSpeed": {
+          "min": 0.3,
+          "max": 0.6,
+          "default": 0.45
+        },
+        "resourceEfficiency": {
+          "min": 0.5,
+          "max": 0.8,
+          "default": 0.6
+        },
+        "socialStability": {
+          "min": 0.8,
+          "max": 1,
+          "default": 0.9
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Fabric019",
+          "Metal050"
+        ],
+        "colorPalette": [
+          "#2980B9",
+          "#27AE60",
+          "#F1C40F",
+          "#E74C3C",
+          "#8E44AD"
+        ],
+        "pbrProperties": {
+          "baseColor": "#2980B9",
+          "roughness": 0.3,
+          "metallic": 0.25,
+          "normalStrength": 1.3,
+          "aoStrength": 0.7,
+          "heightScale": 0.02,
+          "emissive": "#E74C3C"
+        },
+        "proceduralRules": "Metallic elements represent balanced perspectives, fabrics indicate diverse cultures."
+      },
+      "textureReferences": [
+        "Fabric019",
+        "Metal050"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.5,
+        "seedModifiers": {
+          "diplomatic-ability": 1.5
+        },
+        "biasDescription": "Favored in regions with high diplomatic activity."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "Diplomatic Hub"
+        ],
+        "incompatibleWith": [
+          "Conflict Zone"
+        ],
+        "adjacentTo": [
+          "Alliance Network"
+        ],
+        "requires": [
+          "Diplomatic Hub"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Consensus breaks down, perspectives revert to individual stances.",
+        "compatibleDeconstructors": [
+          "Diplomatic Breakers"
+        ],
+        "decomposesInto": [
+          "tribal diplomacy models"
+        ],
+        "propertyUsage": {
+          "hardness": "low",
+          "volume": "medium",
+          "organic": "high"
+        }
+      },
+      "formation": {
+        "formationProcess": "Emerges from the need to synthesize diverse tribal policies.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen3 Deep Vein Network"
+          ],
+          "requirements": [
+            "diplomatic skills",
+            "conflict resolution"
+          ],
+          "causalChain": "Diplomatic hubs required a method to harmonize diverse views."
+        },
+        "yukaGuidance": "Determine the area's diplomatic complexity and need for harmonization."
+      }
+    },
+    {
+      "id": "archetype_004",
+      "name": "Resource Ring Federation",
+      "description": "A federation structure that coordinates multiple packs specialized in different resource extraction and provides a platform for controlled distribution.",
+      "parameters": {
+        "governanceComplexity": {
+          "min": 0.6,
+          "max": 0.9,
+          "default": 0.7
+        },
+        "decisionSpeed": {
+          "min": 0.4,
+          "max": 0.7,
+          "default": 0.6
+        },
+        "resourceEfficiency": {
+          "min": 0.8,
+          "max": 1,
+          "default": 0.9
+        },
+        "socialStability": {
+          "min": 0.7,
+          "max": 0.9,
+          "default": 0.8
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Metal049A",
+          "Rock030"
+        ],
+        "colorPalette": [
+          "#ECF0F1",
+          "#95A5A6",
+          "#7F8C8D",
+          "#BDC3C7",
+          "#D5D8DC"
+        ],
+        "pbrProperties": {
+          "baseColor": "#95A5A6",
+          "roughness": 0.5,
+          "metallic": 0.4,
+          "normalStrength": 1.4,
+          "aoStrength": 0.8,
+          "heightScale": 0.05,
+          "emissive": "#BDC3C7"
+        },
+        "proceduralRules": "Textures reflect the resource specialization of the federation."
+      },
+      "textureReferences": [
+        "Metal049A",
+        "Rock030"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.5,
+        "seedModifiers": {
+          "resource-diversity": 1.4
+        },
+        "biasDescription": "More likely in resource-rich environments requiring coordination."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "Trade Winds Network"
+        ],
+        "incompatibleWith": [
+          "Cultural Exchange Hubs"
+        ],
+        "adjacentTo": [
+          "Alliance Network"
+        ],
+        "requires": [
+          "Deep Vein Network"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Disbands, resources are claimed by individual groups.",
+        "compatibleDeconstructors": [
+          "Resource Extractors"
+        ],
+        "decomposesInto": [
+          "raw materials"
+        ],
+        "propertyUsage": {
+          "hardness": "high",
+          "volume": "high",
+          "organic": "low"
+        }
+      },
+      "formation": {
+        "formationProcess": "Develops to optimize resource distribution across territories.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen3 Thermal Bore Accelerator"
+          ],
+          "requirements": [
+            "resource specialization",
+            "territorial agreements"
+          ],
+          "causalChain": "Diverse resources forced collaboration, forming a federation."
+        },
+        "yukaGuidance": "Assess resource diversity and distribution needs."
+      }
+    },
+    {
+      "id": "archetype_005",
+      "name": "Sovereign Mesh",
+      "description": "A democratic mesh of tribes where power is distributed horizontally, and decisions are made collectively through transparent consensus.",
+      "parameters": {
+        "governanceComplexity": {
+          "min": 0.7,
+          "max": 1,
+          "default": 0.85
+        },
+        "decisionSpeed": {
+          "min": 0.3,
+          "max": 0.5,
+          "default": 0.4
+        },
+        "resourceEfficiency": {
+          "min": 0.5,
+          "max": 0.7,
+          "default": 0.6
+        },
+        "socialStability": {
+          "min": 0.9,
+          "max": 1,
+          "default": 0.95
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Fabric023",
+          "Metal050"
+        ],
+        "colorPalette": [
+          "#F5B041",
+          "#45B39D",
+          "#BB8FCE",
+          "#F4D03F",
+          "#1C2833"
+        ],
+        "pbrProperties": {
+          "baseColor": "#45B39D",
+          "roughness": 0.6,
+          "metallic": 0.2,
+          "normalStrength": 1.1,
+          "aoStrength": 0.7,
+          "heightScale": 0.03,
+          "emissive": "#F4D03F"
+        },
+        "proceduralRules": "Textile patterns are diverse but unified in shared symbolism."
+      },
+      "textureReferences": [
+        "Fabric023",
+        "Metal050"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.6,
+        "seedModifiers": {
+          "social-equality": 1.6
+        },
+        "biasDescription": "Preferred in societies valuing equality and shared power."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "Cultural Exchange Hubs"
+        ],
+        "incompatibleWith": [
+          "Chiefdoms"
+        ],
+        "adjacentTo": [
+          "Harmonic Council"
+        ],
+        "requires": [
+          "Alliance Network"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Reverts to tribal units, decisions made independently.",
+        "compatibleDeconstructors": [
+          "Social Analysts"
+        ],
+        "decomposesInto": [
+          "tribal decision models"
+        ],
+        "propertyUsage": {
+          "hardness": "medium",
+          "volume": "medium",
+          "organic": "high"
+        }
+      },
+      "formation": {
+        "formationProcess": "Forms when tribes unite in pursuit of collectively beneficial governance.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen2 Skill Specialists"
+          ],
+          "requirements": [
+            "social structures",
+            "communication networks"
+          ],
+          "causalChain": "Need for equal representation led to democratic structures."
+        },
+        "yukaGuidance": "Evaluate societal values and communication frameworks."
+      }
+    },
+    {
+      "id": "archetype_006",
+      "name": "Iron Veil Protection Alliance",
+      "description": "A defensive alliance model prioritizing mutual protection and coordinated responses to external threats, securing territorial boundaries.",
+      "parameters": {
+        "governanceComplexity": {
+          "min": 0.5,
+          "max": 0.8,
+          "default": 0.7
+        },
+        "decisionSpeed": {
+          "min": 0.6,
+          "max": 0.9,
+          "default": 0.8
+        },
+        "resourceEfficiency": {
+          "min": 0.4,
+          "max": 0.6,
+          "default": 0.5
+        },
+        "socialStability": {
+          "min": 0.6,
+          "max": 0.8,
+          "default": 0.7
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Metal050",
+          "Rock025"
+        ],
+        "colorPalette": [
+          "#2C3E50",
+          "#E74C3C",
+          "#3498DB",
+          "#9B59B6",
+          "#27AE60"
+        ],
+        "pbrProperties": {
+          "baseColor": "#2C3E50",
+          "roughness": 0.7,
+          "metallic": 0.3,
+          "normalStrength": 1.3,
+          "aoStrength": 0.9,
+          "heightScale": 0.06,
+          "emissive": "#E74C3C"
+        },
+        "proceduralRules": "Metals signify protection, stone textures underline defense."
+      },
+      "textureReferences": [
+        "Metal050",
+        "Rock025"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.4,
+        "seedModifiers": {
+          "protection-need": 1.7
+        },
+        "biasDescription": "Favored in regions facing frequent external threats."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "Alliance Network"
+        ],
+        "incompatibleWith": [
+          "Trade Winds Network"
+        ],
+        "adjacentTo": [
+          "Cultural Exchange Hubs"
+        ],
+        "requires": [
+          "Conflict Zone"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Alliance dissipates, tribes fortify their own defenses.",
+        "compatibleDeconstructors": [
+          "Security Analysts"
+        ],
+        "decomposesInto": [
+          "tribal defense models"
+        ],
+        "propertyUsage": {
+          "hardness": "high",
+          "volume": "medium",
+          "organic": "low"
+        }
+      },
+      "formation": {
+        "formationProcess": "Arises from the necessity to collectively manage external threats.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen2 Age Hierarchy"
+          ],
+          "requirements": [
+            "shared security concerns",
+            "inter-tribal coordination"
+          ],
+          "causalChain": "Frequent threats fostered a collective defense need."
+        },
+        "yukaGuidance": "Identify threat patterns and collective security measures."
+      }
+    },
+    {
+      "id": "archetype_007",
+      "name": "Equilibrium Council",
+      "description": "Designed to maintain societal balance by integrating rotating leadership roles based on individual merit and achievement, supporting dynamic stability.",
+      "parameters": {
+        "governanceComplexity": {
+          "min": 0.4,
+          "max": 0.7,
+          "default": 0.6
+        },
+        "decisionSpeed": {
+          "min": 0.5,
+          "max": 0.8,
+          "default": 0.7
+        },
+        "resourceEfficiency": {
+          "min": 0.6,
+          "max": 0.8,
+          "default": 0.75
+        },
+        "socialStability": {
+          "min": 0.7,
+          "max": 0.9,
+          "default": 0.8
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Fabric019",
+          "Leather012"
+        ],
+        "colorPalette": [
+          "#34495E",
+          "#1ABC9C",
+          "#F39C12",
+          "#E67E22",
+          "#8E44AD"
+        ],
+        "pbrProperties": {
+          "baseColor": "#1ABC9C",
+          "roughness": 0.5,
+          "metallic": 0.3,
+          "normalStrength": 1.1,
+          "aoStrength": 0.6,
+          "heightScale": 0.02,
+          "emissive": "#F39C12"
+        },
+        "proceduralRules": "Patterns represent change, unity, and dynamic governance."
+      },
+      "textureReferences": [
+        "Fabric019",
+        "Leather012"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.3,
+        "seedModifiers": {
+          "merit-based": 1.3
+        },
+        "biasDescription": "Favored in cultures emphasizing meritocratic values."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "Cultural Exchange Hubs",
+          "Trade Winds Network"
+        ],
+        "incompatibleWith": [
+          "Iron Veil Protection Alliance"
+        ],
+        "adjacentTo": [
+          "Harmonic Council"
+        ],
+        "requires": [
+          "Alliance Network"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Reverts roles, returns to merit-based tribal systems.",
+        "compatibleDeconstructors": [
+          "Governance Analysts"
+        ],
+        "decomposesInto": [
+          "tribal governance models"
+        ],
+        "propertyUsage": {
+          "hardness": "medium",
+          "volume": "high",
+          "organic": "medium"
+        }
+      },
+      "formation": {
+        "formationProcess": "Developed to capitalize on individual talents and rotate leadership.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen1 Chromatic Cartographer"
+          ],
+          "requirements": [
+            "merit-based recognition",
+            "adaptive leadership needs"
+          ],
+          "causalChain": "Need for dynamic leadership led to flexible governance systems."
+        },
+        "yukaGuidance": "Evaluate cultural readiness for rotating leadership."
+      }
+    },
+    {
+      "id": "archetype_008",
+      "name": "Radiant Assembly",
+      "description": "A highly structured democratic assembly focusing on resource innovation and technological advancement, blending different tribal disciplines.",
+      "parameters": {
+        "governanceComplexity": {
+          "min": 0.8,
+          "max": 1,
+          "default": 0.9
+        },
+        "decisionSpeed": {
+          "min": 0.3,
+          "max": 0.5,
+          "default": 0.4
+        },
+        "resourceEfficiency": {
+          "min": 0.7,
+          "max": 1,
+          "default": 0.85
+        },
+        "socialStability": {
+          "min": 0.8,
+          "max": 1,
+          "default": 0.9
+        }
+      },
+      "visualProperties": {
+        "primaryTextures": [
+          "Metal049A",
+          "Fabric023"
+        ],
+        "colorPalette": [
+          "#3498DB",
+          "#1ABC9C",
+          "#F39C12",
+          "#E74C3C",
+          "#8E44AD"
+        ],
+        "pbrProperties": {
+          "baseColor": "#3498DB",
+          "roughness": 0.4,
+          "metallic": 0.35,
+          "normalStrength": 1.5,
+          "aoStrength": 0.7,
+          "heightScale": 0.03,
+          "emissive": "#8E44AD"
+        },
+        "proceduralRules": "Fabrics symbolize knowledge exchange, metals express innovation."
+      },
+      "textureReferences": [
+        "Metal049A",
+        "Fabric023"
+      ],
+      "selectionBias": {
+        "baseWeight": 0.5,
+        "seedModifiers": {
+          "innovation-focus": 1.8
+        },
+        "biasDescription": "Preferred in tribes aiming for technological growth."
+      },
+      "adjacency": {
+        "compatibleWith": [
+          "Trade Winds Network"
+        ],
+        "incompatibleWith": [
+          "Iron Veil Protection Alliance"
+        ],
+        "adjacentTo": [
+          "Cultural Exchange Hubs"
+        ],
+        "requires": [
+          "Deep Vein Network"
+        ]
+      },
+      "deconstruction": {
+        "deconstructionProcess": "Returns to specialized tribal innovations and governance.",
+        "compatibleDeconstructors": [
+          "Innovation Facilitators"
+        ],
+        "decomposesInto": [
+          "specialized technologies"
+        ],
+        "propertyUsage": {
+          "hardness": "medium",
+          "volume": "high",
+          "organic": "low"
+        }
+      },
+      "formation": {
+        "formationProcess": "Emerges to accelerate and manage technological advancements.",
+        "synthesisFrom": {
+          "previousGenerations": [
+            "Gen3 Aqua-Seep Extractor"
+          ],
+          "requirements": [
+            "technological focus",
+            "resource management systems"
+          ],
+          "causalChain": "A focus on collective advancement prompted the formation of an assembly for innovation."
+        },
+        "yukaGuidance": "Identify areas ripe for technological investment and resources."
+      }
+    }
+  ]
+}

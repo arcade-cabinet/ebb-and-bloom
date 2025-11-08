@@ -3,7 +3,6 @@
  * Uses data pools for pack behaviors instead of hardcoding
  */
 
-import seedrandom from 'seedrandom';
 import {
   CohesionBehavior,
   FuzzyAND,
@@ -68,7 +67,7 @@ class PackFormationFuzzy {
     problem.add(problemLow);
     problem.add(problemMod);
     problem.add(problemHigh);
-    this.fuzzy.addFLV('problem', problem);
+    this.fuzzy.addFLV(problem);
 
     // INPUT 2: Capability (proximity of creatures)
     const capability = new FuzzyVariable('capability');
@@ -78,7 +77,7 @@ class PackFormationFuzzy {
     capability.add(capFar);
     capability.add(capMed);
     capability.add(capClose);
-    this.fuzzy.addFLV('capability', capability);
+    this.fuzzy.addFLV(capability);
 
     // OUTPUT: Desirability of pack formation
     const desirability = new FuzzyVariable('desirability');
@@ -88,7 +87,7 @@ class PackFormationFuzzy {
     desirability.add(desLow);
     desirability.add(desMod);
     desirability.add(desHigh);
-    this.fuzzy.addFLV('desirability', desirability);
+    this.fuzzy.addFLV(desirability);
 
     // RULES: Comprehensive coverage (9 rules for all combinations)
     // Use FuzzySet objects directly (not getSet() - that doesn't exist)
@@ -135,7 +134,6 @@ class PackMemberVehicle extends Vehicle {
  */
 export class Gen2System {
   private seed: string;
-  private rng: seedrandom.PRNG;
   private fuzzy: PackFormationFuzzy;
   private packs: Map<string, Pack> = new Map();
   private vehicles: Map<string, PackMemberVehicle> = new Map();
@@ -145,7 +143,6 @@ export class Gen2System {
 
   constructor(config: Gen2Config) {
     this.seed = config.seed;
-    this.rng = seedrandom(config.seed);
     this.fuzzy = new PackFormationFuzzy();
     this.gen1Data = config.gen1Data;
     this.useAI = config.useAI ?? true;
@@ -162,7 +159,7 @@ export class Gen2System {
       // Extract base seed from generation seed (remove -gen2 suffix)
       const baseSeed = this.seed.replace(/-gen\d+$/, '');
       const dataPools = await generateGen2DataPools(baseSeed, this.gen1Data);
-      this.packTypeOptions = dataPools.macro.packTypeOptions.map((p: any) => ({
+      this.packTypeOptions = dataPools.macro.archetypeOptions.map((p: any) => ({
         id: p.id,
         name: p.name,
         traits: p.traits,

@@ -27,7 +27,6 @@ export function calculateMoons(planet: Planet, seed: string): Moon[] {
   
   // Determine number of moons based on planet mass and accretion history
   // Larger planets and more violent accretion = more moons
-  const _massRatio = planet.mass / 5.97e24; // Earth mass (for future use)
   const collisionCount = planet.compositionHistory.filter(
     e => e.type === 'collision'
   ).length;

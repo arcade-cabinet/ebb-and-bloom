@@ -8,15 +8,13 @@ import { AdvancedDynamicTexture, Rectangle, Image, Control } from '@babylonjs/gu
 
 export class SplashScreenScene {
   private scene: Scene;
-  private engine: Engine;
   private guiTexture: AdvancedDynamicTexture | null = null;
   private splashImage: Image | null = null;
   private onComplete: () => void;
   private splashDuration: number = 2500; // 2.5 seconds (random between 2-3s)
 
-  constructor(scene: Scene, engine: Engine, onComplete: () => void) {
+  constructor(scene: Scene, _engine: Engine, onComplete: () => void) {
     this.scene = scene;
-    this.engine = engine;
     this.onComplete = onComplete;
     
     // Random duration between 2-3 seconds

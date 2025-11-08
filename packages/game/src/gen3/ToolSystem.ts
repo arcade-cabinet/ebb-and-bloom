@@ -33,7 +33,7 @@ export class ToolEmergenceFuzzy {
     problem.add(problemLow);
     problem.add(problemMod);
     problem.add(problemHigh);
-    this.fuzzy.addFLV('problem', problem);
+    this.fuzzy.addFLV(problem);
 
     // Input 2: Creature capability
     const capability = new FuzzyVariable('capability');
@@ -43,7 +43,7 @@ export class ToolEmergenceFuzzy {
     capability.add(capLow);
     capability.add(capMod);
     capability.add(capHigh);
-    this.fuzzy.addFLV('capability', capability);
+    this.fuzzy.addFLV(capability);
 
     // Output: Tool emergence probability
     const emergence = new FuzzyVariable('emergence');
@@ -53,7 +53,7 @@ export class ToolEmergenceFuzzy {
     emergence.add(emergeLow);
     emergence.add(emergeMod);
     emergence.add(emergeHigh);
-    this.fuzzy.addFLV('emergence', emergence);
+    this.fuzzy.addFLV(emergence);
 
     // Comprehensive rules (9 combinations)
     // Use FuzzySet objects directly (not getSet() - that doesn't exist)
@@ -103,8 +103,8 @@ export class Gen3System {
     if (this.useAI && gen2Data) {
       // Use base seed (not planet.seed) for generation chaining
       const baseSeed = this.planet.seed;
-      const dataPools = await generateGen3DataPools(this.planet, gen2Data, baseSeed);
-      this.toolTypeOptions = dataPools.micro.toolTypesOptions;
+      const dataPools = await generateGen3DataPools(baseSeed);
+      this.toolTypeOptions = dataPools.micro.archetypeOptions;
       console.log(`[GEN3] Generated ${this.toolTypeOptions.length} tool type options`);
     } else {
       // Fallback
@@ -156,7 +156,7 @@ export class Gen3System {
   /**
    * Create a tool using AI-generated specs
    */
-  private createTool(pack: Pack, creatures: Creature[]): Tool {
+  private createTool(pack: Pack, _creatures: Creature[]): Tool {
     // Select tool type from AI pool
     const { micro } = extractSeedComponents(this.planet.seed + pack.id);
     const toolType = selectFromPool(this.toolTypeOptions, micro);
@@ -192,7 +192,6 @@ export class Gen3System {
    */
   private queryMaterialsAt(coord: { latitude: number; longitude: number; altitude?: number }): Material[] {
     const altitudeKm = coord.altitude || 0;
-    const radiusKm = this.planet.radius / 1000;
 
     const layer =
       this.planet.layers.find((l) => altitudeKm >= l.minRadius && altitudeKm <= l.maxRadius) ||

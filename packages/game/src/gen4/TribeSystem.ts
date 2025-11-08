@@ -5,7 +5,7 @@
 
 import { Goal } from 'yuka';
 import seedrandom from 'seedrandom';
-import { Tribe, Pack, Creature, Tool, Planet, Coordinate, Territory } from '../schemas/index.js';
+import { Tribe, Pack, Creature, Tool, Planet, Coordinate } from '../schemas/index.js';
 import { generateGen4DataPools, selectFromPool, extractSeedComponents } from '../gen-systems/loadGenData.js';
 
 /**
@@ -60,16 +60,22 @@ export class Gen4System {
     if (this.useAI && gen3Data) {
       // Use base seed (not planet.seed) for generation chaining
       const baseSeed = this.planet.seed;
-      const dataPools = await generateGen4DataPools(this.planet, gen3Data, baseSeed);
+      const dataPools = await generateGen4DataPools(baseSeed);
+      // Select from archetype options
+      const { macro, meso, micro } = extractSeedComponents(baseSeed + '-gen4');
+      const macroArch = selectFromPool(dataPools.macro.archetypeOptions, macro);
+      const mesoArch = selectFromPool(dataPools.meso.archetypeOptions, meso);
+      const microArch = selectFromPool(dataPools.micro.archetypeOptions, micro);
+      
       this.tribalStructures = [
         {
-          name: dataPools.macro.selectedStructure,
-          governance: dataPools.meso.selectedGovernance,
-          tradition: dataPools.micro.selectedTradition,
-          visualBlueprint: dataPools.macro.visualBlueprint,
+          name: (macroArch as any).name || 'Hierarchical Clan',
+          governance: (mesoArch as any).name || 'Elder Council',
+          tradition: (microArch as any).name || 'Resource Sharing',
+          visualBlueprint: (macroArch as any).visualBlueprint || {},
         },
       ];
-      console.log(`[GEN4] Selected tribal structure: ${dataPools.macro.selectedStructure}`);
+      console.log(`[GEN4] Selected tribal structure: ${this.tribalStructures[0].name}`);
     } else {
       // Fallback
       this.tribalStructures = [
@@ -81,7 +87,7 @@ export class Gen4System {
   /**
    * Evaluate tribe formation from packs
    */
-  evaluateTribeFormation(packs: Pack[], creatures: Creature[], tools: Tool[]): Tribe[] {
+  evaluateTribeFormation(packs: Pack[], _creatures: Creature[], tools: Tool[]): Tribe[] {
     const tribes: Tribe[] = [];
     const assignedPacks = new Set<string>();
 

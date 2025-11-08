@@ -123,13 +123,10 @@ describe('Gen 0: WARP/WEFT Data Integration', () => {
       // Load raw archetype data to check bounds
       // Use same path resolution as loadGenData.ts
       const { promises: fs } = await import('fs');
-      const { join, dirname } = await import('path');
-      const { fileURLToPath } = await import('url');
+      const { join } = await import('path');
       
-      // Resolve from packages/game/src/gen-systems/loadGenData.ts location
-      const loadGenDataPath = fileURLToPath(new URL('../src/gen-systems/loadGenData.ts', import.meta.url));
-      const loadGenDataDir = dirname(loadGenDataPath);
-      const genPath = join(loadGenDataDir, '../../../gen/data/archetypes/gen0/macro.json');
+      // Resolve from test file location (archetypes are now in packages/game/data/)
+      const genPath = join(__dirname, '../data/archetypes/gen0/macro.json');
       
       const rawData = JSON.parse(await fs.readFile(genPath, 'utf8'));
       const archetype = rawData.archetypes.find((a: any) => a.id === gen0Data.macro.archetypeId);

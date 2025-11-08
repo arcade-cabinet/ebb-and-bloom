@@ -40,12 +40,15 @@ global.HTMLCanvasElement = class HTMLCanvasElement {
   height = 600;
 } as any;
 
-// Mock localStorage
+// Mock localStorage with actual storage
+const storage: Record<string, string> = {};
 const localStorageMock = {
-  getItem: vi.fn(),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-  clear: vi.fn(),
+  getItem: vi.fn((key: string) => storage[key] !== undefined ? storage[key] : null),
+  setItem: vi.fn((key: string, value: string) => { storage[key] = value; }),
+  removeItem: vi.fn((key: string) => { delete storage[key]; }),
+  clear: vi.fn(() => { Object.keys(storage).forEach(key => delete storage[key]); }),
+  get length() { return Object.keys(storage).length; },
+  key: vi.fn((index: number) => Object.keys(storage)[index] || null),
 };
 global.localStorage = localStorageMock as any;
 

@@ -60,17 +60,23 @@ export class Gen6System {
     if (this.useAI && gen5Data) {
       // Use base seed (not planet.seed) for generation chaining
       const baseSeed = this.planet.seed;
-      const dataPools = await generateGen6DataPools(this.planet, gen5Data, baseSeed);
+      const dataPools = await generateGen6DataPools(baseSeed);
+      // Select from archetype options
+      const { macro, meso, micro } = extractSeedComponents(baseSeed + '-gen6');
+      const macroArch = selectFromPool(dataPools.macro.archetypeOptions, macro);
+      const mesoArch = selectFromPool(dataPools.meso.archetypeOptions, meso);
+      const microArch = selectFromPool(dataPools.micro.archetypeOptions, micro);
+      
       this.cosmologyOptions = [
         {
-          cosmology: dataPools.macro.selectedCosmology,
-          ritualType: dataPools.meso.selectedRitualType,
-          belief: dataPools.micro.selectedBelief.name,
-          domain: dataPools.micro.selectedBelief.domain,
-          visualBlueprint: dataPools.macro.visualBlueprint,
+          cosmology: (macroArch as any).name || 'Cyclical Time',
+          ritualType: (mesoArch as any).name || 'Seasonal',
+          belief: (microArch as any).name || 'Nature Spirits',
+          domain: (microArch as any).domain || 'environment',
+          visualBlueprint: (macroArch as any).visualBlueprint || {},
         },
       ];
-      console.log(`[GEN6] Selected cosmology: ${dataPools.macro.selectedCosmology}`);
+      console.log(`[GEN6] Selected cosmology: ${this.cosmologyOptions[0].cosmology}`);
     } else {
       // Fallback
       this.cosmologyOptions = [
@@ -107,7 +113,7 @@ export class Gen6System {
   /**
    * Form a religion using AI-generated cosmology
    */
-  private formReligion(tribe: Tribe, creatures: Creature[]): Religion {
+  private formReligion(tribe: Tribe, _creatures: Creature[]): Religion {
     const { macro } = extractSeedComponents(this.planet.seed + tribe.id);
     const cosmology = selectFromPool(this.cosmologyOptions, macro);
 
