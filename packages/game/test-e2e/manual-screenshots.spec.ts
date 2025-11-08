@@ -94,8 +94,12 @@ test('Capture application screenshots', async ({ page }) => {
       const createButtonY = box.y + box.height / 2 + 50;
       await page.mouse.click(createButtonX, createButtonY);
       
-      // Wait for any navigation or errors
-      await page.waitForTimeout(5000);
+      // Wait for navigation or timeout
+      await page.waitForFunction(() => {
+        return window.location.hash.includes('gameId=');
+      }, { timeout: 5000 }).catch(() => {
+        console.log('⚠️ Navigation did not occur');
+      });
       
       await page.screenshot({ 
         path: 'test-results/screenshot-04-after-create-click.png',
@@ -111,7 +115,12 @@ test('Capture application screenshots', async ({ page }) => {
   await test.step('Direct game navigation', async () => {
     // Navigate directly to a game scene
     await page.goto('/#gameId=demo-game-12345');
-    await page.waitForTimeout(5000);
+    // Wait for scene to initialize
+    await page.waitForFunction(() => {
+      return typeof (window as any).scene !== 'undefined';
+    }, { timeout: 5000 }).catch(() => {
+      console.log('⚠️ Scene not initialized');
+    });
     
     await page.screenshot({ 
       path: 'test-results/screenshot-05-game-scene-direct.png',

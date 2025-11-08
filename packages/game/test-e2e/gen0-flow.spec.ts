@@ -29,7 +29,7 @@ test.describe('Gen0 Complete Flow', () => {
       // Wait a bit for BabylonJS to fully initialize
       await page.waitForTimeout(1000);
       
-      // Verify canvas is visible
+      // Verify canvas is visible (already defined above)
       await expect(canvas).toBeVisible();
       
       // Take screenshot of main menu
@@ -161,8 +161,10 @@ test.describe('Gen0 Complete Flow', () => {
     
     // Step 7: Wait for 3D sphere to render
     await test.step('Wait for planet rendering', async () => {
-      // Wait for GameScene to load and render
-      await page.waitForTimeout(5000);
+      // Wait for GameScene to load and render using waitForFunction
+      await page.waitForFunction(() => {
+        return typeof (window as any).scene !== 'undefined' && (window as any).scene !== null;
+      }, { timeout: 10000 });
       
       // Verify canvas is still rendering
       const canvas = page.locator('#renderCanvas');
@@ -182,8 +184,13 @@ test.describe('Gen0 Complete Flow', () => {
       // Check network requests for texture files
       // BabylonJS loads textures from /textures/ directory
       
-      // Wait for scene to fully load
-      await page.waitForTimeout(3000);
+      // Wait for scene to have materials
+      await page.waitForFunction(() => {
+        const scene = (window as any).scene;
+        return scene && scene.materials && scene.materials.length > 0;
+      }, { timeout: 5000 }).catch(() => {
+        console.log('⚠️ Materials not loaded within timeout');
+      });
       
       // Take screenshot of fully loaded scene
       await page.screenshot({ 
@@ -197,8 +204,13 @@ test.describe('Gen0 Complete Flow', () => {
     // Step 9: Verify moons are rendered
     await test.step('Check moon rendering', async () => {
       // Moons should be visible in the scene
-      // Wait for orbital animation to start
-      await page.waitForTimeout(2000);
+      // Wait for meshes to be created
+      await page.waitForFunction(() => {
+        const scene = (window as any).scene;
+        return scene && scene.meshes && scene.meshes.length > 1;
+      }, { timeout: 3000 }).catch(() => {
+        console.log('⚠️ Multiple meshes not created within timeout');
+      });
       
       // Take screenshot showing moons
       await page.screenshot({ 
@@ -257,20 +269,20 @@ test.describe('Gen0 Complete Flow', () => {
     
     // Step 11: Test orbital animation
     await test.step('Verify orbital animation', async () => {
-      // Wait and capture animation frames
-      await page.waitForTimeout(1000);
+      // Wait and capture animation frames with smaller delays
+      await page.waitForTimeout(500);
       await page.screenshot({ 
         path: 'test-results/08-animation-frame-1.png',
         fullPage: true 
       });
       
-      await page.waitForTimeout(2000);
+      await page.waitForTimeout(1000);
       await page.screenshot({ 
         path: 'test-results/09-animation-frame-2.png',
         fullPage: true 
       });
       
-      await page.waitForTimeout(2000);
+      await page.waitForTimeout(1000);
       await page.screenshot({ 
         path: 'test-results/10-animation-frame-3.png',
         fullPage: true 

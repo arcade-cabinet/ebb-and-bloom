@@ -12,7 +12,7 @@ This document demonstrates the complete user flow from main menu to Gen0 simulat
 
 ### 1. Main Menu
 
-![Main Menu](test-results/screenshot-01-main-menu.png)
+![Main Menu](docs/screenshots/screenshot-01-main-menu.png)
 
 **Features Demonstrated:**
 - ✅ BabylonJS rendering initialized
@@ -25,7 +25,7 @@ This document demonstrates the complete user flow from main menu to Gen0 simulat
 
 ### 2. Seed Input Modal
 
-![Seed Input Modal](test-results/screenshot-02-seed-modal.png)
+![Seed Input Modal](docs/screenshots/screenshot-02-seed-modal.png)
 
 **Features Demonstrated:**
 - ✅ BabylonJS GUI modal overlay
@@ -41,7 +41,7 @@ This document demonstrates the complete user flow from main menu to Gen0 simulat
 
 ### 3. Seed Entered
 
-![Seed Entered](test-results/screenshot-03-seed-entered.png)
+![Seed Entered](docs/screenshots/screenshot-03-seed-entered.png)
 
 **Features Demonstrated:**
 - ✅ Keyboard input working (typed "v1-beautiful-world-demo")
@@ -52,7 +52,7 @@ This document demonstrates the complete user flow from main menu to Gen0 simulat
 
 ### 4. After Create World Click
 
-![After Create Click](test-results/screenshot-04-after-create-click.png)
+![After Create Click](docs/screenshots/screenshot-04-after-create-click.png)
 
 **Current State:**
 - Seed modal still visible (button clicked but navigation pending)
@@ -64,7 +64,7 @@ This document demonstrates the complete user flow from main menu to Gen0 simulat
 
 ### 5. Game Scene (Direct Navigation)
 
-![Game Scene Direct](test-results/screenshot-05-game-scene-direct.png)
+![Game Scene Direct](docs/screenshots/screenshot-05-game-scene-direct.png)
 
 **Features Demonstrated:**
 - ✅ BabylonJS 3D scene initialized

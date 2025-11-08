@@ -129,7 +129,7 @@ pnpm exec tsc --noEmit
 
 ✅ TypeScript: 0 errors
 ✅ Build: Success
-✅ Tests: 36/46 passing (78%)
+✅ Tests: 35/46 passing (76%)
 ```
 
 ---
