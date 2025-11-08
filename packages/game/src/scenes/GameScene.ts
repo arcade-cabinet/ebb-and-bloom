@@ -18,15 +18,12 @@ import {
   Vector3,
   Color3,
   Color4,
-  MeshBuilder,
-  Mesh,
-  PBRMaterial,
 } from '@babylonjs/core';
-import { loadTexture } from '../utils/textureLoader';
-import type { VisualRepresentation, PBRProperties } from '@ebb/gen/schemas';
 import { GameEngine } from '../engine/GameEngine';
 import { EvolutionHUD } from '../ui/EvolutionHUD';
 import { NarrativeDisplay } from '../ui/NarrativeDisplay';
+import { PlanetRenderer, MoonRenderer } from '../renderers/gen0';
+import { CreatureRenderer } from '../renderers/gen1';
 
 // Render data from game engine (supports all generations)
 interface GameRenderData {
@@ -62,13 +59,18 @@ export class GameScene {
   private engine: Engine;
   private gameId: string | null;
   private gameEngine: GameEngine | null = null;
-  private planetMesh: Mesh | null = null;
-  private moonMeshes: Mesh[] = [];
   private renderData: GameRenderData | null = null;
   private time: number = 0;
   private infoContent: HTMLElement | null = null;
+  
+  // UI
   private hud: EvolutionHUD | null = null;
   private narrative: NarrativeDisplay | null = null;
+  
+  // Renderers
+  private planetRenderer: PlanetRenderer | null = null;
+  private moonRenderer: MoonRenderer | null = null;
+  private creatureRenderer: CreatureRenderer | null = null;
 
   constructor(scene: Scene, engine: Engine, gameId: string | null) {
     this.scene = scene;
@@ -139,6 +141,11 @@ export class GameScene {
     
     // Create Narrative Display  
     this.narrative = new NarrativeDisplay(this.scene);
+    
+    // Initialize renderers
+    this.planetRenderer = new PlanetRenderer(this.scene);
+    this.moonRenderer = new MoonRenderer(this.scene);
+    this.creatureRenderer = new CreatureRenderer(this.scene);
   }
 
   private async loadGameData(): Promise<void> {
@@ -174,20 +181,11 @@ export class GameScene {
       // Update HUD with current generation
       if (this.hud) {
         this.hud.updateGeneration(currentGen);
+        this.hud.addEvent(`Game loaded: Gen${currentGen}`);
       }
 
-      // Render Gen0 planet (always rendered as base)
-      await this.renderGen0();
-      
-      // Render moons if present
-      if (this.renderData.moons && Array.isArray(this.renderData.moons) && this.renderData.moons.length > 0) {
-        await this.renderMoons();
-      }
-      
-      // TODO: Render Gen1+ entities on top of planet
-      // if (currentGen >= 1) await this.renderCreatures();
-      // if (currentGen >= 2) await this.renderTools();
-      // if (currentGen >= 3) await this.renderBuildings();
+      // Render using dedicated renderers
+      await this.renderWithRenderers();
 
       this.updateInfo();
     } catch (error) {
@@ -196,228 +194,88 @@ export class GameScene {
     }
   }
 
-  private async renderGen0(): Promise<void> {
-    if (!this.renderData || !this.renderData.planet || !this.renderData.visualBlueprint) return;
 
-    const { planet, visualBlueprint } = this.renderData;
+  /**
+   * Render using dedicated renderer packages
+   * Properly separated: simulation logic in backend, visual interpretation in renderers
+   */
+  private async renderWithRenderers(): Promise<void> {
+    if (!this.renderData) return;
 
-    // Create planet sphere
-    this.planetMesh = MeshBuilder.CreateSphere('planet', {
-      segments: 64,
-      diameter: (planet.radius / 1000) * 2, // Convert meters to reasonable scale
-    }, this.scene);
+    const { generation, planet, visualBlueprint, moons, creatures } = this.renderData;
 
-    // Create PBR material (proper physically-based rendering)
-    const material = new PBRMaterial('planetMaterial', this.scene);
-    
-    // Apply PBR properties from visual blueprint
-    let pbr: PBRProperties | undefined;
-    
-    // Try visualProperties first (direct structure)
-    if (visualBlueprint.visualProperties?.pbrProperties) {
-      pbr = visualBlueprint.visualProperties.pbrProperties as PBRProperties;
-    }
-    // Try representations.shaders (nested structure from game engine)
-    else if ((visualBlueprint.representations as any)?.shaders?.baseColor) {
-      const shaders = (visualBlueprint.representations as any).shaders;
-      pbr = {
-        baseColor: shaders.baseColor || '#4A5568',
-        roughness: shaders.roughness || 0.7,
-        metallic: shaders.metallic || 0.1,
-        emissive: shaders.emissive,
-        normalStrength: shaders.normalStrength,
-        aoStrength: shaders.aoStrength,
-        heightScale: shaders.heightScale,
-      } as PBRProperties;
-    }
-    // Try representations as direct PBR object
-    else if ((visualBlueprint.representations as any)?.baseColor) {
-      pbr = visualBlueprint.representations as PBRProperties;
-    }
-    
-    // Apply PBR properties
-    if (pbr) {
-      // Base color (albedo)
-      material.albedoColor = Color3.FromHexString(pbr.baseColor);
-      material.roughness = pbr.roughness ?? 0.7;
-      material.metallic = pbr.metallic ?? 0.1;
-      
-      // Emissive (glow)
-      if (pbr.emissive && pbr.emissive !== '#000000') {
-        material.emissiveColor = Color3.FromHexString(pbr.emissive);
-        material.emissiveIntensity = 0.2;
-      }
-      
-      // Normal map strength (bump texture level not available in PBRMaterial)
-      // if (pbr.normalStrength !== undefined) {
-      //   material.bumpTexture.level = pbr.normalStrength;
-      // }
-      
-      // Ambient occlusion strength
-      if (pbr.aoStrength !== undefined) {
-        material.ambientTextureStrength = pbr.aoStrength;
-      }
-      
-      // Height/displacement scale
-      if (pbr.heightScale !== undefined) {
-        material.parallaxScaleBias = pbr.heightScale;
-      }
-    } else {
-      // Default material if no PBR properties found
-      material.albedoColor = Color3.FromHexString('#4A5568'); // Ebb indigo
-      material.roughness = 0.7;
-      material.metallic = 0.1;
+    // Gen0: Always render planet (macro level)
+    if (planet && visualBlueprint && this.planetRenderer) {
+      await this.planetRenderer.render({ planet, visualBlueprint });
+      console.log('✅ Planet rendered via PlanetRenderer');
     }
 
-    // Load textures from manifest
-    let textureIds: string[] = [];
-    
-    if (visualBlueprint.textureReferences && visualBlueprint.textureReferences.length > 0) {
-      textureIds = visualBlueprint.textureReferences;
-    } else if ((visualBlueprint.representations as any)?.materials) {
-      textureIds = (visualBlueprint.representations as any).materials;
-    }
-    
-    // Load primary texture (albedo/diffuse)
-    if (textureIds.length > 0) {
-      const primaryTextureId = textureIds[0];
-      const primaryTexture = await loadTexture(primaryTextureId, this.scene);
-      if (primaryTexture) {
-        material.albedoTexture = primaryTexture;
-        console.log(`Loaded primary texture: ${primaryTextureId}`);
-      } else {
-        console.warn(`Failed to load texture: ${primaryTextureId}`);
-      }
-    } else {
-      console.warn('No texture references found in visual blueprint');
-    }
-    
-    // Apply color palette if available (for procedural variation)
-    if (visualBlueprint.visualProperties?.colorPalette && visualBlueprint.visualProperties.colorPalette.length > 0) {
-      // Use first color from palette as base if no PBR baseColor was set
-      if (!pbr || !pbr.baseColor) {
-        material.albedoColor = Color3.FromHexString(visualBlueprint.visualProperties.colorPalette[0]);
-      }
+    // Gen0: Render moons (meso level)
+    if (moons && moons.length > 0 && this.moonRenderer) {
+      this.moonRenderer.render(moons.map(m => ({
+        id: m.id,
+        radius: m.radius,
+        distance: m.distance,
+        orbitalPeriod: m.orbitalPeriod,
+        composition: 'rocky' as const // TODO: Get from archetype
+      })));
+      console.log(`✅ ${moons.length} moons rendered via MoonRenderer`);
     }
 
-    this.planetMesh.material = material;
-
-    // Rotate planet based on rotation period
-    if (planet.rotationPeriod > 0) {
-      const rotationSpeed = (2 * Math.PI) / planet.rotationPeriod; // radians per second
-      this.scene.registerBeforeRender(() => {
-        if (this.planetMesh) {
-          this.planetMesh.rotation.y += rotationSpeed * this.engine.getDeltaTime() / 1000;
-        }
-      });
+    // Gen1+: Render creatures (micro level)
+    if (generation >= 1 && creatures && creatures.length > 0 && this.creatureRenderer) {
+      // TODO: Implement creature rendering when Gen1 is active
+      console.log(`⏳ ${creatures.length} creatures ready for rendering (Gen1 implementation pending)`);
     }
+
+    // TODO: Gen2+ renderers
+    // if (generation >= 2 && tools) { /* render tools */ }
+    // if (generation >= 3 && buildings) { /* render buildings */ }
   }
 
-  private async renderMoons(): Promise<void> {
-    if (!this.renderData || !this.renderData.moons || this.renderData.moons.length === 0) return;
-    if (!this.planetMesh) return; // Need planet to position moons relative to it
-
-    // Clear existing moons
-    this.moonMeshes.forEach(moon => moon.dispose());
-    this.moonMeshes = [];
-    
-    for (const moon of this.renderData.moons!) {
-      // Create moon sphere
-      const moonMesh = MeshBuilder.CreateSphere(`moon_${moon.id}`, {
-        segments: 32,
-        diameter: (moon.radius / 1000) * 2, // Scale similar to planet
-      }, this.scene);
-
-      // Position moon at orbital distance
-      const orbitalDistance = (moon.distance / 1000) * 2; // Convert to scene scale
-      moonMesh.position.x = orbitalDistance;
-      moonMesh.position.y = 0;
-      moonMesh.position.z = 0;
-
-      // Create simple material for moon (can be enhanced with visual blueprints later)
-      const moonMaterial = new PBRMaterial(`moonMaterial_${moon.id}`, this.scene);
-      moonMaterial.albedoColor = new Color3(0.6, 0.6, 0.6); // Gray moon
-      moonMaterial.roughness = 0.9;
-      moonMaterial.metallic = 0.0;
-      moonMesh.material = moonMaterial;
-
-      // Animate moon orbit
-      if (moon.orbitalPeriod > 0) {
-        const orbitalSpeed = (2 * Math.PI) / moon.orbitalPeriod; // radians per second
-        const initialAngle = moon.position ? 
-          Math.atan2(moon.position.z, moon.position.x) : 0;
-        
-        this.scene.registerBeforeRender(() => {
-          if (moonMesh && this.planetMesh) {
-            const angle = initialAngle + orbitalSpeed * this.time;
-            const planetCenter = this.planetMesh.getAbsolutePosition();
-            moonMesh.position.x = planetCenter.x + orbitalDistance * Math.cos(angle);
-            moonMesh.position.z = planetCenter.z + orbitalDistance * Math.sin(angle);
-            moonMesh.position.y = planetCenter.y;
-          }
-        });
+  private startAnimation(): void {
+    // Update time for orbital mechanics
+    this.scene.registerBeforeRender(() => {
+      this.time += this.engine.getDeltaTime() / 1000;
+      
+      // Update moon positions based on time
+      if (this.moonRenderer) {
+        this.moonRenderer.updateOrbitalPositions(this.time);
       }
-
-      this.moonMeshes.push(moonMesh);
-    }
+    });
   }
 
   private updateInfo(message?: string): void {
     if (!this.infoContent) return;
 
     if (message) {
-      this.infoContent.innerHTML = `<p style="color: #ff4444;">${message}</p>`;
+      this.infoContent.textContent = message;
       return;
     }
 
     if (!this.renderData) {
-      this.infoContent.innerHTML = '<p>Loading...</p>';
+      this.infoContent.textContent = 'No game data';
       return;
     }
 
-    const { generation, planet, visualBlueprint, moons, stellarContext, creatures, tools, buildings } = this.renderData;
-    
-    let html = `<p><strong>Generation:</strong> ${generation}</p>`;
-    
-    if (planet) {
-      html += `
-        <p><strong>Stellar Context:</strong> ${stellarContext || 'Unknown'}</p>
-        <p><strong>Planet Radius:</strong> ${(planet.radius / 1000).toFixed(0)} km</p>
-        <p><strong>Rotation Period:</strong> ${(planet.rotationPeriod / 3600).toFixed(1)} hours</p>
-        <p><strong>Moons:</strong> ${moons?.length || 0}</p>
-        <p><strong>Textures:</strong> ${visualBlueprint?.textureReferences?.join(', ') || 'None'}</p>
-      `;
-    }
-    
-    if (creatures && creatures.length > 0) {
-      html += `<p><strong>Creatures:</strong> ${creatures.length}</p>`;
-    }
-    
-    if (tools && tools.length > 0) {
-      html += `<p><strong>Tools:</strong> ${tools.length}</p>`;
-    }
-    
-    if (buildings && buildings.length > 0) {
-      html += `<p><strong>Buildings:</strong> ${buildings.length}</p>`;
-    }
-    
-    html += `<p><strong>Time:</strong> ${this.time.toFixed(0)}s</p>`;
-    
-    this.infoContent.innerHTML = html;
+    const { generation, planet, moons, creatures, tools, buildings } = this.renderData;
+    const lines = [
+      `Generation: ${generation}`,
+      planet ? `Planet: ${(planet.radius / 1000).toFixed(0)}km radius` : '',
+      moons ? `Moons: ${moons.length}` : '',
+      creatures ? `Creatures: ${creatures.length}` : '',
+      tools ? `Tools: ${tools.length}` : '',
+      buildings ? `Buildings: ${buildings.length}` : '',
+    ];
+
+    this.infoContent.textContent = lines.filter(l => l).join('\n');
   }
 
-  private startAnimation(): void {
-    // Update time and info panel
-    this.scene.registerBeforeRender(() => {
-      this.time += this.engine.getDeltaTime() / 1000;
-      if (this.time % 1 < 0.1) { // Update info every second
-        this.updateInfo();
-      }
-    });
-  }
-
-  public getScene(): Scene {
-    return this.scene;
+  public dispose(): void {
+    this.planetRenderer?.dispose();
+    this.moonRenderer?.dispose();
+    this.creatureRenderer?.dispose();
+    this.hud?.dispose();
+    this.narrative?.dispose();
   }
 }
-
