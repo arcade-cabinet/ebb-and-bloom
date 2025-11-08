@@ -3,23 +3,22 @@
  * Uses data pools for creature traits instead of hardcoding
  */
 
-import { Goal, CompositeGoal } from 'yuka';
 import seedrandom from 'seedrandom';
+import { extractSeedComponents, generateGen1DataPools, selectFromPool } from '../gen-systems/loadGenData.js';
 import {
-  Creature,
-  Planet,
-  Archetype,
   Coordinate,
+  Creature,
   Material,
-  Traits,
   Need,
+  Planet,
+  Traits
 } from '../schemas/index.js';
-import { generateGen1DataPools, selectFromPool, extractSeedComponents } from '../gen-systems/loadGenData.js';
 
 export interface Gen1Config {
   seed: string;
   planet: Planet;
   creatureCount: number;
+  gen0Data?: any; // WARP flow: Gen0 data for biased selection
   useAI?: boolean; // If false, uses fallback for testing
 }
 
@@ -40,9 +39,12 @@ const FALLBACK_ARCHETYPES = {
     name: 'Arboreal Opportunist',
     traits: {
       locomotion: 'arboreal' as const,
-      foraging: 'canopy' as const,
-      social: 'small_group' as const,
-      intelligence: 0.5,
+      foraging: 'arboreal' as const,
+      social: 'pack' as const,
+      excavation: 0.25,
+      maxReach: 1.0,
+      speed: 1.25,
+      strength: 0.65,
     },
   },
 };
@@ -57,10 +59,13 @@ export class Gen1System {
   private creatures: Map<string, Creature> = new Map();
   private useAI: boolean;
 
+  private gen0Data?: any;
+
   constructor(config: Gen1Config) {
     this.seed = config.seed;
     this.rng = seedrandom(config.seed);
     this.planet = config.planet;
+    this.gen0Data = config.gen0Data;
     this.useAI = config.useAI ?? true;
   }
 
@@ -75,12 +80,20 @@ export class Gen1System {
     let archetypeOptions;
 
     if (this.useAI) {
-      dataPools = await generateGen1DataPools(this.seed, this.planet);
+      // Pass Gen0 data for WARP flow (biased selection based on metallicity, etc.)
+      // Extract base seed from generation seed (remove -gen1 suffix)
+      const baseSeed = this.seed.replace(/-gen\d+$/, '');
+      dataPools = await generateGen1DataPools(baseSeed, this.planet, this.gen0Data);
       const { macro } = extractSeedComponents(this.seed);
       archetypeOptions = dataPools.macro.archetypeOptions.map((a: any) => ({
+        id: a.id,
         name: a.name,
         traits: this.parseTraitsFromBlueprint(a.traits, a.visualBlueprint),
         visualBlueprint: a.visualBlueprint,
+        parameters: a.parameters, // Interpolated parameters from universal template
+        formation: a.formation, // Yuka AI guidance
+        deconstruction: a.deconstruction, // Deconstruction info
+        adjacency: a.adjacency, // Compatibility info
       }));
     } else {
       // Use fallback
@@ -91,7 +104,7 @@ export class Gen1System {
 
     // Spawn creatures
     const { macro } = extractSeedComponents(this.seed);
-    const archetype = selectFromPool(archetypeOptions, macro);
+    const archetype = selectFromPool(archetypeOptions, macro) as typeof archetypeOptions[0];
     console.log(`[GEN1] Selected archetype: ${archetype.name}`);
 
     // Create creatures
@@ -110,24 +123,33 @@ export class Gen1System {
    */
   private parseTraitsFromBlueprint(traitDesc: string, blueprint: any): Traits {
     // Extract traits from AI description
-    const intelligence = traitDesc.includes('intelligent') || traitDesc.includes('clever') ? 0.7 :
-                        traitDesc.includes('smart') ? 0.5 : 0.3;
-    
-    const locomotion = traitDesc.includes('climb') || traitDesc.includes('arboreal') ? 'arboreal' as const :
-                       traitDesc.includes('burrow') || traitDesc.includes('dig') ? 'fossorial' as const :
-                       traitDesc.includes('swim') || traitDesc.includes('aquatic') ? 'littoral' as const :
-                       'cursorial' as const;
-    
-    const foraging = traitDesc.includes('canopy') ? 'canopy' as const :
-                     traitDesc.includes('underwater') || traitDesc.includes('tidal') ? 'underwater' as const :
-                     traitDesc.includes('burrow') ? 'burrow' as const :
-                     'surface' as const;
-    
-    const social = traitDesc.includes('pack') || traitDesc.includes('group') || traitDesc.includes('social') ? 'pack' as const :
-                   traitDesc.includes('pair') ? 'small_group' as const :
-                   'solitary' as const;
+    const intelligenceScore = traitDesc.includes('intelligent') || traitDesc.includes('clever') ? 0.7 :
+      traitDesc.includes('smart') ? 0.5 : 0.3;
 
-    return { locomotion, foraging, social, intelligence };
+    const locomotion = traitDesc.includes('climb') || traitDesc.includes('arboreal') ? 'arboreal' as const :
+      traitDesc.includes('burrow') || traitDesc.includes('dig') ? 'burrowing' as const :
+        traitDesc.includes('swim') || traitDesc.includes('aquatic') ? 'littoral' as const :
+          'cursorial' as const;
+
+    const foraging = traitDesc.includes('canopy') || traitDesc.includes('tree') ? 'arboreal' as const :
+      traitDesc.includes('underwater') || traitDesc.includes('tidal') || traitDesc.includes('aquatic') ? 'aquatic' as const :
+        traitDesc.includes('burrow') || traitDesc.includes('underground') ? 'underground' as const :
+          'surface' as const;
+
+    const social = traitDesc.includes('pack') || traitDesc.includes('group') || traitDesc.includes('social') || traitDesc.includes('pair') ? 'pack' as const :
+      traitDesc.includes('tribal') || traitDesc.includes('large') ? 'tribal' as const :
+        'solitary' as const;
+
+    // Map intelligence to strength/excavation (TraitsSchema doesn't have intelligence)
+    return {
+      locomotion,
+      foraging,
+      social,
+      excavation: intelligenceScore * 0.5, // Use intelligence as proxy for excavation capability
+      maxReach: intelligenceScore * 2, // Smarter = better reach
+      speed: 1.0 + intelligenceScore * 0.5,
+      strength: 0.5 + intelligenceScore * 0.3,
+    };
   }
 
   /**
@@ -138,18 +160,17 @@ export class Gen1System {
     const lat = (this.rng() - 0.5) * 180;
     const lon = (this.rng() - 0.5) * 360;
     const position: Coordinate = {
-      latitude: lat,
-      longitude: lon,
-      altitude: this.planet.radius / 1000, // surface in km
+      lat,
+      lon,
     };
 
-    // Query materials at spawn location
-    const materials = this.queryMaterialsAt(position);
+    // Query materials at spawn location (using lat/lon, altitude calculated from planet radius)
+    const materials = this.queryMaterialsAt({ lat, lon, altitude: this.planet.radius / 1000 });
 
-    // Initial needs
+    // Initial needs (using MaterialType, not 'food'/'water')
     const needs: Need[] = [
-      { type: 'food', urgency: 0.3 + this.rng() * 0.3, lastSatisfied: 0 },
-      { type: 'water', urgency: 0.2 + this.rng() * 0.2, lastSatisfied: 0 },
+      { type: 'organic_matter', current: 50, max: 100, depletionRate: 0.01, urgency: 0.3 + this.rng() * 0.3 },
+      { type: 'water', current: 30, max: 100, depletionRate: 0.02, urgency: 0.2 + this.rng() * 0.2 },
     ];
 
     const creature: Creature = {
@@ -158,9 +179,10 @@ export class Gen1System {
       traits: archetype.traits,
       position,
       needs,
-      alive: true,
+      status: 'alive',
       age: 0,
-      visualBlueprint: archetype.visualBlueprint,
+      energy: 100,
+      composition: {},
     };
 
     return creature;
@@ -169,7 +191,7 @@ export class Gen1System {
   /**
    * Query planet materials at coordinate
    */
-  private queryMaterialsAt(coord: Coordinate): Material[] {
+  private queryMaterialsAt(coord: { lat: number; lon: number; altitude?: number }): Material[] {
     // Find appropriate layer (simplified - uses altitude)
     const altitudeKm = coord.altitude || 0;
     const radiusKm = this.planet.radius / 1000;
@@ -186,7 +208,7 @@ export class Gen1System {
    */
   update(deltaTime: number): void {
     this.creatures.forEach((creature) => {
-      if (!creature.alive) return;
+      if (creature.status !== 'alive') return;
 
       // Update needs
       this.updateNeeds(creature, deltaTime);
@@ -205,13 +227,13 @@ export class Gen1System {
   private updateNeeds(creature: Creature, deltaTime: number): void {
     creature.needs.forEach((need) => {
       // Needs increase over time
-      const rate = need.type === 'food' ? 0.01 : 0.02; // water more urgent
+      const rate = need.type === 'organic_matter' ? 0.01 : 0.02; // water more urgent
       need.urgency = Math.min(1.0, need.urgency + rate * deltaTime);
 
       // Critical threshold = death
       if (need.urgency > 0.95) {
         console.log(`[GEN1] Creature ${creature.id} died from ${need.type}`);
-        creature.alive = false;
+        creature.status = 'dead';
       }
     });
   }
@@ -240,23 +262,23 @@ export class Gen1System {
 
     // Can we satisfy this need here?
     const canSatisfy = materials.some((m) => {
-      if (need.type === 'food') return m.element === 'C' || m.element === 'O';
-      if (need.type === 'water') return m.element === 'H' || m.element === 'O';
+      if (need.type === 'organic_matter') return m.type === 'carbon' || m.type === 'organic_matter' || m.type === 'wood';
+      if (need.type === 'water') return m.type === 'water' || m.type === 'hydrogen';
       return false;
     });
 
     if (canSatisfy) {
       // Satisfy need
+      need.current = Math.min(need.max, need.current + 20);
       need.urgency = Math.max(0, need.urgency - 0.5);
-      need.lastSatisfied = creature.age;
       console.log(
-        `[GEN1] Creature ${creature.id} satisfied ${need.type} at (${creature.position.latitude.toFixed(1)}, ${creature.position.longitude.toFixed(1)})`
+        `[GEN1] Creature ${creature.id} satisfied ${need.type} at (${creature.position.lat.toFixed(1)}, ${creature.position.lon.toFixed(1)})`
       );
     } else {
       // Move to new location (simplified)
-      creature.position.latitude += (this.rng() - 0.5) * 10;
-      creature.position.longitude += (this.rng() - 0.5) * 10;
-      console.log(`[GEN1] Creature ${creature.id} moved to (${creature.position.latitude.toFixed(1)}, ${creature.position.longitude.toFixed(1)})`);
+      creature.position.lat += (this.rng() - 0.5) * 10;
+      creature.position.lon += (this.rng() - 0.5) * 10;
+      console.log(`[GEN1] Creature ${creature.id} moved to (${creature.position.lat.toFixed(1)}, ${creature.position.lon.toFixed(1)})`);
     }
   }
 
@@ -271,6 +293,6 @@ export class Gen1System {
    * Get alive creatures
    */
   getAliveCreatures(): Creature[] {
-    return this.getCreatures().filter((c) => c.alive);
+    return this.getCreatures().filter((c) => c.status === 'alive');
   }
 }

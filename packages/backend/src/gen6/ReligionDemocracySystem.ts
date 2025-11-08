@@ -58,7 +58,9 @@ export class Gen6System {
     console.log(`[GEN6] Initializing with AI data pools: ${this.useAI}`);
 
     if (this.useAI && gen5Data) {
-      const dataPools = await generateGen6DataPools(this.planet, gen5Data, this.planet.seed);
+      // Use base seed (not planet.seed) for generation chaining
+      const baseSeed = this.planet.seed;
+      const dataPools = await generateGen6DataPools(this.planet, gen5Data, baseSeed);
       this.cosmologyOptions = [
         {
           cosmology: dataPools.macro.selectedCosmology,
@@ -88,9 +90,9 @@ export class Gen6System {
     const religions: Religion[] = [];
 
     for (const tribe of tribes) {
-      const tribeBuildings = buildings.filter((b) => b.tribe === tribe.id);
-      const hasGatheringSpace = tribeBuildings.some((b) => b.type === 'gathering');
-      const isLarge = tribe.population > 100;
+      const tribeBuildings = buildings.filter((b) => b.owner === tribe.id);
+      const hasGatheringSpace = tribeBuildings.some((b) => b.type === 'temple');
+      const isLarge = tribe.members.length > 100;
       const isStable = tribe.status === 'stable';
 
       if (hasGatheringSpace && isLarge && isStable && this.rng() < 0.3) {
@@ -112,31 +114,31 @@ export class Gen6System {
     // Generate myths from cosmology
     const myths: Myth[] = [
       {
-        title: `The ${cosmology.cosmology} Origin`,
+        id: `myth-${tribe.id}-origin`,
+        name: `The ${cosmology.cosmology} Origin`,
         content: `In the beginning, the world was formed through ${cosmology.cosmology.toLowerCase()}...`,
-        themes: [cosmology.belief],
+        believers: Math.floor(tribe.members.length * 0.8),
       },
     ];
 
     // Generate rituals from ritual type
     const rituals: Ritual[] = [
       {
+        id: `ritual-${tribe.id}-ceremony`,
         name: `${cosmology.ritualType} Ceremony`,
-        purpose: cosmology.domain,
         frequency: 'monthly',
-        participants: Math.min(50, tribe.population),
+        fearReduction: 0.3,
+        participants: tribe.members.slice(0, Math.min(50, tribe.members.length)),
       },
     ];
 
     const religion: Religion = {
       id: `religion-${tribe.id}-${Date.now()}`,
       name: `${cosmology.belief} Faith`,
-      tribe: tribe.id,
-      cosmology: cosmology.cosmology,
+      followers: [tribe.id],
       myths,
       rituals,
-      believers: Math.floor(tribe.population * 0.8),
-      visualBlueprint: cosmology.visualBlueprint,
+      status: 'forming',
     };
 
     console.log(`[GEN6] Religion ${religion.name} emerged in tribe ${tribe.id} (${cosmology.cosmology})`);
@@ -151,9 +153,9 @@ export class Gen6System {
 
     for (const tribe of tribes) {
       // Democracy emerges from highly social, large, tool-using tribes
-      const hasGathering = buildings.some((b) => b.tribe === tribe.id && b.type === 'gathering');
-      const isLarge = tribe.population > 150;
-      const hasGovernance = tribe.governance !== 'none';
+      const hasGathering = buildings.some((b) => b.owner === tribe.id && b.type === 'temple');
+      const isLarge = tribe.members.length > 150;
+      const hasGovernance = tribe.cohesion > 0.7; // High cohesion = governance
 
       if (hasGathering && isLarge && hasGovernance && this.rng() < 0.2) {
         const democracy = {

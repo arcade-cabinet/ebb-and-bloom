@@ -11,3 +11,6 @@ export * from './downloaders/ambientcg.js';
 
 // Meshy 3D Generation
 export * from './meshy/index.js';
+
+// Schemas (exported for backend to use types)
+export * from './schemas/visual-blueprint-schema.js';

@@ -3,18 +3,18 @@
  * Uses data pools for tool specs instead of hardcoding
  */
 
+import seedrandom from 'seedrandom';
 import {
-  FuzzyModule,
-  FuzzyVariable,
-  FuzzyRule,
   FuzzyAND,
-  TriangularFuzzySet,
+  FuzzyModule,
+  FuzzyRule,
+  FuzzyVariable,
   LeftShoulderFuzzySet,
   RightShoulderFuzzySet,
+  TriangularFuzzySet,
 } from 'yuka';
-import seedrandom from 'seedrandom';
-import { Tool, Creature, Pack, Planet, Material } from '../schemas/index.js';
-import { generateGen3DataPools, selectFromPool, extractSeedComponents } from '../gen-systems/loadGenData.js';
+import { extractSeedComponents, generateGen3DataPools, selectFromPool } from '../gen-systems/loadGenData.js';
+import { Creature, Material, MaterialType, Pack, Planet, Tool, ToolType } from '../schemas/index.js';
 
 /**
  * Fuzzy Logic: When does a tool emerge?
@@ -27,36 +27,36 @@ export class ToolEmergenceFuzzy {
 
     // Input 1: Problem intensity
     const problem = new FuzzyVariable('problem');
-    problem.add(new LeftShoulderFuzzySet('low', 0, 25, 50));
-    problem.add(new TriangularFuzzySet('moderate', 25, 50, 75));
-    problem.add(new RightShoulderFuzzySet('high', 50, 75, 100));
-    this.fuzzy.addFLV(problem);
+    const problemLow = new LeftShoulderFuzzySet('low', 0, 25, 50);
+    const problemMod = new TriangularFuzzySet('moderate', 25, 50, 75);
+    const problemHigh = new RightShoulderFuzzySet('high', 50, 75, 100);
+    problem.add(problemLow);
+    problem.add(problemMod);
+    problem.add(problemHigh);
+    this.fuzzy.addFLV('problem', problem);
 
     // Input 2: Creature capability
     const capability = new FuzzyVariable('capability');
-    capability.add(new LeftShoulderFuzzySet('low', 0, 25, 50));
-    capability.add(new TriangularFuzzySet('moderate', 25, 50, 75));
-    capability.add(new RightShoulderFuzzySet('high', 50, 75, 100));
-    this.fuzzy.addFLV(capability);
+    const capLow = new LeftShoulderFuzzySet('low', 0, 25, 50);
+    const capMod = new TriangularFuzzySet('moderate', 25, 50, 75);
+    const capHigh = new RightShoulderFuzzySet('high', 50, 75, 100);
+    capability.add(capLow);
+    capability.add(capMod);
+    capability.add(capHigh);
+    this.fuzzy.addFLV('capability', capability);
 
     // Output: Tool emergence probability
     const emergence = new FuzzyVariable('emergence');
-    emergence.add(new LeftShoulderFuzzySet('low', 0, 25, 50));
-    emergence.add(new TriangularFuzzySet('moderate', 25, 50, 75));
-    emergence.add(new RightShoulderFuzzySet('high', 50, 75, 100));
-    this.fuzzy.addFLV(emergence);
+    const emergeLow = new LeftShoulderFuzzySet('low', 0, 25, 50);
+    const emergeMod = new TriangularFuzzySet('moderate', 25, 50, 75);
+    const emergeHigh = new RightShoulderFuzzySet('high', 50, 75, 100);
+    emergence.add(emergeLow);
+    emergence.add(emergeMod);
+    emergence.add(emergeHigh);
+    this.fuzzy.addFLV('emergence', emergence);
 
     // Comprehensive rules (9 combinations)
-    const problemLow = problem.getSet('low');
-    const problemMod = problem.getSet('moderate');
-    const problemHigh = problem.getSet('high');
-    const capLow = capability.getSet('low');
-    const capMod = capability.getSet('moderate');
-    const capHigh = capability.getSet('high');
-    const emergeLow = emergence.getSet('low');
-    const emergeMod = emergence.getSet('moderate');
-    const emergeHigh = emergence.getSet('high');
-
+    // Use FuzzySet objects directly (not getSet() - that doesn't exist)
     this.fuzzy.addRule(new FuzzyRule(new FuzzyAND(problemHigh, capLow), emergeHigh));
     this.fuzzy.addRule(new FuzzyRule(new FuzzyAND(problemHigh, capMod), emergeMod));
     this.fuzzy.addRule(new FuzzyRule(new FuzzyAND(problemHigh, capHigh), emergeLow));
@@ -101,7 +101,9 @@ export class Gen3System {
     console.log(`[GEN3] Initializing with AI data pools: ${this.useAI}`);
 
     if (this.useAI && gen2Data) {
-      const dataPools = await generateGen3DataPools(this.planet, gen2Data, this.planet.seed);
+      // Use base seed (not planet.seed) for generation chaining
+      const baseSeed = this.planet.seed;
+      const dataPools = await generateGen3DataPools(this.planet, gen2Data, baseSeed);
       this.toolTypeOptions = dataPools.micro.toolTypesOptions;
       console.log(`[GEN3] Generated ${this.toolTypeOptions.length} tool type options`);
     } else {
@@ -120,25 +122,25 @@ export class Gen3System {
     const tools: Tool[] = [];
 
     for (const pack of packs) {
-      const packCreatures = creatures.filter((c) => pack.members.includes(c.id) && c.alive);
+      const packCreatures = creatures.filter((c) => pack.members.includes(c.id) && c.status === 'alive');
       if (packCreatures.length === 0) continue;
 
       // Calculate pack-level problem intensity (avg need urgency)
       const avgUrgency =
         packCreatures.reduce(
-          (sum, c) => sum + c.needs.reduce((nSum, n) => nSum + n.urgency, 0) / c.needs.length,
+          (sum, c) => sum + (c.needs.length > 0 ? c.needs.reduce((nSum: number, n: any) => nSum + n.urgency, 0) / c.needs.length : 0),
           0
         ) / packCreatures.length;
 
-      // Calculate pack-level capability (avg intelligence)
-      const avgIntelligence =
-        packCreatures.reduce((sum, c) => sum + c.traits.intelligence, 0) / packCreatures.length;
+      // Calculate pack-level capability (avg manipulation/excavation as proxy for intelligence)
+      const avgCapability =
+        packCreatures.reduce((sum, c) => sum + (c.traits.excavation + c.traits.maxReach / 10), 0) / packCreatures.length;
 
       // Evaluate emergence
-      const emergence = this.fuzzy.evaluate(avgUrgency, avgIntelligence);
+      const emergence = this.fuzzy.evaluate(avgUrgency, avgCapability);
 
       console.log(
-        `[GEN3] Pack ${pack.id}: urgency=${avgUrgency.toFixed(2)}, intelligence=${avgIntelligence.toFixed(2)} → emergence=${emergence.toFixed(2)}`
+        `[GEN3] Pack ${pack.id}: urgency=${avgUrgency.toFixed(2)}, capability=${avgCapability.toFixed(2)} → emergence=${emergence.toFixed(2)}`
       );
 
       if (emergence > 0.4 && this.rng() < emergence) {
@@ -160,21 +162,28 @@ export class Gen3System {
     const toolType = selectFromPool(this.toolTypeOptions, micro);
 
     // Get materials from pack location
-    const materials = this.queryMaterialsAt(pack.center);
-    const primaryMaterial = materials[0] || { element: 'C', quantity: 1, depth: 0, hardness: 2 };
+    const materials = this.queryMaterialsAt({ latitude: pack.center.lat, longitude: pack.center.lon });
+    const primaryMaterial = materials[0] || { type: 'carbon' as MaterialType, quantity: 1, depth: 0, hardness: 2 };
+
+    // Map toolType.purpose to ToolTypeSchema enum
+    const toolTypeEnum = (toolType.purpose === 'cutting' ? 'bone_scraper' :
+      toolType.purpose === 'hunting' ? 'wooden_spear' :
+        toolType.purpose === 'digging' ? 'digging_stick' : 'stone_hammer') as ToolType;
 
     const tool: Tool = {
       id: `tool-${pack.id}-${Date.now()}`,
-      name: toolType.name,
-      type: toolType.purpose || 'utility',
-      material: primaryMaterial.element,
-      durability: 1.0,
-      creator: pack.id,
-      location: pack.center,
-      visualBlueprint: toolType.visualBlueprint,
+      type: toolTypeEnum,
+      composition: { [primaryMaterial.type]: primaryMaterial.quantity },
+      boost: {
+        excavation: toolType.purpose === 'digging' ? 0.3 : undefined,
+        speed: toolType.purpose === 'hunting' ? 0.2 : undefined,
+        strength: toolType.purpose === 'cutting' ? 0.2 : undefined,
+      },
+      durability: 100.0,
+      owner: pack.members[0], // First pack member owns it
     };
 
-    console.log(`[GEN3] Tool ${tool.name} created by pack ${pack.id} from ${tool.material}`);
+    console.log(`[GEN3] Tool ${toolType.name} (${tool.type}) created by pack ${pack.id} from ${primaryMaterial.type}`);
     return tool;
   }
 

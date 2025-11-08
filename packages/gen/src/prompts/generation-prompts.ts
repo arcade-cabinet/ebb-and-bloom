@@ -811,11 +811,11 @@ Use queryTextures tool to find appropriate fabric and leather textures for indiv
 
 export function getGenerationPrompt(generation: string, scale: 'macro' | 'meso' | 'micro'): { systemPrompt: string, userPrompt: string } {
   const prompts = generationPrompts[generation as keyof typeof generationPrompts];
-
+  
   if (!prompts) {
     throw new Error(`No prompts defined for generation: ${generation}`);
   }
-
+  
   return {
     systemPrompt: prompts.systemPrompt,
     userPrompt: prompts.userPrompt[scale]

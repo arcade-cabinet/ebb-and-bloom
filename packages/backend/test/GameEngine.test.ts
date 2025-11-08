@@ -13,21 +13,21 @@ describe('GameEngine', () => {
       const state = engine.getState();
       expect(state.gameId).toBe('test-game-123');
       expect(state.generation).toBe(0);
-      expect(state.seedPhrase).toBe('');
+      expect(state.seed).toBe('');
     });
     
     it('should initialize with seed phrase', async () => {
       await engine.initialize('test-world');
       
       const state = engine.getState();
-      expect(state.seedPhrase).toBe('test-world');
+      expect(state.seed).toBe('test-world');
       expect(state.message).toContain('test-world');
     });
     
     it('should emit initialized event', async () => {
       let emitted = false;
       engine.once('initialized', (data) => {
-        expect(data.seedPhrase).toBe('volcanic-world');
+        expect(data.seed).toBe('volcanic-world');
         emitted = true;
       });
       
@@ -95,7 +95,7 @@ describe('GameEngine', () => {
       await engine.advanceGeneration();
       
       const state = engine.getState();
-      expect(state.seedPhrase).toBe('persistent-world');
+      expect(state.seed).toBe('persistent-world');
       expect(state.generation).toBe(1);
       expect(state.gameId).toBe('test-game-123');
     });

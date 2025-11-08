@@ -153,6 +153,15 @@ export const GenerationScaleSchema = z.object({
   archetypes: z.array(ArchetypeSchema),
 });
 
+// Type exports (DRY - single source of truth)
 export type VisualBlueprint = z.infer<typeof VisualBlueprintSchema>;
 export type ArchetypeWithBlueprint = z.infer<typeof ArchetypeWithBlueprintSchema>;
 export type GenerationScale = z.infer<typeof GenerationScaleSchema>;
+export type Archetype = z.infer<typeof ArchetypeSchema>;
+export type VisualRepresentation = z.infer<typeof VisualRepresentationSchema>;
+export type Deconstruction = z.infer<typeof DeconstructionSchema>;
+export type Formation = z.infer<typeof FormationSchema>;
+export type ParameterRange = z.infer<typeof ParameterRangeSchema>;
+export type SelectionBias = z.infer<typeof SelectionBiasSchema>;
+export type Adjacency = z.infer<typeof AdjacencySchema>;
+export type PBRProperties = z.infer<typeof PBRPropertiesSchema>;

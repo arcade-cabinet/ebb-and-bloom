@@ -7,7 +7,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./workflows": "./src/workflows/index.ts",
-    "./textures": "./src/textures/index.ts"
+    "./textures": "./src/textures/index.ts",
+    "./schemas": "./src/schemas/visual-blueprint-schema.ts"
   },
   "scripts": {
     "gen": "tsx src/cli.ts",

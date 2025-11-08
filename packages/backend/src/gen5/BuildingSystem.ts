@@ -5,7 +5,7 @@
 
 import { Goal } from 'yuka';
 import seedrandom from 'seedrandom';
-import { Building, Tribe, Pack, Creature, Tool, Planet, Coordinate } from '../schemas/index.js';
+import { Building, BuildingType, Tribe, Pack, Creature, Tool, Planet, Coordinate } from '../schemas/index.js';
 import { generateGen5DataPools, selectFromPool, extractSeedComponents } from '../gen-systems/loadGenData.js';
 
 /**
@@ -62,7 +62,9 @@ export class Gen5System {
     console.log(`[GEN5] Initializing with AI data pools: ${this.useAI}`);
 
     if (this.useAI && gen4Data) {
-      const dataPools = await generateGen5DataPools(this.planet, gen4Data, this.planet.seed);
+      // Use base seed (not planet.seed) for generation chaining
+      const baseSeed = this.planet.seed;
+      const dataPools = await generateGen5DataPools(this.planet, gen4Data, baseSeed);
       this.buildingTypeOptions = dataPools.micro.buildingTypesOptions;
       console.log(`[GEN5] Generated ${this.buildingTypeOptions.length} building type options`);
     } else {
@@ -111,13 +113,11 @@ export class Gen5System {
   ): Array<{ buildingType: string; urgency: number; location: Coordinate }> {
     const needs: Array<{ buildingType: string; urgency: number; location: Coordinate }> = [];
 
-    const tribePacks = packs.filter((p) => tribe.packs.includes(p.id));
-    const tribeCreatures = creatures.filter((c) =>
-      tribePacks.some((p) => p.members.includes(c.id))
-    );
+    const tribeCreatures = creatures.filter((c) => tribe.members.includes(c.id));
+    const tribePacks = packs.filter((p) => p.members.some((id) => tribe.members.includes(id)));
 
-    // Shelter need (based on population)
-    const shelterUrgency = Math.min(1, tribe.population / 50);
+    // Shelter need (based on member count)
+    const shelterUrgency = Math.min(1, tribe.members.length / 50);
     needs.push({
       buildingType: 'shelter',
       urgency: shelterUrgency,
@@ -125,7 +125,7 @@ export class Gen5System {
     });
 
     // Workshop need (based on tool count)
-    const tribeTools = tools.filter((t) => tribePacks.some((p) => p.id === t.creator));
+    const tribeTools = tools.filter((t) => t.owner && tribe.members.includes(t.owner));
     const workshopUrgency = Math.min(1, tribeTools.length / 10);
     needs.push({
       buildingType: 'workshop',
@@ -133,11 +133,11 @@ export class Gen5System {
       location: tribe.territory.center,
     });
 
-    // Gathering need (based on population)
-    const gatheringUrgency = Math.min(1, tribe.population / 100);
+    // Storage need (based on member count)
+    const storageUrgency = Math.min(1, tribe.members.length / 100);
     needs.push({
-      buildingType: 'gathering',
-      urgency: gatheringUrgency,
+      buildingType: 'storage',
+      urgency: storageUrgency,
       location: tribe.territory.center,
     });
 
@@ -148,11 +148,11 @@ export class Gen5System {
    * Can tribe construct this building?
    */
   private canConstruct(tribe: Tribe, creatures: Creature[], tools: Tool[], buildingType: string): boolean {
-    // Need minimum population
-    if (tribe.population < 20) return false;
+    // Need minimum members
+    if (tribe.members.length < 20) return false;
 
     // Need tools
-    const tribeTools = tools.filter((t) => tribe.packs.some((p) => p === t.creator));
+    const tribeTools = tools.filter((t) => t.owner && tribe.members.includes(t.owner));
     if (tribeTools.length < 2) return false;
 
     return true;
@@ -167,19 +167,22 @@ export class Gen5System {
     const selectedType = this.buildingTypeOptions.find((t) => t.purpose === buildingType) ||
       selectFromPool(this.buildingTypeOptions, micro);
 
+    // Map buildingType string to BuildingTypeSchema enum
+    const buildingTypeEnum = (buildingType === 'shelter' ? 'shelter' :
+                               buildingType === 'workshop' ? 'workshop' :
+                               buildingType === 'storage' ? 'storage' : 'temple') as BuildingType;
+
     const building: Building = {
       id: `building-${tribe.id}-${Date.now()}`,
-      name: selectedType.name,
-      type: buildingType as any,
-      tribe: tribe.id,
+      type: buildingTypeEnum,
       location,
-      size: Math.max(10, tribe.population / 5),
-      capacity: Math.max(20, tribe.population / 2),
-      status: 'complete',
-      visualBlueprint: selectedType.visualBlueprint,
+      composition: {},
+      constructionProgress: 1.0,
+      benefits: {},
+      owner: tribe.id,
     };
 
-    console.log(`[GEN5] Building ${building.name} (${building.type}) constructed for tribe ${tribe.id}`);
+    console.log(`[GEN5] Building ${building.type} constructed for tribe ${tribe.id}`);
     return building;
   }
 }

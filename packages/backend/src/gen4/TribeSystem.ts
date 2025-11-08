@@ -58,7 +58,9 @@ export class Gen4System {
     console.log(`[GEN4] Initializing with AI data pools: ${this.useAI}`);
 
     if (this.useAI && gen3Data) {
-      const dataPools = await generateGen4DataPools(this.planet, gen3Data, this.planet.seed);
+      // Use base seed (not planet.seed) for generation chaining
+      const baseSeed = this.planet.seed;
+      const dataPools = await generateGen4DataPools(this.planet, gen3Data, baseSeed);
       this.tribalStructures = [
         {
           name: dataPools.macro.selectedStructure,
@@ -122,25 +124,25 @@ export class Gen4System {
     const structure = selectFromPool(this.tribalStructures, macro);
 
     const center = this.calculateTribalCenter(packs);
-    const allMembers = packs.flatMap((p) => p.members);
+    const allMembers = packs.flatMap((p) => p.members); // Already array of creature IDs
 
     const tribe: Tribe = {
       id: `tribe-${this.planet.seed}-${Date.now()}`,
       name: `${structure.name} Tribe`,
-      packs: packs.map((p) => p.id),
-      population: allMembers.length,
-      territory: { center, radiusKm: 150 },
-      governance: structure.governance,
+      members: allMembers, // Already creature IDs
+      territory: { center, radius: 150, nodes: [] },
+      resources: {},
+      morale: 0.7,
+      cohesion: 0.8,
       status: 'forming',
-      visualBlueprint: structure.visualBlueprint,
     };
 
-    console.log(`[GEN4] Tribe ${tribe.id} formed with ${tribe.packs.length} packs (${structure.name})`);
+    console.log(`[GEN4] Tribe ${tribe.id} formed with ${packs.length} packs (${structure.name})`);
     return tribe;
   }
 
   private calculateCooperationBenefits(packs: Pack[], tools: Tool[]): number {
-    const packTools = tools.filter((t) => packs.some((p) => p.id === t.creator));
+    const packTools = tools.filter((t) => t.owner && packs.some((p) => p.members.includes(t.owner!)));
     return packs.length * 10 + packTools.length * 5;
   }
 
@@ -155,15 +157,14 @@ export class Gen4System {
   }
 
   private calculateTribalCenter(packs: Pack[]): Coordinate {
-    const avgLat = packs.reduce((sum, p) => sum + p.center.latitude, 0) / packs.length;
-    const avgLon = packs.reduce((sum, p) => sum + p.center.longitude, 0) / packs.length;
-    const avgAlt = packs.reduce((sum, p) => sum + (p.center.altitude || 0), 0) / packs.length;
-    return { latitude: avgLat, longitude: avgLon, altitude: avgAlt };
+    const avgLat = packs.reduce((sum, p) => sum + p.center.lat, 0) / packs.length;
+    const avgLon = packs.reduce((sum, p) => sum + p.center.lon, 0) / packs.length;
+    return { lat: avgLat, lon: avgLon };
   }
 
   private calculateDistance(a: Coordinate, b: Coordinate): number {
-    const dlat = Math.abs(a.latitude - b.latitude);
-    const dlon = Math.abs(a.longitude - b.longitude);
+    const dlat = Math.abs(a.lat - b.lat);
+    const dlon = Math.abs(a.lon - b.lon);
     return Math.sqrt(dlat * dlat + dlon * dlon) * 111;
   }
 }

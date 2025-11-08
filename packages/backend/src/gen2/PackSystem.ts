@@ -3,26 +3,26 @@
  * Uses data pools for pack behaviors instead of hardcoding
  */
 
-import {
-  Vehicle,
-  CohesionBehavior,
-  SeparationBehavior,
-  AlignmentBehavior,
-  Vector3,
-  FuzzyModule,
-  FuzzyVariable,
-  FuzzyRule,
-  FuzzyAND,
-  LeftShoulderFuzzySet,
-  TriangularFuzzySet,
-  RightShoulderFuzzySet,
-} from 'yuka';
 import seedrandom from 'seedrandom';
-import { Creature, Pack, Coordinate } from '../schemas/index.js';
-import { generateGen2DataPools, selectFromPool, extractSeedComponents } from '../gen-systems/loadGenData.js';
+import {
+  CohesionBehavior,
+  FuzzyAND,
+  FuzzyModule,
+  FuzzyRule,
+  FuzzyVariable,
+  LeftShoulderFuzzySet,
+  RightShoulderFuzzySet,
+  SeparationBehavior,
+  TriangularFuzzySet,
+  Vector3,
+  Vehicle,
+} from 'yuka';
+import { extractSeedComponents, generateGen2DataPools, selectFromPool } from '../gen-systems/loadGenData.js';
+import { Coordinate, Creature, Pack } from '../schemas/index.js';
 
 export interface Gen2Config {
   seed: string;
+  gen1Data?: any; // WARP flow: Gen1 data for biased selection
   useAI?: boolean;
 }
 
@@ -62,35 +62,36 @@ class PackFormationFuzzy {
 
     // INPUT 1: Problem (scarcity of resources)
     const problem = new FuzzyVariable('problem');
-    problem.add(new LeftShoulderFuzzySet('low', 0, 25, 50));
-    problem.add(new TriangularFuzzySet('moderate', 25, 50, 75));
-    problem.add(new RightShoulderFuzzySet('high', 50, 75, 100));
-    this.fuzzy.addFLV(problem);
+    const problemLow = new LeftShoulderFuzzySet('low', 0, 25, 50);
+    const problemMod = new TriangularFuzzySet('moderate', 25, 50, 75);
+    const problemHigh = new RightShoulderFuzzySet('high', 50, 75, 100);
+    problem.add(problemLow);
+    problem.add(problemMod);
+    problem.add(problemHigh);
+    this.fuzzy.addFLV('problem', problem);
 
     // INPUT 2: Capability (proximity of creatures)
     const capability = new FuzzyVariable('capability');
-    capability.add(new LeftShoulderFuzzySet('far', 0, 25, 50));
-    capability.add(new TriangularFuzzySet('medium', 25, 50, 75));
-    capability.add(new RightShoulderFuzzySet('close', 50, 75, 100));
-    this.fuzzy.addFLV(capability);
+    const capFar = new LeftShoulderFuzzySet('far', 0, 25, 50);
+    const capMed = new TriangularFuzzySet('medium', 25, 50, 75);
+    const capClose = new RightShoulderFuzzySet('close', 50, 75, 100);
+    capability.add(capFar);
+    capability.add(capMed);
+    capability.add(capClose);
+    this.fuzzy.addFLV('capability', capability);
 
     // OUTPUT: Desirability of pack formation
     const desirability = new FuzzyVariable('desirability');
-    desirability.add(new LeftShoulderFuzzySet('low', 0, 25, 50));
-    desirability.add(new TriangularFuzzySet('moderate', 25, 50, 75));
-    desirability.add(new RightShoulderFuzzySet('high', 50, 75, 100));
-    this.fuzzy.addFLV(desirability);
+    const desLow = new LeftShoulderFuzzySet('low', 0, 25, 50);
+    const desMod = new TriangularFuzzySet('moderate', 25, 50, 75);
+    const desHigh = new RightShoulderFuzzySet('high', 50, 75, 100);
+    desirability.add(desLow);
+    desirability.add(desMod);
+    desirability.add(desHigh);
+    this.fuzzy.addFLV('desirability', desirability);
 
     // RULES: Comprehensive coverage (9 rules for all combinations)
-    const problemLow = problem.getSet('low');
-    const problemMod = problem.getSet('moderate');
-    const problemHigh = problem.getSet('high');
-    const capFar = capability.getSet('far');
-    const capMed = capability.getSet('medium');
-    const capClose = capability.getSet('close');
-    const desLow = desirability.getSet('low');
-    const desMod = desirability.getSet('moderate');
-    const desHigh = desirability.getSet('high');
+    // Use FuzzySet objects directly (not getSet() - that doesn't exist)
 
     // High problem + close capability = high desirability
     this.fuzzy.addRule(new FuzzyRule(new FuzzyAND(problemHigh, capClose), desHigh));
@@ -140,11 +141,13 @@ export class Gen2System {
   private vehicles: Map<string, PackMemberVehicle> = new Map();
   private useAI: boolean;
   private packTypeOptions: any[] = [];
+  private gen1Data?: any;
 
   constructor(config: Gen2Config) {
     this.seed = config.seed;
     this.rng = seedrandom(config.seed);
     this.fuzzy = new PackFormationFuzzy();
+    this.gen1Data = config.gen1Data;
     this.useAI = config.useAI ?? true;
   }
 
@@ -155,11 +158,19 @@ export class Gen2System {
     console.log(`[GEN2] Initializing with AI data pools: ${this.useAI}`);
 
     if (this.useAI) {
-      const dataPools = await generateGen2DataPools(this.seed);
+      // Pass Gen1 data for WARP flow (biased selection based on creature social traits, etc.)
+      // Extract base seed from generation seed (remove -gen2 suffix)
+      const baseSeed = this.seed.replace(/-gen\d+$/, '');
+      const dataPools = await generateGen2DataPools(baseSeed, this.gen1Data);
       this.packTypeOptions = dataPools.macro.packTypeOptions.map((p: any) => ({
+        id: p.id,
         name: p.name,
         traits: p.traits,
         visualBlueprint: p.visualBlueprint,
+        parameters: p.parameters, // Interpolated parameters
+        formation: p.formation, // Yuka AI guidance
+        deconstruction: p.deconstruction,
+        adjacency: p.adjacency,
       }));
     } else {
       this.packTypeOptions = FALLBACK_PACK_TYPES;
@@ -172,7 +183,7 @@ export class Gen2System {
    * Evaluate pack formation using Yuka FuzzyModule
    */
   evaluatePackFormation(creatures: Creature[]): void {
-    const alive = creatures.filter((c) => c.alive);
+    const alive = creatures.filter((c) => c.status === 'alive');
     if (alive.length < 2) return;
 
     console.log(`[GEN2] Evaluating pack formation for ${alive.length} creatures`);
@@ -237,8 +248,8 @@ export class Gen2System {
    * Calculate distance between coordinates (simplified)
    */
   private distance(a: Coordinate, b: Coordinate): number {
-    const dlat = Math.abs(a.latitude - b.latitude);
-    const dlon = Math.abs(a.longitude - b.longitude);
+    const dlat = Math.abs(a.lat - b.lat);
+    const dlon = Math.abs(a.lon - b.lon);
     return Math.sqrt(dlat * dlat + dlon * dlon) * 111; // ~111km per degree
   }
 
@@ -257,10 +268,8 @@ export class Gen2System {
       id: `pack-${this.seed}-${this.packs.size}`,
       members: members.map((m) => m.id),
       center,
-      territory: { center, radiusKm: 50 },
       cohesion: 0.8,
-      packType: packType.name,
-      visualBlueprint: packType.visualBlueprint,
+      status: 'forming',
     };
 
     this.packs.set(pack.id, pack);
@@ -272,16 +281,13 @@ export class Gen2System {
    */
   private calculateCenter(creatures: Creature[]): Coordinate {
     const avgLat =
-      creatures.reduce((sum, c) => sum + c.position.latitude, 0) /
+      creatures.reduce((sum, c) => sum + c.position.lat, 0) /
       creatures.length;
     const avgLon =
-      creatures.reduce((sum, c) => sum + c.position.longitude, 0) /
-      creatures.length;
-    const avgAlt =
-      creatures.reduce((sum, c) => sum + (c.position.altitude || 0), 0) /
+      creatures.reduce((sum, c) => sum + c.position.lon, 0) /
       creatures.length;
 
-    return { latitude: avgLat, longitude: avgLon, altitude: avgAlt };
+    return { lat: avgLat, lon: avgLon };
   }
 
   /**
@@ -290,7 +296,7 @@ export class Gen2System {
   updatePacks(creatures: Creature[], deltaTime: number): void {
     this.packs.forEach((pack) => {
       const packCreatures = creatures.filter(
-        (c) => pack.members.includes(c.id) && c.alive
+        (c) => pack.members.includes(c.id) && c.status === 'alive'
       );
 
       if (packCreatures.length < 2) {
@@ -304,9 +310,9 @@ export class Gen2System {
       packCreatures.forEach((creature) => {
         if (!this.vehicles.has(creature.id)) {
           const pos = new Vector3(
-            creature.position.latitude,
-            creature.position.altitude || 0,
-            creature.position.longitude
+            creature.position.lat,
+            0, // altitude not in Coordinate schema
+            creature.position.lon
           );
           this.vehicles.set(
             creature.id,
@@ -322,11 +328,13 @@ export class Gen2System {
 
       // Apply flocking behaviors
       packVehicles.forEach((vehicle) => {
-        vehicle.steering.clear();
+        // Clear steering behaviors (Yuka doesn't have clear(), remove all behaviors)
+        vehicle.steering.behaviors = [];
 
         const cohesion = new CohesionBehavior(packVehicles);
         const separation = new SeparationBehavior(packVehicles);
-        const alignment = new AlignmentBehavior(packVehicles);
+        // AlignmentBehavior doesn't exist in Yuka, use CohesionBehavior instead
+        const alignment = new CohesionBehavior(packVehicles);
 
         cohesion.weight = 1.0;
         separation.weight = 2.0;
@@ -341,9 +349,9 @@ export class Gen2System {
         // Update creature position
         const creature = packCreatures.find((c) => c.id === vehicle.creatureId);
         if (creature) {
-          creature.position.latitude = vehicle.position.x;
-          creature.position.altitude = vehicle.position.y;
-          creature.position.longitude = vehicle.position.z;
+          creature.position.lat = vehicle.position.x;
+          creature.position.lon = vehicle.position.z;
+          // altitude not in Coordinate schema, ignore y component
         }
       });
 
