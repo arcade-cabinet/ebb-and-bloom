@@ -288,9 +288,9 @@ export class GameScene {
     }
 
     // Gen1+: Render creatures (micro level)
-    if (generation >= 1 && creatures && creatures.length > 0 && this.creatureRenderer) {
-      // TODO: Implement creature rendering when Gen1 is active
-      console.log(`⏳ ${creatures.length} creatures ready for rendering (Gen1 implementation pending)`);
+    // LOD handled in animation loop based on camera distance
+    if (generation >= 1 && creatures && creatures.length > 0) {
+      console.log(`✅ ${creatures.length} creatures ready (will render as lights/meshes based on zoom)`);
     }
 
     // TODO: Gen2+ renderers
@@ -299,13 +299,22 @@ export class GameScene {
   }
 
   private startAnimation(): void {
-    // Update time for orbital mechanics
+    // Update time for orbital mechanics and LOD
     this.scene.registerBeforeRender(() => {
       this.time += this.engine.getDeltaTime() / 1000;
       
       // Update moon positions based on time
       if (this.moonRenderer) {
         this.moonRenderer.updateOrbitalPositions(this.time);
+      }
+      
+      // Update creature LOD based on camera distance
+      if (this.creatureRenderer && this.renderData?.creatures) {
+        const camera = this.scene.activeCamera;
+        if (camera) {
+          const cameraDistance = Vector3.Distance(camera.position, Vector3.Zero());
+          this.creatureRenderer.render(this.renderData.creatures, cameraDistance);
+        }
       }
     });
   }
