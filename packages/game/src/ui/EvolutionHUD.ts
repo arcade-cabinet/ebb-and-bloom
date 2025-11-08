@@ -5,16 +5,19 @@
  * STUB: Ready for Gen1 implementation
  */
 
-import { AdvancedDynamicTexture, TextBlock, Rectangle, Control } from '@babylonjs/gui';
+import { AdvancedDynamicTexture, TextBlock, Rectangle, Control, Button } from '@babylonjs/gui';
 import { Scene } from '@babylonjs/core';
 import { COLORS, FONTS } from '../constants';
 
 export class EvolutionHUD {
   private guiTexture: AdvancedDynamicTexture;
   private generation: number = 0;
+  private genText: TextBlock | null = null;
+  private onAdvanceGeneration: (() => void) | null = null;
 
-  constructor(scene: Scene) {
+  constructor(scene: Scene, onAdvanceGeneration?: () => void) {
     this.guiTexture = AdvancedDynamicTexture.CreateFullscreenUI('HUD', true, scene);
+    this.onAdvanceGeneration = onAdvanceGeneration || null;
     this.setupHUD();
   }
 
@@ -33,11 +36,34 @@ export class EvolutionHUD {
     genPanel.left = '20px';
     this.guiTexture.addControl(genPanel);
 
-    const genText = new TextBlock('gen', `🧬 Generation ${this.generation}`);
-    genText.fontSize = 18;
-    genText.fontFamily = FONTS.ui;
-    genText.color = COLORS.accent.seed;
-    genPanel.addControl(genText);
+    this.genText = new TextBlock('gen', `🧬 Generation ${this.generation}`);
+    this.genText.fontSize = 18;
+    this.genText.fontFamily = FONTS.ui;
+    this.genText.color = COLORS.accent.seed;
+    genPanel.addControl(this.genText);
+
+    // Advance Generation button (bottom-left)
+    if (this.onAdvanceGeneration) {
+      const advanceBtn = Button.CreateSimpleButton('advanceGen', '⏭ Advance Generation');
+      advanceBtn.width = '200px';
+      advanceBtn.height = '50px';
+      advanceBtn.cornerRadius = 10;
+      advanceBtn.color = COLORS.text.primary;
+      advanceBtn.background = COLORS.primary.bloom;
+      advanceBtn.fontSize = 16;
+      advanceBtn.fontFamily = FONTS.ui;
+      advanceBtn.fontWeight = 'bold';
+      advanceBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
+      advanceBtn.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+      advanceBtn.left = '20px';
+      advanceBtn.bottom = '80px';
+      advanceBtn.onPointerClickObservable.add(() => {
+        if (this.onAdvanceGeneration) {
+          this.onAdvanceGeneration();
+        }
+      });
+      this.guiTexture.addControl(advanceBtn);
+    }
 
     // Top-right: Environment status (stub)
     const envPanel = new Rectangle('envPanel');
@@ -82,6 +108,9 @@ export class EvolutionHUD {
 
   public updateGeneration(gen: number): void {
     this.generation = gen;
+    if (this.genText) {
+      this.genText.text = `🧬 Generation ${this.generation}`;
+    }
   }
 
   public addEvent(event: string): void {

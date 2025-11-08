@@ -136,8 +136,10 @@ export class GameScene {
   }
 
   private setupUI(): void {
-    // Create Evolution HUD
-    this.hud = new EvolutionHUD(this.scene);
+    // Create Evolution HUD with generation advancement callback
+    this.hud = new EvolutionHUD(this.scene, async () => {
+      await this.advanceGeneration();
+    });
     
     // Create Narrative Display  
     this.narrative = new NarrativeDisplay(this.scene);
@@ -146,6 +148,67 @@ export class GameScene {
     this.planetRenderer = new PlanetRenderer(this.scene);
     this.moonRenderer = new MoonRenderer(this.scene);
     this.creatureRenderer = new CreatureRenderer(this.scene);
+  }
+
+  /**
+   * Advance to next generation
+   * Calls GameEngine to run Gen1+ systems
+   */
+  private async advanceGeneration(): Promise<void> {
+    if (!this.gameEngine) {
+      console.error('Cannot advance: GameEngine not initialized');
+      return;
+    }
+
+    try {
+      console.log(`🔄 Advancing from Gen${this.renderData?.generation} to Gen${(this.renderData?.generation || 0) + 1}...`);
+      
+      // Call backend to advance generation
+      const newState = await this.gameEngine.advanceGeneration();
+      
+      // Update render data
+      const currentGen = newState.generation || 0;
+      const renderData = await this.gameEngine.getGen0RenderData(this.time);
+      
+      if (renderData) {
+        this.renderData = {
+          generation: currentGen,
+          planet: renderData.planet,
+          visualBlueprint: renderData.visualBlueprint as any,
+          moons: renderData.moons,
+          stellarContext: newState.gen0Data?.stellarContext,
+          creatures: newState.gen1Data?.creatures || [],
+          tools: newState.gen2Data?.tools || [],
+          buildings: newState.gen3Data?.buildings || [],
+        };
+      }
+
+      // Update HUD
+      if (this.hud) {
+        this.hud.updateGeneration(currentGen);
+        this.hud.addEvent(`✨ Advanced to Generation ${currentGen}`);
+      }
+
+      // Add narrative event
+      if (this.narrative && currentGen === 1) {
+        this.narrative.addHaiku('First creatures emerge', [
+          'Life stirs in the deep',
+          'Consciousness takes fragile form',
+          'The planet awakens'
+        ]);
+      }
+
+      // Re-render with new generation data
+      await this.renderWithRenderers();
+      this.updateInfo();
+
+      console.log(`✅ Now at Generation ${currentGen}`);
+    } catch (error) {
+      console.error('Failed to advance generation:', error);
+      if (this.hud) {
+        this.hud.addEvent(`❌ Error: ${error instanceof Error ? error.message : 'Unknown'}`);
+      }
+    }
   }
 
   private async loadGameData(): Promise<void> {
