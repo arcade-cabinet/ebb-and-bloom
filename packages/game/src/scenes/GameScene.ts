@@ -102,7 +102,7 @@ export class GameScene {
   }
 
   private setupScene(): void {
-    // Camera - orbit around center
+    // Camera - orbit around center with extended range for celestial view
     const camera = new ArcRotateCamera(
       'camera',
       -Math.PI / 2,
@@ -113,8 +113,10 @@ export class GameScene {
     );
     camera.attachControl(this.engine.getRenderingCanvas()!, true);
     camera.setTarget(Vector3.Zero());
+    // Close: See individual creatures on surface (~5 units)
     camera.lowerRadiusLimit = 5;
-    camera.upperRadiusLimit = 50;
+    // Far: Celestial view showing full planet + moons (~500 units)
+    camera.upperRadiusLimit = 500;
     camera.wheelDeltaPercentage = 0.01;
 
     // Lights - simulate star light
