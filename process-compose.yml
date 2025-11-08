@@ -37,11 +37,20 @@ processes:
     working_dir: "."
     restart: "on-failure"
 
-  # E2E Tests
-  test-e2e:
+  # E2E Tests (Backend)
+  test-e2e-backend:
     command: "cd packages/backend && pnpm test:e2e"
     working_dir: "."
     restart: "never"
+
+  # E2E Tests (Frontend - Playwright)
+  test-e2e-frontend:
+    command: "cd packages/simulation && pnpm test:e2e"
+    working_dir: "."
+    restart: "never"
+    depends_on:
+      - dev-backend
+      - dev-frontend
 
   # Gen Pipeline
   gen-archetypes:
