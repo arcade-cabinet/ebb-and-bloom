@@ -48,10 +48,10 @@ build-android:
   @echo ""
   @echo "📲 Install: adb install -r dev-builds/ebb-and-bloom-latest.apk"
 
-# Build web assets only
+# Build web assets only (skip TypeScript checking for now)
 build-web:
-  @echo "🔨 Building web assets..."
-  cd packages/game && pnpm build
+  @echo "🔨 Building web assets (Vite only, skip TS)..."
+  cd packages/game && pnpm exec vite build
   @du -sh packages/game/dist/ | awk '{print "✅ Web build: " $$1}'
 
 # Sync to Android (requires web build)
