@@ -28,6 +28,7 @@ import {
   PointsCloudSystem,
   Mesh,
   GlowLayer,
+  Viewport,
 } from '@babylonjs/core';
 import { AdvancedDynamicTexture, TextBlock, Button, StackPanel } from '@babylonjs/gui';
 import { Vector3 as YukaVector3 } from 'yuka';
@@ -37,6 +38,7 @@ import { StellarAgent } from '../yuka-integration/agents/StellarAgent';
 import { PlanetaryAgent } from '../yuka-integration/agents/PlanetaryAgent';
 import { DensityAgent } from '../yuka-integration/agents/DensityAgent';
 import { AdaptiveHUD } from '../ui/AdaptiveHUD';
+import { MolecularBreakdownPanel } from '../ui/MolecularBreakdownPanel';
 import { MARKER_STORE } from '../state/UniverseMarkers';
 import { ZoomLevel, getZoomLevelFromCameraDistance } from '../state/ZoomLOD';
 import { MolecularVisuals } from '../renderers/MolecularVisuals';
@@ -102,8 +104,9 @@ export class CompleteBottomUpScene {
   private planetMeshes: Map<PlanetaryAgent, Mesh> = new Map();
   private galaxyMarkerMeshes: Map<string, Mesh> = new Map();
   
-  // HUD
+  // UI Panels
   private hud: AdaptiveHUD;
+  private molecularPanel: MolecularBreakdownPanel;
   
   constructor(canvas: HTMLCanvasElement, seed: string) {
     console.log('🌌 COMPLETE BOTTOM-UP UNIVERSE');
@@ -117,6 +120,7 @@ export class CompleteBottomUpScene {
     this.scene.clearColor = new Color4(0, 0, 0, 1); // BLACK - NOTHING exists yet!
     
     // Camera starts ZOOMED IN (Planck scale)
+    // Uses 80% of screen (left side) - RIGHT 20% for HUD + Molecular panel
     this.camera = new ArcRotateCamera(
       'camera',
       0,
@@ -128,6 +132,15 @@ export class CompleteBottomUpScene {
     this.camera.attachControl(canvas, true);
     this.camera.lowerRadiusLimit = 0.01;
     this.camera.upperRadiusLimit = 100000;
+    
+    // CRITICAL: Set viewport to LEFT 80% of screen
+    // Right 20% reserved for UI panels
+    this.camera.viewport = new Viewport(
+      0,      // x = left edge
+      0,      // y = bottom edge  
+      0.8,    // width = 80% of screen
+      1.0     // height = full height
+    );
     
     // CRITICAL: Bright light for seeing molecules in dark space!
     // Space is black, but objects must be VISIBLE
@@ -142,8 +155,9 @@ export class CompleteBottomUpScene {
     // GUI
     this.gui = AdvancedDynamicTexture.CreateFullscreenUI('UI');
     
-    // HUD
+    // UI Panels (professional layout)
     this.hud = new AdaptiveHUD(this.gui);
+    this.molecularPanel = new MolecularBreakdownPanel(this.scene, this.engine);
     
     // Yuka setup
     this.spawner = new AgentSpawner();
@@ -174,102 +188,115 @@ export class CompleteBottomUpScene {
   }
   
   /**
-   * Create quantum foam visualization
-   * Represents Planck-scale quantum fluctuations
+   * Create Big Bang visualization
+   * CENTER → OUTWARD expansion (not random particles!)
    * 
-   * NOTE: Starts STOPPED - will trigger on first update when Big Bang happens
+   * Shows traceries of light/energy spreading from singularity
+   * to form structure (galaxies, cosmic web)
+   * 
+   * NOTE: Starts STOPPED - triggers when user presses PLAY
    */
   private createQuantumFoamVisualization(): void {
-    // Particle system for quantum foam
-    this.particleSystem = new ParticleSystem('quantum-foam', 10000, this.scene);
-    this.particleSystem.particleTexture = new Texture('https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/packages/tools/playground/public/textures/flare.png', this.scene);
+    // Big Bang explosion from CENTER POINT (singularity)
+    this.particleSystem = new ParticleSystem('big-bang-expansion', 5000, this.scene);
+    this.particleSystem.particleTexture = new Texture(
+      'https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/packages/tools/playground/public/textures/flare.png',
+      this.scene
+    );
     
-    // Emit from origin (Big Bang point)
+    // EMIT FROM CENTER (0,0,0) - singularity point!
     this.particleSystem.emitter = BabylonVector3.Zero();
-    this.particleSystem.minEmitBox = new BabylonVector3(-0.01, -0.01, -0.01);
-    this.particleSystem.maxEmitBox = new BabylonVector3(0.01, 0.01, 0.01);
+    this.particleSystem.createSphereEmitter(0.1); // Point source
     
-    // Quantum fluctuations (very rapid)
-    this.particleSystem.minLifeTime = 0.1;
-    this.particleSystem.maxLifeTime = 0.5;
+    // Particles EXPLODE OUTWARD (radial expansion!)
+    this.particleSystem.minEmitPower = 100;  // Fast expansion
+    this.particleSystem.maxEmitPower = 300;
+    
+    // Energy lifetime (visible as they spread)
+    this.particleSystem.minLifeTime = 2;
+    this.particleSystem.maxLifeTime = 5;
     this.particleSystem.emitRate = 1000;
     
-    // Bright, white-hot
-    this.particleSystem.color1 = new Color4(1, 1, 1, 1);
-    this.particleSystem.color2 = new Color4(1, 1, 0.8, 1);
-    this.particleSystem.colorDead = new Color4(1, 0.5, 0, 0);
+    // Color: White-hot → Blue (cooling as they spread)
+    this.particleSystem.color1 = new Color4(1, 1, 1, 1);      // White (hot)
+    this.particleSystem.color2 = new Color4(0.7, 0.9, 1, 1);  // Blue-white (cooling)
+    this.particleSystem.colorDead = new Color4(0.3, 0.5, 0.8, 0); // Faint blue (cold)
     
-    this.particleSystem.minSize = 0.001;
-    this.particleSystem.maxSize = 0.01;
+    // Tracery effect (line particles)
+    this.particleSystem.minSize = 0.5;
+    this.particleSystem.maxSize = 2;
     
-    // DON'T start yet - wait for Big Bang to happen!
-    // this.particleSystem.start(); // Removed!
+    // DON'T start yet - wait for Big Bang!
     
-    console.log('  ✨ Quantum foam prepared (waiting for Big Bang)');
+    console.log('  💥 Big Bang prepared (CENTER → OUTWARD expansion)');
   }
   
   /**
    * Create UI controls
    * 
-   * NO HARDCODED TEXT - AdaptiveHUD handles all display!
-   * Agents push updates to HUD, HUD displays based on priority.
+   * PROFESSIONAL LAYOUT:
+   * - 80% LEFT: Active view
+   * - 20% RIGHT: HUD (top) + Molecular (middle) + VCR (bottom)
    */
   private createUI(): void {
     // ═══════════════════════════════════════════════════════════════
-    // RESPONSIVE MOBILE-FRIENDLY CONTROLS
+    // VCR CONTROLS - BOTTOM OF RIGHT PANEL (20%)
     // ═══════════════════════════════════════════════════════════════
     
     // Detect mobile/small screens
     const isMobile = window.innerWidth < 768 || window.innerHeight < 600;
     
-    // Controls panel (bottom center, ABOVE safe area)
-    const controls = new StackPanel('controls');
+    // VCR Controls panel - in RIGHT 20% area, at bottom
+    const controls = new StackPanel('vcr-controls');
     controls.isVertical = false;
+    controls.width = '20%';  // Right panel width
     controls.height = isMobile ? '60px' : '50px';
-    controls.horizontalAlignment = StackPanel.HORIZONTAL_ALIGNMENT_CENTER;
+    controls.horizontalAlignment = StackPanel.HORIZONTAL_ALIGNMENT_RIGHT;
     controls.verticalAlignment = StackPanel.VERTICAL_ALIGNMENT_BOTTOM;
     
-    // Mobile: More spacing from bottom (avoid gesture bars, home indicators)
-    controls.top = isMobile ? '-80px' : '-20px';
+    // Position within right panel
+    controls.top = isMobile ? '-10px' : '-10px';
+    controls.left = '-5px';
     
-    // Semi-transparent background so it doesn't block visuals
-    controls.background = 'rgba(0, 5, 10, 0.8)';
-    controls.paddingLeft = '10px';
-    controls.paddingRight = '10px';
+    // Semi-transparent background
+    controls.background = 'rgba(0, 5, 10, 0.9)';
     controls.paddingTop = '5px';
     controls.paddingBottom = '5px';
     
     this.gui.addControl(controls);
     
-    // Play button - larger on mobile
-    const playButton = Button.CreateSimpleButton('play', '▶ PLAY');
-    playButton.width = isMobile ? '120px' : '100px';
-    playButton.height = isMobile ? '50px' : '40px';
+    // Play button - compact for right panel
+    const playButton = Button.CreateSimpleButton('play', '▶');
+    playButton.width = '40px';
+    playButton.height = '40px';
     playButton.color = '#00ff88';
     playButton.background = 'rgba(0, 20, 30, 0.9)';
     playButton.thickness = 2;
     playButton.cornerRadius = 5;
     playButton.onPointerClickObservable.add(() => {
       this.paused = !this.paused;
-      playButton.textBlock!.text = this.paused ? '▶ PLAY' : '⏸ PAUSE';
+      playButton.textBlock!.text = this.paused ? '▶' : '⏸';
     });
     controls.addControl(playButton);
     
-    // Speed controls - responsive sizing
-    for (const speed of [1, 10, 100, 1000]) {
-      const btn = Button.CreateSimpleButton(`speed-${speed}`, `${speed}x`);
-      btn.width = isMobile ? '80px' : '70px';
-      btn.height = isMobile ? '50px' : '40px';
-      btn.color = '#88ccff';
-      btn.background = 'rgba(0, 20, 30, 0.9)';
-      btn.thickness = 2;
-      btn.cornerRadius = 5;
-      btn.onPointerClickObservable.add(() => {
-        console.log(`Speed: ${speed}x (affects time scale)`);
-        // Could implement variable time scale here
-      });
-      controls.addControl(btn);
-    }
+    // Speed button (cycles through speeds)
+    let currentSpeed = 1;
+    const speedButton = Button.CreateSimpleButton('speed', '1x');
+    speedButton.width = '50px';
+    speedButton.height = '40px';
+    speedButton.color = '#88ccff';
+    speedButton.background = 'rgba(0, 20, 30, 0.9)';
+    speedButton.thickness = 2;
+    speedButton.cornerRadius = 5;
+    speedButton.onPointerClickObservable.add(() => {
+      // Cycle: 1x → 10x → 100x → 1000x → 1x
+      const speeds = [1, 10, 100, 1000];
+      const currentIndex = speeds.indexOf(currentSpeed);
+      currentSpeed = speeds[(currentIndex + 1) % speeds.length];
+      speedButton.textBlock!.text = `${currentSpeed}x`;
+      console.log(`Speed: ${currentSpeed}x`);
+    });
+    controls.addControl(speedButton);
   }
   
   /**
@@ -834,6 +861,10 @@ export class CompleteBottomUpScene {
       MolecularVisuals.animateMolecule(molecule, delta);
     }
     
+    // Update molecular breakdown panel (ALWAYS present, contextual!)
+    this.updateMolecularPanel();
+    this.molecularPanel.update(delta);
+    
     // Render based on zoom level
     this.updateStarVisuals(); // STELLAR zoom and closer
     this.updateGalaxyMarkers(); // COSMIC zoom
@@ -843,6 +874,24 @@ export class CompleteBottomUpScene {
     
     // Slow camera rotation
     this.camera.alpha += 0.0005;
+  }
+  
+  /**
+   * Update molecular panel with current context
+   * Shows molecules relevant to current scale/view
+   */
+  private updateMolecularPanel(): void {
+    const scale = this.currentZoomLevel as any; // Map zoom to context scale
+    const context = MolecularBreakdownPanel.getContextForScale(
+      scale === ZoomLevel.COSMIC ? 'cosmic' :
+      scale === ZoomLevel.GALACTIC ? 'galactic' :
+      scale === ZoomLevel.STELLAR ? 'stellar' :
+      scale === ZoomLevel.PLANETARY ? 'planetary' : 'surface',
+      this.entropyAgent.age,
+      this.entropyAgent.temperature
+    );
+    
+    this.molecularPanel.updateContext(context);
   }
   
   /**
@@ -1045,8 +1094,11 @@ export class CompleteBottomUpScene {
     // Update simulation
     this.update(delta);
     
-    // Render scene
+    // Render main scene (80% left viewport)
     this.scene.render();
+    
+    // Render molecular breakdown panel (20% right viewport, middle section)
+    this.molecularPanel.render();
   }
 }
 
