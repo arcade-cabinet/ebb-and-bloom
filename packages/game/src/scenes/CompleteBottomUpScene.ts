@@ -533,11 +533,13 @@ export class CompleteBottomUpScene {
    * Create atoms visualization (GPU-optimized particle system)
    */
   private createAtomsVisualization(): void {
-    if (this.atomsCloud) return; // Already created
+    if (this.atomsCloud || this.particleSystem) return; // Already created (check particleSystem too!)
     
-    // Stop quantum foam particles
+    // Create NEW particle system for atoms (quantum foam is stopped)
+    // Don't reuse particleSystem, create fresh one
     if (this.particleSystem) {
       this.particleSystem.stop();
+      this.particleSystem.dispose();
     }
     
     // Use PARTICLE SYSTEM for atoms (GPU-optimized, not individual meshes!)
@@ -571,6 +573,9 @@ export class CompleteBottomUpScene {
     this.particleSystem.maxEmitPower = 2;
     
     this.particleSystem.start();
+    
+    // Mark as created
+    this.atomsCloud = {} as any; // Dummy object to prevent recreation
     
     console.log('  ⚛️  Atoms visualization created (GPU particle system)');
   }
@@ -648,6 +653,9 @@ export class CompleteBottomUpScene {
       cloud.start();
       this.molecularCloudParticles.push(cloud);
     }
+    
+    // Mark as created
+    this.moleculesCloud = {} as any; // Dummy object to prevent recreation
     
     console.log(`  🧬 Molecular clouds created:`);
     console.log(`     - ${clusterCount * moleculesPerCloud} ACTUAL 3D molecules (H2, H2O, CO2, CH4, NH3)`);
