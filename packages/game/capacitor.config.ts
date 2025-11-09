@@ -4,6 +4,13 @@ const config: CapacitorConfig = {
   appId: 'com.ebbandbloom.app',
   appName: 'Ebb and Bloom',
   webDir: 'dist',
+  // Native projects at workspace root (Capacitor standard structure)
+  android: {
+    path: '../../android'
+  },
+  ios: {
+    path: '../../ios'
+  },
   server: {
     androidScheme: 'https',
     hostname: '0.0.0.0',

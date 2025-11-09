@@ -138,15 +138,35 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
-# Capacitor/Android build files
-# TEMPORARILY ALLOW android/ and APKs for development viability proof
-# android/
-# ios/
+# Capacitor: Native Projects at Root
+# Track source configs, ignore build artifacts
+
+# Android
+android/app/build/
+android/app/.cxx/
+android/.gradle/
+android/build/
+android/captures/
+android/local.properties
+android/*.iml
+android/.idea/
+android/.externalNativeBuild/
+# KEEP: Source files, manifests, gradle configs
+
+# iOS  
+ios/App/build/
+ios/App/Pods/
+ios/App/*.xcworkspace/xcuserdata/
+ios/App/*.xcodeproj/xcuserdata/
+ios/App/*.xcodeproj/project.xcworkspace/xcuserdata/
+ios/App/DerivedData/
+# KEEP: Source files, Info.plist, project configs
+
+# Capacitor generated (auto-regenerated on sync)
 .capacitor/
 
-# Build outputs
-# TEMPORARILY ALLOW build/ for APK (development viability proof)
-# build/
+# Build outputs (web)
+packages/game/dist/
 
 # Generated assets (AI-generated or built)
 public/splash/
@@ -162,16 +182,16 @@ public/creatures/
 # Textures are TRACKED (downloaded via script, but should be in repo)
 # public/textures/ is NOT ignored - these are source assets
 
-# Playwright test results (can be large)
+# Playwright test results
 playwright-results/
 playwright-report/
 test-results/
 
-# Screenshots - ALLOW for viability proof during development
-# (Re-enable blocking after we've proven the build works)
-# *.png
-# *.mp4
-# *.webm
+# Test screenshots (track manually when needed for viability proof)
+**/test-results/**/*.png
+**/playwright-report/**/*.png
+# Allow docs/screenshots for documentation
+!docs/screenshots/*.png
 
 # But keep config files
 !playwright.config.ts
