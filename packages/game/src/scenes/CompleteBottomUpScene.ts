@@ -540,13 +540,13 @@ export class CompleteBottomUpScene {
    * Create atoms visualization (GPU-optimized particle system)
    */
   private createAtomsVisualization(): void {
-    if (this.atomsCloud || this.particleSystem) return; // Already created (check particleSystem too!)
+    if (this.atomsCloud) return; // Already created
     
-    // Create NEW particle system for atoms (quantum foam is stopped)
-    // Don't reuse particleSystem, create fresh one
+    // REPLACE quantum foam with atom particles
     if (this.particleSystem) {
       this.particleSystem.stop();
       this.particleSystem.dispose();
+      this.particleSystem = undefined; // CRITICAL: Clear ref so we can create new one!
     }
     
     // Use PARTICLE SYSTEM for atoms (GPU-optimized, not individual meshes!)
