@@ -119,13 +119,12 @@ export class CompleteBottomUpScene {
     this.scene = new Scene(this.engine);
     this.scene.clearColor = new Color4(0, 0, 0, 1); // BLACK - NOTHING exists yet!
     
-    // Camera starts ZOOMED IN (Planck scale)
-    // Uses 80% of screen (left side) - RIGHT 20% for HUD + Molecular panel
+    // Camera starts at medium distance (can see particles immediately!)
     this.camera = new ArcRotateCamera(
       'camera',
       0,
       Math.PI / 2,
-      0.1, // VERY CLOSE (representing Planck scale)
+      500, // Start zoomed OUT to see atoms/molecules
       BabylonVector3.Zero(),
       this.scene
     );
