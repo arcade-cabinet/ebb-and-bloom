@@ -1,50 +1,48 @@
 #!/usr/bin/env tsx
 /**
  * Test stochastic population dynamics
- * Lotka-Volterra with noise, Gillespie algorithm
+ * Lotka-Volterra with noise
  */
 
 import { StochasticPopulationDynamics } from '../ecology/StochasticPopulation.js';
 
 console.log('\n🦊🐰 Testing Stochastic Population Dynamics\n');
 
+const simulator = new StochasticPopulationDynamics('stochastic-test-seed');
+
+let prey = 100;
+let predators = 10;
+
 const params = {
-  preyGrowthRate: 0.5,
-  predationRate: 0.02,
-  predatorDeathRate: 0.4,
-  conversionEfficiency: 0.01,
-  preyCapacity: 1000,
-  environmentalNoise: 0.1,
+  alpha: 0.5,      // Prey birth rate
+  beta: 0.02,      // Predation rate
+  delta: 0.01,     // Predator efficiency
+  gamma: 0.4,      // Predator death rate
+  sigmaEnv: 0.1,   // Environmental noise
+  sigmaDemog: 0.05 // Demographic noise
 };
 
-const simulator = new StochasticPopulationDynamics(
-  100, // initial prey
-  10,  // initial predators
-  params,
-  'stochastic-test-seed'
-);
-
 console.log('Initial state:');
-console.log(`  Prey: ${simulator.getState().prey}`);
-console.log(`  Predators: ${simulator.getState().predators}`);
+console.log(`  Prey: ${prey}`);
+console.log(`  Predators: ${predators}`);
 
 console.log('\nRunning 100 simulation steps...\n');
 
 for (let i = 0; i < 100; i++) {
-  simulator.step(1.0);
+  const result = simulator.stepPredatorPrey(prey, predators, params, 1.0);
+  prey = result.prey;
+  predators = result.predator;
   
   if (i % 20 === 0) {
-    const state = simulator.getState();
-    console.log(`Step ${i}: Prey=${state.prey.toFixed(0)}, Predators=${state.predators.toFixed(0)}`);
+    console.log(`Step ${i}: Prey=${prey.toFixed(0)}, Predators=${predators.toFixed(0)}`);
   }
 }
 
-const finalState = simulator.getState();
 console.log('\nFinal state:');
-console.log(`  Prey: ${finalState.prey.toFixed(0)}`);
-console.log(`  Predators: ${finalState.predators.toFixed(0)}`);
+console.log(`  Prey: ${prey.toFixed(0)}`);
+console.log(`  Predators: ${predators.toFixed(0)}`);
 
-if (finalState.prey > 0 || finalState.predators > 0) {
+if (prey > 0 || predators > 0) {
   console.log('\n✅ Simulation completed (some populations survived)');
 } else {
   console.log('\n⚠️  Simulation completed (all populations extinct)');

@@ -95,6 +95,9 @@ importers:
       seedrandom:
         specifier: ^3.0.5
         version: 3.0.5
+      simple-statistics:
+        specifier: ^7.8.8
+        version: 7.8.8
       simplex-noise:
         specifier: ^4.0.3
         version: 4.0.3
@@ -1523,6 +1526,9 @@ packages:
   signal-exit@4.1.0:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
+
+  simple-statistics@7.8.8:
+    resolution: {integrity: sha512-CUtP0+uZbcbsFpqEyvNDYjJCl+612fNgjT8GaVuvMG7tBuJg8gXGpsP5M7X658zy0IcepWOZ6nPBu1Qb9ezA1w==}
 
   simplex-noise@4.0.3:
     resolution: {integrity: sha512-qSE2I4AngLQG7BXqoZj51jokT4WUXe8mOBrvfOXpci8+6Yu44+/dD5zqDpOx3Ux792eamTd2lLcI8jqFntk/lg==}
@@ -3085,6 +3091,8 @@ snapshots:
   signal-exit@3.0.7: {}
 
   signal-exit@4.1.0: {}
+
+  simple-statistics@7.8.8: {}
 
   simplex-noise@4.0.3: {}
 

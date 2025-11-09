@@ -1,36 +1,28 @@
 #!/usr/bin/env tsx
 /**
- * Test determinism of universe generation
+ * Test determinism of law-based generation
  * Same seed should always produce same result
  */
 
-import { GameEngine } from '../engine/GameEngineBackend.js';
+import { generateGameData } from '../gen-systems/loadGenData.js';
 
 const seed = process.argv[2] || 'v1-determinism-test-seed';
 
 console.log(`\n🧪 Testing determinism with seed: ${seed}\n`);
 
-// Generate universe
-const engine = new GameEngine({ seed });
-const universe = engine.generateUniverse();
+// Generate game data (uses law system)
+const gameData = await generateGameData(seed);
 
 // Print key properties for comparison
-console.log(`Star name: ${universe.star.name}`);
-console.log(`Star mass: ${universe.star.mass.toFixed(6)} M☉`);
-console.log(`Star luminosity: ${universe.star.luminosity.toFixed(6)} L☉`);
-console.log(`Number of planets: ${universe.planets.length}`);
+console.log(`Game ID: ${gameData.gameId}`);
+console.log(`Seed: ${gameData.seed}`);
+console.log(`Generation: ${gameData.generation}`);
+console.log(`Current Time: ${gameData.currentTime}`);
 
-if (universe.planets.length > 0) {
-  const planet = universe.planets[0];
-  console.log(`First planet mass: ${planet.mass.toFixed(6)} M⊕`);
-  console.log(`First planet temperature: ${planet.surfaceTemp.toFixed(2)} K`);
-  console.log(`First planet habitable: ${planet.habitable}`);
-}
-
-if (universe.species && universe.species.length > 0) {
-  const species = universe.species[0];
-  console.log(`First species archetype: ${species.archetype}`);
-  console.log(`First species mass: ${species.averageMass.toFixed(3)} kg`);
+if (gameData.gen0Data) {
+  console.log(`\nGen0 Data:`);
+  console.log(`  Planet name: ${gameData.gen0Data.selectedArchetype?.name || 'N/A'}`);
+  console.log(`  Star type: ${gameData.gen0Data.contextData?.starType || 'N/A'}`);
 }
 
 console.log(`\n✅ Determinism test completed`);
