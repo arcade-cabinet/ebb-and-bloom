@@ -37,8 +37,6 @@ export interface BuildingProject {
 export class StructureBuildingSystem {
   private structures: Map<string, Structure> = new Map();
   private projects: Map<string, BuildingProject> = new Map();
-  private nextStructureId: number = 0;
-  private nextProjectId: number = 0;
 
   /**
    * Update building system
@@ -116,9 +114,9 @@ export class StructureBuildingSystem {
     creatures: Map<string, {
       position: { lat: number; lon: number };
       traits?: {
-        social?: string;
         strength?: number;
         intelligence?: number;
+        social?: string;
       };
       energy?: number;
     }>,
@@ -128,7 +126,7 @@ export class StructureBuildingSystem {
     const WORK_RANGE = 2; // degrees
     const BASE_WORK_RATE = 0.01; // 1% per second
 
-    for (const [projectId, project] of this.projects) {
+    for (const [_projectId, project] of this.projects) {
       // Find nearby workers
       for (const [creatureId, creature] of creatures) {
         // Has tools?
@@ -149,10 +147,34 @@ export class StructureBuildingSystem {
         const workRate = BASE_WORK_RATE * strength * intelligence * social * deltaTime;
 
         // Add contribution
-        const currentWork = project.contributors.get(creatureId) || 0;
-        project.contributors.set(creatureId, currentWork + workRate);
+        if (!project.contributors.has(creatureId)) {
+          project.contributors.set(creatureId, 0);
+        }
+        project.contributors.set(creatureId, project.contributors.get(creatureId)! + workRate);
       }
     }
+  }
+
+  /**
+   * Start a new building project
+   */
+  private startProject(
+    type: Structure['type'],
+    position: { lat: number; lon: number },
+    initiatorId: string
+  ): void {
+    const projectId = `project-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const structureId = `structure-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+    const project: BuildingProject = {
+      structureId,
+      targetType: type,
+      location: position,
+      contributors: new Map([[initiatorId, 0.01]]), // Start with small contribution from initiator
+      startTime: Date.now()
+    };
+
+    this.projects.set(projectId, project);
   }
 
   /**

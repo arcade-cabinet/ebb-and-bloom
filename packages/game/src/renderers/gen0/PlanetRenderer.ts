@@ -13,7 +13,7 @@
 import { Scene, MeshBuilder, Mesh, PBRMaterial, Color3 } from '@babylonjs/core';
 import { loadTexture } from '../../utils/textureLoader';
 import type { Planet } from '../../schemas';
-import type { VisualRepresentation, PBRProperties } from '@ebb/gen/schemas';
+import type { PBRProperties } from '@ebb/gen/schemas';
 
 export interface Gen0RenderData {
   planet: Planet;

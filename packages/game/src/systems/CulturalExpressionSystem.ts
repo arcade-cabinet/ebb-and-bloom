@@ -114,7 +114,7 @@ export class CulturalExpressionSystem {
   ): void {
     const SITE_CREATION_CHANCE = 0.0005; // 0.05% per frame per structure
 
-    for (const [structureId, structure] of structures) {
+    for (const [_structureId, structure] of structures) {
       // Check if site already exists nearby
       let siteExists = false;
       for (const site of this.sites.values()) {
@@ -301,12 +301,12 @@ export class CulturalExpressionSystem {
    * Creatures perform expressions
    */
   private performExpressions(
-    creatures: Map<string, { position: { lat: number; lon: number } }>,
+    _creatures: Map<string, { position: { lat: number; lon: number } }>,
     deltaTime: number
   ): void {
     const PERFORMANCE_CHANCE = 0.005; // 0.5% per frame
 
-    for (const [creatureId, culture] of this.cultures) {
+      for (const [_creatureId, culture] of this.cultures) {
       // Update timer
       if (culture.expressionTimer > 0) {
         culture.expressionTimer -= deltaTime;
@@ -344,7 +344,7 @@ export class CulturalExpressionSystem {
    * Culture spreads within packs
    */
   private spreadCulture(
-    creatures: Map<string, { position: { lat: number; lon: number } }>,
+    _creatures: Map<string, { position: { lat: number; lon: number } }>,
     packs: Map<string, { members: string[]; id: string }>
   ): void {
     const SPREAD_CHANCE = 0.02; // 2% per frame

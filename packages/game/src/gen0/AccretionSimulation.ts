@@ -66,7 +66,7 @@ export class AccretionSimulation {
       dataPools = await generateGen0DataPools(baseSeed);
       console.log(`[ACCRETION] Stellar context: ${dataPools.macro.selectedContext}`);
       // Access correct archetype structure: visualProperties.primaryTextures instead of visualBlueprint.representations.materials
-      const textures = dataPools.micro.visualProperties?.primaryTextures || [];
+      const textures = (dataPools.micro as any).visualProperties?.primaryTextures || [];
       console.log(`[ACCRETION] Primary textures: ${textures.join(', ')}`);
     }
 

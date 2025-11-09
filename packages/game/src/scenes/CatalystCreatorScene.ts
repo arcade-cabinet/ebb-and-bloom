@@ -6,7 +6,7 @@
  */
 
 import { Scene, Engine } from '@babylonjs/core';
-import { AdvancedDynamicTexture, TextBlock, Rectangle, Control, Button, StackPanel } from '@babylonjs/gui';
+import { AdvancedDynamicTexture, TextBlock, Rectangle, Control, Button } from '@babylonjs/gui';
 import { COLORS, FONTS } from '../constants';
 
 export interface TraitAllocation {
@@ -22,14 +22,8 @@ export interface TraitAllocation {
   toxicity: number;
 }
 
-const TRAIT_ICONS: Record<keyof TraitAllocation, string> = {
-  mobility: '🏃', manipulation: '🤲', excavation: '⛏️', social: '🤝', sensing: '👁️',
-  illumination: '💡', storage: '🎒', filtration: '🫁', defense: '🛡️', toxicity: '☠️'
-};
-
 export class CatalystCreatorScene {
   private scene: Scene;
-  private engine: Engine;
   private guiTexture: AdvancedDynamicTexture | null = null;
   private traits: TraitAllocation = {
     mobility: 0, manipulation: 0, excavation: 0, social: 0, sensing: 0,
@@ -37,9 +31,8 @@ export class CatalystCreatorScene {
   };
   private onComplete: (traits: TraitAllocation) => void;
 
-  constructor(scene: Scene, engine: Engine, onComplete: (traits: TraitAllocation) => void) {
+  constructor(scene: Scene, _engine: Engine, onComplete: (traits: TraitAllocation) => void) {
     this.scene = scene;
-    this.engine = engine;
     this.onComplete = onComplete;
     this.setupGUI();
   }

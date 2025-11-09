@@ -7,7 +7,7 @@
  * - Parameterization: Orbital paths, sizes, compositions
  */
 
-import { Scene, MeshBuilder, Mesh, PBRMaterial, Color3, Vector3 } from '@babylonjs/core';
+import { Scene, MeshBuilder, Mesh, PBRMaterial, Color3 } from '@babylonjs/core';
 
 export interface MoonData {
   id: string;
@@ -52,7 +52,7 @@ export class MoonRenderer {
     // Create material based on composition (WEFT archetype)
     const material = new PBRMaterial(`moonMat_${data.id}`, this.scene);
     
-    switch (data.composition) {
+    switch (data.composition as string) {
       case 'icy':
         material.albedoColor = Color3.FromHexString('#C0D6DF');
         material.roughness = 0.3;
@@ -79,7 +79,7 @@ export class MoonRenderer {
    * Update orbital positions based on time (WARP evolution)
    */
   updateOrbitalPositions(time: number): void {
-    this.meshes.forEach((mesh, id) => {
+    this.meshes.forEach((mesh, _id) => {
       const moonData = this.getMoonDataFromMesh(mesh);
       if (!moonData) return;
 
@@ -91,7 +91,7 @@ export class MoonRenderer {
     });
   }
 
-  private getMoonDataFromMesh(mesh: Mesh): MoonData | null {
+  private getMoonDataFromMesh(_mesh: Mesh): MoonData | null {
     // Extract from mesh name/metadata
     // Simplified - in real implementation, store in mesh.metadata
     return null;

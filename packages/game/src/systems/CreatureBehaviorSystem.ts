@@ -10,8 +10,6 @@
  * Uses Yuka AI for goal-driven behavior
  */
 
-import { Vector3 } from '@babylonjs/core';
-
 export interface CreatureBehaviorState {
   id: string;
   position: { lat: number; lon: number; alt: number };
@@ -35,11 +33,10 @@ export interface ResourceNode {
  * Handles autonomous decision-making and movement
  */
 export class CreatureBehaviorSystem {
-  private planetRadius: number;
   private resources: Map<string, ResourceNode> = new Map();
   
-  constructor(planetRadius: number = 5) {
-    this.planetRadius = planetRadius;
+  constructor(_planetRadius: number = 5) {
+    // Planet radius reserved for future spherical pathfinding enhancements
   }
 
   /**

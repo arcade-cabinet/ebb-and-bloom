@@ -56,7 +56,7 @@ export class EvolutionHUD {
       advanceBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
       advanceBtn.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
       advanceBtn.left = '20px';
-      advanceBtn.bottom = '80px';
+      advanceBtn.top = '-80px'; // Negative top for bottom positioning
       advanceBtn.onPointerClickObservable.add(() => {
         if (this.onAdvanceGeneration) {
           this.onAdvanceGeneration();
@@ -76,7 +76,7 @@ export class EvolutionHUD {
     envPanel.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
     envPanel.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
     envPanel.top = '20px';
-    envPanel.right = '20px';
+    envPanel.left = '-20px'; // Negative left for right positioning
     this.guiTexture.addControl(envPanel);
 
     const envText = new TextBlock('env', '🌍 Environment\n(Gen1 implementation)');
@@ -96,7 +96,7 @@ export class EvolutionHUD {
     feedPanel.background = 'rgba(26, 32, 44, 0.7)';
     feedPanel.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
     feedPanel.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
-    feedPanel.right = '20px';
+    feedPanel.left = '-20px'; // Negative left for right positioning
     this.guiTexture.addControl(feedPanel);
 
     const feedText = new TextBlock('feed', '📜 Evolution Events\n(Gen1 implementation)');

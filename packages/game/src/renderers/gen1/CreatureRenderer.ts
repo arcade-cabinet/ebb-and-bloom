@@ -16,7 +16,6 @@ import {
   PointLight,
   Vector3,
   Color3,
-  Mesh,
   MeshBuilder,
   StandardMaterial,
   Animation,
@@ -500,13 +499,13 @@ export class CreatureRenderer {
   /**
    * Add walking animation (leg movement)
    */
-  private addWalkAnimation(root: TransformNode, locomotion: string): void {
+  private addWalkAnimation(root: TransformNode, _locomotion: string): void {
     // Get all legs
     const legs = root.getChildren().filter(c => c.name.includes('-leg'));
     if (legs.length === 0) return;
     
     const frameRate = 30;
-    const walkSpeed = 1.0; // Animation speed multiplier
+    // Animation speed reserved for future use
     
     // Alternating leg movement
     legs.forEach((leg, i) => {
@@ -582,7 +581,7 @@ export class CreatureRenderer {
   /**
    * Update creatures based on evolution (WARP)
    */
-  updateEvolution(creatures: CreatureData[]): void {
+  updateEvolution(_creatures: CreatureData[]): void {
     // Update visual traits based on evolutionary changes
     // Future: Morph existing meshes to new forms
   }

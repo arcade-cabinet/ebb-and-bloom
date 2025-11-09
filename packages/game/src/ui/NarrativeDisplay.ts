@@ -37,7 +37,7 @@ export class NarrativeDisplay {
     toggleBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
     toggleBtn.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
     toggleBtn.left = '20px';
-    toggleBtn.bottom = '20px';
+    toggleBtn.top = '-20px'; // Negative top for bottom positioning
     toggleBtn.onPointerClickObservable.add(() => this.toggle());
     this.guiTexture.addControl(toggleBtn);
   }
