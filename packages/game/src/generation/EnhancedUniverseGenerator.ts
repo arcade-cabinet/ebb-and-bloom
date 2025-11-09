@@ -12,7 +12,43 @@ import { EnhancedRNG } from '../utils/EnhancedRNG.js';
 import { NBodySimulator, initializePlanetarySystem } from '../physics/NBodySimulator.js';
 import { MonteCarloAccretion } from '../physics/MonteCarloAccretion.js';
 import { LAWS, PHYSICS_CONSTANTS as C } from '../laws/index.js';
-import type { Universe, Star, Planet } from './UniverseGenerator.js';
+
+// Type definitions
+export interface Star {
+  mass: number;
+  radius: number;
+  luminosity: number;
+  temperature: number;
+  age: number;
+  spectralType: string;
+  luminosityClass: string;
+}
+
+export interface Planet {
+  name: string;
+  mass: number;
+  radius: number;
+  density: number;
+  orbitalRadius: number;
+  orbitalPeriod: number;
+  surfaceGravity: number;
+  escapeVelocity: number;
+  surfaceTemperature: number;
+  composition: any;
+  atmosphere: any;
+  magneticField: number;
+  rotationPeriod: number;
+  axialTilt: number;
+  habitability: any;
+}
+
+export interface Universe {
+  seed: string;
+  star: Star;
+  planets: Planet[];
+  habitablePlanet?: Planet;
+  age: number;
+}
 
 export class EnhancedUniverseGenerator {
   private rng: EnhancedRNG;

@@ -47,13 +47,6 @@ export async function generateGameData(seed: string) {
     creatures,
     resources,
     populationDynamics,
-    
-    // Legacy structure for compatibility
-    pools: {
-      macro: { universe, planet },
-      meso: { ecology, creatures, populationDynamics },
-      micro: { resources },
-    },
   };
 }
 
@@ -336,7 +329,6 @@ function simulatePopulationDynamics(creatures: any[], ecology: any, seed: string
   const dominantCarnivore = carnivores.sort((a, b) => b.mass - a.mass)[0];
   
   // Calculate carrying capacity from productivity
-  const area = 1e10; // m² (sample area)
   const K_prey = LAWS.ecology.carryingCapacity.calculate(
     ecology.productivity,
     dominantHerbivore.trophicLevel,
@@ -409,177 +401,8 @@ function simulatePopulationDynamics(creatures: any[], ecology: any, seed: string
 }
 
 /**
- * Legacy compatibility - load gen data
+ * Compatibility alias - generateGameData is the main entry point
  */
 export async function loadGenData(seed: string = 'default') {
   return generateGameData(seed);
-}
-
-// ============================================================================
-// LEGACY COMPATIBILITY LAYER
-// These functions exist for backwards compatibility with Gen0-6 systems
-// They will be gradually phased out as those systems are refactored
-// ============================================================================
-
-/**
- * Extract seed components (legacy - now uses EnhancedRNG internally)
- */
-export function extractSeedComponents(seed: string): { macro: string; meso: string; micro: string } {
-  const rng = new EnhancedRNG(seed);
-  return {
-    macro: rng.uniform().toString(),
-    meso: rng.uniform().toString(),
-    micro: rng.uniform().toString(),
-  };
-}
-
-/**
- * Select from pool (legacy - uses new RNG)
- */
-export function selectFromPool<T>(pool: T[], seedComponent: string): T {
-  const rng = new EnhancedRNG(seedComponent);
-  return rng.choice(pool);
-}
-
-/**
- * Generate Gen0 data pools (legacy - returns law-based universe)
- */
-export async function generateGen0DataPools(seed: string): Promise<any> {
-  const data = await generateGameData(seed);
-  return {
-    macro: {
-      selectedContext: `${data.universe.star.spectralType} star with ${data.universe.planets.length} planets`,
-      universe: data.universe,
-    },
-    micro: {
-      selectedDistribution: 'Silicate-rich', // Default for rocky planets
-      visualProperties: {
-        primaryTextures: ['rock', 'metal', 'ice'],
-      },
-    },
-  };
-}
-
-/**
- * Generate Gen1 data pools (legacy - returns creature archetypes)
- */
-export async function generateGen1DataPools(seed: string, _planet?: any, _gen0Data?: any): Promise<any> {
-  const data = await generateGameData(seed);
-  
-  // Convert creatures to archetype format
-  const archetypeOptions = data.creatures.map((c: any) => ({
-    id: c.id,
-    name: c.name,
-    traits: {
-      locomotion: c.locomotion,
-      foraging: c.biome === 'ocean' ? 'aquatic' : 'surface',
-      social: c.sociality === 'pack' ? 'pack' : 'solitary',
-      excavation: 0.5,
-      maxReach: 1.0,
-      speed: 1.0,
-      strength: 0.5,
-    },
-    visualBlueprint: {},
-    parameters: { mass: c.mass, metabolism: c.metabolism },
-    formation: {},
-    deconstruction: {},
-    adjacency: {},
-  }));
-  
-  return {
-    macro: { archetypeOptions },
-    meso: {},
-    micro: {},
-  };
-}
-
-/**
- * Generate Gen2 data pools (legacy - returns pack dynamics)
- */
-export async function generateGen2DataPools(seed: string): Promise<any> {
-  const data = await generateGameData(seed);
-  
-  const packDynamics = data.creatures
-    .filter((c: any) => c.sociality === 'pack')
-    .map((c: any) => ({
-      id: `pack-${c.id}`,
-      name: `${c.name} Pack`,
-      optimalSize: c.groupSize,
-      hierarchy: 'dominance',
-    }));
-  
-  return {
-    macro: { packDynamics },
-    meso: {},
-    micro: {},
-  };
-}
-
-/**
- * Generate Gen3 data pools (legacy - returns tool types)
- */
-export async function generateGen3DataPools(_seed: string): Promise<any> {
-  
-  const toolTypes = [
-    { id: 'stone-tool', name: 'Stone Tool', complexity: 0.1 },
-    { id: 'bone-tool', name: 'Bone Tool', complexity: 0.2 },
-    { id: 'wood-tool', name: 'Wood Tool', complexity: 0.15 },
-  ];
-  
-  return {
-    macro: { toolTypes },
-    meso: {},
-    micro: {},
-  };
-}
-
-/**
- * Generate Gen4 data pools (legacy - returns tribe structures)
- */
-export async function generateGen4DataPools(_seed: string): Promise<any> {
-  
-  const tribeStructures = [
-    { id: 'band', name: 'Band', size: 25, type: 'band' },
-    { id: 'tribe', name: 'Tribe', size: 150, type: 'tribe' },
-  ];
-  
-  return {
-    macro: { tribeStructures },
-    meso: {},
-    micro: {},
-  };
-}
-
-/**
- * Generate Gen5 data pools (legacy - returns building types)
- */
-export async function generateGen5DataPools(_seed: string): Promise<any> {
-  
-  const buildingTypes = [
-    { id: 'hut', name: 'Hut', materials: ['wood', 'stone'], capacity: 4 },
-    { id: 'longhouse', name: 'Longhouse', materials: ['wood'], capacity: 20 },
-  ];
-  
-  return {
-    macro: { buildingTypes },
-    meso: {},
-    micro: {},
-  };
-}
-
-/**
- * Generate Gen6 data pools (legacy - returns social systems)
- */
-export async function generateGen6DataPools(_seed: string): Promise<any> {
-  
-  const socialSystems = [
-    { id: 'animism', name: 'Animism', type: 'religion' },
-    { id: 'elder-council', name: 'Elder Council', type: 'governance' },
-  ];
-  
-  return {
-    macro: { socialSystems },
-    meso: {},
-    micro: {},
-  };
 }
