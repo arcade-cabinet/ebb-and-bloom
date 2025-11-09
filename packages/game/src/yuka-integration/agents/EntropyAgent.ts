@@ -53,37 +53,13 @@ export class UniverseEvolutionGoal extends Goal {
         universe.scaleFactor *= (1 + exponent);
       }
 
-      // Check if reached maximum expansion
-      if (universe.scaleFactor >= universe.maxScale) {
-        console.log(`\n[EntropyAgent] 🌌 MAXIMUM EXPANSION REACHED!`);
-        console.log(`  Scale: ${universe.scaleFactor.toExponential(2)}x`);
-        universe.phase = 'maximum';
-        universe.hasReachedMax = true;
-        universe.recordEvent('maximum-expansion');
-      }
-    } else if (universe.phase === 'maximum') {
-      // Brief pause at maximum, then begin contraction
-      universe.phase = 'contraction';
-      console.log(`\n[EntropyAgent] ⬇️ CONTRACTION BEGINS - Big Crunch countdown!`);
-      universe.recordEvent('contraction-begins');
-    } else if (universe.phase === 'contraction') {
-      const contractionRate = 0.01;
+      // Physics: Ω_m + Ω_Λ ≈ 1 (flat) → Expands forever
+      // Only contracts if Ω_m > 1 (closed universe)
+      // Our universe: Ω_m=0.3, Ω_Λ=0.7 → EXPANDS FOREVER
+      // No Big Crunch (unless we want fantasy mode)
       
-      const scaledDelta = universe.deltaTime * timeScale;
-      const exponent = contractionRate * scaledDelta;
-      
-      // Cap to prevent underflow
-      if (exponent < 100) {
-        universe.scaleFactor *= Math.pow(1 - contractionRate, scaledDelta);
-      } else {
-        universe.scaleFactor *= (1 - exponent);
-      }
-
-      // Check if Big Crunch imminent
-      if (universe.scaleFactor < 1.0) {
-        console.log(`\n[EntropyAgent] 🌀 BIG CRUNCH!`);
-        universe.recordEvent('big-crunch');
-      }
+      // For now: Just keep expanding (realistic physics)
+      // Could add: if (universe.omegaMatter > 1) { contraction logic }
     }
 
     // Temperature follows scale (T ∝ 1/a during expansion, T ∝ a during contraction)
@@ -144,10 +120,15 @@ export class EntropyAgent extends Vehicle {
   age: number = 0;               // Seconds since Big Bang
   deltaTime: number = 0;
 
-  // Cosmic cycle tracking
+  // Cosmic evolution tracking
   phase: 'expansion' | 'maximum' | 'contraction' = 'expansion';
-  maxScale: number = 1e30;       // Will expand to this then contract
+  maxScale: number = 1e30;       // For visualization bounds, NOT physics
   hasReachedMax: boolean = false;
+  
+  // Physics parameter (determines fate)
+  omegaMatter: number = 0.3;     // Matter density parameter (Ω_m)
+  omegaLambda: number = 0.7;     // Dark energy parameter (Ω_Λ)
+  // Ω_m + Ω_Λ ≈ 1 → Flat universe, expands forever (no Big Crunch!)
 
   // Energy budget
   totalEnergy: number = 1e69;    // Joules (conserved)
