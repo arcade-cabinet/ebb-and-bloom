@@ -26,6 +26,19 @@ import { AnimalHusbandryLaws } from './animal-husbandry.js';
 import { CognitiveScienceLaws } from './cognitive-science.js';
 import { GameTheoryLaws } from './game-theory.js';
 import { EconomicsLaws } from './economics.js';
+import { ClimateScienceLaws } from './02-planetary/climate-science.js';
+import { SoilScienceLaws } from './02-planetary/soil-science.js';
+import { GeologyLaws } from './02-planetary/geology.js';
+import { HydrologyLaws } from './02-planetary/hydrology.js';
+import { MaterialsScienceLaws } from './02-planetary/materials-science.js';
+import { AnatomyLaws } from './04-biological/anatomy.js';
+import { DemographicsLaws } from './06-social/demographics.js';
+import { EpidemiologyLaws } from './06-social/epidemiology.js';
+import { CombustionLaws } from './07-technological/combustion.js';
+import { MetallurgyLaws } from './07-technological/metallurgy.js';
+import { AgricultureLaws } from './07-technological/agriculture.js';
+import { ArchitectureLaws } from './07-technological/architecture.js';
+import { LinguisticsLaws } from './05-cognitive/linguistics.js';
 
 export { 
   PhysicalLaws, 
@@ -82,6 +95,27 @@ export const LAWS = {
   
   // Applied
   husbandry: AnimalHusbandryLaws,
+  
+  // Planetary sciences
+  climate: ClimateScienceLaws,
+  soil: SoilScienceLaws,
+  geology: GeologyLaws,
+  hydrology: HydrologyLaws,
+  materials: MaterialsScienceLaws,
+  
+  // Extended biological
+  anatomy: AnatomyLaws,
+  
+  // Extended social
+  demographics: DemographicsLaws,
+  epidemiology: EpidemiologyLaws,
+  linguistics: LinguisticsLaws,
+  
+  // Technology
+  combustion: CombustionLaws,
+  metallurgy: MetallurgyLaws,
+  agriculture: AgricultureLaws,
+  architecture: ArchitectureLaws,
 } as const;
 
 /**
