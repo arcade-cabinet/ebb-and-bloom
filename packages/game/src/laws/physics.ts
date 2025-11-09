@@ -256,16 +256,16 @@ export const Electromagnetism = {
    * where k = 1 / (4πε₀)
    */
   coulombForce: (q1: number, q2: number, r: number): number => {
-    const k = 1 / (4 * Math.PI * C.ε₀);
+    const k = 1 / (4 * Math.PI * C.epsilon_0);
     return k * q1 * q2 / (r * r);
   },
   
   /**
    * Magnetic field from current (simplified)
-   * B = μ₀ * I / (2πr)
+   * B = mu_0 * I / (2*pi*r)
    */
   magneticField: (current: number, distance: number): number => {
-    return C.μ₀ * current / (2 * Math.PI * distance);
+    return C.mu_0 * current / (2 * Math.PI * distance);
   },
 };
 

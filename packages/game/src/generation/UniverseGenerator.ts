@@ -8,7 +8,7 @@
  */
 
 import seedrandom from 'seedrandom';
-import { LAWS, PHYSICS_CONSTANTS, PERIODIC_TABLE, PRIMORDIAL_ABUNDANCES } from '../laws/index.js';
+import { LAWS, PHYSICS_CONSTANTS } from '../laws/index.js';
 
 export interface UniverseSeed {
   seed: string;
@@ -143,7 +143,7 @@ export class UniverseGenerator {
     
     // Habitable zone
     const hzInner = LAWS.stellar.habitableZone.innerEdge(star.luminosity);
-    const hzOuter = LAWS.stellar.habitableZone.outerEdge(star.luminosity);
+    const hzOuter = LAWS.stellar.habitableZone.outerEdge(star.luminosity as any);
     
     // Generate planets at increasing orbital distances
     let orbitRadius = 0.1 + this.rng() * 0.3; // Start close (0.1-0.4 AU)
@@ -158,7 +158,8 @@ export class UniverseGenerator {
       planets.push(planet);
       
       // Next orbit (roughly exponential spacing)
-      orbitRadius *= 1.4 + this.rng() * 0.6; // 1.4x to 2x spacing
+      const nextOrbitRadius = orbitRadius * (1.4 + this.rng() * 0.6); // 1.4x to 2x spacing
+      orbitRadius = nextOrbitRadius;
     }
     
     return planets;

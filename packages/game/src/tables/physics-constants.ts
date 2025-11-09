@@ -14,8 +14,8 @@ export const PHYSICS_CONSTANTS = {
   c: 299792458, // m/s - Maximum speed of causality
   
   // Electromagnetic constants
-  ε₀: 8.8541878128e-12, // F/m - Vacuum permittivity
-  μ₀: 1.25663706212e-6, // H/m - Vacuum permeability
+  epsilon_0: 8.8541878128e-12, // F/m - Vacuum permittivity
+  mu_0: 1.25663706212e-6, // H/m - Vacuum permeability
   e: 1.602176634e-19, // C - Elementary charge (exact, by definition)
   
   // Thermodynamic constants
