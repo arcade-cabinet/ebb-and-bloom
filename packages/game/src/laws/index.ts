@@ -11,12 +11,14 @@ export { PHYSICS_CONSTANTS } from '../tables/physics-constants.js';
 export { PERIODIC_TABLE, PRIMORDIAL_ABUNDANCES } from '../tables/periodic-table.js';
 export * from '../tables/linguistic-roots.js';
 
-export { PhysicalLaws } from './physics.js';
-export { StellarLaws } from './stellar.js';
-export { BiologicalLaws } from './biology.js';
-export { EcologicalLaws } from './ecology.js';
-export { SocialLaws } from './social.js';
-export { TaxonomicLaws } from './taxonomy.js';
+import { PhysicalLaws } from './physics.js';
+import { StellarLaws } from './stellar.js';
+import { BiologicalLaws } from './biology.js';
+import { EcologicalLaws } from './ecology.js';
+import { SocialLaws } from './social.js';
+import { TaxonomicLaws } from './taxonomy.js';
+
+export { PhysicalLaws, StellarLaws, BiologicalLaws, EcologicalLaws, SocialLaws, TaxonomicLaws };
 
 /**
  * The Complete Law System

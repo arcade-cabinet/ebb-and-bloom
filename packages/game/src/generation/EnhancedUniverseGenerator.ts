@@ -201,9 +201,9 @@ export class EnhancedUniverseGenerator {
     const density = mass / ((4/3) * Math.PI * Math.pow(radius, 3));
     
     // Orbital mechanics
-    const orbitalPeriod = LAWS.physics.orbital.orbitalPeriod(
-      star.mass * C.SOLAR_MASS,
-      orbitRadiusAU * C.AU
+    const orbitalPeriod = LAWS.physics.orbital.period(
+      orbitRadiusAU * C.AU,
+      star.mass * C.SOLAR_MASS
     ) / (365.25 * 86400); // Convert to years
     
     const surfaceGravity = LAWS.physics.gravity.surfaceGravity(mass, radius);
@@ -323,7 +323,7 @@ export class EnhancedUniverseGenerator {
     };
   }
   
-  private generateComposition(temperature: number, isGasGiant: boolean): any {
+  private generateComposition(_temperature: number, isGasGiant: boolean): any {
     if (isGasGiant) {
       return {
         core: { Fe: 0.3, Si: 0.3, Ni: 0.2, rock: 0.2 },
