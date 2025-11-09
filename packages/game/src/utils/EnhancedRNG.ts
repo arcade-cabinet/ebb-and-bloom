@@ -1,53 +1,35 @@
 /**
- * Enhanced Random Number Generation
+ * Simple Deterministic RNG
  * 
- * Uses Mersenne Twister for high-quality deterministic randomness.
- * Provides proper statistical distributions (normal, Poisson, exponential).
+ * Uses seedrandom for reliable, deterministic randomness.
+ * Provides statistical distributions (normal, Poisson, exponential).
+ * 
+ * Why seedrandom and not Mersenne Twister?
+ * - Simple and proven in production games
+ * - Deterministic (same seed = same sequence)
+ * - Lightweight (~1KB vs 700KB+)
+ * - No complex hash conversion issues
+ * - Perfect for game use cases
  */
 
-import mt19937Factory from '@stdlib/random-base-mt19937';
-import * as ss from 'simple-statistics';
+import seedrandom from 'seedrandom';
 
 /**
- * Enhanced RNG with statistical distributions
+ * RNG with statistical distributions
  */
 export class EnhancedRNG {
-  private mt: any;
+  private rng: seedrandom.PRNG;
   private nextNormal: number | null = null; // Cache for Box-Muller
   
   constructor(seed: string) {
-    // Convert string seed to numeric (constrained to uint32)
-    const numericSeed = this.hashSeed(seed);
-    
-    // Ensure seed is STRICTLY within [1, 2^32-1]
-    const safeSeed = Math.floor(numericSeed) % 4294967295 + 1;
-    
-    console.log('[EnhancedRNG] Seed:', seed, '-> Hash:', safeSeed);
-    
-    // Mersenne Twister (much better than Math.random or basic seedrandom)
-    this.mt = mt19937Factory.factory({ seed: safeSeed });
-  }
-  
-  /**
-   * Hash string seed to number (FNV-1a)
-   * Returns 32-bit unsigned integer
-   */
-  private hashSeed(seed: string): number {
-    let hash = 2166136261; // FNV offset basis
-    for (let i = 0; i < seed.length; i++) {
-      hash ^= seed.charCodeAt(i);
-      hash = Math.imul(hash, 16777619); // FNV prime
-      hash = hash >>> 0; // Keep as uint32 after each step
-    }
-    // Return value in valid range [1, 2^32-1]
-    return (hash % 4294967295) + 1;
+    this.rng = seedrandom(seed);
   }
   
   /**
    * Uniform random [0, 1) or [min, max)
    */
   uniform(min?: number, max?: number): number {
-    const value = this.mt();
+    const value = this.rng();
     if (min === undefined || max === undefined) {
       return value;
     }
@@ -223,49 +205,40 @@ export class EnhancedRNG {
 }
 
 /**
- * Statistical utilities using simple-statistics
+ * Simple statistics helpers (no external dependencies)
  */
 export const Statistics = {
-  /**
-   * Descriptive statistics
-   */
-  mean: (data: number[]) => ss.mean(data),
-  median: (data: number[]) => ss.median(data),
-  mode: (data: number[]) => ss.mode(data),
-  variance: (data: number[]) => ss.variance(data),
-  standardDeviation: (data: number[]) => ss.standardDeviation(data),
+  mean: (data: number[]) => data.reduce((a, b) => a + b, 0) / data.length,
   
-  /**
-   * Quantiles
-   */
-  quantile: (data: number[], p: number) => ss.quantile(data, p),
-  quartiles: (data: number[]) => [
-    ss.quantile(data, 0.25),
-    ss.quantile(data, 0.50),
-    ss.quantile(data, 0.75),
-  ],
-  interquartileRange: (data: number[]) => ss.interquartileRange(data),
-  
-  /**
-   * Correlation
-   */
-  correlation: (x: number[], y: number[]) => ss.sampleCorrelation(x, y),
-  
-  /**
-   * Regression
-   */
-  linearRegression: (data: [number, number][]) => {
-    const line = ss.linearRegression(data);
-    const predict = ss.linearRegressionLine(line);
-    const r2 = ss.rSquared(data, predict);
-    return { line, predict, r2 };
+  median: (data: number[]) => {
+    const sorted = [...data].sort((a, b) => a - b);
+    const mid = Math.floor(sorted.length / 2);
+    return sorted.length % 2 === 0 
+      ? (sorted[mid - 1] + sorted[mid]) / 2 
+      : sorted[mid];
   },
   
-  /**
-   * Sample from distribution using inverse CDF
-   */
-  sampleNormal: (mean: number, stdev: number, random: () => number) => 
-    ss.sampleNormal(mean, stdev, random),
+  variance: (data: number[]) => {
+    const mean = Statistics.mean(data);
+    return data.reduce((sum, x) => sum + Math.pow(x - mean, 2), 0) / data.length;
+  },
+  
+  standardDeviation: (data: number[]) => Math.sqrt(Statistics.variance(data)),
+  
+  quantile: (data: number[], p: number) => {
+    const sorted = [...data].sort((a, b) => a - b);
+    const index = p * (sorted.length - 1);
+    const lower = Math.floor(index);
+    const upper = Math.ceil(index);
+    const weight = index - lower;
+    return sorted[lower] * (1 - weight) + sorted[upper] * weight;
+  },
+  
+  quartiles: (data: number[]) => [
+    Statistics.quantile(data, 0.25),
+    Statistics.quantile(data, 0.50),
+    Statistics.quantile(data, 0.75),
+  ],
 };
 
 export default EnhancedRNG;

@@ -9,9 +9,8 @@
  */
 
 import { EnhancedRNG } from '../utils/EnhancedRNG.js';
-import { NBodySimulator, initializePlanetarySystem } from '../physics/NBodySimulator.js';
-import { MonteCarloAccretion } from '../physics/MonteCarloAccretion.js';
-import { LAWS, PHYSICS_CONSTANTS as C } from '../laws/index.js';
+import { STELLAR_LAWS } from '../laws/stellar.js';
+import { PHYSICS_CONSTANTS as C } from '../laws/physics.js';
 
 // Type definitions
 export interface Star {

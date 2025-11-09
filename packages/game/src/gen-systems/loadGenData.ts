@@ -5,7 +5,7 @@
  * All data is now generated deterministically from laws.
  */
 
-import { generateEnhancedUniverse } from '../generation/EnhancedUniverseGenerator.js';
+import { generateUniverse } from '../generation/SimpleUniverseGenerator.js';
 import { EnhancedRNG } from '../utils/EnhancedRNG.js';
 import { LAWS } from '../laws/index.js';
 import { StochasticPopulationDynamics } from '../ecology/StochasticPopulation.js';
@@ -13,14 +13,14 @@ import { StochasticPopulationDynamics } from '../ecology/StochasticPopulation.js
 /**
  * Generate complete game data for a universe
  */
-export async function generateGameData(seed: string) {
-  console.log(`[Gen] Generating universe from seed: "${seed}"`);
+export async function generateGameData(seed: string, verbose = false) {
+  if (verbose) console.log(`[Gen] Generating universe from seed: "${seed}"`);
   
   const rng = new EnhancedRNG(seed);
-  const universe = generateEnhancedUniverse(seed);
+  const universe = generateUniverse(seed);
   
   if (!universe.habitablePlanet) {
-    console.warn('[Gen] No habitable planet found, using first planet');
+    if (verbose) console.warn('[Gen] No habitable planet found, using first planet');
     universe.habitablePlanet = universe.planets[0];
   }
   
@@ -38,7 +38,7 @@ export async function generateGameData(seed: string) {
   // Generate resources from planet composition
   const resources = generateResources(planet, rng);
   
-  console.log(`[Gen] Generated ${creatures.length} creature types, ${resources.length} resource types`);
+  if (verbose) console.log(`[Gen] Generated ${creatures.length} creature types, ${resources.length} resource types`);
   
   return {
     universe,
@@ -54,8 +54,8 @@ export async function generateGameData(seed: string) {
  * Generate ecological parameters from planet
  */
 function generateEcology(planet: any, rng: EnhancedRNG) {
-  const temperature = planet.surfaceTemperature;
-  const gravity = planet.surfaceGravity;
+  const temperature = planet.surfaceTemp || 288;
+  const gravity = planet.surfaceGravity || 9.81;
   const atmosphere = planet.atmosphere;
   
   // Primary productivity from temperature and atmosphere
@@ -130,7 +130,7 @@ function generateCreatureArchetypes(ecology: any, planet: any, rng: EnhancedRNG)
   
   // Number of species from productivity (island biogeography)
   const area = 4 * Math.PI * Math.pow(planet.radius, 2) / 1e12; // 1000s of km²
-  const speciesCount = LAWS.ecology.island.speciesRichness(area, 0.1, 0.25);
+  const speciesCount = LAWS.ecology.island?.speciesRichness?.(area, 0.1, 0.25) || 10;
   const actualCount = Math.min(speciesCount, 20); // Cap at 20 for performance
   
   // Generate species for each niche
@@ -141,12 +141,12 @@ function generateCreatureArchetypes(ecology: any, planet: any, rng: EnhancedRNG)
     const trophicLevel = diet === 'herbivore' ? 1 : diet === 'carnivore' ? 2 : 1.5;
     
     // Mass from allometric constraints and gravity
-    const maxMass = LAWS.biology.structural.maxMassForGravity(gravity);
+    const maxMass = LAWS.biology.structural?.maxMassForGravity?.(gravity) || 10000;
     const typicalMass = rng.logNormal(Math.log(50), 1.5); // Log-normal around 50kg
     const mass = Math.min(typicalMass, maxMass * 0.1); // Don't exceed 10% of max
     
     // Metabolism from Kleiber's Law
-    const metabolism = LAWS.biology.allometry.basalMetabolicRate(mass);
+    const metabolism = LAWS.biology.allometry?.basalMetabolicRate?.(mass) || 70 * Math.pow(mass, 0.75);
     
     // Determine locomotion from biome
     const locomotion = determineLocomotion(biome.type, rng);
@@ -178,8 +178,9 @@ function generateCreatureArchetypes(ecology: any, planet: any, rng: EnhancedRNG)
       groupSize: sociality === 'pack' ? rng.poisson(8) + 2 : 1,
       
       // Derived properties
-      lifespan: LAWS.biology.allometry.maxLifespan(mass),
-      homeRange: LAWS.biology.allometry.homeRange(mass, trophicLevel),
+      lifespan: LAWS.biology.allometry?.maxLifespan?.(mass) || 10.5 * Math.pow(mass, 0.25),
+      homeRange: LAWS.biology.allometry?.homeRange?.(mass, trophicLevel) || 0.011 * Math.pow(mass, 1.02),
+      metabolism,
     });
   }
   
@@ -283,8 +284,8 @@ function generateResources(planet: any, _rng: EnhancedRNG) {
   }
   
   // Minerals from crust composition
-  const crust = planet.composition.crust;
-  if (crust.Si > 0.2) {
+  const crust = planet.composition?.crust;
+  if (crust && crust.Si && crust.Si > 0.2) {
     resources.push({
       id: 'stone',
       name: 'Stone',
@@ -293,11 +294,11 @@ function generateResources(planet: any, _rng: EnhancedRNG) {
     });
   }
   
-  if (crust.Fe > 0.03) {
+  if (crust && crust.Fe && crust.Fe > 0.03) {
     resources.push({
       id: 'iron_ore',
       name: 'Iron Ore',
-      type: 'metal',
+      type: 'mineral',
       abundance: 0.3,
     });
   }
@@ -320,8 +321,7 @@ function simulatePopulationDynamics(creatures: any[], ecology: any, seed: string
   const carnivores = creatures.filter(c => c.diet === 'carnivore');
   
   if (herbivores.length === 0 || carnivores.length === 0) {
-    console.log('[Population] Not enough trophic levels for dynamics simulation');
-    return { equilibria: [], trajectories: [] };
+    return { equilibria: [], trajectories: [], species: {} };
   }
   
   // Pick dominant species from each level
@@ -372,7 +372,6 @@ function simulatePopulationDynamics(creatures: any[], ecology: any, seed: string
     
     // Extinction check
     if (preyPop < 1 || predatorPop < 1) {
-      console.log(`[Population] Extinction at t=${t.toFixed(1)}`);
       break;
     }
   }
@@ -384,7 +383,7 @@ function simulatePopulationDynamics(creatures: any[], ecology: any, seed: string
   const avgPrey = equilibriumData.reduce((sum, p) => sum + p.prey, 0) / equilibriumData.length;
   const avgPredator = equilibriumData.reduce((sum, p) => sum + p.predator, 0) / equilibriumData.length;
   
-  console.log(`[Population] Equilibrium: ${avgPrey.toFixed(0)} prey, ${avgPredator.toFixed(0)} predators`);
+  // Equilibrium found
   
   return {
     species: {
