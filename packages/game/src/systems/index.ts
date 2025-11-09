@@ -7,3 +7,6 @@ export { PackFormationSystem, type PackFormation } from './PackFormationSystem.j
 export { CreatureInteractionSystem, type Interaction, type CreatureInteractionState } from './CreatureInteractionSystem.js';
 export { ToolSystem, type Tool, type ToolKnowledge } from './ToolSystem.js';
 export { StructureBuildingSystem, type Structure, type BuildingProject } from './StructureBuildingSystem.js';
+export { TradeSystem, type TradeOffer, type TradeTransaction, type CreatureInventory } from './TradeSystem.js';
+export { SpecializationSystem, type Specialization, type SpecializationRole } from './SpecializationSystem.js';
+export { WorkshopSystem, type Workshop, type CraftingProject, type AdvancedTool } from './WorkshopSystem.js';
