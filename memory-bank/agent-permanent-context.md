@@ -8,634 +8,294 @@
 
 ## Project
 
-**Ebb & Bloom**: Cross-platform procedural evolution game with seed-driven planetary physics.
+**Ebb & Bloom**: Law-based universe simulation game with deterministic generation.
 
-**Core Principle**: "Everything is Squirrels" - base archetypes evolve through environmental pressure. NO hardcoded progression.
+**Core Principle**: "Everything emerges from LAWS" - physics, chemistry, biology, ecology, taxonomy, and social laws generate complete universes from three-word seeds.
 
 **Platform**: Cross-platform (iOS, Android, Web) via Capacitor
 
 ---
 
+## 🔥 CRITICAL: LAW-BASED ARCHITECTURE
+
+**WE DELETED THE AI GENERATION SYSTEM**
+
+**What we removed:**
+- ❌ `packages/gen/` - Entire AI generation pipeline
+- ❌ `manifests/` - All hardcoded archetypes
+- ❌ OpenAI API dependencies for content generation
+
+**What we built instead:**
+- ✅ `packages/game/src/laws/` - Complete mathematical law system
+- ✅ `packages/game/src/tables/` - Universal constants (periodic table, physics, linguistics)
+- ✅ `packages/game/src/utils/EnhancedRNG.ts` - Deterministic RNG (seedrandom)
+- ✅ Law-based generation for everything
+
+**The new flow:**
+```
+Three-word seed → Laws → Complete Universe
+```
+
+**Same seed = same universe. Always. Deterministic.**
+
+---
+
 ## Architecture
 
-**Monorepo Structure** (UPDATED - November 8, 2025):
-- `packages/game/` - ✅ **UNIFIED PACKAGE** (frontend + backend in one)
-- `packages/gen/` - AI archetype generation pipeline (OpenAI workflows)
-- `packages/shared/` - Zod schemas only (DB code removed)
-
-**Generational System**:
-- **Gen 0**: Planetary genesis from seed (gravity, materials, climate)
-- **Gen 1**: Creature archetypes spawn (Yuka AI decision-making)
-- **Gen 2+**: Yuka AI spheres coordinate evolution
-
-**Technology Stack**:
-- **Game Logic**: GameEngine (internal API - direct function calls)
-- **Gen Pipeline**: OpenAI SDK (archetype generation), Zod (validation)
-- **Frontend**: BabylonJS (3D rendering + GUI)
-- **State**: Direct GameEngine state (no React, no Zustand)
-- **Platform**: Capacitor (iOS, Android, Web)
-- **Storage**: @capacitor/preferences (cross-platform)
-- **File Loading**: @capacitor/filesystem (platform-aware)
-- **Routing**: Hash-based (#gameId=...) for Capacitor compatibility
-- **Seed**: Three-word hyphen-delimited (`v1-word-word-word`)
-- **Physics/AI**: Yuka (Gen0-6 systems), seedrandom (deterministic RNG)
-- **Communication**: Protobuf (generation layer protocol)
-- **Events**: Custom EventEmitter (browser-compatible)
-
-**Frontend Architecture**: BabylonJS chosen for unified 3D + UI, built-in raycasting, procedural generation tools, and mature GUI system. See `docs/ARCHITECTURE.md` for full rationale.
-
-**Backend Architecture**: Internal API only - no public REST endpoints. All functions callable directly and testable.
-
----
-
-## Critical Architectural Rules
-
-1. **Unified Package**: packages/game contains both frontend and backend
-2. **No HTTP**: Direct function calls only (no REST API)
-3. **Type Safety**: DRY types from `@ebb/shared/schemas`
-4. **Seed-Driven**: All generation uses deterministic seeds
-5. **WARP/WEFT Flow**: 
-   - **WARP (Vertical)**: Gen N → Gen N+1 causal influence
-   - **WEFT (Horizontal)**: Macro → Meso → Micro scales within each generation
-6. **Visual Blueprints**: All archetypes include rendering instructions (PBR, textures, colors)
-7. **Yuka AI**: Gen0-Gen6 systems use appropriate Yuka systems (GoalEvaluator, FuzzyModule, StateMachine, etc.)
-8. **Internal API**: GameEngine exposes methods for direct calling (not HTTP endpoints)
-9. **NO Hardcoded Values**: Calculate from physics/AI generation
-10. **Quality Assurance**: Automatic regeneration of anemic archetypes
-11. **Idempotency**: Repeated runs do not regenerate existing valid data
-12. **Cross-Platform**: Single codebase for iOS/Android/Web via Capacitor
-
----
-
-## Key Documentation
-
-**Read these for architectural decisions**:
-- `AGENT_HANDOFF.md` - Comprehensive agent-to-agent handoff with TOC
-- `docs/ARCHITECTURE.md` - System architecture
-- `docs/ARCHITECTURE_UNIFIED_GAME.md` - Unified package rationale
-- `docs/DESIGN.md` - UI/UX design system
-- `docs/architecture/generations.md` - Gen0-Gen6 system specifications
-- `memory-bank/activeContext.md` - Current focus
-- `memory-bank/progress.md` - Project progress
-- `MIGRATION_ASSESSMENT.md` - Migration status
-
----
-
-## File Structure (UPDATED)
-
+**Monorepo Structure**:
 ```
 packages/
-├── game/                # ✅ UNIFIED PACKAGE
+├── game/          # ✅ UNIFIED PACKAGE (frontend + backend)
 │   ├── src/
-│   │   ├── engine/      # GameEngine (internal API)
-│   │   ├── gen0-6/      # Generation systems
-│   │   ├── scenes/      # BabylonJS scenes
-│   │   ├── gen-systems/ # WARP/WEFT data loaders
-│   │   ├── planetary/   # Physics (composition, layers, noise)
-│   │   ├── seed/        # Seed management (pure functions)
-│   │   ├── schemas/     # Type re-exports from @ebb/shared
-│   │   ├── types/       # Type definitions
-│   │   ├── utils/       # Utilities (Logger, textureLoader)
-│   │   └── index.ts     # Entry point
-│   ├── data/archetypes/ # Generated archetypes (gen0-6/)
-│   ├── public/          # Assets (fonts, textures, UI, splash)
-│   ├── test-backend/    # Backend unit/integration tests
-│   ├── test-frontend/   # Frontend tests
-│   ├── test-e2e/        # E2E tests (Playwright)
-│   └── proto/           # Protobuf schemas
-├── gen/                 # AI archetype generation
-│   ├── src/
-│   │   ├── workflows/   # WARP/WEFT agent
-│   │   ├── prompts/     # Generation prompts
-│   │   ├── schemas/     # Zod schemas (exported)
-│   │   └── tools/       # Quality assessor, texture tool
-│   └── data/
-│       └── manifests/   # UI assets, fonts manifests
-└── shared/              # Schemas only (DB removed)
-    └── src/schemas/     # Zod schemas
-
-docs/
-├── architecture/        # Architecture documentation
-│   ├── README.md       # Master architecture
-│   ├── generations.md  # Gen0-Gen6 specs
-│   └── api.md          # (Outdated - was REST API)
-├── ARCHITECTURE.md      # System architecture
-├── DESIGN.md           # UI/UX design
-└── WORLD.md           # Game design document
-
-memory-bank/
-├── activeContext.md     # Current focus (ephemeral)
-├── progress.md          # Project progress
-├── agent-permanent-context.md  # This file
-└── agent-collaboration.md  # Multi-agent rules
+│   │   ├── laws/           # Mathematical law system
+│   │   ├── tables/         # Universal constants
+│   │   ├── engine/         # GameEngine (internal API)
+│   │   ├── scenes/         # BabylonJS scenes
+│   │   ├── seed/           # Seed management
+│   │   └── utils/          # EnhancedRNG, etc.
+│   ├── public/             # Assets
+│   └── simulation.html     # Reports view (for validation)
+├── shared/        # Zod schemas only
+└── (gen/ deleted)
 ```
+
+**Technology Stack**:
+- **Game Logic**: Direct function calls (no HTTP)
+- **Frontend**: BabylonJS (3D + GUI)
+- **State**: GameEngine state (no React, no Zustand)
+- **Platform**: Capacitor (iOS, Android, Web)
+- **RNG**: seedrandom (deterministic, string seeds)
+- **Physics**: Custom law system
+- **Build**: Vite + TypeScript
+
+---
+
+## Critical Rules
+
+1. **Law-Based Generation**: Everything emerges from mathematical laws
+2. **Deterministic**: Same seed must produce same result
+3. **No AI Generation**: Laws replace OpenAI API calls
+4. **String Seeds**: Three-word format (`v1-word-word-word`)
+5. **Internal API**: Direct function calls (no HTTP)
+6. **Unified Package**: Single `packages/game` for everything
+7. **Cross-Platform**: Single codebase for Web/iOS/Android
+
+---
+
+## Law System Structure
+
+**`src/laws/`**:
+- `physics.ts` - Gravity, thermodynamics, orbital mechanics
+- `stellar.ts` - Star formation, habitable zones
+- `biology.ts` - Kleiber's Law, allometric scaling
+- `ecology.ts` - Lotka-Volterra, carrying capacity
+- `social.ts` - Dunbar's number, Service typology
+- `taxonomy.ts` - Linnaean classification, binomial nomenclature
+
+**`src/tables/`**:
+- `physics-constants.ts` - G, c, k_B, fundamental constants
+- `periodic-table.ts` - Complete element data
+- `linguistic-roots.ts` - Latin/Greek roots for naming
+
+**`src/utils/EnhancedRNG.ts`**:
+- Uses `seedrandom` (accepts string seeds directly)
+- Provides statistical distributions (normal, Poisson, exponential, etc.)
+- Box-Muller transform for Gaussian
+- Deterministic - same seed = same sequence
 
 ---
 
 ## Development Commands
 
-### Game Package (packages/game)
 ```bash
 cd packages/game
 
 # Development
-pnpm dev                   # Start dev server (http://localhost:5173)
-pnpm dev --host            # Accessible on network (phone)
+pnpm dev                      # Dev server (localhost:5173)
+pnpm dev --host               # Network accessible
 
 # Building
-pnpm build                 # TypeScript + Vite build
-pnpm build:capacitor       # Build + Capacitor sync
-pnpm preview               # Preview production build
+pnpm build                    # Web build
+just build-android            # Android APK (see justfile)
 
 # Testing
-pnpm test                  # Run all tests (Vitest)
-pnpm test:watch            # Watch mode
-pnpm test:e2e              # E2E tests (Playwright)
-pnpm test:e2e:ui           # E2E with UI
-pnpm test:e2e:debug        # E2E debug mode
+pnpm exec tsx src/cli-tools/test-determinism.ts <seed>
+pnpm exec tsx src/cli-tools/test-rng-quality.ts
+pnpm exec tsx src/cli-tools/test-stochastic.ts
 
-# Type checking
-pnpm exec tsc --noEmit     # TypeScript compilation check
-```
-
-### Gen Pipeline (packages/gen)
-```bash
-cd packages/gen
-
-# Generate archetypes
-pnpm cli archetypes        # Generate all Gen0-6 archetypes
-
-# Generate assets
-pnpm cli ui-assets         # Generate UI assets (icons, HUD, frames, backgrounds)
-pnpm cli fonts             # Set up Google Fonts
-pnpm cli textures          # Download AmbientCG textures
-
-# Quality & Documentation
-pnpm cli quality           # Assess quality, regenerate anemic archetypes
-pnpm cli documentation     # Generate comprehensive review doc
-pnpm cli status            # Check generation status
-```
-
-### Process Compose (Orchestration)
-```bash
-# Start unified dev environment
-process-compose up dev-game
-
-# Type checking (watch mode)
-process-compose up typecheck-game
-
-# Test watching
-process-compose up test-watch
-
-# E2E tests
-process-compose up test-e2e
-
-# Gen pipeline
-process-compose up gen-archetypes
-process-compose up gen-quality
-process-compose up gen-docs
+# Validation
+./validate-all-laws.sh        # Comprehensive test suite
 ```
 
 ---
 
-## Testing
+## Key Files
 
-**Framework**: Vitest (unit/integration), Playwright (E2E)
+**Core Systems**:
+- `src/engine/GameEngineBackend.ts` - Main game engine
+- `src/laws/*.ts` - All law implementations
+- `src/tables/*.ts` - Universal constants
+- `src/utils/EnhancedRNG.ts` - Deterministic RNG
+- `src/seed/seed-manager.ts` - Seed validation
 
-**Test Structure**:
-- `packages/game/test-backend/` - Backend tests (Gen0-6, GameEngine, seed, planetary)
-- `packages/game/test-frontend/` - Frontend tests (scenes, integration)
-- `packages/game/test-e2e/` - E2E tests (complete user flows)
+**Scenes**:
+- `src/scenes/SimulationScene.ts` - Reports view (VCR controls, URL parameters)
+- `simulation.html` - Entry point for reports
 
-**Timeout Protection**: All test configs include automatic timeouts and stall detection
-
-**Target Coverage**: 70%+ for core systems
-
-**Test Commands**:
-```bash
-cd packages/game
-pnpm test                  # All unit/integration
-pnpm test:watch           # Watch mode
-pnpm test:e2e             # E2E in real Chromium
-```
-
----
-
-## Internal API (No HTTP)
-
-**GameEngine** - All functions callable directly:
-
-```typescript
-import { GameEngine } from './engine/GameEngine';
-
-// Create game
-const engine = new GameEngine(gameId);
-await engine.initialize(seed);
-
-// Get state
-const state = engine.getState();
-
-// Get render data
-const renderData = await engine.getGen0RenderData(time);
-
-// Advance generation
-await engine.advanceGeneration();
-```
-
-**Used by:**
-- MainMenuScene - Create/load games
-- GameScene - Load render data
-- Tests - Direct function calls
-
-**Benefits:**
-- 5-10x faster (no HTTP overhead)
-- Fully testable (import and call)
-- Type-safe (TypeScript end-to-end)
-- No serialization overhead
-- No network latency
-- No CORS issues
+**Build**:
+- `justfile` - Build recipes (Android, iOS, web)
+- `vite.config.ts` - Vite configuration
+- `capacitor.config.ts` - Cross-platform config
 
 ---
 
 ## Current Status
 
-**Phase**: Cross-Platform Capacitor Application  
-**Completion**: 100% (production-ready)
+**Law System**: ✅ Complete
+- 6 law files implemented
+- 3 table files complete
+- EnhancedRNG working with seedrandom
+- Deterministic generation verified
 
-**What Works**:
-- ✅ Unified package structure
-- ✅ Internal API (direct function calls)
-- ✅ TypeScript compiles (0 errors)
-- ✅ Production build (5.6MB, 1.25MB gzipped)
-- ✅ Capacitor sync (iOS/Android ready)
-- ✅ Cross-platform compatibility (Web/iOS/Android)
-- ✅ Tests (35/46 passing - 76%)
-- ✅ Dev server running
-- ✅ CI/CD configured (GitHub Actions)
+**Build System**: ✅ Working
+- Android APK builds successfully
+- Web dev server running
+- Simulation view functional with URL controls
 
-**What's Pending**:
-- ⚠️ Phone testing (local network)
-- ⚠️ E2E tests (Playwright run)
-- ⚠️ Device testing (iOS/Android hardware)
-
-**Next**: Deploy to App Store, Play Store, web hosting
-
-See: `AGENT_HANDOFF.md` for comprehensive handoff instructions
-
----
-
-## Critical Files
-
-### Entry Points
-- `packages/game/src/index.ts` - Main application entry
-- `packages/game/src/engine/GameEngineBackend.ts` - Core game logic
-- `packages/gen/src/cli.ts` - Generation CLI
-
-### Core Systems
-- `packages/game/src/gen0/AccretionSimulation.ts` - Planet formation
-- `packages/game/src/gen1-6/*.ts` - Generation systems
-- `packages/game/src/scenes/MainMenuScene.ts` - Main menu (BabylonJS GUI)
-- `packages/game/src/scenes/GameScene.ts` - Unified game scene
-
-### Gen Pipeline
-- `packages/gen/src/workflows/warp-weft-agent.ts` - WARP/WEFT orchestration
-- `packages/gen/src/prompts/generation-prompts.ts` - AI prompts
-- `packages/gen/src/tools/quality-assessor.ts` - Quality assurance
-
-### Configuration
-- `process-compose.yml` - Development orchestration
-- `packages/game/vite.config.ts` - Vite configuration
-- `packages/game/tsconfig.json` - TypeScript configuration
-- `packages/game/vitest.config.ts` - Test configuration
-- `packages/game/playwright.config.ts` - E2E test configuration
-- `packages/game/capacitor.config.ts` - Cross-platform configuration
+**What's Next**:
+- Validate all laws with comprehensive test suite
+- Fix any remaining RNG issues (seedrandom vs Mersenne Twister)
+- Add more laws (climate, hydrology, materials science)
+- Refactor old Gen0-5 code to use law system
 
 ---
 
 ## Memory Bank Usage
 
-**For all agents:**
+**Start of session**, read in order:
+1. `agent-permanent-context.md` (this file)
+2. `activeContext.md` (current focus)
+3. `progress.md` (what's done)
 
-1. **Start of session**: Read in order:
-   - `agent-permanent-context.md` (this file)
-   - `agent-collaboration.md` (multi-agent rules)
-   - `activeContext.md` (current focus)
-   - `progress.md` (project progress)
-   - `AGENT_HANDOFF.md` (comprehensive handoff)
+**During work**:
+- Update `activeContext.md` with current tasks
+- Update `progress.md` when milestones complete
 
-2. **During work**: Update as you go:
-   - `activeContext.md` - Current tasks, blockers, decisions
-   - `progress.md` - Completed milestones, next steps
-
-3. **End of session**: Ensure:
-   - `activeContext.md` reflects current state
-   - `progress.md` shows what was completed
-   - No duplicate/contradictory info across files
-
-**NEVER create**: Status documents, planning documents, gap analyses, completion reports → All goes in memory bank
+**Never create**: Status docs, planning docs → all goes in memory bank
 
 ---
 
-## Agent Behavioral Rules
+## YOLO Mode
 
-### YOLO Mode (Autonomous Execution)
-
-**When user says** "do it", "implement", "fix", "build", "beast mode":
-1. Read memory bank (permanent-context → collaboration → activeContext → progress)
-2. Read relevant docs (ARCHITECTURE.md, core systems)
-3. **Execute immediately** - No planning phase
+**When user says** "do it", "implement", "beast mode":
+1. Read memory bank
+2. Execute immediately (no planning phase)
+3. Make large changes
 4. Iterate until complete
 5. Update memory bank
-6. Run tests
-
-**Behaviors**:
-- Act immediately - implement real functionality
-- Make large changes - not small atomic steps
-- Independent decisions - refactors, deletions, dependencies
-- Stop only for hard blockers - missing specs, conflicts
-- Keep iterating - until done and tests pass
-- Show code - not explanations
-- No placeholders - real implementations
-- Research-driven - use web search when needed
-- Test rigorously - multiple times
+6. Validate with tests
 
 ---
 
-## Common Patterns
+## Critical Patterns
 
-### Seed Management
+**Seed Management**:
 ```typescript
-import { validateSeed, getGenerationSeed } from './seed/seed-manager';
+import { validateSeed, generateSeed } from './seed/seed-manager';
 
+const seed = generateSeed(); // "v1-wild-ocean-glow"
 const validation = validateSeed(seed);
 if (!validation.valid) throw new Error(validation.error);
-
-const gen0Seed = getGenerationSeed(baseSeed, 0);
 ```
 
-### WARP/WEFT Loading
+**EnhancedRNG Usage**:
 ```typescript
-import { generateGen0DataPools } from './gen-systems/loadGenData';
+import { EnhancedRNG } from './utils/EnhancedRNG';
 
-const dataPools = await generateGen0DataPools(baseSeed, context);
-const macroArchetype = dataPools.macro.selectedContext;
+const rng = new EnhancedRNG(seed); // String seed directly!
+const value = rng.uniform(0, 1);
+const gaussian = rng.normal(0, 1);
+const count = rng.poisson(5);
 ```
 
-### GameEngine Usage
+**GameEngine Usage**:
 ```typescript
-import { GameEngine } from './engine/GameEngine';
+import { GameEngine } from './engine/GameEngineBackend';
 
-const engine = new GameEngine(gameId);
-await engine.initialize(seed);
-const state = engine.getState();
-const renderData = await engine.getGen0RenderData(time);
-```
-
-### BabylonJS Scenes
-```typescript
-import { Scene, Engine } from '@babylonjs/core';
-import { AdvancedDynamicTexture, Button, TextBlock } from '@babylonjs/gui';
-
-const gui = AdvancedDynamicTexture.CreateFullscreenUI('UI', true, scene);
-const button = Button.CreateSimpleButton('btn', 'Click Me');
-button.fontFamily = 'Work Sans, sans-serif';
-gui.addControl(button);
+const engine = new GameEngine({ seed });
+const universe = engine.generateUniverse();
 ```
 
 ---
 
-## Typography
+## Key Decisions
 
-**Brand-aligned fonts** (Google Fonts CDN):
-- **Playfair Display**: Titles, headings, haikus, poetic text
-- **Work Sans**: Body text, UI labels, buttons, readable interface
-- **JetBrains Mono**: Seed codes, technical data, coordinates, numbers
+### Reverted to seedrandom (2025-11-08)
+**Why**: Mersenne Twister (@stdlib) had seed overflow issues, seedrandom works perfectly with string seeds
+**Impact**: Simpler, no hash conversion needed, deterministic, good enough quality
 
-**Usage**:
-```typescript
-title.fontFamily = 'Playfair Display, serif';
-button.fontFamily = 'Work Sans, sans-serif';
-seed.fontFamily = 'JetBrains Mono, monospace';
-```
-
----
-
-## Color Palette
-
-**From design system**:
-- `#1A202C` - Deep indigo background
-- `#4A5568` - Ebb indigo (panels, borders)
-- `#38A169` - Bloom emerald (primary actions)
-- `#D69E2E` - Seed gold (seed input, highlights)
-- `#F7FAFC` - Accent white (text)
-- `#A0AEC0` - Muted slate (secondary text)
-
----
-
-## Key Decisions (Historical)
-
-### BabylonJS over React Three Fiber (2025-11-07)
-**Rationale**: Unified 3D + GUI, built-in raycasting, procedural generation, mature GUI system  
-**Impact**: Removed React entirely, use BabylonJS GUI for all UI
+### Law-Based Architecture (2025-11-08)
+**Why**: Scientific rigor, infinite content, deterministic, educational, enables Gen6+
+**Impact**: Deleted entire AI generation system, built complete law system from scratch
 
 ### Unified Package (2025-11-08)
-**Rationale**: Simpler deployment, no HTTP overhead, faster performance, easier testing  
-**Impact**: Removed packages/backend and packages/frontend, created packages/game  
-**Breaking**: REST API removed, React removed, all fetch() replaced with direct calls
-
-### Internal API Only (2025-11-08)
-**Rationale**: No need for public API, everything testable, 5-10x faster  
-**Impact**: Removed Fastify, removed server.ts, removed all route handlers
-
-### UI Asset Strategy (2025-11-07)
-**Rationale**: BabylonJS GUI handles basic UI, only generate artistic elements  
-**Impact**: Focused generation on icons, HUD, frames, backgrounds - not buttons/panels
-
-### Protobuf for Generation Layers (2025-11-08)
-**Rationale**: Future-proof for worker threads, network sync, binary format  
-**Impact**: Schema created but not actively used yet
+**Why**: Simpler deployment, no HTTP overhead, faster, easier testing
+**Impact**: Single packages/game for everything, direct function calls only
 
 ---
 
-## Critical Paths
+## Build System
 
-### Current: Verify Unified Package Works
-1. Fix TypeScript compilation errors
-2. Run test suite
-3. Verify dev server
-4. Run E2E tests in real browser
-5. Test on phone
+**Android APK**:
+```bash
+just build-android
+# Output: /workspace/dev-builds/<timestamp>/app-debug.apk
+```
 
-### Next: Complete Gen0 Flow
-1. Verify main menu loads
-2. Verify seed input works
-3. Verify game creation works
-4. Verify 3D sphere renders with textures
-5. Verify moons render with orbital animation
+**Web**:
+```bash
+pnpm build
+# Output: dist/
+```
 
-### Future: Gen1+ Implementation
-1. Tool Sphere system
-2. Inter-Sphere communication
-3. Material refactor
-4. Yuka AI integration
+**Simulation View** (for validation):
+- URL: http://localhost:5173/simulation.html
+- Supports URL parameters: `?seed=v1-test&cycle=10&autoplay=true&speed=2`
+- Exposes `window.simulation` API for programmatic control
 
 ---
 
-## Testing Infrastructure
+## Documentation
 
-**Timeout Protection** (ALL configs):
-- Test timeout: 10s (unit), 30s (E2E)
-- Hook timeout: 10s
-- Teardown timeout: 5s
-- Bail on 5 failures
-- Stall detection in setup files
+**Primary**: `README.md` - Single source of truth  
+**Architecture**: `docs/LAW_BASED_ARCHITECTURE.md` - Complete law system docs  
+**Build**: `BUILD.md` - Production build instructions
 
-**Test Utilities**:
-- `withTimeout()` - Wrap async tests
-- `retryWithTimeout()` - Retry with exponential backoff
-- `createStallDetector()` - Detect hanging tests
-
-**E2E Strategy**:
-- Real Chromium browser (headless: false)
-- Mouse clicks (page.click())
-- Keyboard input (page.keyboard.type())
-- Visual verification (screenshots)
-- Animation verification (waitForCondition)
+**Archived**: `memory-bank/archived-docs/` - Old status docs (obsolete)
 
 ---
 
-## Asset Management
+## Emergency Contacts
 
-**Texture Pipeline**:
-- AmbientCG downloader → `packages/game/public/textures/`
-- Manifest at `packages/game/public/textures/manifest.json`
-- Categories: Metal, Rock, Wood, Stone, Grass, Fabric, Leather, Concrete, Bricks
-- Resolution: 2K
-- Format: JPG (color maps)
+**Blocking issues**:
+1. Check `activeContext.md` for current blockers
+2. Check `progress.md` for known issues
+3. Run `./validate-all-laws.sh` to verify system health
 
-**Font Pipeline**:
-- Google Fonts CDN (no local download)
-- CSS generated at `packages/game/public/fonts/fonts.css`
-- @import URLs for each font family
-
-**UI Asset Pipeline**:
-- AI-generated via GPT-image-1
-- Format: WebP (better compression + transparency)
-- Adaptive quality: 80-90 based on image size
-- Compliance checking: dimensions, file size, format, transparency
-- Categories: Icons, HUD, Frames, Backgrounds, Splash
-
-**Output Paths**:
-- Textures → `packages/game/public/textures/`
-- Fonts → `packages/game/public/fonts/`
-- UI assets → `packages/game/public/ui/` and `public/splash/`
-- Archetypes → `packages/game/data/archetypes/`
-
----
-
-## Common Issues & Solutions
-
-### TypeScript Import Issues
-**Issue**: Can't find module  
-**Fix**: Use `.js` extension in imports (TS module resolution)  
-**Note**: User prefers NO `.js` suffixes in TypeScript - configure bundler instead
-
-### Seed Validation
-**Issue**: Invalid seed format  
-**Fix**: Use `v1-word-word-word` format (3 words, hyphen-delimited, v1 prefix)
-
-### Texture Loading
-**Issue**: Texture not found  
-**Fix**: Use texture ID from manifest (e.g., "Metal049A"), not file path
-
-### React in BabylonJS Project
-**Issue**: React hooks/components won't work  
-**Fix**: Remove React entirely, use BabylonJS GUI instead
-
-### REST API Calls After Migration
-**Issue**: fetch() calls to http://localhost:3001  
-**Fix**: Use `GameEngine` directly (import and call functions)
-
----
-
-## Git Workflow
-
-**Branching**: (Project uses default branch)  
-**Commits**: Semantic commit messages  
-**Never**: Force push to main/master  
-**Always**: Run tests before committing
-
----
-
-## Performance Targets
-
-- **Initial Load**: < 3s
-- **Frame Rate**: 60 FPS (3D rendering)
-- **Gen0 Simulation**: < 5s (4.5 billion simulated years)
-- **API Calls**: N/A (no HTTP - direct calls only)
-- **Bundle Size**: < 5MB (production)
-
----
-
-## Cross-Platform Targets
-
-**Web** (Primary):
-- Chrome, Safari, Firefox
-- Desktop and mobile browsers
-- Progressive Web App (PWA)
-
-**iOS** (via Capacitor):
-- iOS 13+
-- Native shell + WebView
-- Native APIs (haptics, etc.)
-
-**Android** (via Capacitor):
-- Android 8+
-- Native shell + WebView
-- Native APIs
+**Common issues**:
+- TypeScript errors → Fix imports, add types
+- RNG overflow → We reverted to seedrandom (fixed)
+- Build failures → Check Java 21, Gradle, dependencies
 
 ---
 
 ## Quality Standards
 
 - TypeScript: 0 errors, 0 warnings
-- Tests: 100% passing
-- Coverage: > 70% for core systems
-- Linter: 0 errors
-- Bundle: Optimized for production
-- Performance: 60 FPS maintained
+- Determinism: 100% (same seed = same result)
+- Tests: All core laws validated
+- Performance: < 5s universe generation
 
 ---
 
-## Emergency Contacts
-
-**For blocking issues**, check:
-1. `AGENT_HANDOFF.md` - Comprehensive troubleshooting
-2. `memory-bank/activeContext.md` - Current blockers
-3. `MIGRATION_ASSESSMENT.md` - Known issues
-
-**Common blockers**:
-- TypeScript errors → Fix unused vars, add types
-- Test failures → Update imports, use internal API
-- Dev server issues → Check port, dependencies
-- E2E failures → Update selectors, increase timeouts
-
----
-
-## Version History
-
-**v0.3.0** (2025-11-08): Cross-platform Capacitor application  
-**v0.2.0** (2025-11-08): Unified game package migration  
-**v0.1.0** (2025-11-07): Gen0 complete implementation  
-**v0.0.1** (2025-01-09): Initial Gen0-6 archetypes generated
-
----
-
-## CRITICAL: Read on Every Session
-
-1. `AGENT_HANDOFF.md` - Full context and instructions
-2. `memory-bank/activeContext.md` - Current focus
-3. `memory-bank/progress.md` - What's done/pending
-4. This file - Permanent rules
-
-**Then execute autonomously** - no status updates, no pauses, complete the mission.
+**CRITICAL**: This is a law-based system now. Do not reference `packages/gen/`, `manifests/`, or OpenAI generation. Use `src/laws/` instead.

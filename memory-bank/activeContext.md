@@ -1,214 +1,203 @@
 # Active Context
 
-## 🎯 CURRENT FOCUS: Law-Based Universe Simulation
-
-### The Vision (Nov 9, 2025)
-
-**The game is WAY down the road.**  
-**Visual rendering is trivial (10% complexity).**  
-**The HARD part: Complete universe where Yuka steers EVERYTHING with formulas.**
-
-### What We're Building
-
-**Not a game with physics.**  
-**A physics simulation that happens to be playable.**
-
-Every cycle, every decision, every outcome → **CALCULATED FROM PEER-REVIEWED LAWS**.
-
-### Current State
-
-✅ **16 law files, 4,525 lines, 773 formulas**
-✅ **All laws validated** (determinism perfect, distributions match theory)
-✅ **seedrandom works** (Mersenne Twister was over-engineering)
-✅ **CLI validation suite** (proves math works)
-
-### What's Next
-
-**Keep adding laws until Yuka has formulas for EVERYTHING:**
-- Climate science (Milankovitch cycles, greenhouse effect)
-- Soil science (nutrient cycling, erosion)
-- Hydrology (water cycle, aquifers)
-- Materials science (metallurgy, ceramics)
-- Agriculture (crop yields, irrigation)
-- Epidemiology (disease spread, R₀)
-- Demographics (age pyramids, migration)
-- Architecture (structural engineering)
-
-**Goal:** 50+ law files, 10,000+ lines, 2,000+ formulas
-
-Then Yuka can simulate **5,000 years forward** and answer:
-- "Should this tribe farm?" → Climate + soil + hydrology + demographics
-- "Will trade network succeed?" → Network effects + transport costs
-- "Disease outbreak impact?" → SIR model + population density
-- "Optimal settlement location?" → von Thünen rings + defensive position
-
-**ABSURD DEPTH. NO SWEET SPOT. ONLY FORMULAS.**
-
-# Active Context
-
 **Date**: 2025-11-08  
-**Branch**: `copilot/document-screenshot-flow`  
-**Status**: MAJOR ARCHITECTURAL REFACTOR COMPLETE
+**Status**: Law-based architecture complete, validation in progress
 
 ---
 
-## 🔥 CRITICAL CHANGE: LAW-BASED UNIVERSE
+## 🎯 Current Focus: Validate ALL Laws
 
-**We have completely rebuilt the game's foundation.**
+### Just Completed
+✅ Reverted to `seedrandom` (Mersenne Twister had overflow issues)  
+✅ Created comprehensive validation test suite  
+✅ Archived 30+ obsolete root-level docs  
+✅ Cleaned up documentation structure
 
-### What Changed
+### What We're Validating
 
-**DELETED (not archived):**
-- ✅ `packages/gen/` - Entire AI generation system
-- ✅ `manifests/` - All hardcoded archetype and asset files
-- ✅ OpenAI API dependencies for content generation
+**Test Suite** (`validate-all-laws.sh`):
+1. **Determinism**: Same seed → same universe (3 runs)
+2. **Variety**: Different seeds → different results
+3. **RNG Quality**: Distributions match theory (uniform, normal, Poisson, exponential)
+4. **Physics Laws**: Gravity, stellar evolution, orbital mechanics
+5. **Biology Laws**: Kleiber's Law, allometric scaling
+6. **Ecology Laws**: Lotka-Volterra, carrying capacity
+7. **Stochastic Dynamics**: Gillespie algorithm, noise
+8. **Build System**: Android APK exists and works
+9. **Seed Manager**: Three-word seeds with proper format
+10. **Simulation Scene**: Reports view with URL controls
 
-**CREATED:**
-- ✅ `packages/game/src/laws/` - Complete mathematical law system
-  - `physics.ts` - Newton, gravity, thermodynamics, orbital mechanics
-  - `stellar.ts` - Star evolution, habitable zones, IMF
-  - `biology.ts` - Kleiber's Law, allometric scaling, structural constraints
-  - `ecology.ts` - Carrying capacity, Lotka-Volterra, trophic dynamics
-  - `social.ts` - Service typology, Dunbar's number, hierarchy formation
-  - `taxonomy.ts` - Linnaean classification, binomial nomenclature
-  
-- ✅ `packages/game/src/tables/` - Universal constants and lookup data
-  - `physics-constants.ts` - G, c, k_B, all fundamental constants
-  - `periodic-table.ts` - Complete element data (92 elements)
-  - `linguistic-roots.ts` - Latin/Greek roots for systematic naming
-  
-- ✅ `packages/game/src/generation/` - Deterministic universe generation
-  - `UniverseGenerator.ts` - Applies laws to generate solar systems
-  
-- ✅ `docs/LAW_BASED_ARCHITECTURE.md` - Comprehensive documentation (80+ pages)
+### Current Blocker
 
-### The New Architecture
+**RNG issues**: Need to ensure `seedrandom` is properly installed and working with:
+- `EnhancedRNG.ts` 
+- All law files
+- Stochastic population dynamics
 
-**OLD SYSTEM (Deleted):**
+---
+
+## The Law-Based System
+
+**What it is**:
+A complete mathematical foundation for universe generation. Instead of AI generating content, we have laws that deterministically extrapolate entire universes from three-word seeds.
+
+**Core Laws** (6 files):
+1. `physics.ts` - Gravity, thermodynamics, orbital mechanics
+2. `stellar.ts` - Star formation, IMF, habitable zones
+3. `biology.ts` - Kleiber's Law, allometric scaling
+4. `ecology.ts` - Lotka-Volterra, carrying capacity, competition
+5. `social.ts` - Dunbar's number, Service typology, stratification
+6. `taxonomy.ts` - Linnaean classification, binomial nomenclature
+
+**Universal Constants** (3 files):
+1. `physics-constants.ts` - G, c, k_B, σ, all fundamentals
+2. `periodic-table.ts` - 92 elements with properties
+3. `linguistic-roots.ts` - Latin/Greek roots for systematic naming
+
+**RNG System**:
+- `EnhancedRNG.ts` using `seedrandom` (NOT Mersenne Twister)
+- String seeds directly (no hash conversion needed)
+- Statistical distributions (normal, Poisson, exponential, power law, gamma, beta)
+- Box-Muller transform for Gaussian
+
+---
+
+## What Changed (Major Refactor)
+
+**DELETED** (not archived):
+- ❌ `packages/gen/` - Entire AI generation system
+- ❌ `manifests/` - All hardcoded archetypes
+- ❌ OpenAI API calls for content generation
+
+**CREATED**:
+- ✅ Complete law system (6 law files, ~2500 lines)
+- ✅ Universal constants (3 table files, ~800 lines)
+- ✅ Deterministic RNG (EnhancedRNG with seedrandom)
+- ✅ Validation tools (CLI test scripts)
+- ✅ Build system (justfile recipes for Android/iOS)
+
+---
+
+## Why This Matters
+
+1. **Scientific Rigor**: Real physics/biology/ecology, not AI guesses
+2. **Deterministic**: Same seed = same universe (multiplayer, speedruns, reproducibility)
+3. **Infinite Content**: Every seed generates unique, complete universe
+4. **Educational**: Game teaches actual science
+5. **Lightweight**: ~100KB laws vs MB of JSON
+6. **Moddable**: Change constants = different physics
+7. **Gen6+ Unlocked**: Civilizations can discover laws and transcend homeworld
+
+---
+
+## Immediate Next Steps
+
+1. ✅ Install `seedrandom` and `@types/seedrandom`
+2. 🚧 Fix `EnhancedRNG.ts` to use seedrandom properly
+3. 🚧 Run validation test suite
+4. 🚧 Verify determinism (critical!)
+5. 🚧 Verify RNG quality (statistical distributions)
+6. 🚧 Test Android APK (user can test independently)
+
+---
+
+## Simulation View
+
+**Purpose**: Validate laws by running simulations forward in time
+
+**Features**:
+- Text-based reports (no 3D graphics needed)
+- VCR-style controls (play, pause, step, jump)
+- URL parameters for automation:
+  - `?seed=v1-test` - Set seed
+  - `?cycle=10` - Start at cycle 10
+  - `?advanceTo=100` - Auto-advance to cycle 100
+  - `?autoplay=true` - Auto-play mode
+  - `?speed=5` - Cycles per second
+- `window.simulation` API for programmatic control
+- Perfect for agent self-testing
+
+**URL**: http://localhost:5173/simulation.html
+
+**Use cases**:
+- Human: Click buttons, watch reports, verify behavior
+- Agent: Use curl + URL parameters to test laws automatically
+- Tests: Playwright can control via URL or window.simulation
+
+---
+
+## Build System
+
+**Android APK**:
+```bash
+just build-android
 ```
-AI prompt → OpenAI API → Generated JSON → Renderer
+- Output: `dev-builds/<timestamp>/app-debug.apk`
+- Includes simulation view (not full 3D game)
+- User can test independently on phone
+
+**Web**:
+```bash
+pnpm dev  # Development server
+pnpm build # Production build
 ```
 
-**NEW SYSTEM:**
-```
-Seed → RNG → Physical Laws → Chemical Laws → Biological Laws → 
-Ecological Laws → Taxonomic Laws → Social Laws → Complete Universe
-```
+---
 
-**Everything is deterministic. Same seed = same universe. Always.**
+## Documentation Cleanup
 
-### Core Principle
+**What we archived**:
+- 30+ obsolete status docs moved to `memory-bank/archived-docs/`
+- Removed redundant docs (WORK_LOG.md, DOCUMENTATION_INDEX.md)
 
-**EVERYTHING IS A LAW.**
+**What remains**:
+- `README.md` - Main documentation (to be rewritten)
+- `docs/LAW_BASED_ARCHITECTURE.md` - Law system details
+- `memory-bank/*.md` - Agent context files
 
-A law is a pure function: `Input → Output`
+**To do**:
+- Rewrite README.md as single source of truth
+- Create BUILD.md for production builds
+- Clean up `docs/` folder (remove outdated Gen1-5 docs)
+
+---
+
+## For Next Agent
+
+**Priority 1**: Fix seedrandom integration
+- Ensure `packages/game/package.json` has `seedrandom` dependency
+- Verify `EnhancedRNG.ts` works with string seeds
+- Run `test-rng-quality.ts` to validate distributions
+
+**Priority 2**: Validate determinism
+- Run `test-determinism.ts` with same seed 3 times
+- Verify md5sum matches exactly
+- This is CRITICAL for the law-based system to work
+
+**Priority 3**: Complete validation suite
+- Run `validate-all-laws.sh`
+- Fix any failing tests
+- Document results
+
+**User has APK**: They can test independently on Android while we validate backend!
+
+---
+
+## Key Principle
+
+**EVERYTHING IS A LAW**
 
 ```typescript
-// Physical law
-const gravity = (m1, m2, r) => G * m1 * m2 / r²;
-
-// Biological law
-const metabolism = (mass) => 70 * mass^0.75;
-
-// Taxonomic law (yes, naming is also a law!)
-const genus = (locomotion, habitat) => habitatModifier + locomotionRoot;
-
-// Social law
-const governanceType = (pop, surplus) => {
-  if (pop < 50) return 'Band';
-  if (pop < 500) return 'Tribe';
-  if (pop < 5000) return 'Chiefdom';
-  return 'State';
-};
+// Input → Law → Output
+const starMass = (seed) => rng.powerLaw(2.35, 0.1, 100); // IMF
+const planetMass = (starMass, orbit) => accretionLaw(starMass, orbit);
+const speciesCount = (planetMass, habitableZone) => ecologyLaw(planetMass, habitableZone);
+const populationDynamics = (prey, predators) => lotkaVolterra(prey, predators);
+const governmentType = (population) => serviceTypology(population);
 ```
 
-### Why This Changes Everything
-
-1. **Scientific Rigor**: Real physics, chemistry, biology - not AI guesses
-2. **Infinite Content**: Any seed generates a complete, consistent universe
-3. **Educational Value**: Game teaches actual science (periodic table, Kepler's laws, allometric scaling)
-4. **Deterministic**: Same seed always produces same result (essential for multiplayer, speedruns, testing)
-5. **Lightweight**: ~100KB of laws vs. megabytes of JSON
-6. **Moddable**: Change constants/laws = different physics
-7. **Gen6+ Unlocked**: Civilizations can now **discover the laws** and transcend their homeworld
-
-### The Vision Expanded
-
-**Original**: Gen0-5 (planet formation → cultural expression)
-
-**NEW**: Gen0-∞
-- Gen0-5: Planetary evolution (existing)
-- **Gen6**: Scientific Revolution (creatures discover the laws!)
-- **Gen7**: Space Age (apply laws to design rockets, calculate orbits)
-- **Gen8**: Interplanetary Civilization (colonize moons, terraform)
-- **Gen9**: Stellar Engineering (Dyson swarms, star lifting)
-- **Gen10**: Interstellar Expansion (generation ships, von Neumann probes)
-- **Gen11+**: Digital Transcendence (upload consciousness, post-biological)
-
-### Current Focus
-
-**Immediate Next Steps:**
-1. ✅ Law system complete (physics, stellar, biology, ecology, social, taxonomy)
-2. ✅ Universe generator built (star + planet generation working)
-3. 🚧 Refactor existing Gen0-5 code to use laws instead of AI prompts
-4. 🚧 Integrate with rendering system
-5. 🚧 Update memory bank and documentation
-
-**Active Work:**
-- Documenting the architectural shift
-- Ensuring no context is lost
-- Setting clear direction for future development
-
-### For Next Session
-
-**DO NOT REVERT THIS CHANGE.**
-
-The law-based system is the foundation going forward. If you see references to:
-- `packages/gen/`
-- `manifests/evolutionary-archetypes.json`
-- OpenAI API calls for content generation
-
-These are **obsolete**. Use the law system instead:
-- `import { LAWS } from 'src/laws'`
-- `LAWS.physics.gravity.force(m1, m2, r)`
-- `LAWS.taxonomy.classifier.classify(organism)`
-
-### Documentation
-
-**Primary**: `docs/LAW_BASED_ARCHITECTURE.md` (read this first!)  
-**Secondary**: Comments in each law file  
-**Reference**: `src/tables/periodic-table.ts` for complete element data
+Same inputs → Same outputs. Always.
 
 ---
 
-## Gen5 Completion Status
-
-✅ Gen5 systems implemented:
-- Symbolic communication (visual symbols, learning, teaching)
-- Cultural expression (body art, dance, sculpture, ritual)
-- All renderers complete
-- 74 TypeScript errors fixed (100% clean compile)
-
-✅ Documentation updated:
-- `docs/GEN5_COMMUNICATION_CULTURE.md`
-- Memory bank reflects Gen5 completion
-
----
-
-## Collaboration Context
-
-**Copilot** is working on test coverage for Gen4/Gen5.  
-**Main branch** integration pending.  
-**This branch** (`copilot/document-screenshot-flow`) now contains the law-based refactor.
-
----
-
-## Testing Status
-
-- E2E Gen0 flow: 35/46 passing (76%)
-- Gen1-5 systems: Unit tests needed
-- Law system: Tests needed for determinism verification
-
----
-
-**Last Updated**: 2025-11-08 (Law-based architecture implementation)
+**Last Updated**: 2025-11-08 (documentation cleanup complete, validation in progress)
