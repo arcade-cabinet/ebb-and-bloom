@@ -1,343 +1,320 @@
 /**
- * GEN DATA LOADER - Cross-platform archetype loading
- * Uses Capacitor Filesystem for web/iOS/Android compatibility
+ * Generate Game Data from Laws
+ * 
+ * This replaces the old AI-generated pool data system.
+ * All data is now generated deterministically from laws.
  */
 
-import { Filesystem, Directory } from '@capacitor/filesystem';
-import { Capacitor } from '@capacitor/core';
-import seedrandom from 'seedrandom';
-import { extractSeedComponents as extractSeedComponentsFromManager } from '../seed/seed-manager.js';
-import type { GenerationScale } from '@ebb/gen/schemas';
-
-/**
- * Type definitions from gen schemas (DRY - single source of truth)
- */
-type GenerationData = GenerationScale;
+import { generateEnhancedUniverse } from '../generation/EnhancedUniverseGenerator.js';
+import { EnhancedRNG } from '../utils/EnhancedRNG.js';
+import { LAWS } from '../laws/index.js';
 
 /**
- * Load generation data from JSON files using Capacitor
- * Works on web (fetch), iOS (native filesystem), Android (native filesystem)
+ * Generate complete game data for a universe
  */
-async function loadGenerationData(gen: string): Promise<{ macro: GenerationData; meso: GenerationData; micro: GenerationData }> {
-  try {
-    // Check if running in test environment (Node.js)
-    const isTest = typeof process !== 'undefined' && process.env?.NODE_ENV === 'test';
+export async function generateGameData(seed: string) {
+  console.log(`[Gen] Generating universe from seed: "${seed}"`);
+  
+  const rng = new EnhancedRNG(seed);
+  const universe = generateEnhancedUniverse(seed);
+  
+  if (!universe.habitablePlanet) {
+    console.warn('[Gen] No habitable planet found, using first planet');
+    universe.habitablePlanet = universe.planets[0];
+  }
+  
+  const planet = universe.habitablePlanet;
+  
+  // Generate ecological data from planet properties
+  const ecology = generateEcology(planet, rng);
+  
+  // Generate creature archetypes from ecological niches
+  const creatures = generateCreatureArchetypes(ecology, planet, rng);
+  
+  // Generate resources from planet composition
+  const resources = generateResources(planet, rng);
+  
+  console.log(`[Gen] Generated ${creatures.length} creature types, ${resources.length} resource types`);
+  
+  return {
+    universe,
+    planet,
+    ecology,
+    creatures,
+    resources,
     
-    if (isTest) {
-      // Test environment: Use dynamic import with Node.js fs
-      const { promises: fs } = await import('fs');
-      const { join } = await import('path');
-      const genPath = join(process.cwd(), 'data/archetypes', gen);
-      
-      const [macro, meso, micro] = await Promise.all([
-        fs.readFile(join(genPath, 'macro.json'), 'utf8').then(JSON.parse) as Promise<GenerationData>,
-        fs.readFile(join(genPath, 'meso.json'), 'utf8').then(JSON.parse) as Promise<GenerationData>,
-        fs.readFile(join(genPath, 'micro.json'), 'utf8').then(JSON.parse) as Promise<GenerationData>,
-      ]);
+    // Legacy structure for compatibility
+    pools: {
+      macro: { universe, planet },
+      meso: { ecology, creatures },
+      micro: { resources },
+    },
+  };
+}
 
-      return { macro, meso, micro };
-    }
-    // On web, use fetch from public directory
-    // On native, files are bundled in app
-    else if (Capacitor.getPlatform() === 'web') {
-      // Browser: fetch from public/data/archetypes
-      const baseUrl = `/data/archetypes/${gen}`;
-      const [macroRes, mesoRes, microRes] = await Promise.all([
-        fetch(`${baseUrl}/macro.json`),
-        fetch(`${baseUrl}/meso.json`),
-        fetch(`${baseUrl}/micro.json`),
-      ]);
+/**
+ * Generate ecological parameters from planet
+ */
+function generateEcology(planet: any, rng: EnhancedRNG) {
+  const temperature = planet.surfaceTemperature;
+  const gravity = planet.surfaceGravity;
+  const atmosphere = planet.atmosphere;
+  
+  // Primary productivity from temperature and atmosphere
+  const sunlight = 250; // W/m² (Earth-like for now)
+  const rainfall = atmosphere ? rng.normal(1000, 500) : 0; // mm/year
+  
+  const productivity = LAWS.ecology.carryingCapacity.primaryProductivity(
+    temperature,
+    rainfall,
+    sunlight
+  );
+  
+  // Determine biomes from temperature and rainfall
+  const biomes = determineBiomes(temperature, rainfall, rng);
+  
+  return {
+    temperature,
+    gravity,
+    atmosphere: atmosphere?.composition || {},
+    productivity,
+    rainfall,
+    biomes,
+  };
+}
 
-      if (!macroRes.ok || !mesoRes.ok || !microRes.ok) {
-        throw new Error(`Failed to fetch ${gen} data from server`);
-      }
-
-      const [macro, meso, micro] = await Promise.all([
-        macroRes.json() as Promise<GenerationData>,
-        mesoRes.json() as Promise<GenerationData>,
-        microRes.json() as Promise<GenerationData>,
-      ]);
-
-      return { macro, meso, micro };
+/**
+ * Determine biomes from environmental parameters
+ */
+function determineBiomes(temperature: number, rainfall: number, rng: EnhancedRNG) {
+  const biomes = [];
+  
+  const tempC = temperature - 273.15;
+  
+  if (tempC < -10) {
+    biomes.push({ type: 'tundra', coverage: 0.3 });
+    biomes.push({ type: 'ice', coverage: 0.4 });
+  } else if (tempC < 10) {
+    biomes.push({ type: 'taiga', coverage: 0.4 });
+    biomes.push({ type: 'tundra', coverage: 0.2 });
+  } else if (tempC < 20) {
+    if (rainfall > 1000) {
+      biomes.push({ type: 'temperate_forest', coverage: 0.5 });
     } else {
-      // iOS/Android: Use Capacitor Filesystem to read bundled assets
-      const basePath = `data/archetypes/${gen}`;
+      biomes.push({ type: 'grassland', coverage: 0.5 });
+    }
+  } else {
+    if (rainfall > 1500) {
+      biomes.push({ type: 'tropical_rainforest', coverage: 0.4 });
+    } else if (rainfall > 500) {
+      biomes.push({ type: 'savanna', coverage: 0.4 });
+    } else {
+      biomes.push({ type: 'desert', coverage: 0.5 });
+    }
+  }
+  
+  // Always have some ocean/water
+  biomes.push({ type: 'ocean', coverage: 0.3 });
+  
+  // Normalize coverage
+  const total = biomes.reduce((sum, b) => sum + b.coverage, 0);
+  biomes.forEach(b => b.coverage /= total);
+  
+  return biomes;
+}
+
+/**
+ * Generate creature archetypes from ecological niches
+ */
+function generateCreatureArchetypes(ecology: any, planet: any, rng: EnhancedRNG) {
+  const creatures = [];
+  const gravity = planet.surfaceGravity;
+  const productivity = ecology.productivity;
+  
+  // Number of species from productivity (island biogeography)
+  const area = 4 * Math.PI * Math.pow(planet.radius, 2) / 1e12; // 1000s of km²
+  const speciesCount = LAWS.ecology.island.speciesRichness(area, 0.1, 0.25);
+  const actualCount = Math.min(speciesCount, 20); // Cap at 20 for performance
+  
+  // Generate species for each niche
+  for (let i = 0; i < actualCount; i++) {
+    // Determine niche
+    const biome = rng.choice(ecology.biomes, ecology.biomes.map((b: any) => b.coverage));
+    const diet = rng.choice(['herbivore', 'carnivore', 'omnivore'], [0.5, 0.3, 0.2]);
+    const trophicLevel = diet === 'herbivore' ? 1 : diet === 'carnivore' ? 2 : 1.5;
+    
+    // Mass from allometric constraints and gravity
+    const maxMass = LAWS.biology.structural.maxMassForGravity(gravity);
+    const typicalMass = rng.logNormal(Math.log(50), 1.5); // Log-normal around 50kg
+    const mass = Math.min(typicalMass, maxMass * 0.1); // Don't exceed 10% of max
+    
+    // Metabolism from Kleiber's Law
+    const metabolism = LAWS.biology.allometry.basalMetabolicRate(mass);
+    
+    // Determine locomotion from biome
+    const locomotion = determineLocomotion(biome.type, rng);
+    
+    // Social structure from diet and mass
+    const sociality = determineSociality(diet, mass, rng);
+    
+    // Generate taxonomic name
+    const sizeCategory = mass < 1 ? 'parvo' : mass < 10 ? 'meso' : mass < 100 ? 'macro' : 'mega';
+    const scientificName = generateScientificName(locomotion, diet, sizeCategory, biome.type);
+    
+    creatures.push({
+      id: `creature-${i}`,
+      name: scientificName.common,
+      scientificName: scientificName.binomial,
       
-      const [macroFile, mesoFile, microFile] = await Promise.all([
-        Filesystem.readFile({
-          path: `${basePath}/macro.json`,
-          directory: Directory.Data,
-        }),
-        Filesystem.readFile({
-          path: `${basePath}/meso.json`,
-          directory: Directory.Data,
-        }),
-        Filesystem.readFile({
-          path: `${basePath}/micro.json`,
-          directory: Directory.Data,
-        }),
-      ]);
-
-      const macro = JSON.parse(macroFile.data as string) as GenerationData;
-      const meso = JSON.parse(mesoFile.data as string) as GenerationData;
-      const micro = JSON.parse(microFile.data as string) as GenerationData;
-
-      return { macro, meso, micro };
-    }
-  } catch (error: any) {
-    console.error(`Failed to load ${gen} data:`, error);
-    throw new Error(`Failed to load ${gen} data: ${error.message}`);
+      // Physical
+      mass,
+      metabolism,
+      locomotion,
+      
+      // Ecological
+      diet,
+      trophicLevel,
+      biome: biome.type,
+      
+      // Social
+      sociality,
+      groupSize: sociality === 'pack' ? rng.poisson(8) + 2 : 1,
+      
+      // Derived properties
+      lifespan: LAWS.biology.allometry.maxLifespan(mass),
+      homeRange: LAWS.biology.allometry.homeRange(mass, trophicLevel),
+    });
   }
+  
+  return creatures;
 }
 
 /**
- * Extract seed components for deterministic selection
- * Uses seed manager for consistency
+ * Determine locomotion from biome
  */
-export function extractSeedComponents(seed: string): { macro: number; meso: number; micro: number } {
-  // Use seed manager for consistency, but fallback to direct seedrandom if needed
-  try {
-    return extractSeedComponentsFromManager(seed);
-  } catch {
-    // Fallback for non-standard seeds
-    const rng = seedrandom(seed);
-    return {
-      macro: rng(),
-      meso: rng(),
-      micro: rng(),
-    };
+function determineLocomotion(biome: string, rng: EnhancedRNG): string {
+  const options: Record<string, string[]> = {
+    tropical_rainforest: ['arboreal', 'cursorial', 'aerial'],
+    temperate_forest: ['arboreal', 'cursorial'],
+    taiga: ['cursorial'],
+    grassland: ['cursorial'],
+    savanna: ['cursorial'],
+    desert: ['cursorial', 'fossorial'],
+    tundra: ['cursorial'],
+    ocean: ['aquatic'],
+  };
+  
+  const possible = options[biome] || ['cursorial'];
+  return rng.choice(possible);
+}
+
+/**
+ * Determine sociality from diet and mass
+ */
+function determineSociality(diet: string, mass: number, rng: EnhancedRNG): string {
+  // Large herbivores tend to form herds
+  if (diet === 'herbivore' && mass > 100) {
+    return rng.choice(['herd', 'pack'], [0.7, 0.3]);
   }
+  
+  // Carnivores often hunt in packs
+  if (diet === 'carnivore') {
+    return rng.choice(['solitary', 'pack'], [0.6, 0.4]);
+  }
+  
+  // Omnivores variable
+  return rng.choice(['solitary', 'pack'], [0.5, 0.5]);
 }
 
 /**
- * Select from pool deterministically (simple version - equal weights)
+ * Generate scientific name from traits
  */
-export function selectFromPool<T>(options: T[], seedComponent: number): T {
-  const index = Math.floor(seedComponent * options.length);
-  return options[index];
+function generateScientificName(locomotion: string, diet: string, size: string, biome: string) {
+  const locoRoots: Record<string, string> = {
+    cursorial: 'cursor',
+    arboreal: 'dendro',
+    fossorial: 'fossor',
+    aquatic: 'hydro',
+    aerial: 'aero',
+  };
+  
+  const dietRoots: Record<string, string> = {
+    herbivore: 'herbivor',
+    carnivore: 'carnivor',
+    omnivore: 'omnivor',
+  };
+  
+  const habitatMods: Record<string, string> = {
+    desert: 'xero',
+    tropical_rainforest: 'silvo',
+    grassland: 'prato',
+    ocean: 'pelago',
+  };
+  
+  const genus = (habitatMods[biome] || '') + (locoRoots[locomotion] || 'cursor');
+  const species = size + (dietRoots[diet] || 'omnivor') + 'us';
+  
+  const binomial = `${capitalize(genus)} ${species}`;
+  const common = `${capitalize(biome.replace('_', ' '))} ${locomotion}`;
+  
+  return { binomial, common };
 }
 
 /**
- * Select from pool with BIASED selection (weighted by archetype selectionBias)
- * Supports seed-based probability modification
+ * Generate resources from planet composition
  */
-export function selectFromPoolBiased<T extends { selectionBias?: { baseWeight?: number; seedModifiers?: Record<string, number> } }>(
-  options: T[],
-  seedComponent: number,
-  seedContext?: Record<string, any> // Context for seed modifiers (e.g., { metallicity: 'high' })
-): T {
-  // Calculate weights for each option
-  const weights = options.map((option, index) => {
-    let weight = option.selectionBias?.baseWeight ?? (1.0 / options.length);
-    
-    // Apply seed modifiers if context provided
-    if (seedContext && option.selectionBias?.seedModifiers) {
-      for (const [key, modifier] of Object.entries(option.selectionBias.seedModifiers)) {
-        if (seedContext[key]) {
-          weight *= modifier;
-        }
-      }
-    }
-    
-    return { option, weight, index };
+function generateResources(planet: any, rng: EnhancedRNG) {
+  const resources = [];
+  
+  // Always have basic vegetation
+  resources.push({
+    id: 'vegetation',
+    name: 'Vegetation',
+    type: 'plant',
+    abundance: 0.8,
+    energyDensity: 1500, // kJ/kg
   });
   
-  // Normalize weights
-  const totalWeight = weights.reduce((sum, w) => sum + w.weight, 0);
-  const normalizedWeights = weights.map(w => ({ ...w, weight: w.weight / totalWeight }));
-  
-  // Cumulative distribution for weighted selection
-  let cumulative = 0;
-  const cumulativeWeights = normalizedWeights.map(w => {
-    cumulative += w.weight;
-    return { ...w, cumulative };
-  });
-  
-  // Select based on seed component
-  for (const w of cumulativeWeights) {
-    if (seedComponent <= w.cumulative) {
-      return w.option;
-    }
+  // Water if atmosphere present
+  if (planet.atmosphere) {
+    resources.push({
+      id: 'water',
+      name: 'Water',
+      type: 'liquid',
+      abundance: 0.9,
+    });
   }
   
-  // Fallback (should never reach here, but just in case)
-  return options[options.length - 1];
+  // Minerals from crust composition
+  const crust = planet.composition.crust;
+  if (crust.Si > 0.2) {
+    resources.push({
+      id: 'stone',
+      name: 'Stone',
+      type: 'mineral',
+      abundance: 0.7,
+    });
+  }
+  
+  if (crust.Fe > 0.03) {
+    resources.push({
+      id: 'iron_ore',
+      name: 'Iron Ore',
+      type: 'metal',
+      abundance: 0.3,
+    });
+  }
+  
+  return resources;
+}
+
+function capitalize(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 /**
- * Generate Gen0 data pools (macro/meso/micro scales)
+ * Legacy compatibility - load gen data
  */
-export async function generateGen0DataPools(baseSeed: string, _context?: any): Promise<{
-  macro: { selectedContext: string; selectedDistribution: string; archetypeId: string; archetypeOptions: any[] };
-  meso: { selectedLocation: string; archetypeId: string; archetypeOptions: any[] };
-  micro: { selectedDistribution: string; visualBlueprint: any; archetypeId: string };
-}> {
-  const gen0Data = await loadGenerationData('gen0');
-  const { macro: macroSeed, meso: mesoSeed, micro: microSeed } = extractSeedComponents(baseSeed);
-
-  // Macro: Stellar context
-  const macroArchetype = selectFromPool(gen0Data.macro.archetypes, macroSeed);
-  
-  // Meso: Geological structure
-  const mesoArchetype = selectFromPool(gen0Data.meso.archetypes, mesoSeed);
-  
-  // Micro: Element distribution
-  const microArchetype = selectFromPool(gen0Data.micro.archetypes, microSeed);
-
-  return {
-    macro: {
-      selectedContext: (macroArchetype as any).context || macroArchetype.name,
-      selectedDistribution: (macroArchetype as any).characteristics?.distribution || 'balanced',
-      archetypeId: macroArchetype.id,
-      archetypeOptions: gen0Data.macro.archetypes,
-    },
-    meso: {
-      selectedLocation: (mesoArchetype as any).location || mesoArchetype.name,
-      archetypeId: mesoArchetype.id,
-      archetypeOptions: gen0Data.meso.archetypes,
-    },
-    micro: {
-      selectedDistribution: (microArchetype as any).distribution || microArchetype.name,
-      visualBlueprint: (microArchetype as any).visualBlueprint || {},
-      archetypeId: microArchetype.id,
-    },
-  };
-}
-
-/**
- * Generate Gen1 data pools (creature archetypes)
- */
-export async function generateGen1DataPools(_baseSeed: string, _planet?: any, _gen0Data?: any): Promise<{
-  macro: { archetypeOptions: any[] };
-  meso: { archetypeOptions: any[] };
-  micro: { archetypeOptions: any[] };
-}> {
-  const gen1Data = await loadGenerationData('gen1');
-  
-  return {
-    macro: {
-      archetypeOptions: gen1Data.macro.archetypes,
-    },
-    meso: {
-      archetypeOptions: gen1Data.meso.archetypes,
-    },
-    micro: {
-      archetypeOptions: gen1Data.micro.archetypes,
-    },
-  };
-}
-
-/**
- * Generate Gen2 data pools (pack behaviors)
- */
-export async function generateGen2DataPools(_baseSeed: string, _gen1Data?: any): Promise<{
-  macro: { archetypeOptions: any[] };
-  meso: { archetypeOptions: any[] };
-  micro: { archetypeOptions: any[] };
-}> {
-  const gen2Data = await loadGenerationData('gen2');
-  
-  return {
-    macro: {
-      archetypeOptions: gen2Data.macro.archetypes,
-    },
-    meso: {
-      archetypeOptions: gen2Data.meso.archetypes,
-    },
-    micro: {
-      archetypeOptions: gen2Data.micro.archetypes,
-    },
-  };
-}
-
-/**
- * Generate Gen3 data pools (tool archetypes)
- */
-export async function generateGen3DataPools(_baseSeed: string): Promise<{
-  macro: { archetypeOptions: any[] };
-  meso: { archetypeOptions: any[] };
-  micro: { archetypeOptions: any[] };
-}> {
-  const gen3Data = await loadGenerationData('gen3');
-  
-  return {
-    macro: {
-      archetypeOptions: gen3Data.macro.archetypes,
-    },
-    meso: {
-      archetypeOptions: gen3Data.meso.archetypes,
-    },
-    micro: {
-      archetypeOptions: gen3Data.micro.archetypes,
-    },
-  };
-}
-
-/**
- * Generate Gen4 data pools (tribe structures)
- */
-export async function generateGen4DataPools(_baseSeed: string): Promise<{
-  macro: { archetypeOptions: any[] };
-  meso: { archetypeOptions: any[] };
-  micro: { archetypeOptions: any[] };
-}> {
-  const gen4Data = await loadGenerationData('gen4');
-  
-  return {
-    macro: {
-      archetypeOptions: gen4Data.macro.archetypes,
-    },
-    meso: {
-      archetypeOptions: gen4Data.meso.archetypes,
-    },
-    micro: {
-      archetypeOptions: gen4Data.micro.archetypes,
-    },
-  };
-}
-
-/**
- * Generate Gen5 data pools (building types)
- */
-export async function generateGen5DataPools(_baseSeed: string): Promise<{
-  macro: { archetypeOptions: any[] };
-  meso: { archetypeOptions: any[] };
-  micro: { archetypeOptions: any[] };
-}> {
-  const gen5Data = await loadGenerationData('gen5');
-  
-  return {
-    macro: {
-      archetypeOptions: gen5Data.macro.archetypes,
-    },
-    meso: {
-      archetypeOptions: gen5Data.meso.archetypes,
-    },
-    micro: {
-      archetypeOptions: gen5Data.micro.archetypes,
-    },
-  };
-}
-
-/**
- * Generate Gen6 data pools (religion/democracy)
- */
-export async function generateGen6DataPools(_baseSeed: string): Promise<{
-  macro: { archetypeOptions: any[] };
-  meso: { archetypeOptions: any[] };
-  micro: { archetypeOptions: any[] };
-}> {
-  const gen6Data = await loadGenerationData('gen6');
-  
-  return {
-    macro: {
-      archetypeOptions: gen6Data.macro.archetypes,
-    },
-    meso: {
-      archetypeOptions: gen6Data.meso.archetypes,
-    },
-    micro: {
-      archetypeOptions: gen6Data.micro.archetypes,
-    },
-  };
+export async function loadGenData(seed: string = 'default') {
+  return generateGameData(seed);
 }
