@@ -575,35 +575,35 @@ export class CompleteBottomUpScene {
       this.particleSystem = undefined; // CRITICAL: Clear ref so we can create new one!
     }
     
-    // Use PARTICLE SYSTEM for atoms (GPU-optimized, not individual meshes!)
-    // This renders 10k particles efficiently on GPU
-    this.particleSystem = new ParticleSystem('atoms', 10000, this.scene);
+    // Atoms filling space - BRIGHT and VISIBLE!
+    this.particleSystem = new ParticleSystem('atoms', 15000, this.scene);
     this.particleSystem.particleTexture = new Texture(
       'https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/packages/tools/playground/public/textures/flare.png',
       this.scene
     );
     
-    // Emit from expanding sphere (atoms filling space)
+    // Emit from expanding volume
     this.particleSystem.emitter = BabylonVector3.Zero();
-    this.particleSystem.minEmitBox = new BabylonVector3(-300, -300, -300);
-    this.particleSystem.maxEmitBox = new BabylonVector3(300, 300, 300);
+    this.particleSystem.minEmitBox = new BabylonVector3(-350, -350, -350);
+    this.particleSystem.maxEmitBox = new BabylonVector3(350, 350, 350);
     
-    // Atoms drift slowly (Brownian motion)
-    this.particleSystem.minLifeTime = 5;
-    this.particleSystem.maxLifeTime = 10;
-    this.particleSystem.emitRate = 2000;
+    // Longer lifetime (stay visible)
+    this.particleSystem.minLifeTime = 8;
+    this.particleSystem.maxLifeTime = 15;
+    this.particleSystem.emitRate = 3000; // More atoms
     
-    this.particleSystem.minSize = 0.5;
-    this.particleSystem.maxSize = 2;
-      
-    // Hydrogen (75%) = pale blue/white, Helium (25%) = yellow
-    this.particleSystem.color1 = new Color4(0.9, 0.9, 1, 0.8); // Hydrogen
-    this.particleSystem.color2 = new Color4(1, 1, 0.7, 0.8); // Helium
-    this.particleSystem.colorDead = new Color4(0.9, 0.9, 1, 0.3);
+    // LARGER particles for visibility
+    this.particleSystem.minSize = 1;
+    this.particleSystem.maxSize = 3;
     
-    // Slow drift
-    this.particleSystem.minEmitPower = 0.5;
-    this.particleSystem.maxEmitPower = 2;
+    // BRIGHTER colors (75% H, 25% He)
+    this.particleSystem.color1 = new Color4(1, 1, 1, 1);       // Bright white H
+    this.particleSystem.color2 = new Color4(1, 1, 0.8, 1);    // Pale yellow He
+    this.particleSystem.colorDead = new Color4(0.9, 0.9, 1, 0.5);
+    
+    // Gentle drift
+    this.particleSystem.minEmitPower = 1;
+    this.particleSystem.maxEmitPower = 5;
     
     this.particleSystem.start();
     
