@@ -34,6 +34,7 @@ import { EntropyAgent } from '../yuka-integration/agents/EntropyAgent';
 import { AgentSpawner, AgentType } from '../yuka-integration/AgentSpawner';
 import { StellarAgent } from '../yuka-integration/agents/StellarAgent';
 import { PlanetaryAgent } from '../yuka-integration/agents/PlanetaryAgent';
+import { DensityAgent } from '../yuka-integration/agents/DensityAgent';
 import { AdaptiveHUD } from '../ui/AdaptiveHUD';
 import { MARKER_STORE } from '../state/UniverseMarkers';
 
@@ -81,12 +82,15 @@ export class CompleteBottomUpScene {
   // Simulation state
   private currentPhase: SimulationPhase = 'quantum-foam';
   private currentScale: PhysicalScale = PhysicalScale.PLANCK;
-  private paused: boolean = false;
+  private paused: boolean = true; // START PAUSED - wait for user to press PLAY!
+  private densityFieldInitialized: boolean = false;
+  private bigBangTriggered: boolean = false; // Track if Big Bang happened yet
   
   // Visual elements
   private particleSystem?: ParticleSystem;
   private atomsCloud?: PointsCloudSystem;
   private moleculesCloud?: PointsCloudSystem;
+  private densityCloud?: PointsCloudSystem;
   private starMeshes: Map<StellarAgent, Mesh> = new Map();
   private planetMeshes: Map<PlanetaryAgent, Mesh> = new Map();
   
@@ -102,7 +106,7 @@ export class CompleteBottomUpScene {
     // Babylon setup
     this.engine = new Engine(canvas, true);
     this.scene = new Scene(this.engine);
-    this.scene.clearColor = new Color4(1, 1, 1, 1); // White (infinite energy density!)
+    this.scene.clearColor = new Color4(0, 0, 0, 1); // BLACK - NOTHING exists yet!
     
     // Camera starts ZOOMED IN (Planck scale)
     this.camera = new ArcRotateCamera(
@@ -146,6 +150,9 @@ export class CompleteBottomUpScene {
     // Create UI
     this.createUI();
     
+    // Initial HUD update (show t=0 state even when paused)
+    this.updateHUD();
+    
     // Start render loop
     this.engine.runRenderLoop(() => this.render());
     
@@ -155,6 +162,8 @@ export class CompleteBottomUpScene {
   /**
    * Create quantum foam visualization
    * Represents Planck-scale quantum fluctuations
+   * 
+   * NOTE: Starts STOPPED - will trigger on first update when Big Bang happens
    */
   private createQuantumFoamVisualization(): void {
     // Particle system for quantum foam
@@ -179,34 +188,19 @@ export class CompleteBottomUpScene {
     this.particleSystem.minSize = 0.001;
     this.particleSystem.maxSize = 0.01;
     
-    this.particleSystem.start();
+    // DON'T start yet - wait for Big Bang to happen!
+    // this.particleSystem.start(); // Removed!
     
-    console.log('  ✨ Quantum foam created');
+    console.log('  ✨ Quantum foam prepared (waiting for Big Bang)');
   }
   
   /**
    * Create UI controls
+   * 
+   * NO HARDCODED TEXT - AdaptiveHUD handles all display!
+   * Agents push updates to HUD, HUD displays based on priority.
    */
   private createUI(): void {
-    // Title
-    const title = new TextBlock('title', '💥 BIG BANG');
-    title.color = '#ffffff';
-    title.fontSize = 36;
-    title.fontWeight = 'bold';
-    title.top = '20px';
-    title.textHorizontalAlignment = TextBlock.HORIZONTAL_ALIGNMENT_CENTER;
-    title.textVerticalAlignment = TextBlock.VERTICAL_ALIGNMENT_TOP;
-    this.gui.addControl(title);
-    
-    // Phase indicator
-    const phase = new TextBlock('phase', 'Quantum Foam | Planck Epoch');
-    phase.color = '#88ccff';
-    phase.fontSize = 18;
-    phase.top = '65px';
-    phase.textHorizontalAlignment = TextBlock.HORIZONTAL_ALIGNMENT_CENTER;
-    phase.textVerticalAlignment = TextBlock.VERTICAL_ALIGNMENT_TOP;
-    this.gui.addControl(phase);
-    
     // Controls (bottom)
     const controls = new StackPanel('controls');
     controls.isVertical = false;
@@ -245,17 +239,23 @@ export class CompleteBottomUpScene {
   
   /**
    * Stellar epoch callback
+   * 
+   * NOTE: We do NOT spawn stars here!
+   * Stars form when DensityAgents collapse (Jeans instability).
+   * This callback just marks the EPOCH and transitions visuals.
    */
   private async onStellarEpoch(state: any): Promise<void> {
     console.log('\n⭐ STELLAR EPOCH REACHED!');
     console.log(`  t = ${(this.entropyAgent.age / (1e6 * YEAR)).toFixed(1)} Myr`);
     console.log(`  Transitioning: Molecular → Stellar scale`);
+    console.log(`  🌟 Stars will form WHERE DensityAgents collapse (NOT forced!)`);
     
     // Transition phase
     this.currentPhase = 'stellar-era';
     this.currentScale = PhysicalScale.STELLAR;
     
-    // Clear molecular visualization
+    // Clear molecular visualization (but NOT density field!)
+    // Density field stays - agents are still deciding whether to collapse
     if (this.moleculesCloud) {
       this.moleculesCloud.dispose();
       this.moleculesCloud = undefined;
@@ -268,6 +268,7 @@ export class CompleteBottomUpScene {
     this.zoomToScale(PhysicalScale.STELLAR);
     
     console.log(`  📹 Camera zooming out to stellar scale...`);
+    console.log(`  ⏳ Waiting for DensityAgents to decide when to collapse...`);
   }
   
   /**
@@ -338,31 +339,42 @@ export class CompleteBottomUpScene {
     const T = this.entropyAgent.temperature;
     const age = this.entropyAgent.age;
     
-    // Background color tracks temperature
+    // Trigger Big Bang on first update (regardless of phase)
+    if (!this.bigBangTriggered && age > 0) {
+      console.log('💥 BIG BANG! - Universe springs into existence!');
+      this.bigBangTriggered = true;
+      
+      // Flash from black to white
+      this.scene.clearColor = new Color4(1, 1, 1, 1);
+      
+      // Start particle system
+      if (this.particleSystem) {
+        this.particleSystem.start();
+      }
+    }
+    
+    // AFTER Big Bang: Background color tracks temperature
     if (T > 1e13) {
-      // Nucleosynthesis - orange/white
+      // Nucleosynthesis - orange/white (opaque plasma)
       this.scene.clearColor = new Color4(1, 0.8, 0.5, 1);
     } else if (T > 1e9) {
-      // Cooling - red
+      // Cooling - red (still opaque)
       this.scene.clearColor = new Color4(0.8, 0.2, 0, 1);
     } else if (T > 1e4) {
-      // Recombination - dark red
+      // Recombination - dark red (becoming transparent)
       this.scene.clearColor = new Color4(0.3, 0, 0, 1);
     } else if (T > 100) {
-      // Molecular era - deep blue
+      // Molecular era - deep blue (transparent, cosmic background)
       this.scene.clearColor = new Color4(0, 0, 0.2, 1);
     } else {
-      // Space - near black
+      // Space - near black (dark energy era)
       this.scene.clearColor = new Color4(0, 0, 0.05, 1);
     }
     
     // Render appropriate visualization for current phase
     switch (this.currentPhase) {
       case 'quantum-foam':
-        // Particle system already created
-        if (this.particleSystem) {
-          this.particleSystem.emitRate = 1000;
-        }
+        // Quantum foam visuals already created
         break;
         
       case 'particle-soup':
@@ -392,13 +404,101 @@ export class CompleteBottomUpScene {
       case 'molecular-era':
         // Transition to molecules
         this.createMoleculesVisualization();
+        
+        // Initialize density field (DensityAgents)
+        // This is where stars will eventually form!
+        this.initializeDensityField();
         break;
         
       case 'stellar-era':
       case 'galactic-era':
         // Stars already created by callbacks
         break;
+      
+      case 'maximum':
+        // Peak expansion - visual indicators
+        console.log('🌌 MAXIMUM EXPANSION REACHED');
+        // Could add visual effects (pulsing, color shift)
+        break;
+      
+      case 'contraction':
+        // Universe contracting - reverse visuals!
+        this.visualizeContraction();
+        break;
+      
+      case 'big-crunch':
+        // Final collapse
+        this.visualizeBigCrunch();
+        break;
     }
+  }
+  
+  /**
+   * Visualize contraction phase
+   * Universe is SHRINKING - everything falling back together
+   */
+  private visualizeContraction(): void {
+    // Background gets brighter as matter compresses
+    const scale = this.entropyAgent.scaleFactor;
+    const brightness = Math.max(0, 1 - scale / 10); // Gets brighter as scale decreases
+    
+    this.scene.clearColor = new Color4(
+      brightness * 0.5,
+      brightness * 0.2,
+      brightness * 0.1,
+      1
+    );
+    
+    // Could add particle effects showing matter falling inward
+    // For now, just the background change indicates contraction
+  }
+  
+  /**
+   * Visualize Big Crunch
+   * All matter compressed back to singularity
+   * Returns to VOID (absence of everything)
+   */
+  private visualizeBigCrunch(): void {
+    // First: Brief white flash (compression to singularity)
+    this.scene.clearColor = new Color4(1, 1, 1, 1);
+    
+    // Clear all visualizations
+    if (this.particleSystem) {
+      this.particleSystem.stop();
+    }
+    if (this.atomsCloud) {
+      this.atomsCloud.dispose();
+      this.atomsCloud = undefined;
+    }
+    if (this.moleculesCloud) {
+      this.moleculesCloud.dispose();
+      this.moleculesCloud = undefined;
+    }
+    if (this.densityCloud) {
+      this.densityCloud.dispose();
+      this.densityCloud = undefined;
+    }
+    
+    // Dispose all star/planet meshes
+    for (const mesh of this.starMeshes.values()) {
+      mesh.dispose();
+    }
+    for (const mesh of this.planetMeshes.values()) {
+      mesh.dispose();
+    }
+    this.starMeshes.clear();
+    this.planetMeshes.clear();
+    
+    console.log('💥 BIG CRUNCH - Cycle complete!');
+    console.log('   Universe compressed back to singularity');
+    console.log('   Planck scale reached again');
+    
+    // After a moment, fade to black (return to void)
+    setTimeout(() => {
+      this.scene.clearColor = new Color4(0, 0, 0, 1); // Back to NOTHING
+      this.bigBangTriggered = false; // Could loop if desired
+      console.log('   → Returned to VOID (absence of everything)');
+    }, 1000);
   }
   
   /**
@@ -501,45 +601,139 @@ export class CompleteBottomUpScene {
   }
   
   /**
-   * Auto-zoom camera as complexity increases
-   * Camera follows the GROWTH of the universe
+   * Initialize density field (spawn DensityAgents)
+   * 
+   * This is where STARS WILL FORM - NOT forced placement!
+   * DensityAgents decide WHERE to collapse based on Jeans instability.
+   */
+  private initializeDensityField(): void {
+    if (this.densityFieldInitialized) return;
+    
+    console.log('\n🌫️  INITIALIZING DENSITY FIELD');
+    console.log(`  t = ${(this.entropyAgent.age / YEAR).toFixed(0)} years (recombination epoch)`);
+    console.log(`  Spawning DensityAgents in 3D grid...`);
+    
+    const gridSize = 10; // 10x10x10 = 1000 agents
+    const spacing = 100;  // Space between agents (game units)
+    
+    const positions: BabylonVector3[] = [];
+    let spawnedCount = 0;
+    
+    // Create 3D grid of density agents
+    for (let x = -gridSize / 2; x < gridSize / 2; x++) {
+      for (let y = -gridSize / 2; y < gridSize / 2; y++) {
+        for (let z = -gridSize / 2; z < gridSize / 2; z++) {
+          // Calculate position
+          const px = x * spacing;
+          const py = y * spacing;
+          const pz = z * spacing;
+          
+          positions.push(new BabylonVector3(px, py, pz));
+          
+          // Initial density (typical molecular cloud)
+          // Add some variation (±50%)
+          const baseDensity = 1e-21; // kg/m³
+          const variation = 1.0 + (Math.random() - 0.5);
+          const density = baseDensity * variation;
+          
+          // Temperature: COLD molecular cloud (NOT universe temp!)
+          // Molecular clouds are ~10-20 K regardless of universe temp
+          const temperature = 10 + Math.random() * 10; // 10-20 K
+          
+          // Mass in this cell (assuming 100 ly cube)
+          // Volume ≈ (100 ly)³ ≈ 10^45 m³
+          const volume = 1e45; // m³
+          const mass = density * volume;
+          
+          // Create DensityAgent
+          const agent = new DensityAgent(density, temperature, mass, this.spawner);
+          agent.position.set(px, py, pz);
+          
+          // Add to entity manager (will call start())
+          this.spawner.getManager().add(agent);
+          agent.start();
+          
+          spawnedCount++;
+        }
+      }
+    }
+    
+    // Create visualization (point cloud)
+    this.densityCloud = new PointsCloudSystem('density-field', positions.length, this.scene);
+    this.densityCloud.addPoints(positions.length, (particle, i) => {
+      particle.position = positions[i];
+      particle.color = new Color4(0.3, 0.5, 0.8, 0.5); // Faint blue (molecular clouds)
+    });
+    this.densityCloud.buildMeshAsync();
+    
+    this.densityFieldInitialized = true;
+    
+    console.log(`  ✅ Spawned ${spawnedCount} DensityAgents`);
+    console.log(`  🌟 Stars will form WHERE agents decide (Jeans instability)!`);
+    console.log('');
+  }
+  
+  /**
+   * Auto-zoom camera as universe evolves
+   * Camera follows the EXPANSION and CONTRACTION
    */
   private autoZoomCamera(): void {
     const age = this.entropyAgent.age;
+    const phase = this.entropyAgent.phase;
+    const scale = this.entropyAgent.scaleFactor;
     
-    // Calculate target camera distance based on age/scale
-    // Logarithmic mapping: age → camera distance
+    // Calculate target camera distance based on phase
     let targetRadius: number;
     
-    if (age < 1) {
-      // Quantum foam (t < 1 second)
-      targetRadius = 0.1;
-    } else if (age < 180) {
-      // Nucleosynthesis (t < 3 minutes)
-      targetRadius = 1;
-    } else if (age < 380000 * YEAR) {
-      // Dark ages (t < 380k years)
-      targetRadius = 10;
-    } else if (age < 100e6 * YEAR) {
-      // Molecular era (t < 100 Myr)
-      targetRadius = 100;
-    } else if (age < 1e9 * YEAR) {
-      // Stellar era (t < 1 Gyr)
-      targetRadius = 500;
+    // During contraction, REVERSE the zoom (zoom IN as universe contracts)
+    if (phase === 'contraction' || phase === 'big-crunch') {
+      // Zoom IN as scale factor decreases
+      // Map scale factor to camera distance (logarithmic)
+      targetRadius = Math.max(0.1, Math.log10(scale + 1) * 100);
+      
+      // Big Crunch: Back to Planck scale
+      if (phase === 'big-crunch') {
+        targetRadius = 0.1;
+      }
+    } else if (phase === 'maximum') {
+      // Peak zoom - hold steady
+      targetRadius = this.camera.radius;
     } else {
-      // Galactic era (t > 1 Gyr)
-      const ageGyr = age / (1e9 * YEAR);
-      targetRadius = 1000 + (ageGyr * 1000); // Zoom out as universe ages
+      // Normal expansion - zoom OUT as age increases
+      if (age < 1) {
+        // Quantum foam (t < 1 second)
+        targetRadius = 0.1;
+      } else if (age < 180) {
+        // Nucleosynthesis (t < 3 minutes)
+        targetRadius = 1;
+      } else if (age < 380000 * YEAR) {
+        // Dark ages (t < 380k years)
+        targetRadius = 10;
+      } else if (age < 100e6 * YEAR) {
+        // Molecular era (t < 100 Myr)
+        targetRadius = 100;
+      } else if (age < 1e9 * YEAR) {
+        // Stellar era (t < 1 Gyr)
+        targetRadius = 500;
+      } else {
+        // Galactic era (t > 1 Gyr)
+        const ageGyr = age / (1e9 * YEAR);
+        targetRadius = 1000 + (ageGyr * 1000); // Zoom out as universe ages
+      }
     }
     
     // Smooth interpolation
-    this.camera.radius += (targetRadius - this.camera.radius) * 0.01;
+    const lerpSpeed = (phase === 'contraction' || phase === 'big-crunch') ? 0.02 : 0.01;
+    this.camera.radius += (targetRadius - this.camera.radius) * lerpSpeed;
   }
   
   /**
    * Update (called every frame)
    */
   private update(delta: number): void {
+    // Always update HUD (even when paused, to show current state)
+    this.updateHUD();
+    
     if (this.paused) return;
     
     // Update EntropyAgent (conducts everything)
@@ -556,9 +750,6 @@ export class CompleteBottomUpScene {
     
     // Auto-zoom camera (follows growth!)
     this.autoZoomCamera();
-    
-    // Update HUD
-    this.updateHUD();
     
     // Slow camera rotation
     this.camera.alpha += 0.0005;
@@ -609,6 +800,7 @@ export class CompleteBottomUpScene {
       'big-crunch': '💥 Big Crunch',
     };
     
+    // Let AdaptiveHUD handle ALL display (agent-driven!)
     this.hud.updatePanel({
       id: 'universe',
       title: phaseNames[this.currentPhase],
@@ -623,16 +815,7 @@ export class CompleteBottomUpScene {
       priority: 100,
     });
     
-    // Update title text
-    const title = this.gui.getControlByName('title') as TextBlock;
-    if (title) {
-      title.text = phaseNames[this.currentPhase].split(' ')[0];
-    }
-    
-    const phaseText = this.gui.getControlByName('phase') as TextBlock;
-    if (phaseText) {
-      phaseText.text = `${ageStr} | ${tempStr} | ${this.spawner.getTotalAgentCount()} agents`;
-    }
+    // NO hardcoded title/phase text - HUD handles it all!
   }
   
   /**

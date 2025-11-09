@@ -73,6 +73,32 @@ export class PhysicsRegulator implements DomainRegulator {
           precedent = 'Stellar evolution lifecycle';
         }
         break;
+      
+      case 'check-jeans-instability':
+        // Check if molecular cloud has sufficient mass to collapse (Jeans criterion)
+        // M > M_J where M_J = (5 * k_B * T / (G * m_H))^(3/2) * (3 / (4 * π * ρ))^(1/2)
+        const { density, temperature, mass } = request.params;
+        
+        // Constants
+        const k_B = 1.38e-23;  // Boltzmann constant (J/K)
+        const G = 6.674e-11;    // Gravitational constant (m³/kg/s²)
+        const m_H = 1.67e-27;   // Hydrogen mass (kg)
+        
+        // Jeans mass calculation
+        const tempFactor = Math.pow(5 * k_B * temperature / (G * m_H), 1.5);
+        const densityFactor = Math.pow(3 / (4 * Math.PI * density), 0.5);
+        const M_J = tempFactor * densityFactor;
+        
+        // Check if cloud mass exceeds Jeans mass
+        const canCollapse = mass > M_J;
+        
+        value = canCollapse;
+        precedent = `Jeans mass: M_J = ${M_J.toExponential(2)} kg, Cloud mass: ${mass.toExponential(2)} kg (Jeans 1902)`;
+        
+        if (canCollapse) {
+          console.log(`  ✅ Jeans instability: M (${mass.toExponential(2)}) > M_J (${M_J.toExponential(2)})`);
+        }
+        break;
 
       default:
         console.warn(`[PhysicsRegulator] Unknown action: ${request.action}`);

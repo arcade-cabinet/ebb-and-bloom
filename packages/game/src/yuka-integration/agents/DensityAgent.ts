@@ -74,24 +74,14 @@ export class DriftGoal extends Goal {
 /**
  * Should Collapse Evaluator
  * 
- * Asks Legal Broker: "Is density sufficient for star formation?"
+ * Reads CACHED Jeans instability check from agent.
+ * Agent pre-fetches this async result in update() before brain.arbitrate().
  */
 export class ShouldCollapseEvaluator extends GoalEvaluator {
-  async calculateDesirability(agent: DensityAgent): Promise<number> {
-    // Ask Legal Broker about Jeans instability
-    const response = await LEGAL_BROKER.ask({
-      domain: 'physics',
-      action: 'check-jeans-instability',
-      params: {
-        density: agent.density,
-        temperature: agent.temperature,
-        mass: agent.mass,
-      },
-      state: agent.getState(),
-    });
-    
-    // If conditions met for collapse, high desirability
-    return response.value === true ? 1.0 : 0.0;
+  calculateDesirability(agent: DensityAgent): number {
+    // Read cached Jeans check (pre-fetched in agent.update())
+    // This is SYNC - evaluators CANNOT be async!
+    return agent.jeansCheckCache ? 1.0 : 0.0;
   }
   
   setGoal(agent: DensityAgent): void {
@@ -148,6 +138,9 @@ export class DensityAgent extends Vehicle {
   // State
   hasCollapsed: boolean = false;
   
+  // Cached Legal Broker results (pre-fetched for sync evaluators)
+  jeansCheckCache: boolean = false;
+  
   // Reference to spawner (for creating stars)
   spawner?: AgentSpawner;
   
@@ -183,11 +176,15 @@ export class DensityAgent extends Vehicle {
   /**
    * Update (called every frame)
    */
-  update(delta: number): this {
+  async update(delta: number): Promise<this> {
     super.update(delta);
     
     this.deltaTime = delta;
     this.age += delta;
+    
+    // PRE-FETCH Legal Broker results (BEFORE brain.arbitrate())
+    // This is async, but we do it BEFORE the sync evaluator reads it
+    await this.preFetchLegalBrokerResults();
     
     // Execute brain (evaluators pick best goal)
     if (this.brain) {
@@ -196,6 +193,31 @@ export class DensityAgent extends Vehicle {
     }
     
     return this;
+  }
+  
+  /**
+   * Pre-fetch all Legal Broker results needed by evaluators
+   * Called BEFORE brain.arbitrate() so evaluators can read cached values
+   */
+  private async preFetchLegalBrokerResults(): Promise<void> {
+    // Check Jeans instability
+    try {
+      const response = await LEGAL_BROKER.ask({
+        domain: 'physics',
+        action: 'check-jeans-instability',
+        params: {
+          density: this.density,
+          temperature: this.temperature,
+          mass: this.mass,
+        },
+        state: this.getState(),
+      });
+      
+      this.jeansCheckCache = response.value === true;
+    } catch (error) {
+      // If Legal Broker fails, default to false
+      this.jeansCheckCache = false;
+    }
   }
   
   /**

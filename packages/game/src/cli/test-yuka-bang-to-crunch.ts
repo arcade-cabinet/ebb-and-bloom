@@ -1,26 +1,23 @@
 /**
  * YUKA BANG-TO-CRUNCH TEST
  * 
- * Pure algorithmic validation of multi-agent hierarchy.
+ * Pure algorithmic validation of bottom-up multi-agent hierarchy.
  * NO RENDERING. Just Yuka + Laws + Physics.
  * 
- * Tests:
+ * Tests NEW architecture:
  * - EntropyAgent (universe thermodynamics)
- * - StellarAgent (fusion, supernovae)  
- * - PlanetaryAgent (atmospheres, life)
- * - CreatureAgent (behavior)
- * - Legal Broker validation at each level
+ * - DensityAgent (molecular clouds → star formation via Jeans instability)
+ * - StellarAgent (fusion, supernovae spawned FROM density collapse)
+ * - Legal Broker validation (async evaluators working)
  * 
- * From Big Bang → Present → Heat Death
+ * From Big Bang → Density Field → Stars from Collapse
  */
 
 import { AgentSpawner, AgentType } from '../yuka-integration/AgentSpawner';
 import { EntropyAgent } from '../yuka-integration/agents/EntropyAgent';
+import { DensityAgent } from '../yuka-integration/agents/DensityAgent';
 import { StellarAgent } from '../yuka-integration/agents/StellarAgent';
-import { PlanetaryAgent } from '../yuka-integration/agents/PlanetaryAgent';
-import { CreatureAgent } from '../yuka-integration/agents/CreatureAgent';
 import { LEGAL_BROKER } from '../laws/core/LegalBroker';
-import { ComplexityLevel } from '../laws/core/UniversalLawCoordinator';
 import { Vector3 } from 'yuka';
 
 const YEAR = 365.25 * 86400;
@@ -42,7 +39,7 @@ async function runSimulation() {
   console.log(`Initial state:`);
   console.log(`  T = ${entropyAgent.temperature.toExponential(2)} K`);
   console.log(`  ρ = ${entropyAgent.density.toExponential(2)} kg/m³`);
-  console.log(`  Scale = ${entropyAgent.scale}`);
+  console.log(`  Scale = ${entropyAgent.scaleFactor.toFixed(2)}x`);
   console.log(`  Agents = ${spawner.getTotalAgentCount()}\n`);
   
   // === PHASE 2: ADVANCE TIME (fast forward) ===
@@ -68,7 +65,7 @@ async function runSimulation() {
       console.log(`Frame ${frameCount}:`);
       console.log(`  Age = ${(entropyAgent.age / YEAR).toExponential(2)} years`);
       console.log(`  T = ${entropyAgent.temperature.toExponential(2)} K`);
-      console.log(`  Scale = ${entropyAgent.scale.toFixed(2)}x`);
+      console.log(`  Scale = ${entropyAgent.scaleFactor.toFixed(2)}x`);
       console.log(`  Agents = ${spawner.getTotalAgentCount()}`);
     }
     
@@ -82,37 +79,97 @@ async function runSimulation() {
     }
   }
   
-  // === PHASE 3: SPAWN STELLAR AGENTS ===
-  console.log(`\n=== PHASE 3: STELLAR SPAWNING ===\n`);
+  // === PHASE 3: SPAWN DENSITY FIELD ===
+  console.log(`\n=== PHASE 3: DENSITY FIELD SPAWNING ===\n`);
   console.log(`EntropyAgent age: ${(entropyAgent.age / (1e6 * YEAR)).toFixed(1)} Myr`);
-  console.log(`Spawning 10 stellar agents...\n`);
+  console.log(`Spawning 10 DensityAgents (molecular clouds)...\n`);
   
-  const state = entropyAgent.getState();
+  const densityAgents: DensityAgent[] = [];
+  const T_CLOUD = 10; // K - COLD molecular cloud (not current universe temp!)
+  const RHO_BASE = 1e-18; // kg/m³ - DENSER than average to trigger collapse
   
-  // Stars already spawned by EntropyAgent via spawner callback
-  // Just get the list
-  const stellarAgents = spawner.getAgents(AgentType.STELLAR);
-  stellarAgentsTracked.push(...stellarAgents as StellarAgent[]);
-  
-  console.log(`Stars spawned by EntropyAgent: ${stellarAgentsTracked.length}`);
-  
-  // === PHASE 4: STELLAR EVOLUTION ===
-  console.log('=== PHASE 4: STELLAR EVOLUTION ===');
-  console.log('Running stellar agents for 1000 frames...\n');
-  
-  for (let i = 0; i < 1000; i++) {
-    const delta = 0.016;
+  for (let i = 0; i < 10; i++) {
+    const variation = 100 + Math.random() * 1000; // 100x to 1100x - HUGE variation
+    const density = RHO_BASE * variation;
+    const mass = density * 1e50; // Volume: ~(10,000 ly)³ - TRULY MASSIVE clouds
     
-    // Update entropy agent + all spawned agents
-    entropyAgent.update(delta);
-    spawner.update(delta);
+    const agent = new DensityAgent(density, T_CLOUD, mass, spawner);
+    agent.position.set(i * 100, 0, 0);
     
-    if (i % 200 === 0) {
-      const activeStar = stellarAgentsTracked.filter(s => !s.hasExploded).length;
-      const exploded = stellarAgentsTracked.filter(s => s.hasExploded).length;
-      console.log(`Frame ${i}: Active stars: ${activeStar}, Exploded: ${exploded}`);
+    // Check Jeans mass for this cloud
+    const response = await LEGAL_BROKER.ask({
+      domain: 'physics',
+      action: 'check-jeans-instability',
+      params: { density, temperature: T_CLOUD, mass },
+      state: agent.getState(),
+    });
+    
+    console.log(`Agent ${i}: M=${mass.toExponential(2)} kg, Jeans=${response.value ? 'CAN COLLAPSE ✅' : 'too low'}`);
+    
+    spawner.getManager().add(agent);
+    agent.start();
+    densityAgents.push(agent);
+  }
+  
+  console.log(`✅ Spawned ${densityAgents.length} DensityAgents`);
+  
+  // === PHASE 4: DENSITY AGENTS CHECK JEANS INSTABILITY ===
+  console.log('\n=== PHASE 4: JEANS INSTABILITY CHECKS ===');
+  console.log('DensityAgents checking if they can collapse...\n');
+  
+  let jeansChecksPassed = 0;
+  
+  // Snapshot state after star formation (for validation)
+  let snapshotTaken = false;
+  let snapshotAge = 0;
+  let snapshotTemp = 0;
+  let snapshotScale = 0;
+  
+  for (let i = 0; i < 20; i++) { // Just enough for collapse to trigger
+    const delta = 2e5 * YEAR; // Fast-forward: 200k years per frame (4 Myr total)
+    
+    // Update density agents
+    for (const agent of densityAgents) {
+      if (!agent.hasCollapsed) {
+        await agent.update(delta);
+        
+        if (agent.jeansCheckCache) {
+          jeansChecksPassed++;
+        }
+        
+        // Log goal state
+        if (i === 1 && agent.jeansCheckCache) {
+          const goal = agent.brain?.currentSubgoal();
+          console.log(`  Agent at (${agent.position.x}): Goal=${goal?.constructor.name || 'none'}, CanCollapse=${agent.jeansCheckCache}`);
+        }
+      }
+    }
+    
+    // Check for stars formed
+    const stellarAgents = spawner.getAgents(AgentType.STELLAR);
+    if (stellarAgents.length > stellarAgentsTracked.length) {
+      console.log(`  Frame ${i}: Star formed! Total: ${stellarAgents.length}`);
+      stellarAgentsTracked.push(...stellarAgents.filter(s => 
+        !stellarAgentsTracked.includes(s as StellarAgent)
+      ) as StellarAgent[]);
+    }
+    
+    // Stop if all that can collapse have collapsed
+    if (densityAgents.every(d => d.hasCollapsed || !d.jeansCheckCache)) {
+      console.log(`  All collapses complete at frame ${i}`);
+      
+      // Take snapshot NOW (before continuing)
+      snapshotAge = entropyAgent.age;
+      snapshotTemp = entropyAgent.temperature;
+      snapshotScale = entropyAgent.scaleFactor;
+      snapshotTaken = true;
+      
+      break;
     }
   }
+  
+  console.log(`✅ Jeans checks that passed: ${jeansChecksPassed > 0 ? 'Yes' : 'No'}`);
+  console.log(`✅ Stars formed from collapse: ${stellarAgentsTracked.length}`);
   
   
   // === FINAL SUMMARY ===
@@ -127,14 +184,14 @@ async function runSimulation() {
   console.log(`\nUniverse:`);
   console.log(`  Age: ${finalAge.toFixed(2)} Gyr`);
   console.log(`  Temperature: ${entropyAgent.temperature.toExponential(2)} K`);
-  console.log(`  Scale: ${entropyAgent.scale.toFixed(2)}x`);
+  console.log(`  Scale: ${entropyAgent.scaleFactor.toFixed(2)}x`);
   console.log(`  Entropy: ${entropyAgent.entropy.toExponential(2)}`);
   
   console.log(`\nAgents:`);
   console.log(`  Entropy: 1`);
-  console.log(`  Stellar (spawned): ${stellarAgentsTracked.length}`);
-  console.log(`  Stellar (active): ${activeStellar}`);
-  console.log(`  Supernovae: ${exploded}`);
+  console.log(`  Density: ${densityAgents.length}`);
+  console.log(`  Stellar (formed from collapse): ${stellarAgentsTracked.length}`);
+  console.log(`  Collapsed clouds: ${densityAgents.filter(d => d.hasCollapsed).length}`);
   
   // === VALIDATION ===
   console.log(`\n${'='.repeat(60)}`);
@@ -143,10 +200,11 @@ async function runSimulation() {
   
   const checks = [
     { name: 'Entropy increases', pass: entropyAgent.entropy > 0.01 },
-    { name: 'Universe expands', pass: entropyAgent.scale > 1 },
-    { name: 'Universe cools', pass: entropyAgent.temperature < 1e32 },
-    { name: 'Stars spawn (EntropyAgent triggered)', pass: stellarAgentsTracked.length > 0 },
-    { name: 'Stars active', pass: activeStellar > 0 },
+    { name: 'Universe expanded (at snapshot)', pass: snapshotScale > 1 },
+    { name: 'Universe cooled (at snapshot)', pass: snapshotTemp < 1e32 },
+    { name: 'DensityAgents spawned', pass: densityAgents.length === 10 },
+    { name: 'Jeans instability checks working', pass: jeansChecksPassed > 0 },
+    { name: 'Stars formed from collapse (NOT forced)', pass: stellarAgentsTracked.length > 0 },
   ];
   
   let allPassed = true;
