@@ -748,11 +748,54 @@ export class CompleteBottomUpScene {
     // Update visuals for current phase
     this.updateVisualsForPhase();
     
+    // Sync star visuals with agents
+    this.updateStarVisuals();
+    
     // Auto-zoom camera (follows growth!)
     this.autoZoomCamera();
     
     // Slow camera rotation
     this.camera.alpha += 0.0005;
+  }
+  
+  /**
+   * Update star visuals - create meshes for new stars
+   */
+  private updateStarVisuals(): void {
+    const stellarAgents = this.spawner.getAgents(AgentType.STELLAR) as StellarAgent[];
+    
+    for (const star of stellarAgents) {
+      if (!this.starMeshes.has(star)) {
+        // Create visual mesh for new star
+        const sphere = MeshBuilder.CreateSphere(
+          `star-${star.uuid}`,
+          { diameter: 2 + Math.random() * 3 }, // Varying sizes
+          this.scene
+        );
+        
+        sphere.position.set(
+          star.position.x,
+          star.position.y,
+          star.position.z
+        );
+        
+        // Glowing material
+        const mat = new StandardMaterial(`star-mat-${star.uuid}`, this.scene);
+        mat.emissiveColor = new Color3(1, 0.9, 0.7); // Yellowish glow
+        mat.diffuseColor = new Color3(1, 1, 0.8);
+        sphere.material = mat;
+        
+        this.starMeshes.set(star, sphere);
+      } else {
+        // Update position (stars move via GravityBehavior)
+        const mesh = this.starMeshes.get(star)!;
+        mesh.position.set(
+          star.position.x,
+          star.position.y,
+          star.position.z
+        );
+      }
+    }
   }
   
   /**
