@@ -200,7 +200,7 @@ async function demonstrateSynthesis() {
   console.log('🔨 LEVEL 7: TECHNOLOGICAL SYNTHESIS\n');
   
   // Available elements from planet
-  const crustElements = planet.composition.crust;
+  const crustElements = planet.composition?.crust || { Si: 0.28, O: 0.46, Al: 0.08, Fe: 0.05 };
   console.log('Available elements from crust:');
   for (const [elem, fraction] of Object.entries(crustElements)) {
     if (fraction > 0.01) {
