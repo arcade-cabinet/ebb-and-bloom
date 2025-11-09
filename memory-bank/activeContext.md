@@ -1,17 +1,18 @@
 # Active Context
 
 **Last Updated**: 2025-11-08  
-**Current Work**: Gen2 Social Dynamics - COMPLETE ✨
+**Current Work**: Gen3 Tools & Structures - COMPLETE ✨
 
-## Current Phase: Gen2 Enhancements & Gen3 Prep
+## Current Phase: Gen3 Polish & Gen4 Planning
 
-### Just Completed: Pack Formation & Creature Interactions
+### Just Completed: Tools & Structures (Technological Emergence)
 
-Built a complete social dynamics system with:
-- **Pack Formation System**: Proximity-based clustering, leader selection, cohesion tracking
-- **Creature Interaction System**: Territorial disputes, social bonds, predation, pack coordination
-- **Visual Indicators**: Wireframe pack auras (colored, pulsing) and interaction lines (red/green/orange/cyan)
-- **Emergent Behaviors**: All interactions arise from simple rules—no hardcoding
+Built a complete technological system with:
+- **Tool System**: 4 archetype-specific tools (digging sticks, gathering poles, wading spears, striking stones)
+- **Structure Building**: 4 archetype-specific structures (burrows, platforms, stiltworks, windbreaks)
+- **Cultural Transmission**: Knowledge spreads through teaching (yellow rings show teachers)
+- **Collaborative Construction**: Multiple creatures work together on building projects
+- **Degradation**: Everything wears over time
 
 **Status**: ✅ Committed and pushed to `copilot/document-screenshot-flow`
 
@@ -25,104 +26,90 @@ Built a complete social dynamics system with:
 - Multi-scale view (points of light → 3D creatures)
 
 **Gen2**: Social dynamics with:
-- **Pack formation**: Creatures cluster into colored groups
-- **Interactions**: Visible relationships (fights, bonds, hunting, coordination)
-- **Emergent complexity**: Every playthrough is unique
+- Pack formation (automatic clustering)
+- Interactions (territorial, social, predation, coordination)
+- Visual indicators (auras, colored lines)
+- Emergent complexity
+
+**Gen3**: Technological emergence with:
+- **Tool creation**: Smart creatures invent archetype-specific tools
+- **Tool discovery**: Creatures find and learn tools
+- **Cultural learning**: Pack creatures teach (yellow rings visible)
+- **Collaborative building**: Multiple creatures construct structures
+- **Building projects**: Ghosted wireframes show construction progress
+- **Completed structures**: Detailed 3D models with occupancy glow
+- **Degradation**: Tools and structures wear over time
 
 ### What's Working
-- ✅ Celestial view (zoom from space to surface)
-- ✅ LOD system (point lights ↔ 3D meshes)
-- ✅ Four creature archetypes with procedural bodies
-- ✅ Walking animations synced to movement
-- ✅ Autonomous behaviors (foraging, fleeing, resting)
-- ✅ Resource system (food nodes)
-- ✅ Pack formation (automatic clustering)
-- ✅ Creature interactions (4 types)
-- ✅ Visual indicators (auras, lines)
+- ✅ Gen0 (planet formation)
+- ✅ Gen1 (living creatures with AI, animations, resources)
+- ✅ Gen2 (packs, interactions)
+- ✅ Gen3 (tools, structures, cultural learning, collaborative building)
 
 ### Next Priorities
 
-1. **Gen2 Polish**:
-   - Smarter AI (pathfinding obstacles, memory, learning)
-   - Pack benefits (coordinated hunting, speed boost)
-   - Interaction outcomes (winners/losers in disputes)
-   - Performance (spatial partitioning for large counts)
+1. **Gen3 Polish**:
+   - Tool upgrades (sharper, stronger, longer-lasting)
+   - Structure upgrades (multi-room, workshops)
+   - Resource storage in structures
+   - Repair mechanics
 
-2. **Gen3 Planning** (Tools & Structures):
-   - Simple tool usage (sticks, rocks)
-   - First structures (burrows, nests, platforms)
-   - Cultural transmission (tool use spreads)
-   - Resource competition (territory control)
+2. **Gen4 Planning** (Advanced Civilization):
+   - Advanced tools (composite materials, handles, rope)
+   - Complex structures (multi-story, defensive walls)
+   - Crafting stations (dedicated workshops)
+   - Trade networks (resource/tool exchange)
+   - Specialization (roles: hunters, builders, scouts)
 
-3. **Testing & Polish**:
-   - E2E tests for Gen2 features
-   - Performance benchmarks
-   - Visual polish (particle effects)
-   - UX improvements (tooltips, info panels)
-
-## Known Issues
-
-### Existing (Pre-Gen2):
-- Some TypeScript errors in old files (OnboardingScene, CatalystCreatorScene, UI components)
-- E2E tests at 76% pass rate (11 failing due to UI timing)
-- Some Gen0 type mismatches (AccretionSimulation, MoonRenderer)
-
-### New (Gen2):
-- None identified yet (needs testing)
+3. **Testing & Performance**:
+   - E2E tests for Gen3 features
+   - Performance benchmarks (tools/structures rendering)
+   - Visual polish (particle effects for construction)
 
 ## Context for Next Session
 
 **Branch**: `copilot/document-screenshot-flow`  
-**Build Status**: Compiles (with warnings in old files)  
-**What's Ready**: Gen0, Gen1 (living creatures), Gen2 (pack formation + interactions)
+**Build Status**: Compiles (Gen3 systems clean, pre-existing errors in old files)  
+**What's Ready**: Gen0, Gen1 (living ecosystem), Gen2 (social dynamics), Gen3 (tools & structures)
 
-**To Test**:
+**To Test Gen3**:
 1. Launch game
 2. Advance to Gen1
-3. Wait ~10 seconds for packs to form
-4. Zoom in/out to see:
-   - Pack auras (wireframe spheres)
-   - Interaction lines (red/green/orange/cyan)
-   - Creatures moving together
+3. Wait ~30-60 seconds for high-intelligence creatures
+4. Watch for tool creation (brown/green/blue/gray objects)
+5. See knowledge spreading (yellow rings above teachers)
+6. Observe building projects (yellow wireframes)
+7. Watch multiple creatures working together
+8. See completed structures (detailed 3D models)
+9. Notice occupancy glow (structures being used)
+
+**Typical Timeline**:
+- t=0s: Gen1 starts
+- t=10s: Packs form
+- t=30s: First tool created
+- t=60s: Knowledge spreading
+- t=120s: First building project
+- t=300s: First structure completed
 
 **Files to Know**:
-- `packages/game/src/scenes/GameScene.ts` - Main orchestration
-- `packages/game/src/systems/` - Behavior, Pack, Interaction systems
-- `packages/game/src/renderers/gen1/` - Creature, Resource renderers
-- `packages/game/src/renderers/gen2/` - Pack, Interaction renderers
-- `docs/GEN2_PACK_INTERACTIONS.md` - Complete documentation
-
-## Architecture Notes
-
-**WARP/WEFT Pattern**:
-- Backend: Simulation logic, archetype definitions
-- Frontend: Visual interpretation, rendering
-
-**Gen2 Systems**:
-- `PackFormationSystem`: Detects packs via proximity clustering
-- `CreatureInteractionSystem`: Checks distances, creates interactions
-- Both run every frame, update in real-time
-
-**Gen2 Renderers**:
-- `PackFormationRenderer`: Wireframe spheres, leader bonds
-- `InteractionVisualizer`: Colored connection lines
-
-**Performance**:
-- Pack detection: O(n²) where n = pack creatures (~20-30)
-- Interaction checks: O(n²) where n = all creatures (~20-30)
-- Frame time: <1ms for typical counts
+- `packages/game/src/scenes/GameScene.ts` - Main orchestration (now includes Gen3 systems)
+- `packages/game/src/systems/ToolSystem.ts` - Tool logic
+- `packages/game/src/systems/StructureBuildingSystem.ts` - Building logic
+- `packages/game/src/renderers/gen3/` - Tool and structure renderers
+- `docs/GEN3_TOOLS_STRUCTURES.md` - Complete documentation
 
 ## Design Philosophy Reinforcement
 
-**Core Principle**: Emergent complexity from simple rules
+**Core Principle**: Technology emerges from intelligence + social learning + collaboration
 
-Gen2 embodies this:
-- No scripted pack assignments
-- No hardcoded interaction outcomes
+Gen3 embodies this:
+- No scripted "ages" or tech trees
+- No forced progression
 - Everything emerges from:
-  - Proximity
-  - Traits (social, temperament, strength, intelligence)
-  - Internal states (energy, fear)
-  - Real-time decisions
+  - **Intelligence** (smart creatures innovate)
+  - **Social structure** (packs share knowledge)
+  - **Collaboration** (building requires teamwork)
+  - **Time** (degradation forces renewal)
+  - **Archetype** (tools/structures match lifestyle)
 
-This creates a **living social ecosystem** where authentic dynamics unfold naturally, and every playthrough generates unique emergent behaviors.
+This creates a **living technological ecosystem** where authentic cultural development unfolds naturally, and every playthrough generates unique technological paths.
