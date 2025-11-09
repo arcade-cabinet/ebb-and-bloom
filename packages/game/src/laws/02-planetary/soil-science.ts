@@ -231,7 +231,7 @@ export const PrimaryProductivity = {
    * 
    * Rule of thumb: 10% efficiency between trophic levels
    */
-  herbivor eCarryingCapacity: (
+  herbivoreCarryingCapacity: (
     NPP_kgPerM2: number,
     area_m2: number,
     herbivoreMetabolicRate_W: number

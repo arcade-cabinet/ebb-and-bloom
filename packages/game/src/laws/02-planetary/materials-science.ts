@@ -261,7 +261,7 @@ export const StrengthOfMaterials = {
    * 1: Talc (softest)
    * 10: Diamond (hardest)
    */
-  mohs Hardness: (composition: Record<string, number>): number => {
+  mohsHardness: (composition: Record<string, number>): number => {
     // Pure elements
     if (composition.C && composition.C > 0.99) return 10; // Diamond
     if (composition.Fe && composition.Fe > 0.95) return 4.5; // Iron

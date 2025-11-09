@@ -158,7 +158,7 @@ export const Groundwater = {
    */
   rechargeRate_mmPerYear: (
     infiltration_mm: number,
-    deepPercolation Fraction: number // 0-1
+    deepPercolationFraction: number
   ): number => {
     return infiltration_mm * deepPercolationFraction;
   },
