@@ -168,6 +168,11 @@ ios/App/DerivedData/
 # Build outputs (web)
 packages/game/dist/
 
+# Development builds (APKs, IPAs)
+dev-builds/
+# Keep directory structure
+!dev-builds/.gitignore
+
 # Generated assets (AI-generated or built)
 public/splash/
 public/ui/
