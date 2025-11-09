@@ -33,14 +33,14 @@ export class SimulationScene {
   private seed: string;
   private gameData: any;
   private state: WorldState;
-  private populationDynamics: StochasticPopulationDynamics;
-  private rng: EnhancedRNG;
+  private populationDynamics!: StochasticPopulationDynamics;
+  private rng!: EnhancedRNG;
   
   // UI Elements
-  private headerText: TextBlock;
-  private reportPanel: StackPanel;
-  private statusText: TextBlock;
-  private graphCanvas: Rectangle;
+  private headerText!: TextBlock;
+  private reportPanel!: StackPanel;
+  private statusText!: TextBlock;
+  private graphCanvas!: Rectangle;
   private populationHistory: Array<{ cycle: number; populations: Map<string, number> }>;
   
   constructor(canvas: HTMLCanvasElement, seed: string) {
@@ -50,7 +50,7 @@ export class SimulationScene {
     this.scene.clearColor = new Color4(0.05, 0.05, 0.1, 1);
     
     // Camera (not used for rendering, just required)
-    const camera = new FreeCamera('camera', new Vector3(0, 0, -10), this.scene);
+    new FreeCamera('camera', new Vector3(0, 0, -10), this.scene);
     
     // GUI
     this.gui = AdvancedDynamicTexture.CreateFullscreenUI('UI', true, this.scene);

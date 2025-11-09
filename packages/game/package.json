@@ -29,6 +29,7 @@
     "@babylonjs/materials": "^7.0.0",
     "@babylonjs/procedural-textures": "^7.0.0",
     "@bufbuild/protobuf": "^2.10.0",
+    "@capacitor/android": "^7.4.4",
     "@capacitor/app": "^7.1.0",
     "@capacitor/core": "^7.4.4",
     "@capacitor/filesystem": "^7.1.4",

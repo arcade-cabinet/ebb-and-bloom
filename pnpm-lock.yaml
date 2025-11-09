@@ -53,6 +53,9 @@ importers:
       '@bufbuild/protobuf':
         specifier: ^2.10.0
         version: 2.10.0
+      '@capacitor/android':
+        specifier: ^7.4.4
+        version: 7.4.4(@capacitor/core@7.4.4)
       '@capacitor/app':
         specifier: ^7.1.0
         version: 7.1.0(@capacitor/core@7.4.4)
@@ -280,6 +283,11 @@ packages:
 
   '@bufbuild/protoplugin@2.10.0':
     resolution: {integrity: sha512-GPJOZ1Gp9/Ci3MXP3yI7+q4G7IhB5cSpbLjsfnBILxtNx69I9+ix3r9P7JfewHvqMjtPe6L+YWX1LPBGNfZMGw==}
+
+  '@capacitor/android@7.4.4':
+    resolution: {integrity: sha512-y8knfV1JXNrd6XZZLZireGT+EBCN0lvOo+HZ/s7L8LkrPBu4nY5UZn0Wxz4yOezItEII9rqYJSHsS5fMJG9gdw==}
+    peerDependencies:
+      '@capacitor/core': ^7.4.0
 
   '@capacitor/app@7.1.0':
     resolution: {integrity: sha512-W7m09IWrUjZbo7AKeq+rc/KyucxrJekTBg0l4QCm/yDtCejE3hebxp/W2esU26KKCzMc7H3ClkUw32E9lZkwRA==}
@@ -2855,6 +2863,10 @@ snapshots:
       typescript: 5.4.5
     transitivePeerDependencies:
       - supports-color
+
+  '@capacitor/android@7.4.4(@capacitor/core@7.4.4)':
+    dependencies:
+      '@capacitor/core': 7.4.4
 
   '@capacitor/app@7.1.0(@capacitor/core@7.4.4)':
     dependencies:
