@@ -205,34 +205,55 @@ export class CompleteBottomUpScene {
    * Agents push updates to HUD, HUD displays based on priority.
    */
   private createUI(): void {
-    // Controls (bottom)
+    // ═══════════════════════════════════════════════════════════════
+    // RESPONSIVE MOBILE-FRIENDLY CONTROLS
+    // ═══════════════════════════════════════════════════════════════
+    
+    // Detect mobile/small screens
+    const isMobile = window.innerWidth < 768 || window.innerHeight < 600;
+    
+    // Controls panel (bottom center, ABOVE safe area)
     const controls = new StackPanel('controls');
     controls.isVertical = false;
-    controls.top = '-20px';
-    controls.height = '50px';
+    controls.height = isMobile ? '60px' : '50px';
     controls.horizontalAlignment = StackPanel.HORIZONTAL_ALIGNMENT_CENTER;
     controls.verticalAlignment = StackPanel.VERTICAL_ALIGNMENT_BOTTOM;
+    
+    // Mobile: More spacing from bottom (avoid gesture bars, home indicators)
+    controls.top = isMobile ? '-80px' : '-20px';
+    
+    // Semi-transparent background so it doesn't block visuals
+    controls.background = 'rgba(0, 5, 10, 0.8)';
+    controls.paddingLeft = '10px';
+    controls.paddingRight = '10px';
+    controls.paddingTop = '5px';
+    controls.paddingBottom = '5px';
+    
     this.gui.addControl(controls);
     
-    // Play button
+    // Play button - larger on mobile
     const playButton = Button.CreateSimpleButton('play', '▶ PLAY');
-    playButton.width = '100px';
-    playButton.height = '40px';
+    playButton.width = isMobile ? '120px' : '100px';
+    playButton.height = isMobile ? '50px' : '40px';
     playButton.color = '#00ff88';
-    playButton.background = '#001122';
+    playButton.background = 'rgba(0, 20, 30, 0.9)';
+    playButton.thickness = 2;
+    playButton.cornerRadius = 5;
     playButton.onPointerClickObservable.add(() => {
       this.paused = !this.paused;
       playButton.textBlock!.text = this.paused ? '▶ PLAY' : '⏸ PAUSE';
     });
     controls.addControl(playButton);
     
-    // Speed controls
+    // Speed controls - responsive sizing
     for (const speed of [1, 10, 100, 1000]) {
       const btn = Button.CreateSimpleButton(`speed-${speed}`, `${speed}x`);
-      btn.width = '70px';
-      btn.height = '40px';
+      btn.width = isMobile ? '80px' : '70px';
+      btn.height = isMobile ? '50px' : '40px';
       btn.color = '#88ccff';
-      btn.background = '#001122';
+      btn.background = 'rgba(0, 20, 30, 0.9)';
+      btn.thickness = 2;
+      btn.cornerRadius = 5;
       btn.onPointerClickObservable.add(() => {
         console.log(`Speed: ${speed}x (affects time scale)`);
         // Could implement variable time scale here
@@ -923,6 +944,19 @@ export class CompleteBottomUpScene {
     // Format temperature
     const tempStr = T > 1e6 ? `${T.toExponential(1)} K` : `${T.toFixed(0)} K`;
     
+    // Format scale factor (prevent Infinity display)
+    const scaleFactor = this.entropyAgent.scaleFactor;
+    let scaleStr: string;
+    if (!isFinite(scaleFactor) || scaleFactor > 1e30) {
+      scaleStr = 'Maximum (>1e30x)';
+    } else if (scaleFactor > 1e10) {
+      scaleStr = `${scaleFactor.toExponential(1)}x`;
+    } else if (scaleFactor > 1000) {
+      scaleStr = `${(scaleFactor / 1000).toFixed(1)}kx`;
+    } else {
+      scaleStr = `${scaleFactor.toFixed(2)}x`;
+    }
+    
     // Phase name
     const phaseNames: Record<SimulationPhase, string> = {
       'quantum-foam': '💥 Quantum Foam (Planck Epoch)',
@@ -945,10 +979,10 @@ export class CompleteBottomUpScene {
       content: [
         `Age: ${ageStr}`,
         `Temp: ${tempStr}`,
-        `Scale: ${this.entropyAgent.scaleFactor.toExponential(2)}x`,
+        `Scale: ${scaleStr}`,
         `Phase: ${this.entropyAgent.phase}`,
         `Agents: ${this.spawner.getTotalAgentCount()}`,
-        `Camera: ${this.camera.radius.toFixed(1)} units`,
+        `Camera: ${this.camera.radius.toFixed(0)} units`,
       ],
       priority: 100,
     });

@@ -55,6 +55,12 @@ export class UniverseEvolutionGoal extends Goal {
         // For huge time jumps, use linear approximation
         universe.scaleFactor *= (1 + exponent);
       }
+      
+      // CRITICAL: Cap scaleFactor to prevent Infinity display
+      // For visualization, we don't need exact cosmological scale beyond 1e30
+      if (universe.scaleFactor > 1e30) {
+        universe.scaleFactor = 1e30;
+      }
 
       // Physics: Ω_m + Ω_Λ ≈ 1 (flat) → Expands forever
       // Only contracts if Ω_m > 1 (closed universe)

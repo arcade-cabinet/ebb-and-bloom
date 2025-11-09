@@ -45,14 +45,21 @@ export class AdaptiveHUD {
   private currentScale: InfoScale = InfoScale.COSMIC;
   private visualElements: Map<string, Rectangle> = new Map();
   
-  // Layout
+  // Layout (responsive)
   private readonly MAX_VISIBLE_PANELS = 5;
-  private readonly PANEL_WIDTH = 300;
-  private readonly PANEL_MARGIN = 10;
+  private readonly isMobile: boolean;
+  private readonly PANEL_WIDTH: number;
+  private readonly PANEL_MARGIN: number;
   
   constructor(gui: AdvancedDynamicTexture) {
     this.gui = gui;
-    console.log('[AdaptiveHUD] Initialized');
+    
+    // Responsive sizing
+    this.isMobile = window.innerWidth < 768 || window.innerHeight < 600;
+    this.PANEL_WIDTH = this.isMobile ? 250 : 300; // Narrower on mobile
+    this.PANEL_MARGIN = this.isMobile ? 5 : 10;
+    
+    console.log(`[AdaptiveHUD] Initialized (${this.isMobile ? 'mobile' : 'desktop'} mode)`);
   }
   
   /**
@@ -153,36 +160,41 @@ export class AdaptiveHUD {
     }
     
     // Position (stacked vertically on right side)
-    const yOffset = 20 + index * 120; // Each panel ~120px tall
+    // Mobile: Smaller panels, more top margin (avoid notch/status bar)
+    const panelHeight = this.isMobile ? 90 : 100;
+    const panelSpacing = this.isMobile ? 100 : 120;
+    const topMargin = this.isMobile ? 60 : 20; // Extra space on mobile for notch
+    
+    const yOffset = topMargin + index * panelSpacing;
     container.top = `${yOffset}px`;
     container.left = `-${this.PANEL_MARGIN}px`;
-    container.height = '100px';
+    container.height = `${panelHeight}px`;
     container.horizontalAlignment = Rectangle.HORIZONTAL_ALIGNMENT_RIGHT;
     container.verticalAlignment = Rectangle.VERTICAL_ALIGNMENT_TOP;
     
     // Clear existing children
     container.clearControls();
     
-    // Add title
+    // Add title (responsive font size)
     const title = new TextBlock(`${panel.id}-title`, panel.title);
     title.color = '#00ff88';
-    title.fontSize = 16;
+    title.fontSize = this.isMobile ? 14 : 16;
     title.fontWeight = 'bold';
     title.top = '5px';
     title.textHorizontalAlignment = TextBlock.HORIZONTAL_ALIGNMENT_LEFT;
     title.textVerticalAlignment = TextBlock.VERTICAL_ALIGNMENT_TOP;
-    title.paddingLeft = '10px';
+    title.paddingLeft = this.isMobile ? '8px' : '10px';
     container.addControl(title);
     
-    // Add content lines
+    // Add content lines (responsive font size)
     const contentText = panel.content.join('\n');
     const content = new TextBlock(`${panel.id}-content`, contentText);
     content.color = '#88ccff';
-    content.fontSize = 12;
-    content.top = '25px';
+    content.fontSize = this.isMobile ? 10 : 12;
+    content.top = this.isMobile ? '22px' : '25px';
     content.textHorizontalAlignment = TextBlock.HORIZONTAL_ALIGNMENT_LEFT;
     content.textVerticalAlignment = TextBlock.VERTICAL_ALIGNMENT_TOP;
-    content.paddingLeft = '10px';
+    content.paddingLeft = this.isMobile ? '8px' : '10px';
     content.textWrapping = true;
     content.resizeToFit = true;
     container.addControl(content);
