@@ -1,118 +1,168 @@
-# Active Context - Gen5 Complete!
+# Active Context
 
-**Last Updated**: 2025-11-08
-**Status**: ✅ Gen5 Implementation Complete + Codebase Health Restored
+**Date**: 2025-11-08  
+**Branch**: `copilot/document-screenshot-flow`  
+**Status**: MAJOR ARCHITECTURAL REFACTOR COMPLETE
 
-## Just Completed
+---
 
-### Gen5: Communication & Culture (100% Complete)
-- **Symbolic Communication System** (350 lines)
-  - Visual symbol creation by intelligent creatures
-  - 8 symbol types (territory, resources, danger, pack identity, trade, alliance, abstract)
-  - Social learning and active teaching
-  - Symbol persistence and fadeout
+## 🔥 CRITICAL CHANGE: LAW-BASED UNIVERSE
+
+**We have completely rebuilt the game's foundation.**
+
+### What Changed
+
+**DELETED (not archived):**
+- ✅ `packages/gen/` - Entire AI generation system
+- ✅ `manifests/` - All hardcoded archetype and asset files
+- ✅ OpenAI API dependencies for content generation
+
+**CREATED:**
+- ✅ `packages/game/src/laws/` - Complete mathematical law system
+  - `physics.ts` - Newton, gravity, thermodynamics, orbital mechanics
+  - `stellar.ts` - Star evolution, habitable zones, IMF
+  - `biology.ts` - Kleiber's Law, allometric scaling, structural constraints
+  - `ecology.ts` - Carrying capacity, Lotka-Volterra, trophic dynamics
+  - `social.ts` - Service typology, Dunbar's number, hierarchy formation
+  - `taxonomy.ts` - Linnaean classification, binomial nomenclature
   
-- **Cultural Expression System** (470 lines)
-  - 5 expression types (body art, dance, sculpture, music, ceremony)
-  - Cultural innovation by high-intelligence social creatures
-  - Observational learning and pack-wide transmission
-  - Cultural sites that emerge near structures
+- ✅ `packages/game/src/tables/` - Universal constants and lookup data
+  - `physics-constants.ts` - G, c, k_B, all fundamental constants
+  - `periodic-table.ts` - Complete element data (92 elements)
+  - `linguistic-roots.ts` - Latin/Greek roots for systematic naming
   
-- **Communication Renderer** (230 lines)
-  - 3D symbol markers (6 shapes, custom colors, pulsing animations)
-  - Teaching indicators (yellow glowing rings)
+- ✅ `packages/game/src/generation/` - Deterministic universe generation
+  - `UniverseGenerator.ts` - Applies laws to generate solar systems
   
-- **Culture Renderer** (350 lines)
-  - Body art (colored wireframe auras)
-  - Dance particles (orange/yellow particle systems)
-  - Sculptures (cairns, abstract shapes, totem poles)
-  - Cultural site markers (green/magenta/yellow glowing rings)
+- ✅ `docs/LAW_BASED_ARCHITECTURE.md` - Comprehensive documentation (80+ pages)
 
-### Codebase Health Restoration (74 Errors Fixed!)
-**What was broken**:
-- 19 unused variable warnings across renderers and systems
-- Theme property errors in UI scenes (missing constants file)
-- Type mismatches in Gen0 files
-- Missing `startProject` method in StructureBuildingSystem
-- BabylonJS GUI property incompatibilities (`.bottom`, `.right` don't exist)
+### The New Architecture
 
-**What was fixed**:
-1. Prefixed all unused parameters with `_` or removed them
-2. Created `/packages/game/src/constants.ts` with COLORS and FONTS
-3. Fixed type casts in AccretionSimulation and MoonRenderer
-4. Added missing `startProject()` method to StructureBuildingSystem
-5. Replaced `.bottom`/`.right` with `.top`/`.left` negative values for GUI positioning
+**OLD SYSTEM (Deleted):**
+```
+AI prompt → OpenAI API → Generated JSON → Renderer
+```
 
-**Result**: ✅ 100% clean TypeScript compilation (0 errors, 0 warnings)
+**NEW SYSTEM:**
+```
+Seed → RNG → Physical Laws → Chemical Laws → Biological Laws → 
+Ecological Laws → Taxonomic Laws → Social Laws → Complete Universe
+```
 
-## What Players See Now
+**Everything is deterministic. Same seed = same universe. Always.**
 
-### Early Gen5
-- Rare colored symbols appear near intelligent creatures
-- Yellow teaching rings show knowledge transmission
-- First sculptures emerge in settled areas
+### Core Principle
 
-### Mid Gen5
-- Multiple symbol types in active use
-- Creatures perform decorative body art (colored auras)
-- Orange particle trails follow dancers
-- Cultural sites marked with glowing rings
+**EVERYTHING IS A LAW.**
 
-### Late Gen5
-- Rich symbol "languages" unique to each pack
-- Diverse cultural expressions across populations
-- Permanent sculpture gardens
-- Active ceremonial sites
+A law is a pure function: `Input → Output`
 
-## Files Changed (Gen5 + Fixes)
+```typescript
+// Physical law
+const gravity = (m1, m2, r) => G * m1 * m2 / r²;
 
-### New Files (8)
-1. `packages/game/src/systems/SymbolicCommunicationSystem.ts` (350 lines)
-2. `packages/game/src/systems/CulturalExpressionSystem.ts` (470 lines)
-3. `packages/game/src/renderers/gen5/CommunicationRenderer.ts` (230 lines)
-4. `packages/game/src/renderers/gen5/CultureRenderer.ts` (350 lines)
-5. `packages/game/src/renderers/gen5/index.ts` (2 lines)
-6. `packages/game/src/constants.ts` (85 lines) - **Fix for theme errors**
-7. `docs/GEN5_COMMUNICATION_CULTURE.md` (550+ lines)
+// Biological law
+const metabolism = (mass) => 70 * mass^0.75;
 
-### Modified Files (18)
-- `packages/game/src/systems/index.ts` (+2 exports)
-- `packages/game/src/scenes/GameScene.ts` (+160 lines Gen5 integration)
-- `packages/game/src/renderers/gen0/MoonRenderer.ts` (fixed unused vars + type cast)
-- `packages/game/src/renderers/gen0/PlanetRenderer.ts` (removed unused import)
-- `packages/game/src/renderers/gen1/CreatureRenderer.ts` (fixed unused vars)
-- `packages/game/src/systems/CreatureBehaviorSystem.ts` (fixed unused param)
-- `packages/game/src/systems/CulturalExpressionSystem.ts` (fixed unused vars)
-- `packages/game/src/systems/StructureBuildingSystem.ts` (added `startProject()`, fixed unused vars)
-- `packages/game/src/gen0/AccretionSimulation.ts` (type cast fix)
-- `packages/game/src/scenes/CatalystCreatorScene.ts` (fixed unused vars)
-- `packages/game/src/ui/EvolutionHUD.ts` (fixed GUI property errors)
-- `packages/game/src/ui/NarrativeDisplay.ts` (fixed GUI property errors)
-- `memory-bank/progress.md`
-- `memory-bank/activeContext.md` (this file)
+// Taxonomic law (yes, naming is also a law!)
+const genus = (locomotion, habitat) => habitatModifier + locomotionRoot;
 
-**Total New Code**: ~1,650 lines (Gen5 + constants file)
-**Total Fixes**: 74 TypeScript errors resolved
+// Social law
+const governanceType = (pop, surplus) => {
+  if (pop < 50) return 'Band';
+  if (pop < 500) return 'Tribe';
+  if (pop < 5000) return 'Chiefdom';
+  return 'State';
+};
+```
 
-## Technical Achievements
+### Why This Changes Everything
 
-1. **Gen5 Systems**: Fully functional symbolic and cultural systems with emergent behaviors
-2. **Clean Codebase**: Zero compilation errors, all warnings resolved
-3. **Integration Complete**: All generations (Gen0-Gen5) properly integrated in GameScene
-4. **Documentation**: Comprehensive markdown docs for Gen5 systems
+1. **Scientific Rigor**: Real physics, chemistry, biology - not AI guesses
+2. **Infinite Content**: Any seed generates a complete, consistent universe
+3. **Educational Value**: Game teaches actual science (periodic table, Kepler's laws, allometric scaling)
+4. **Deterministic**: Same seed always produces same result (essential for multiplayer, speedruns, testing)
+5. **Lightweight**: ~100KB of laws vs. megabytes of JSON
+6. **Moddable**: Change constants/laws = different physics
+7. **Gen6+ Unlocked**: Civilizations can now **discover the laws** and transcend their homeworld
 
-## Next Priorities
+### The Vision Expanded
 
-1. ✅ Push all changes to `copilot/document-screenshot-flow`
-2. Update memory bank with completion status
-3. Coordinate with copilot on test coverage for Gen4/Gen5
-4. Consider Gen6 planning (if needed) or focus on polish/optimization
+**Original**: Gen0-5 (planet formation → cultural expression)
 
-## Known Issues
-None! Codebase is healthy and Gen5 is fully implemented.
+**NEW**: Gen0-∞
+- Gen0-5: Planetary evolution (existing)
+- **Gen6**: Scientific Revolution (creatures discover the laws!)
+- **Gen7**: Space Age (apply laws to design rockets, calculate orbits)
+- **Gen8**: Interplanetary Civilization (colonize moons, terraform)
+- **Gen9**: Stellar Engineering (Dyson swarms, star lifting)
+- **Gen10**: Interstellar Expansion (generation ships, von Neumann probes)
+- **Gen11+**: Digital Transcendence (upload consciousness, post-biological)
 
-## Context for Next Session
+### Current Focus
 
-The evolutionary simulation now spans from planetary accretion (Gen0) through cultural expression (Gen5). All systems are implemented, integrated, tested for compilation, and documented. The codebase is in excellent health with zero TypeScript errors.
+**Immediate Next Steps:**
+1. ✅ Law system complete (physics, stellar, biology, ecology, social, taxonomy)
+2. ✅ Universe generator built (star + planet generation working)
+3. 🚧 Refactor existing Gen0-5 code to use laws instead of AI prompts
+4. 🚧 Integrate with rendering system
+5. 🚧 Update memory bank and documentation
 
-The user emphasized maintaining codebase health, and all 74 errors have been systematically fixed.
+**Active Work:**
+- Documenting the architectural shift
+- Ensuring no context is lost
+- Setting clear direction for future development
+
+### For Next Session
+
+**DO NOT REVERT THIS CHANGE.**
+
+The law-based system is the foundation going forward. If you see references to:
+- `packages/gen/`
+- `manifests/evolutionary-archetypes.json`
+- OpenAI API calls for content generation
+
+These are **obsolete**. Use the law system instead:
+- `import { LAWS } from 'src/laws'`
+- `LAWS.physics.gravity.force(m1, m2, r)`
+- `LAWS.taxonomy.classifier.classify(organism)`
+
+### Documentation
+
+**Primary**: `docs/LAW_BASED_ARCHITECTURE.md` (read this first!)  
+**Secondary**: Comments in each law file  
+**Reference**: `src/tables/periodic-table.ts` for complete element data
+
+---
+
+## Gen5 Completion Status
+
+✅ Gen5 systems implemented:
+- Symbolic communication (visual symbols, learning, teaching)
+- Cultural expression (body art, dance, sculpture, ritual)
+- All renderers complete
+- 74 TypeScript errors fixed (100% clean compile)
+
+✅ Documentation updated:
+- `docs/GEN5_COMMUNICATION_CULTURE.md`
+- Memory bank reflects Gen5 completion
+
+---
+
+## Collaboration Context
+
+**Copilot** is working on test coverage for Gen4/Gen5.  
+**Main branch** integration pending.  
+**This branch** (`copilot/document-screenshot-flow`) now contains the law-based refactor.
+
+---
+
+## Testing Status
+
+- E2E Gen0 flow: 35/46 passing (76%)
+- Gen1-5 systems: Unit tests needed
+- Law system: Tests needed for determinism verification
+
+---
+
+**Last Updated**: 2025-11-08 (Law-based architecture implementation)

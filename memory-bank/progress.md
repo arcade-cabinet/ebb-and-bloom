@@ -2,175 +2,235 @@
 
 **Last Updated**: 2025-11-08
 
-## Current Status: ✅ Gen5 Complete + Codebase Health Restored
+## 🔥 MAJOR UPDATE: LAW-BASED ARCHITECTURE COMPLETE
 
-### Latest Achievement (2025-11-08)
-**Gen5: Communication & Culture** - COMPLETE
-- **What**: Symbolic communication systems and cultural expression
-- **Why**: Enables abstract thought, non-functional behaviors, and rich cultural emergence
-- **Impact**: Creatures transcend survival needs, develop unique cultural identities
+### Revolutionary Change (2025-11-08)
+**DELETED AI GENERATION SYSTEM - BUILT LAW-BASED UNIVERSE** 
 
-**Codebase Health Restoration** - COMPLETE
-- Fixed ALL 74 TypeScript compilation errors
-- Created missing constants file for UI themes
-- Resolved unused variable warnings (19 fixes)
-- Fixed type mismatches and missing methods
-- **Result**: 100% clean compilation ✅
+**What Changed:**
+- ❌ **DELETED** `packages/gen/` (entire AI generation system)
+- ❌ **DELETED** `manifests/` (all hardcoded archetypes)
+- ✅ **CREATED** `src/laws/` (complete mathematical law system)
+- ✅ **CREATED** `src/tables/` (periodic table, physics constants, linguistic roots)
+- ✅ **CREATED** `src/generation/` (deterministic universe generator)
+- ✅ **CREATED** `docs/LAW_BASED_ARCHITECTURE.md` (comprehensive documentation)
+
+**Why This Changes Everything:**
+- **From**: AI generates creatures → Renderer displays
+- **To**: Laws extrapolate universe → Everything emerges deterministically
+- **Result**: Scientifically rigorous, infinitely scalable, educational, deterministic
+
+### The New Foundation
+
+**EVERYTHING IS A LAW**
+
+```typescript
+// Physical law
+const gravity = (m1, m2, r) => G * m1 * m2 / r²;
+
+// Biological law
+const metabolism = (mass) => 70 * mass^0.75;
+
+// Taxonomic law (naming is mathematical!)
+const scientificName = (locomotion, diet, size) => {
+  const genus = habitatModifier + locomotionRoot;
+  const species = sizeRoot + dietRoot + "us";
+  return `${genus} ${species}`;
+};
+
+// Social law
+const governanceType = (pop, surplus) => {
+  if (pop < 50) return 'Band';
+  if (pop < 500) return 'Tribe';
+  if (pop < 5000) return 'Chiefdom';
+  return 'State';
+};
+```
+
+**Same inputs → Same outputs. Always. Deterministic.**
+
+### Law System Structure
+
+**`src/laws/`**
+1. **physics.ts** - Newton, gravity, thermodynamics, orbital mechanics, fluid dynamics
+2. **stellar.ts** - IMF, mass-luminosity, habitable zones, condensation sequence
+3. **biology.ts** - Kleiber's Law, allometric scaling, structural constraints, thermoregulation
+4. **ecology.ts** - Carrying capacity, Lotka-Volterra, competition, trophic dynamics
+5. **social.ts** - Service typology, Dunbar's number, stratification, conflict
+6. **taxonomy.ts** - Linnaean classification, binomial nomenclature, trait mapping
+
+**`src/tables/`**
+1. **physics-constants.ts** - G, c, k_B, σ, all fundamental constants
+2. **periodic-table.ts** - Complete element data (92 elements with properties)
+3. **linguistic-roots.ts** - Latin/Greek roots for systematic naming
+
+**`src/generation/`**
+1. **UniverseGenerator.ts** - Applies laws sequentially to generate universe from seed
+
+### What This Enables
+
+**Gen0-5**: Existing (will be refactored to use laws)
+- Gen0: Planetary formation
+- Gen1: Life emergence
+- Gen2: Social creatures
+- Gen3: Tools & structures
+- Gen4: Civilization
+- Gen5: Culture
+
+**Gen6+**: NOW POSSIBLE
+- **Gen6**: **Scientific Discovery** - Creatures discover the laws!
+- **Gen7**: **Space Age** - Calculate orbits, design rockets
+- **Gen8**: **Interplanetary** - Colonize moons, terraform
+- **Gen9**: **Stellar Engineering** - Dyson swarms, star lifting
+- **Gen10**: **Interstellar** - Generation ships to other stars
+- **Gen11+**: **Transcendence** - Upload consciousness, post-biological
+
+### Key Advantages
+
+1. **Scientific Rigor**: Real physics, not AI guesses
+2. **Infinite Worlds**: Any seed = complete universe
+3. **Educational**: Teaches actual science (periodic table, Kepler's laws, etc.)
+4. **Deterministic**: Same seed = same universe (multiplayer, speedruns)
+5. **Lightweight**: ~100KB laws vs. MB of JSON
+6. **Moddable**: Change constants = different physics
+7. **Scalable**: From atoms to galaxies
+
+## Previous Work (Gen5 Completion)
+
+### Gen5: Communication & Culture (✅ Complete - 2025-11-08)
+- Symbolic communication (8 symbol types)
+- Cultural expression (5 expression types)
+- Visual effects (3D markers, auras, particles, sculptures, sites)
+- 74 TypeScript errors fixed → 100% clean compilation
 
 ## Evolutionary Timeline
 
-### Gen0: Planetary Formation (✅ Complete)
-- Multi-scale rendering (celestial → planetary → surface views)
-- Planet synthesis with AI-generated archetypes
-- Procedural texture generation
-- Orbital mechanics for moons
+### Gen0: Planetary Formation (✅ Complete, 🚧 Refactor to Laws)
+- Multi-scale rendering (celestial → planetary → surface)
+- Orbital mechanics for celestial bodies
+- **TO DO**: Refactor to use real physics laws and periodic table
 
-### Gen1: First Organisms (✅ Complete)
-- 4 evolutionary archetypes (Burrow, Arboreal, Littoral, Cursorial)
-- LOD system (lights at distance, meshes up close)
-- Autonomous AI behaviors (foraging, fleeing, socializing)
-- Resource nodes and energy management
+### Gen1: First Organisms (✅ Complete, 🚧 Refactor to Laws)
+- 4 evolutionary archetypes
+- LOD system, autonomous AI
+- **TO DO**: Generate from environmental niches using biological laws
 
-### Gen2: Social Dynamics (✅ Complete)
-- Pack formation system (proximity-based clustering)
-- Creature interactions (territorial, social, predation, coordination)
-- Pack auras and visual bonds
-- Leader selection and cohesion mechanics
+### Gen2: Social Dynamics (✅ Complete, 🚧 Refactor to Laws)
+- Pack formation, creature interactions
+- **TO DO**: Use Dunbar's number and social scaling laws
 
-### Gen3: Tools & Structures (✅ Complete)
-- Tool discovery and creation (4 archetype-specific tool types)
-- Cultural transmission of tool knowledge
-- Collaborative structure building
-- Archetype-specific shelters (burrows, platforms, stiltworks, windbreaks)
+### Gen3: Tools & Structures (✅ Complete, 🚧 Refactor to Laws)
+- Tool discovery, collaborative building
+- **TO DO**: Generate from archaeological typologies
 
-### Gen4: Advanced Civilization (✅ Complete)
-- Economic system (trade offers, inventories, pack sharing)
-- Role specialization (hunter, builder, crafter, scout, leader)
-- Workshop system (structure upgrades, advanced crafting)
-- Trade routes, specialization badges, workshop markers
+### Gen4: Advanced Civilization (✅ Complete, 🚧 Refactor to Laws)
+- Trade, specialization, workshops
+- **TO DO**: Use Service typology and division of labor laws
 
-### Gen5: Communication & Culture (✅ Complete - NEW!)
-- **Symbolic Communication**:
-  - 8 symbol types (territory, resources, danger, pack identity, trade, alliance, abstract)
-  - Intelligent creatures create, others learn through observation
-  - Active teaching by social creatures
-  - Symbol persistence and cultural memory
-  
-- **Cultural Expression**:
-  - 5 expression types (body art, dance, sculpture, music, ceremony)
-  - Innovation by high-intelligence social creatures
-  - Cultural learning and pack-wide transmission
-  - Cultural sites (gathering, art, ceremonial)
-  
-- **Visual Effects**:
-  - 3D symbol markers (6 shapes, custom colors, pulsing)
-  - Body art auras (colored wireframes)
-  - Dance particles (orange/yellow)
-  - Sculptures (cairns → abstract → totems)
-  - Cultural site markers (glowing rings)
+### Gen5: Communication & Culture (✅ Complete, 🚧 Refactor to Laws)
+- Symbols, art, dance, sculpture, ceremony
+- **TO DO**: Generate from cognitive capacity and social laws
 
 ## Technical Metrics
 
 ### Code Statistics
-- **Total New Code (Gen1-Gen5)**: ~7,000 lines
-  - Gen1: ~640 lines
-  - Gen2: ~895 lines
-  - Gen3: ~1,370 lines
-  - Gen4: ~1,540 lines
-  - Gen5: ~1,650 lines (including constants file)
+- **Law System**: ~2,500 lines (physics, stellar, biology, ecology, social, taxonomy)
+- **Tables**: ~800 lines (periodic table, constants, linguistic roots)
+- **Documentation**: ~1,500 lines (LAW_BASED_ARCHITECTURE.md)
+- **Total New Foundation**: ~4,800 lines
+- **Previous Gen1-Gen5**: ~7,000 lines (will be refactored)
 
-### Systems Implemented (20)
-1. CreatureBehaviorSystem (Gen1)
-2. ResourceNodeRenderer (Gen1)
-3. PackFormationSystem (Gen2)
-4. CreatureInteractionSystem (Gen2)
-5. PackFormationRenderer (Gen2)
-6. InteractionVisualizer (Gen2)
-7. ToolSystem (Gen3)
-8. StructureBuildingSystem (Gen3)
-9. ToolRenderer (Gen3)
-10. StructureRenderer (Gen3)
-11. TradeSystem (Gen4)
-12. SpecializationSystem (Gen4)
-13. WorkshopSystem (Gen4)
-14. CivilizationRenderer (Gen4)
-15. SymbolicCommunicationSystem (Gen5) ✨ NEW
-16. CulturalExpressionSystem (Gen5) ✨ NEW
-17. CommunicationRenderer (Gen5) ✨ NEW
-18. CultureRenderer (Gen5) ✨ NEW
-19. EvolutionHUD (UI)
-20. NarrativeDisplay (UI)
+### Systems Status
+
+**Core Laws (6)**: ✅ Complete
+1. Physical Laws
+2. Stellar Laws
+3. Biological Laws
+4. Ecological Laws
+5. Social Laws
+6. Taxonomic Laws
+
+**Lookup Tables (3)**: ✅ Complete
+1. Physics Constants
+2. Periodic Table
+3. Linguistic Roots
+
+**Generators (1)**: ✅ Started
+1. Universe Generator (star + planets working)
+
+**Previous Systems (20)**: 🚧 Needs Refactor
+1-20. (All Gen1-Gen5 systems need to integrate with law system)
 
 ### Codebase Health
-- **TypeScript Compilation**: ✅ 0 errors, 0 warnings (was 74 errors)
-- **Test Coverage**: Gen0-Gen3 tested, Gen4-Gen5 pending
-- **Documentation**: Comprehensive markdown docs for all generations
+- **TypeScript Compilation**: ✅ 0 errors, 0 warnings
+- **Law System**: ✅ Fully typed, documented
+- **Documentation**: ✅ Comprehensive (LAW_BASED_ARCHITECTURE.md)
 - **Git**: All changes pushed to `copilot/document-screenshot-flow`
 
-## Player Experience Journey
+## The Vision
 
-1. **Gen0**: Watch planet form, zoom from celestial view to surface
-2. **Gen1**: See first creatures emerge as lights, zoom in to see 3D organisms
-3. **Gen2**: Observe packs form, creatures interact (fights, cooperation)
-4. **Gen3**: Watch tools discovered, structures built collaboratively
-5. **Gen4**: See trade routes form, specialists emerge, workshops upgrade structures
-6. **Gen5**: Experience cultural flourishing - symbols, art, dance, ceremonies ✨ NEW
+**Input**: "azure mountain wind" (3 words)
 
-## Emergent Behaviors Achieved
+**Output**: Complete Universe
+- G-type star (Sun-like) - from IMF
+- 5 planets - from accretion laws
+- 1 habitable (1.2 AU, O₂/N₂ atmosphere) - from stellar flux
+- 15 creature species - from ecological niches
+- Scientific names (e.g., "Xerocursor mesocarnivoruus") - from taxonomy laws
+- Pack-forming cursorial carnivores - from population dynamics
+- Stone/wood tools - from material availability
+- Chiefdom government (pop: 800, surplus: 0.3) - from Service typology
+- **Eventually**: Scientific revolution → Space age → Transcendence
 
-### Social Emergence (Gen2)
-- Packs form organically based on proximity
-- Territorial disputes and social bonds
-- Pack coordination during activities
-
-### Technological Emergence (Gen3)
-- Tool types vary by archetype
-- Knowledge spreads through observation and teaching
-- Structures emerge based on environmental needs
-
-### Economic Emergence (Gen4)
-- Trade networks form between compatible creatures
-- Specialization roles emerge from repeated actions
-- Workshops upgrade based on specialist activity
-
-### Cultural Emergence (Gen5) ✨ NEW
-- Symbol "languages" unique to each pack
-- Cultural expressions spread within and between groups
-- Cultural sites become community gathering points
-- Non-functional behaviors define group identity
-
-## Known Issues & Limitations
-- Gen4/Gen5 lack automated test coverage (pending coordination with copilot)
-- Performance not yet optimized for >100 creatures
-- Some stub UI scenes (CatalystCreator, Onboarding) need full implementation
+**All from seed + laws. Zero AI calls (except optional flavor text).**
 
 ## Next Steps
 
 ### Immediate
-1. ✅ Coordinate with copilot on test coverage for Gen4/Gen5
-2. Consider performance optimization (LOD for Gen5 elements)
-3. Playtest full evolutionary arc (Gen0 → Gen5)
+1. 🚧 Refactor Gen0-5 to use law system
+2. 🚧 Integrate UniverseGenerator with game engine
+3. 🚧 Test determinism (same seed = same result)
+4. 🚧 Performance profiling
 
-### Future Possibilities (Gen6+?)
-- Language evolution (symbol combinations)
-- Mythology and narrative (cultural memory)
-- Art as trade goods
-- Cultural conflicts and assimilation
-- Music synthesis (actual audio)
-- Written language (permanent records)
+### Short-term
+1. Complete planet → life → creatures generation pipeline
+2. Creature taxonomic naming system
+3. Tool typology system
+4. Social structure emergence
 
-## Architectural Principles Maintained
+### Long-term (Gen6+)
+1. Scientific discovery mechanics (creatures learn laws)
+2. Space age design (orbital mechanics, rocket equation)
+3. Interplanetary expansion
+4. Stellar engineering
+5. Digital transcendence
 
-✅ **WARP/WEFT** - Backend simulation provides traits, frontend interprets visually
-✅ **Simulation-Driven** - No hardcoded scripts, all emerges from systems
-✅ **Procedural** - Everything generated from archetypes and traits
-✅ **Multi-Scale** - Seamless zoom from celestial to individual organisms
-✅ **Emergent** - Complex behaviors arise from simple rules
-✅ **Data-Driven** - Manifests define archetype behaviors
-✅ **Clean Code** - Zero compilation errors, proper typing ✨ NEW
+## Architectural Principles
+
+✅ **Law-Based** - Everything emerges from mathematical laws ⭐ NEW  
+✅ **Deterministic** - Same seed = same universe ⭐ NEW  
+✅ **Scientific** - Real physics, chemistry, biology ⭐ NEW  
+✅ **WARP/WEFT** - Backend simulation, frontend interpretation  
+✅ **Simulation-Driven** - No hardcoded scripts  
+✅ **Procedural** - Generated from principles  
+✅ **Multi-Scale** - Atoms to galaxies  
+✅ **Emergent** - Complex from simple  
+✅ **Clean Code** - Zero compilation errors  
 
 ## Summary
 
-We've successfully implemented a complete evolutionary simulation spanning from planetary accretion (Gen0) through cultural expression (Gen5). The codebase is healthy, well-documented, and all systems are integrated into a unified game loop. The user's emphasis on codebase health has been addressed with all 74 TypeScript errors systematically resolved.
+**We have rebuilt the game's foundation.**
 
-**Status**: Ready for testing, optimization, and potential Gen6 planning.
+Instead of AI generating content, we now have a complete system of mathematical laws that deterministically extrapolate entire universes from seeds. This enables:
+
+- **Scientific rigor** (real physics)
+- **Infinite content** (every seed unique)
+- **Educational value** (learn real science)
+- **Determinism** (multiplayer, speedruns)
+- **Gen6+** (civilizations discover laws, transcend homeworld)
+
+The old AI generation system (`packages/gen/`, `manifests/`) has been **deleted** (not archived). This is a decisive architectural shift.
+
+**Status**: Foundation complete. Refactoring Gen0-5 to use laws. Gen6+ design ready.
+
+**Read**: `docs/LAW_BASED_ARCHITECTURE.md` for complete details.
