@@ -200,7 +200,7 @@ export class MolecularVisuals {
       formula: 'H2',
       geometry: MolecularGeometry.LINEAR,
       bondAngle: 180,
-      scale: 0.01, // pm → game units
+      scale: 1.0, // pm → game units (CINEMATIC SCALE for visibility!)
       atoms: [
         {
           element: 'H',
@@ -233,7 +233,7 @@ export class MolecularVisuals {
       formula: 'H2O',
       geometry: MolecularGeometry.BENT,
       bondAngle: 104.5,
-      scale: 0.01,
+      scale: 1.0, // CINEMATIC SCALE
       atoms: [
         {
           element: 'O',
@@ -280,7 +280,7 @@ export class MolecularVisuals {
       formula: 'CO2',
       geometry: MolecularGeometry.LINEAR,
       bondAngle: 180,
-      scale: 0.01,
+      scale: 1.0, // CINEMATIC SCALE
       atoms: [
         {
           element: 'C',
@@ -321,7 +321,7 @@ export class MolecularVisuals {
       formula: 'CH4',
       geometry: MolecularGeometry.TETRAHEDRAL,
       bondAngle: 109.5,
-      scale: 0.01,
+      scale: 1.0, // CINEMATIC SCALE
       atoms: [
         {
           element: 'C',
@@ -375,7 +375,7 @@ export class MolecularVisuals {
       formula: 'NH3',
       geometry: MolecularGeometry.TRIGONAL_PYRAMIDAL,
       bondAngle: 107,
-      scale: 0.01,
+      scale: 1.0, // CINEMATIC SCALE
       atoms: [
         {
           element: 'N',
@@ -421,7 +421,7 @@ export class MolecularVisuals {
       formula: 'O2',
       geometry: MolecularGeometry.LINEAR,
       bondAngle: 180,
-      scale: 0.01,
+      scale: 1.0, // CINEMATIC SCALE
       atoms: [
         {
           element: 'O',
@@ -450,7 +450,7 @@ export class MolecularVisuals {
       formula: element,
       geometry: MolecularGeometry.LINEAR,
       bondAngle: 0,
-      scale: 0.01,
+      scale: 1.0, // CINEMATIC SCALE
       atoms: [
         {
           element,
