@@ -38,11 +38,13 @@
 - HUD is agent-driven
 - Tests passing (algorithmic + browser)
 
-**Next Issues:**
-- Stars rendering at wrong zoom level (should use ZoomLOD)
-- Need galaxy markers at COSMIC zoom
-- Need system rotation at SYSTEM zoom
-- Each scale has its own cycle (not universe-wide)
+**Recent Fixes:**
+- Stars only render at STELLAR zoom (LOD working)
+- Galaxy markers at COSMIC zoom
+- ScaleFactor synced with timeScale (no NaN)
+- Realistic physics (omega parameters)
+
+**Continuing:** Multi-scale rendering, proper zoom transitions
 
 ## 🎯 CURRENT STATE (Nov 9, 2025 - SYSTEMS WORKING, VISUALIZATION WRONG)
 
