@@ -66,8 +66,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1-mesa-dev \
     libglu1-mesa-dev \
     mesa-utils \
-    # Android/Capacitor build prerequisites
-    openjdk-17-jdk \
+    # Android/Capacitor build prerequisites (Java 21 required for Capacitor 7.x)
+    openjdk-21-jdk \
     unzip \
     gradle \
     ca-certificates \
