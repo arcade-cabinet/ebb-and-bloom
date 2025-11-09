@@ -11,7 +11,7 @@
  * - Validatable (format checking)
  */
 
-import seedrandom from 'seedrandom';
+import { EnhancedRNG } from '../utils/EnhancedRNG.js';
 
 // Word lists for seed generation (deterministic)
 const WORD_LISTS = {
@@ -63,14 +63,15 @@ const SEED_VERSION = 'v1';
 const SEED_PATTERN = /^v\d+-[a-z]+-[a-z]+-[a-z]+$/;
 
 /**
- * Generate a deterministic three-word seed
+ * Generate a random three-word seed
+ * Examples: "red-blue-green", "ancient-star-dance", "wild-ocean-glow"
  */
 export function generateSeed(): string {
-  const rng = seedrandom(`${Date.now()}-${Math.random()}`);
-  
-  const adjective = WORD_LISTS.adjectives[Math.floor(rng() * WORD_LISTS.adjectives.length)];
-  const noun = WORD_LISTS.nouns[Math.floor(rng() * WORD_LISTS.nouns.length)];
-  const verb = WORD_LISTS.verbs[Math.floor(rng() * WORD_LISTS.verbs.length)];
+  // Use Math.random() for non-deterministic seed generation
+  // (This is for NEW seeds, not for world generation)
+  const adjective = WORD_LISTS.adjectives[Math.floor(Math.random() * WORD_LISTS.adjectives.length)];
+  const noun = WORD_LISTS.nouns[Math.floor(Math.random() * WORD_LISTS.nouns.length)];
+  const verb = WORD_LISTS.verbs[Math.floor(Math.random() * WORD_LISTS.verbs.length)];
   
   return `${SEED_VERSION}-${adjective}-${noun}-${verb}`;
 }
@@ -110,13 +111,14 @@ export function validateSeed(seed: string): SeedValidationResult {
 /**
  * Extract seed components for deterministic selection
  * Same seed always produces same components
+ * Uses Mersenne Twister (not the old seedrandom)
  */
 export function extractSeedComponents(seed: string): { macro: number; meso: number; micro: number } {
-  const rng = seedrandom(seed);
+  const rng = new EnhancedRNG(seed);
   return {
-    macro: rng(),
-    meso: rng(),
-    micro: rng(),
+    macro: rng.uniform(0, 1),
+    meso: rng.uniform(0, 1),
+    micro: rng.uniform(0, 1),
   };
 }
 
