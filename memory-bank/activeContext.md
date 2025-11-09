@@ -38,7 +38,11 @@
 - HUD is agent-driven
 - Tests passing (algorithmic + browser)
 
-**Focus:** Bottom-up emergence from physics, not imposed cycles
+**Next Issues:**
+- Stars rendering at wrong zoom level (should use ZoomLOD)
+- Need galaxy markers at COSMIC zoom
+- Need system rotation at SYSTEM zoom
+- Each scale has its own cycle (not universe-wide)
 
 ## 🎯 CURRENT STATE (Nov 9, 2025 - SYSTEMS WORKING, VISUALIZATION WRONG)
 
