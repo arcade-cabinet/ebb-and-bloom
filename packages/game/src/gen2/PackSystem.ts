@@ -109,9 +109,16 @@ class PackFormationFuzzy {
   }
 
   evaluate(scarcity: number, proximity: number): number {
-    this.fuzzy.fuzzify('problem', scarcity * 100);
-    this.fuzzy.fuzzify('capability', proximity * 100);
-    return this.fuzzy.defuzzify('desirability') / 100; // Back to 0-1
+    try {
+      this.fuzzy.fuzzify('problem', scarcity * 100);
+      this.fuzzy.fuzzify('capability', proximity * 100);
+      const result = this.fuzzy.defuzzify('desirability');
+      return result / 100; // Back to 0-1
+    } catch (error) {
+      console.warn('Fuzzy logic evaluation failed, returning default:', error);
+      // Fallback: simple heuristic
+      return (scarcity + proximity) / 2;
+    }
   }
 }
 

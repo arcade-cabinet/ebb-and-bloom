@@ -261,7 +261,8 @@ describe('E2E: Complete Seed Journey (Gen0 → Gen6)', () => {
     
     // All creatures should have valid states
     creatureArray.forEach(creature => {
-      expect(creature.alive !== undefined).toBe(true);
+      expect(creature.status).toBeDefined();
+      expect(['alive', 'sick', 'dying', 'dead']).toContain(creature.status);
       expect(creature.position).toBeDefined();
       expect(creature.needs).toBeDefined();
       expect(creature.needs.length).toBeGreaterThan(0);

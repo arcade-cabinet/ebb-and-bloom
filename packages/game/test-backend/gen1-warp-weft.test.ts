@@ -51,8 +51,8 @@ describe('Gen 1: WARP/WEFT Data Integration', () => {
       const data2 = await generateGen1DataPools('deterministic-gen1', planet, gen0Data);
       
       expect(data1.macro.archetypeOptions[0].id).toBe(data2.macro.archetypeOptions[0].id);
-      expect(data1.meso.populationOptions[0].id).toBe(data2.meso.populationOptions[0].id);
-      expect(data1.micro.physiologyOptions[0].id).toBe(data2.micro.physiologyOptions[0].id);
+      expect(data1.meso.archetypeOptions[0].id).toBe(data2.meso.archetypeOptions[0].id);
+      expect(data1.micro.archetypeOptions[0].id).toBe(data2.micro.archetypeOptions[0].id);
     });
   });
 
@@ -206,7 +206,8 @@ describe('Gen 1: WARP/WEFT Data Integration', () => {
       
       // All creatures should still be valid
       for (const creature of creatureArray) {
-        expect(creature.alive !== undefined).toBe(true);
+        expect(creature.status).toBeDefined();
+        expect(['alive', 'sick', 'dying', 'dead']).toContain(creature.status);
         expect(creature.position).toBeDefined();
       }
     });
@@ -258,7 +259,7 @@ describe('Gen 1: WARP/WEFT Data Integration', () => {
       gen1.update(1);
       
       // Creature should still be alive
-      expect(creature.alive).toBe(true);
+      expect(creature.status).toBe('alive');
     });
   });
 });
