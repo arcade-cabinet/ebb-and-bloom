@@ -18,6 +18,9 @@ import {
   Vector3,
   Color3,
   Color4,
+  MeshBuilder,
+  Mesh,
+  PBRMaterial,
 } from '@babylonjs/core';
 import { GameEngine } from '../engine/GameEngine';
 import { EvolutionHUD } from '../ui/EvolutionHUD';
@@ -26,27 +29,38 @@ import { PlanetRenderer, MoonRenderer } from '../renderers/gen0';
 import { CreatureRenderer, ResourceNodeRenderer } from '../renderers/gen1';
 import { PackFormationRenderer, InteractionVisualizer } from '../renderers/gen2';
 import { ToolRenderer, StructureRenderer } from '../renderers/gen3';
+import { CivilizationRenderer } from '../renderers/gen4';
+import { CommunicationRenderer, CultureRenderer } from '../renderers/gen5';
 import { CreatureBehaviorSystem, type CreatureBehaviorState, type ResourceNode } from '../systems/CreatureBehaviorSystem';
 import { PackFormationSystem, type PackFormation } from '../systems/PackFormationSystem';
 import { CreatureInteractionSystem, type Interaction } from '../systems/CreatureInteractionSystem';
 import { ToolSystem, type Tool, type ToolKnowledge } from '../systems/ToolSystem';
 import { StructureBuildingSystem, type Structure, type BuildingProject } from '../systems/StructureBuildingSystem';
+import { TradeSystem, type TradeOffer } from '../systems/TradeSystem';
+import { SpecializationSystem, type Specialization } from '../systems/SpecializationSystem';
+import { WorkshopSystem, type Workshop } from '../systems/WorkshopSystem';
+import { SymbolicCommunicationSystem, type Symbol as CommSymbol, type SymbolKnowledge } from '../systems/SymbolicCommunicationSystem';
+import { CulturalExpressionSystem, type CulturalExpression, type CreatureCulture, type CulturalSite } from '../systems/CulturalExpressionSystem';
 
 // Render data from game engine (supports all generations)
 interface GameRenderData {
   generation: number;
   planet?: {
+    status: 'forming' | 'formed' | 'stable';
     id: string;
     seed: string;
     radius: number;
     rotationPeriod: number;
     mass: number;
+    coreType: string;
+    primordialWells: any[];
+    compositionHistory: any[];
     layers?: any[];
   };
   visualBlueprint?: {
     textureReferences?: string[];
-    visualProperties?: VisualRepresentation | any;
-    representations?: VisualRepresentation | any;
+    visualProperties?: any;
+    representations?: any;
   };
   moons?: Array<{
     id: string;
@@ -83,6 +97,9 @@ export class GameScene {
   private interactionVisualizer: InteractionVisualizer | null = null;
   private toolRenderer: ToolRenderer | null = null;
   private structureRenderer: StructureRenderer | null = null;
+  private civilizationRenderer: CivilizationRenderer | null = null;
+  private communicationRenderer: CommunicationRenderer | null = null;
+  private cultureRenderer: CultureRenderer | null = null;
   
   // Systems
   private behaviorSystem: CreatureBehaviorSystem | null = null;
@@ -90,6 +107,13 @@ export class GameScene {
   private interactionSystem: CreatureInteractionSystem | null = null;
   private toolSystem: ToolSystem | null = null;
   private structureSystem: StructureBuildingSystem | null = null;
+  private tradeSystem: TradeSystem | null = null;
+  private specializationSystem: SpecializationSystem | null = null;
+  private workshopSystem: WorkshopSystem | null = null;
+  private communicationSystem: SymbolicCommunicationSystem | null = null;
+  private cultureSystem: CulturalExpressionSystem | null = null;
+  
+  // System data
   private creatureBehaviors: Map<string, CreatureBehaviorState> = new Map();
   private resources: ResourceNode[] = [];
   private packs: PackFormation[] = [];
@@ -97,6 +121,14 @@ export class GameScene {
   private tools: Tool[] = [];
   private structures: Structure[] = [];
   private projects: BuildingProject[] = [];
+  private tradeOffers: TradeOffer[] = [];
+  private specializations: Map<string, Specialization> = new Map();
+  private workshops: Map<string, Workshop> = new Map();
+  private symbols: CommSymbol[] = [];
+  private symbolKnowledge: Map<string, SymbolKnowledge> = new Map();
+  private culturalExpressions: CulturalExpression[] = [];
+  private creatureCultures: Map<string, CreatureCulture> = new Map();
+  private culturalSites: CulturalSite[] = [];
 
   constructor(scene: Scene, engine: Engine, gameId: string | null) {
     this.scene = scene;
@@ -181,6 +213,9 @@ export class GameScene {
     this.interactionVisualizer = new InteractionVisualizer(this.scene);
     this.toolRenderer = new ToolRenderer(this.scene);
     this.structureRenderer = new StructureRenderer(this.scene);
+    this.civilizationRenderer = new CivilizationRenderer(this.scene, 5);
+    this.communicationRenderer = new CommunicationRenderer(this.scene, 5);
+    this.cultureRenderer = new CultureRenderer(this.scene, 5);
     
     // Initialize systems
     this.behaviorSystem = new CreatureBehaviorSystem(5); // Planet radius = 5
@@ -188,6 +223,11 @@ export class GameScene {
     this.interactionSystem = new CreatureInteractionSystem();
     this.toolSystem = new ToolSystem();
     this.structureSystem = new StructureBuildingSystem();
+    this.tradeSystem = new TradeSystem();
+    this.specializationSystem = new SpecializationSystem();
+    this.workshopSystem = new WorkshopSystem();
+    this.communicationSystem = new SymbolicCommunicationSystem();
+    this.cultureSystem = new CulturalExpressionSystem();
     
     // Spawn some initial resources for testing
     this.spawnTestResources();
@@ -312,7 +352,7 @@ export class GameScene {
 
     // Gen0: Always render planet (macro level)
     if (planet && visualBlueprint && this.planetRenderer) {
-      await this.planetRenderer.render({ planet, visualBlueprint });
+      await this.planetRenderer.render({ planet: planet as any, visualBlueprint });
       console.log('✅ Planet rendered via PlanetRenderer');
     }
 
@@ -381,6 +421,31 @@ export class GameScene {
         if (this.structureSystem && this.toolSystem) {
           this.updateStructures(deltaTime);
         }
+        
+        // Update trade (Gen4)
+        if (this.tradeSystem) {
+          this.updateTrade(deltaTime);
+        }
+        
+        // Update specializations (Gen4)
+        if (this.specializationSystem) {
+          this.updateSpecializations();
+        }
+        
+        // Update workshops (Gen4)
+        if (this.workshopSystem && this.structureSystem) {
+          this.updateWorkshops(deltaTime);
+        }
+        
+        // Update communication (Gen5)
+        if (this.communicationSystem) {
+          this.updateCommunication(deltaTime);
+        }
+        
+        // Update culture (Gen5)
+        if (this.cultureSystem && this.structureSystem) {
+          this.updateCulture(deltaTime);
+        }
       }
       
       // Update creature LOD based on camera distance
@@ -447,6 +512,47 @@ export class GameScene {
       if (this.structureRenderer && (this.structures.length > 0 || this.projects.length > 0)) {
         this.structureRenderer.render(this.structures, this.projects);
       }
+      
+      // Update civilization rendering (Gen4)
+      if (this.civilizationRenderer) {
+        const creaturePositions = new Map<string, { lat: number; lon: number }>();
+        for (const [id, behavior] of this.creatureBehaviors) {
+          creaturePositions.set(id, { lat: behavior.position.lat, lon: behavior.position.lon });
+        }
+        this.civilizationRenderer.render(
+          this.tradeOffers,
+          Array.from(this.specializations.values()),
+          Array.from(this.workshops.values()),
+          creaturePositions
+        );
+      }
+      
+      // Update communication rendering (Gen5)
+      if (this.communicationRenderer && this.symbols.length > 0) {
+        const creaturePositions = new Map<string, { lat: number; lon: number }>();
+        for (const [id, behavior] of this.creatureBehaviors) {
+          creaturePositions.set(id, { lat: behavior.position.lat, lon: behavior.position.lon });
+        }
+        this.communicationRenderer.render(
+          this.symbols,
+          this.symbolKnowledge,
+          creaturePositions
+        );
+      }
+      
+      // Update culture rendering (Gen5)
+      if (this.cultureRenderer) {
+        const creaturePositions = new Map<string, { lat: number; lon: number }>();
+        for (const [id, behavior] of this.creatureBehaviors) {
+          creaturePositions.set(id, { lat: behavior.position.lat, lon: behavior.position.lon });
+        }
+        this.cultureRenderer.render(
+          this.culturalExpressions,
+          this.creatureCultures,
+          this.culturalSites,
+          creaturePositions
+        );
+      }
     });
   }
 
@@ -485,6 +591,9 @@ export class GameScene {
     this.interactionVisualizer?.dispose();
     this.toolRenderer?.dispose();
     this.structureRenderer?.dispose();
+    this.civilizationRenderer?.dispose();
+    this.communicationRenderer?.dispose();
+    this.cultureRenderer?.dispose();
     this.hud?.dispose();
     this.narrative?.dispose();
   }
@@ -668,6 +777,217 @@ export class GameScene {
     // Add resources to behavior system
     for (const resource of this.resources) {
       this.behaviorSystem?.addResource(resource);
+    }
+  }
+
+  /**
+   * Update trade system (Gen4)
+   */
+  private updateTrade(deltaTime: number): void {
+    if (!this.tradeSystem || !this.renderData?.creatures || !this.toolSystem) return;
+    
+    // Build creature map
+    const creatures = new Map();
+    for (const [id, behavior] of this.creatureBehaviors) {
+      const creature = this.renderData.creatures.find(c => c.id === id);
+      if (creature) {
+        creatures.set(id, {
+          position: behavior.position,
+          traits: creature.traits
+        });
+      }
+    }
+    
+    // Build pack map for trade system
+    const packsMap = new Map(this.packs.map(p => [p.id, {
+      members: p.members,
+      leaderId: p.leaderId
+    }]));
+    
+    // Build tools map
+    const toolsMap = new Map(this.tools.map(t => [t.id, {
+      position: t.position,
+      type: t.type
+    }]));
+    
+    // Update trade system
+    this.tradeSystem.update(creatures, packsMap, toolsMap, deltaTime);
+    this.tradeOffers = this.tradeSystem.getOffers();
+  }
+
+  /**
+   * Update specialization system (Gen4)
+   */
+  private updateSpecializations(): void {
+    if (!this.specializationSystem || !this.renderData?.creatures) return;
+    
+    // Build creature map
+    const creatures = new Map();
+    for (const [id, behavior] of this.creatureBehaviors) {
+      const creature = this.renderData.creatures.find(c => c.id === id);
+      if (creature) {
+        creatures.set(id, {
+          position: behavior.position,
+          traits: creature.traits
+        });
+      }
+    }
+    
+    // Track actions from tools, structures, and trade
+    const actions = new Map<string, string[]>();
+    
+    // Track tool creation as "craft"
+    for (const tool of this.tools) {
+      if (tool.createdBy) {
+        if (!actions.has(tool.createdBy)) {
+          actions.set(tool.createdBy, []);
+        }
+        actions.get(tool.createdBy)!.push('craft');
+      }
+    }
+    
+    // Track structure work as "build"
+    for (const project of this.projects) {
+      for (const [contributorId] of project.contributors) {
+        if (!actions.has(contributorId)) {
+          actions.set(contributorId, []);
+        }
+        actions.get(contributorId)!.push('build');
+      }
+    }
+    
+    // Update specialization system
+    this.specializationSystem.update(creatures, actions);
+    
+    // Build specializations map from system
+    this.specializations.clear();
+    for (const [creatureId] of creatures) {
+      const spec = this.specializationSystem.getSpecialization(creatureId);
+      if (spec) {
+        this.specializations.set(creatureId, spec);
+      }
+    }
+  }
+
+  /**
+   * Update workshop system (Gen4)
+   */
+  private updateWorkshops(deltaTime: number): void {
+    if (!this.workshopSystem || !this.structureSystem || !this.renderData?.creatures) return;
+    
+    // Build creature map
+    const creatures = new Map();
+    for (const [id, behavior] of this.creatureBehaviors) {
+      const creature = this.renderData.creatures.find(c => c.id === id);
+      if (creature) {
+        creatures.set(id, {
+          position: behavior.position,
+          traits: creature.traits
+        });
+      }
+    }
+    
+    // Update workshop system
+    const structuresMap = new Map(this.structures.map(s => [s.id, s]));
+    this.workshopSystem.update(
+      creatures,
+      structuresMap,
+      this.specializations,
+      deltaTime
+    );
+    
+    this.workshops = new Map(this.workshopSystem.getWorkshops().map(w => [w.id, w]));
+  }
+
+  /**
+   * Update communication system (Gen5)
+   */
+  private updateCommunication(deltaTime: number): void {
+    if (!this.communicationSystem || !this.renderData?.creatures) return;
+    
+    // Build creature map
+    const creatures = new Map();
+    for (const [id, behavior] of this.creatureBehaviors) {
+      const creature = this.renderData.creatures.find(c => c.id === id);
+      if (creature) {
+        creatures.set(id, {
+          position: behavior.position,
+          traits: creature.traits
+        });
+      }
+    }
+    
+    // Build pack map
+    const packs = new Map();
+    for (const pack of this.packs) {
+      packs.set(pack.id, {
+        id: pack.id,
+        members: pack.members
+      });
+    }
+    
+    // Update communication system
+    this.communicationSystem.update(creatures, packs, deltaTime);
+    this.symbols = this.communicationSystem.getSymbols();
+    
+    // Update symbol knowledge map
+    this.symbolKnowledge.clear();
+    for (const [id] of this.creatureBehaviors) {
+      const knowledge = this.communicationSystem.getKnowledge(id);
+      if (knowledge) {
+        this.symbolKnowledge.set(id, knowledge);
+      }
+    }
+  }
+
+  /**
+   * Update cultural expression system (Gen5)
+   */
+  private updateCulture(deltaTime: number): void {
+    if (!this.cultureSystem || !this.structureSystem || !this.renderData?.creatures) return;
+    
+    // Build creature map
+    const creatures = new Map();
+    for (const [id, behavior] of this.creatureBehaviors) {
+      const creature = this.renderData.creatures.find(c => c.id === id);
+      if (creature) {
+        creatures.set(id, {
+          position: behavior.position,
+          traits: creature.traits
+        });
+      }
+    }
+    
+    // Build pack map
+    const packs = new Map();
+    for (const pack of this.packs) {
+      packs.set(pack.id, {
+        id: pack.id,
+        members: pack.members
+      });
+    }
+    
+    // Build structures map
+    const structures = new Map();
+    for (const structure of this.structures) {
+      structures.set(structure.id, {
+        position: structure.position,
+        type: structure.type
+      });
+    }
+    
+    // Update culture system
+    this.cultureSystem.update(creatures, packs, structures, deltaTime);
+    this.culturalExpressions = this.cultureSystem.getExpressions();
+    this.culturalSites = this.cultureSystem.getSites();
+    
+    // Update culture map
+    this.creatureCultures.clear();
+    for (const [id] of this.creatureBehaviors) {
+      const culture = this.cultureSystem.getCulture(id);
+      if (culture) {
+        this.creatureCultures.set(id, culture);
+      }
     }
   }
 
