@@ -743,8 +743,10 @@ export class CompleteBottomUpScene {
     // Update EntropyAgent (conducts everything)
     this.entropyAgent.update(delta);
     
-    // Update spawner (all spawned agents)
-    this.spawner.update(delta);
+    // Update spawner (all spawned agents) with SCALED time!
+    // EntropyAgent determines time scale based on universe activity
+    const scaledDelta = delta * this.entropyAgent.timeScale;
+    this.spawner.update(scaledDelta);
     
     // Update current phase
     this.updatePhase();

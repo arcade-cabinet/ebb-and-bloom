@@ -33,6 +33,9 @@ export class UniverseEvolutionGoal extends Goal {
     // Fast when universe is homogeneous, slow when structure forms
     const activityLevel = universe.calculateActivityLevel();
     const timeScale = universe.calculateTimeScale(activityLevel);
+    
+    // Store for external use (scene needs this!)
+    universe.timeScale = timeScale;
 
     // Advance cosmic time (EntropyAgent determines pace!)
     universe.age += universe.deltaTime * timeScale;
@@ -119,6 +122,7 @@ export class EntropyAgent extends Vehicle {
   // Time
   age: number = 0;               // Seconds since Big Bang
   deltaTime: number = 0;
+  timeScale: number = 1.0;       // Time scale multiplier (exposed for scene to use)
 
   // Cosmic evolution tracking
   phase: 'expansion' | 'maximum' | 'contraction' = 'expansion';
