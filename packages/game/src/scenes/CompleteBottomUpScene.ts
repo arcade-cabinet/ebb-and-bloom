@@ -27,6 +27,7 @@ import {
   Texture,
   PointsCloudSystem,
   Mesh,
+  GlowLayer,
 } from '@babylonjs/core';
 import { AdvancedDynamicTexture, TextBlock, Button, StackPanel } from '@babylonjs/gui';
 import { Vector3 as YukaVector3 } from 'yuka';
@@ -133,6 +134,10 @@ export class CompleteBottomUpScene {
     const ambient = new HemisphericLight('ambient', new BabylonVector3(0, 1, 0), this.scene);
     ambient.intensity = 0.5; // Increased from 0.1 (molecules need more light!)
     ambient.groundColor = new Color3(0.1, 0.1, 0.2); // Slight blue from below
+    
+    // GLOW LAYER - Makes emissive materials actually GLOW!
+    const glow = new GlowLayer('glow', this.scene);
+    glow.intensity = 1.0;
     
     // GUI
     this.gui = AdvancedDynamicTexture.CreateFullscreenUI('UI');
