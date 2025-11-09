@@ -168,10 +168,11 @@ ios/App/DerivedData/
 # Build outputs (web)
 packages/game/dist/
 
-# Development builds (APKs, IPAs)
-dev-builds/
-# Keep directory structure
-!dev-builds/.gitignore
+# Development builds - TRACK timestamped APKs for version history
+# dev-builds/ is COMMITTED to show build progression
+# ebb-and-bloom-YYYYMMDD-HHMMSS.apk files are tracked
+# Only ignore the "latest" symlink
+dev-builds/ebb-and-bloom-latest.apk
 
 # Generated assets (AI-generated or built)
 public/splash/

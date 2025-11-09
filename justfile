@@ -90,6 +90,12 @@ clean-all: clean
   rm -rf dev-builds/
   @echo "✅ All artifacts removed"
 
+# Clean old builds (keep last 10)
+clean-old-builds:
+  @echo "🧹 Cleaning old APK builds (keeping last 10)..."
+  @cd dev-builds && ls -t ebb-and-bloom-2*.apk 2>/dev/null | tail -n +11 | xargs rm -v || echo "  Less than 10 builds, nothing to clean"
+  @echo "✅ Cleanup complete"
+
 # ============================================================================
 # TESTING
 # ============================================================================
