@@ -41,10 +41,17 @@ export class UniverseEvolutionGoal extends Goal {
     if (universe.phase === 'expansion') {
       const hubbleRate = universe.calculateExpansionRate();
       
-      // CRITICAL: Scale must advance by SAME timeScale as age!
-      // Otherwise age jumps billions of years but scale only ticks by frame delta
+      // Scale advances with age (exponential but capped to avoid Infinity)
       const scaledDelta = universe.deltaTime * timeScale;
-      universe.scaleFactor *= Math.pow(1 + hubbleRate, scaledDelta);
+      const exponent = hubbleRate * scaledDelta;
+      
+      // Cap exponent to prevent Math.pow overflow
+      if (exponent < 100) {
+        universe.scaleFactor *= Math.pow(1 + hubbleRate, scaledDelta);
+      } else {
+        // For huge time jumps, use linear approximation
+        universe.scaleFactor *= (1 + exponent);
+      }
 
       // Check if reached maximum expansion
       if (universe.scaleFactor >= universe.maxScale) {
@@ -60,11 +67,17 @@ export class UniverseEvolutionGoal extends Goal {
       console.log(`\n[EntropyAgent] ⬇️ CONTRACTION BEGINS - Big Crunch countdown!`);
       universe.recordEvent('contraction-begins');
     } else if (universe.phase === 'contraction') {
-      const contractionRate = 0.01; // Shrink 1% per second
+      const contractionRate = 0.01;
       
-      // Scale also uses timeScale during contraction
       const scaledDelta = universe.deltaTime * timeScale;
-      universe.scaleFactor *= Math.pow(1 - contractionRate, scaledDelta);
+      const exponent = contractionRate * scaledDelta;
+      
+      // Cap to prevent underflow
+      if (exponent < 100) {
+        universe.scaleFactor *= Math.pow(1 - contractionRate, scaledDelta);
+      } else {
+        universe.scaleFactor *= (1 - exponent);
+      }
 
       // Check if Big Crunch imminent
       if (universe.scaleFactor < 1.0) {
