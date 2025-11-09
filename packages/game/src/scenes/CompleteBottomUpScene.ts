@@ -635,7 +635,7 @@ export class CompleteBottomUpScene {
           
           // Initial density (typical molecular cloud)
           // Add some variation (±50%)
-          const baseDensity = 1e-21; // kg/m³
+          const baseDensity = 1e-16; // kg/m³ (MUCH higher for collapse!)
           const variation = 1.0 + (Math.random() - 0.5);
           const density = baseDensity * variation;
           
@@ -643,9 +643,10 @@ export class CompleteBottomUpScene {
           // Molecular clouds are ~10-20 K regardless of universe temp
           const temperature = 10 + Math.random() * 10; // 10-20 K
           
-          // Mass in this cell (assuming 100 ly cube)
-          // Volume ≈ (100 ly)³ ≈ 10^45 m³
-          const volume = 1e45; // m³
+          // Mass in this cell (assuming giant molecular cloud)
+          // Need M > M_J ≈ 8e30 kg for collapse
+          // Use range similar to test: 1e34 to 8e34 kg
+          const volume = 1e50; // m³ (larger volume!)
           const mass = density * volume;
           
           // Create DensityAgent
