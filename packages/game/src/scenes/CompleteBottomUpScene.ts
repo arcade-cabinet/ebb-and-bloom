@@ -415,7 +415,7 @@ export class CompleteBottomUpScene {
       }
     }
     
-    // AFTER Big Bang: Background color tracks temperature
+    // AFTER Big Bang: Background color tracks temperature (BUT keep visible!)
     if (T > 1e13) {
       // Nucleosynthesis - orange/white (opaque plasma)
       this.scene.clearColor = new Color4(1, 0.8, 0.5, 1);
@@ -426,11 +426,11 @@ export class CompleteBottomUpScene {
       // Recombination - dark red (becoming transparent)
       this.scene.clearColor = new Color4(0.3, 0, 0, 1);
     } else if (T > 100) {
-      // Molecular era - deep blue (transparent, cosmic background)
-      this.scene.clearColor = new Color4(0, 0, 0.2, 1);
+      // Molecular era - VISIBLE dark blue (not too dark!)
+      this.scene.clearColor = new Color4(0.05, 0.05, 0.15, 1);
     } else {
-      // Space - near black (dark energy era)
-      this.scene.clearColor = new Color4(0, 0, 0.05, 1);
+      // Space - dark blue (NOT pure black!)
+      this.scene.clearColor = new Color4(0.02, 0.02, 0.08, 1);
     }
     
     // Render appropriate visualization for current phase
