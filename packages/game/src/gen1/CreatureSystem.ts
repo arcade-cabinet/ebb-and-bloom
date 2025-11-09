@@ -137,23 +137,26 @@ export class Gen1System {
   /**
    * Parse traits from AI blueprint description
    */
-  private parseTraitsFromBlueprint(traitDesc: string, _blueprint: any): Traits {
+  private parseTraitsFromBlueprint(traitDesc: string | undefined, _blueprint: any): Traits {
+    // Handle undefined or null traitDesc with default values
+    const desc = traitDesc || '';
+    
     // Extract traits from AI description
-    const intelligenceScore = traitDesc.includes('intelligent') || traitDesc.includes('clever') ? 0.7 :
-      traitDesc.includes('smart') ? 0.5 : 0.3;
+    const intelligenceScore = desc.includes('intelligent') || desc.includes('clever') ? 0.7 :
+      desc.includes('smart') ? 0.5 : 0.3;
 
-    const locomotion = traitDesc.includes('climb') || traitDesc.includes('arboreal') ? 'arboreal' as const :
-      traitDesc.includes('burrow') || traitDesc.includes('dig') ? 'burrowing' as const :
-        traitDesc.includes('swim') || traitDesc.includes('aquatic') ? 'littoral' as const :
+    const locomotion = desc.includes('climb') || desc.includes('arboreal') ? 'arboreal' as const :
+      desc.includes('burrow') || desc.includes('dig') ? 'burrowing' as const :
+        desc.includes('swim') || desc.includes('aquatic') ? 'littoral' as const :
           'cursorial' as const;
 
-    const foraging = traitDesc.includes('canopy') || traitDesc.includes('tree') ? 'arboreal' as const :
-      traitDesc.includes('underwater') || traitDesc.includes('tidal') || traitDesc.includes('aquatic') ? 'aquatic' as const :
-        traitDesc.includes('burrow') || traitDesc.includes('underground') ? 'underground' as const :
+    const foraging = desc.includes('canopy') || desc.includes('tree') ? 'arboreal' as const :
+      desc.includes('underwater') || desc.includes('tidal') || desc.includes('aquatic') ? 'aquatic' as const :
+        desc.includes('burrow') || desc.includes('underground') ? 'underground' as const :
           'surface' as const;
 
-    const social = traitDesc.includes('pack') || traitDesc.includes('group') || traitDesc.includes('social') || traitDesc.includes('pair') ? 'pack' as const :
-      traitDesc.includes('tribal') || traitDesc.includes('large') ? 'tribal' as const :
+    const social = desc.includes('pack') || desc.includes('group') || desc.includes('social') || desc.includes('pair') ? 'pack' as const :
+      desc.includes('tribal') || desc.includes('large') ? 'tribal' as const :
         'solitary' as const;
 
     // Map intelligence to strength/excavation (TraitsSchema doesn't have intelligence)
