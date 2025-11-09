@@ -74,9 +74,6 @@ importers:
       '@ebb/shared':
         specifier: workspace:*
         version: link:../shared
-      '@types/seedrandom':
-        specifier: ^3.0.8
-        version: 3.0.8
       ai:
         specifier: ^5.0.89
         version: 5.0.89(zod@3.25.76)
@@ -123,6 +120,9 @@ importers:
       '@playwright/test':
         specifier: ^1.56.1
         version: 1.56.1
+      '@types/seedrandom':
+        specifier: ^3.0.8
+        version: 3.0.8
       '@vitest/ui':
         specifier: ^2.1.8
         version: 2.1.9(vitest@2.1.9)

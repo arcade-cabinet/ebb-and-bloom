@@ -1,28 +1,26 @@
 /**
- * Simple Deterministic RNG
+ * Enhanced Random Number Generation
  * 
- * Uses seedrandom for reliable, deterministic randomness.
- * Provides statistical distributions (normal, Poisson, exponential).
+ * Uses seedrandom for deterministic randomness with string seeds.
+ * Provides proper statistical distributions (normal, Poisson, exponential).
  * 
- * Why seedrandom and not Mersenne Twister?
- * - Simple and proven in production games
- * - Deterministic (same seed = same sequence)
- * - Lightweight (~1KB vs 700KB+)
- * - No complex hash conversion issues
- * - Perfect for game use cases
+ * REVERTED FROM MERSENNE TWISTER: seedrandom is simpler, works with string seeds,
+ * and is perfectly good quality for game generation. No overflow issues!
  */
 
 import seedrandom from 'seedrandom';
+import * as ss from 'simple-statistics';
 
 /**
- * RNG with statistical distributions
+ * Enhanced RNG with statistical distributions
  */
 export class EnhancedRNG {
   private rng: seedrandom.PRNG;
-  private nextNormal: number | null = null; // Cache for Box-Muller
   
   constructor(seed: string) {
+    // seedrandom accepts strings directly - no hash conversion needed!
     this.rng = seedrandom(seed);
+    console.log('[EnhancedRNG] Initialized with seed:', seed);
   }
   
   /**
@@ -48,20 +46,10 @@ export class EnhancedRNG {
    * Mean = mu, Standard Deviation = sigma
    */
   normal(mu: number = 0, sigma: number = 1): number {
-    // Box-Muller generates pairs, cache the second value
-    if (this.nextNormal !== null) {
-      const z = this.nextNormal;
-      this.nextNormal = null;
-      return z * sigma + mu;
-    }
-    
-    const u1 = this.uniform();
-    const u2 = this.uniform();
-    
+    // Box-Muller transform
+    const u1 = this.rng();
+    const u2 = this.rng();
     const z0 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
-    const z1 = Math.sqrt(-2.0 * Math.log(u1)) * Math.sin(2.0 * Math.PI * u2);
-    
-    this.nextNormal = z1; // Cache for next call
     return z0 * sigma + mu;
   }
   
@@ -78,7 +66,7 @@ export class EnhancedRNG {
     
     do {
       k++;
-      p *= this.uniform();
+      p *= this.rng();
     } while (p > L);
     
     return k - 1;
@@ -89,7 +77,7 @@ export class EnhancedRNG {
    * Used for time between events
    */
   exponential(rate: number): number {
-    return -Math.log(1 - this.uniform()) / rate;
+    return -Math.log(1 - this.rng()) / rate;
   }
   
   /**
@@ -97,7 +85,7 @@ export class EnhancedRNG {
    * p(x) ∝ x^(-alpha)
    */
   powerLaw(alpha: number, xMin: number, xMax: number): number {
-    const u = this.uniform();
+    const u = this.rng();
     const beta = alpha - 1;
     
     if (Math.abs(beta) < 1e-10) {
@@ -128,8 +116,8 @@ export class EnhancedRNG {
     // Using Johnk's algorithm
     let x, y;
     do {
-      const u = this.uniform();
-      const v = this.uniform();
+      const u = this.rng();
+      const v = this.rng();
       x = Math.pow(u, 1/alpha);
       y = Math.pow(v, 1/beta);
     } while (x + y > 1);
@@ -144,7 +132,7 @@ export class EnhancedRNG {
   gamma(shape: number, scale: number = 1): number {
     // Marsaglia and Tsang method
     if (shape < 1) {
-      return this.gamma(shape + 1, scale) * Math.pow(this.uniform(), 1/shape);
+      return this.gamma(shape + 1, scale) * Math.pow(this.rng(), 1/shape);
     }
     
     const d = shape - 1/3;
@@ -158,7 +146,7 @@ export class EnhancedRNG {
       } while (v <= 0);
       
       v = v * v * v;
-      const u = this.uniform();
+      const u = this.rng();
       const x2 = x * x;
       
       if (u < 1 - 0.0331 * x2 * x2) {
@@ -180,7 +168,7 @@ export class EnhancedRNG {
     }
     
     const totalWeight = weights.reduce((a, b) => a + b, 0);
-    let random = this.uniform() * totalWeight;
+    let random = this.rng() * totalWeight;
     
     for (let i = 0; i < items.length; i++) {
       random -= weights[i];
@@ -205,40 +193,49 @@ export class EnhancedRNG {
 }
 
 /**
- * Simple statistics helpers (no external dependencies)
+ * Statistical utilities using simple-statistics
  */
 export const Statistics = {
-  mean: (data: number[]) => data.reduce((a, b) => a + b, 0) / data.length,
+  /**
+   * Descriptive statistics
+   */
+  mean: (data: number[]) => ss.mean(data),
+  median: (data: number[]) => ss.median(data),
+  mode: (data: number[]) => ss.mode(data),
+  variance: (data: number[]) => ss.variance(data),
+  standardDeviation: (data: number[]) => ss.standardDeviation(data),
   
-  median: (data: number[]) => {
-    const sorted = [...data].sort((a, b) => a - b);
-    const mid = Math.floor(sorted.length / 2);
-    return sorted.length % 2 === 0 
-      ? (sorted[mid - 1] + sorted[mid]) / 2 
-      : sorted[mid];
-  },
-  
-  variance: (data: number[]) => {
-    const mean = Statistics.mean(data);
-    return data.reduce((sum, x) => sum + Math.pow(x - mean, 2), 0) / data.length;
-  },
-  
-  standardDeviation: (data: number[]) => Math.sqrt(Statistics.variance(data)),
-  
-  quantile: (data: number[], p: number) => {
-    const sorted = [...data].sort((a, b) => a - b);
-    const index = p * (sorted.length - 1);
-    const lower = Math.floor(index);
-    const upper = Math.ceil(index);
-    const weight = index - lower;
-    return sorted[lower] * (1 - weight) + sorted[upper] * weight;
-  },
-  
+  /**
+   * Quantiles
+   */
+  quantile: (data: number[], p: number) => ss.quantile(data, p),
   quartiles: (data: number[]) => [
-    Statistics.quantile(data, 0.25),
-    Statistics.quantile(data, 0.50),
-    Statistics.quantile(data, 0.75),
+    ss.quantile(data, 0.25),
+    ss.quantile(data, 0.50),
+    ss.quantile(data, 0.75),
   ],
+  interquartileRange: (data: number[]) => ss.interquartileRange(data),
+  
+  /**
+   * Correlation
+   */
+  correlation: (x: number[], y: number[]) => ss.sampleCorrelation(x, y),
+  
+  /**
+   * Regression
+   */
+  linearRegression: (data: [number, number][]) => {
+    const line = ss.linearRegression(data);
+    const predict = ss.linearRegressionLine(line);
+    const r2 = ss.rSquared(data, predict);
+    return { line, predict, r2 };
+  },
+  
+  /**
+   * Sample from distribution using inverse CDF
+   */
+  sampleNormal: (mean: number, stdev: number, random: () => number) => 
+    ss.sampleNormal(mean, stdev, random),
 };
 
 export default EnhancedRNG;
