@@ -30,13 +30,18 @@
         }
         
         #renderCanvas {
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
             touch-action: none;
             display: block;
             position: fixed;
             top: 0;
             left: 0;
+            right: 0;
+            bottom: 0;
+            /* CRITICAL: Force canvas to fill on all devices */
+            min-width: 100vw;
+            min-height: 100vh;
         }
         
         #loading {
@@ -53,10 +58,8 @@
             background: black;
             
             /* PROFESSIONAL SPLASH BACKGROUND */
-            background-image: url('/splash/splash-8ee36901.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            background: linear-gradient(135deg, #001122 0%, #002244 50%, #001133 100%);
+            /* Fallback gradient (splash images don't load in dev) */
         }
         
         #loading.hidden {
@@ -159,12 +162,32 @@
         // Show seed in loading screen
         document.getElementById('seed-display').textContent = `SEED: ${seed}`;
         
-        // Hide loading screen after scene loads
+        // CRITICAL: Only hide loading when canvas is READY and rendering
         const loading = document.getElementById('loading');
+        let sceneReady = false;
+        
+        // Check if scene is rendering (wait for first render)
+        const checkReady = setInterval(() => {
+            if (window.universe && window.universe.scene) {
+                const meshCount = window.universe.scene.meshes.length;
+                if (meshCount > 0 || sceneReady) {
+                    clearInterval(checkReady);
+                    loading.classList.add('hidden');
+                    setTimeout(() => loading.remove(), 500);
+                    console.log('✅ Scene ready - hiding splash');
+                }
+            }
+        }, 500);
+        
+        // Fallback: Hide after 5s even if not ready (prevent infinite splash)
         setTimeout(() => {
-            loading.classList.add('hidden');
-            setTimeout(() => loading.remove(), 500); // Remove after fade
-        }, 2000);
+            clearInterval(checkReady);
+            if (!loading.classList.contains('hidden')) {
+                loading.classList.add('hidden');
+                setTimeout(() => loading.remove(), 500);
+                console.log('⚠️  Splash timeout - hiding anyway');
+            }
+        }, 5000);
         
         // Create THE scene
         const scene = new CompleteBottomUpScene(canvas, seed);
