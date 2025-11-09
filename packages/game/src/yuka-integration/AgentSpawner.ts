@@ -13,6 +13,7 @@ import { EntityManager, Think, Vector3, Vehicle } from 'yuka';
 import { LEGAL_BROKER } from '../laws/core/LegalBroker';
 import { UniverseState } from '../laws/core/UniversalLawCoordinator';
 import { CreatureAgent } from './agents/CreatureAgent';
+import { DensityAgent } from './agents/DensityAgent';
 import { ReproductionEvaluator, SurvivalEvaluator } from './agents/evaluators/CreatureEvaluators';
 import { ClimateEvaluator, LifeEvaluator } from './agents/evaluators/PlanetaryEvaluators';
 import { FusionEvaluator, SupernovaEvaluator } from './agents/evaluators/StellarEvaluators';
@@ -34,6 +35,7 @@ export interface SpawnRequest {
  * Agent types at different scales
  */
 export enum AgentType {
+  DENSITY = 'density',       // Molecular cloud / density field agent
   GALACTIC = 'galactic',     // Galaxy formation agent
   STELLAR = 'stellar',       // Star lifecycle agent
   PLANETARY = 'planetary',   // Planet/climate agent
@@ -328,9 +330,22 @@ export class AgentSpawner {
 
   /**
    * Get all agents of a type
+   * Uses instanceof for robust type checking
    */
   getAgents(type: AgentType): Vehicle[] {
-    return this.entityManager.entities.filter(e => e['agentType'] === type) as Vehicle[];
+    switch (type) {
+      case AgentType.DENSITY:
+        return this.entityManager.entities.filter(e => e instanceof DensityAgent) as Vehicle[];
+      case AgentType.STELLAR:
+        return this.entityManager.entities.filter(e => e instanceof StellarAgent) as Vehicle[];
+      case AgentType.PLANETARY:
+        return this.entityManager.entities.filter(e => e instanceof PlanetaryAgent) as Vehicle[];
+      case AgentType.CREATURE:
+        return this.entityManager.entities.filter(e => e instanceof CreatureAgent) as Vehicle[];
+      default:
+        // Fallback to property check for other types
+        return this.entityManager.entities.filter(e => e['agentType'] === type) as Vehicle[];
+    }
   }
 
   /**
