@@ -142,15 +142,14 @@ export class CompleteBottomUpScene {
       1.0     // height = full height
     );
     
-    // CRITICAL: Bright light for seeing molecules in dark space!
-    // Space is black, but objects must be VISIBLE
+    // CRITICAL: Bright light for visibility
     const ambient = new HemisphericLight('ambient', new BabylonVector3(0, 1, 0), this.scene);
-    ambient.intensity = 0.5; // Increased from 0.1 (molecules need more light!)
-    ambient.groundColor = new Color3(0.1, 0.1, 0.2); // Slight blue from below
+    ambient.intensity = 0.8; // Bright enough to see everything
+    ambient.groundColor = new Color3(0.2, 0.2, 0.3);
     
-    // GLOW LAYER - Makes emissive materials actually GLOW!
+    // GLOW LAYER - Maximum intensity
     const glow = new GlowLayer('glow', this.scene);
-    glow.intensity = 1.0;
+    glow.intensity = 1.5;
     
     // GUI
     this.gui = AdvancedDynamicTexture.CreateFullscreenUI('UI');
@@ -197,34 +196,34 @@ export class CompleteBottomUpScene {
    * NOTE: Starts STOPPED - triggers when user presses PLAY
    */
   private createQuantumFoamVisualization(): void {
-    // Big Bang explosion from CENTER POINT (singularity)
-    this.particleSystem = new ParticleSystem('big-bang-expansion', 5000, this.scene);
+    // Big Bang: CENTER → OUTWARD explosion (traceries of light!)
+    this.particleSystem = new ParticleSystem('big-bang-expansion', 8000, this.scene);
     this.particleSystem.particleTexture = new Texture(
       'https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/packages/tools/playground/public/textures/flare.png',
       this.scene
     );
     
-    // EMIT FROM CENTER (0,0,0) - singularity point!
+    // EMIT FROM ORIGIN (singularity!)
     this.particleSystem.emitter = BabylonVector3.Zero();
-    this.particleSystem.createSphereEmitter(0.1); // Point source
+    this.particleSystem.createSphereEmitter(0.01); // Point source (tiny!)
     
-    // Particles EXPLODE OUTWARD (radial expansion!)
-    this.particleSystem.minEmitPower = 100;  // Fast expansion
-    this.particleSystem.maxEmitPower = 300;
+    // DRAMATIC RADIAL EXPLOSION
+    this.particleSystem.minEmitPower = 150;  // Very fast
+    this.particleSystem.maxEmitPower = 500;  // Some particles shoot far!
     
     // Energy lifetime (visible as they spread)
     this.particleSystem.minLifeTime = 2;
     this.particleSystem.maxLifeTime = 5;
     this.particleSystem.emitRate = 1000;
     
-    // Color: White-hot → Blue (cooling as they spread)
-    this.particleSystem.color1 = new Color4(1, 1, 1, 1);      // White (hot)
-    this.particleSystem.color2 = new Color4(0.7, 0.9, 1, 1);  // Blue-white (cooling)
-    this.particleSystem.colorDead = new Color4(0.3, 0.5, 0.8, 0); // Faint blue (cold)
+    // Color: Brilliant white → Golden → Blue (energy spectrum!)
+    this.particleSystem.color1 = new Color4(1, 1, 1, 1);         // Brilliant white
+    this.particleSystem.color2 = new Color4(1, 0.9, 0.6, 1);    // Golden
+    this.particleSystem.colorDead = new Color4(0.5, 0.7, 1, 0.2); // Blue fade
     
-    // Tracery effect (line particles)
-    this.particleSystem.minSize = 0.5;
-    this.particleSystem.maxSize = 2;
+    // Tracery particles (visible streaks)
+    this.particleSystem.minSize = 1;
+    this.particleSystem.maxSize = 4; // Larger for visibility
     
     // DON'T start yet - wait for Big Bang!
     
