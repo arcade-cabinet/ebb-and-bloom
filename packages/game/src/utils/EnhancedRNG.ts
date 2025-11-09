@@ -6,7 +6,6 @@
  */
 
 import mt19937Factory from '@stdlib/random-base-mt19937';
-import normalFactory from '@stdlib/random-base-normal';
 import * as ss from 'simple-statistics';
 
 /**
@@ -14,22 +13,19 @@ import * as ss from 'simple-statistics';
  */
 export class EnhancedRNG {
   private mt: any;
-  private normalGen: any;
+  private nextNormal: number | null = null; // Cache for Box-Muller
   
   constructor(seed: string) {
     // Convert string seed to numeric (constrained to uint32)
     const numericSeed = this.hashSeed(seed);
     
-    console.log('[EnhancedRNG] Seed:', seed, '-> Hash:', numericSeed);
+    // Ensure seed is STRICTLY within [1, 2^32-1]
+    const safeSeed = Math.floor(numericSeed) % 4294967295 + 1;
+    
+    console.log('[EnhancedRNG] Seed:', seed, '-> Hash:', safeSeed);
     
     // Mersenne Twister (much better than Math.random or basic seedrandom)
-    // @stdlib exports a factory function by default
-    this.mt = mt19937Factory.factory({ seed: numericSeed });
-    
-    // Normal distribution generator - use the PRNG instance, not seed again
-    this.normalGen = normalFactory.factory({ 
-      prng: this.mt  // Pass the PRNG, not seed
-    });
+    this.mt = mt19937Factory.factory({ seed: safeSeed });
   }
   
   /**
@@ -37,13 +33,14 @@ export class EnhancedRNG {
    * Returns 32-bit unsigned integer
    */
   private hashSeed(seed: string): number {
-    let hash = 2166136261;
+    let hash = 2166136261; // FNV offset basis
     for (let i = 0; i < seed.length; i++) {
       hash ^= seed.charCodeAt(i);
-      hash = Math.imul(hash, 16777619);
+      hash = Math.imul(hash, 16777619); // FNV prime
+      hash = hash >>> 0; // Keep as uint32 after each step
     }
-    // Ensure it's within uint32 range
-    return (hash >>> 0) % 4294967296; // Max uint32
+    // Return value in valid range [1, 2^32-1]
+    return (hash % 4294967295) + 1;
   }
   
   /**
@@ -65,11 +62,25 @@ export class EnhancedRNG {
   }
   
   /**
-   * Normal distribution (Gaussian)
+   * Normal distribution (Gaussian) using Box-Muller transform
    * Mean = mu, Standard Deviation = sigma
    */
   normal(mu: number = 0, sigma: number = 1): number {
-    return this.normalGen() * sigma + mu;
+    // Box-Muller generates pairs, cache the second value
+    if (this.nextNormal !== null) {
+      const z = this.nextNormal;
+      this.nextNormal = null;
+      return z * sigma + mu;
+    }
+    
+    const u1 = this.uniform();
+    const u2 = this.uniform();
+    
+    const z0 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+    const z1 = Math.sqrt(-2.0 * Math.log(u1)) * Math.sin(2.0 * Math.PI * u2);
+    
+    this.nextNormal = z1; // Cache for next call
+    return z0 * sigma + mu;
   }
   
   /**
