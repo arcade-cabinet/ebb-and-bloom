@@ -16,7 +16,10 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
-    "test:e2e:mcp": "PLAYWRIGHT_NO_SERVER=1 playwright test"
+    "test:e2e:mcp": "PLAYWRIGHT_NO_SERVER=1 playwright test",
+    "sim:world": "tsx sim-world.ts",
+    "sim:quick": "tsx sim-world.ts quick-test 20",
+    "sim:long": "tsx sim-world.ts long-test 200"
   },
   "dependencies": {
     "@ai-sdk/openai": "^2.0.64",

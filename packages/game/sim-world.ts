@@ -11,10 +11,10 @@
  *   pnpm sim:world my-world-42 100
  */
 
-import { generateGameData } from '../src/gen-systems/loadGenData.js';
-import { StochasticPopulationDynamics } from '../src/ecology/StochasticPopulation.js';
-import { EnhancedRNG } from '../src/utils/EnhancedRNG.js';
-import { LAWS } from '../src/laws/index.js';
+import { generateGameData } from './src/gen-systems/loadGenData.js';
+import { StochasticPopulationDynamics } from './src/ecology/StochasticPopulation.js';
+import { EnhancedRNG } from './src/utils/EnhancedRNG.js';
+import { LAWS } from './src/laws/index.js';
 
 // ============================================================================
 // REPORT FORMATTING

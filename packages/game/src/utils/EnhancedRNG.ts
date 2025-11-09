@@ -5,8 +5,8 @@
  * Provides proper statistical distributions (normal, Poisson, exponential).
  */
 
-import { factory as mt19937Factory } from '@stdlib/random-base-mt19937';
-import { factory as normalFactory } from '@stdlib/random-base-normal';
+import mt19937Factory from '@stdlib/random-base-mt19937';
+import normalFactory from '@stdlib/random-base-normal';
 import * as ss from 'simple-statistics';
 
 /**
@@ -21,10 +21,11 @@ export class EnhancedRNG {
     const numericSeed = this.hashSeed(seed);
     
     // Mersenne Twister (much better than Math.random or basic seedrandom)
-    this.mt = mt19937Factory({ seed: numericSeed });
+    // @stdlib exports a factory function by default
+    this.mt = mt19937Factory.factory({ seed: numericSeed });
     
     // Normal distribution generator
-    this.normalGen = normalFactory({ prng: this.mt });
+    this.normalGen = normalFactory.factory({ prng: this.mt });
   }
   
   /**
