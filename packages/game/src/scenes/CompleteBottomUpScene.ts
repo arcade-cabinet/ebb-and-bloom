@@ -108,11 +108,11 @@ export class CompleteBottomUpScene {
   private hud: AdaptiveHUD;
   private molecularPanel: MolecularBreakdownPanel;
   
-  constructor(canvas: HTMLCanvasElement, seed: string) {
+  constructor(canvas: HTMLCanvasElement) {
     console.log('🌌 COMPLETE BOTTOM-UP UNIVERSE');
-    console.log(`  Seed: ${seed}`);
-    console.log(`  Vision: Quantum Foam → Cosmic Web → Big Crunch`);
-    console.log('');
+    console.log(`  NO SEED - This is THE universe (deterministic Big Bang)`);
+    console.log(`  Seeds assigned when zooming to PLANETS for exploration`);
+    console.log(`  Vision: Quantum Foam → Cosmic Web`);
     
     // Babylon setup
     this.engine = new Engine(canvas, true);

@@ -152,15 +152,12 @@
     <script type="module">
         import { CompleteBottomUpScene } from './src/scenes/CompleteBottomUpScene.ts';
         
-        // Parse URL parameters
-        const params = new URLSearchParams(window.location.search);
-        const seed = params.get('seed') || `v1-bottom-up-${Date.now()}`;
-        
         // Get canvas
         const canvas = document.getElementById('renderCanvas');
         
-        // Show seed in loading screen
-        document.getElementById('seed-display').textContent = `SEED: ${seed}`;
+        // NO SEED for universe - seeds are for PLANETS!
+        // Universe is just "the universe" - deterministic Big Bang
+        document.getElementById('seed-display').textContent = 'THE UNIVERSE';
         
         // CRITICAL: Only hide loading when canvas is READY and rendering
         const loading = document.getElementById('loading');
@@ -189,12 +186,18 @@
             }
         }, 5000);
         
-        // Create THE scene
-        const scene = new CompleteBottomUpScene(canvas, seed);
+        // Create THE universe (no seed - this is THE universe!)
+        const universe = new CompleteBottomUpScene(canvas);
         
         // Expose to window for debugging
-        window.universe = scene;
-        window.seed = seed;
+        window.universe = universe;
+        
+        // Seeds will be assigned when zooming to planets (game mode)
+        window.assignPlanetSeed = (planetId) => {
+            const seed = `v1-planet-${planetId}-${Date.now()}`;
+            console.log(`🌍 Entering planet ${planetId} with seed: ${seed}`);
+            return seed;
+        };
         
         console.log('');
         console.log('🌌 COMPLETE BOTTOM-UP UNIVERSE SIMULATOR');
@@ -208,12 +211,13 @@
         console.log('');
         console.log('CONTROLS:');
         console.log('  ▶ PLAY - Start/pause simulation');
-        console.log('  Speed buttons - Control time scale');
-        console.log('  Mouse - Rotate camera (zoom is automatic!)');
+        console.log('  Mouse - Rotate camera');
+        console.log('  Zoom to planet → Assigns seed → Enter game mode');
         console.log('');
-        console.log('Seed: ' + seed);
+        console.log('THIS IS THE UNIVERSE (no seed)');
+        console.log('Seeds assigned per-planet when entering game mode');
         console.log('');
-        console.log('🎬 Press PLAY to begin...');
+        console.log('🎬 Press PLAY to begin Big Bang...');
     </script>
 </body>
 </html>
