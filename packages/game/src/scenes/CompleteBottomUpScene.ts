@@ -37,6 +37,7 @@ import { PlanetaryAgent } from '../yuka-integration/agents/PlanetaryAgent';
 import { DensityAgent } from '../yuka-integration/agents/DensityAgent';
 import { AdaptiveHUD } from '../ui/AdaptiveHUD';
 import { MARKER_STORE } from '../state/UniverseMarkers';
+import { ZoomLevel, getZoomLevelFromCameraDistance } from '../state/ZoomLOD';
 
 const YEAR = 365.25 * 86400;
 
@@ -82,6 +83,7 @@ export class CompleteBottomUpScene {
   // Simulation state
   private currentPhase: SimulationPhase = 'quantum-foam';
   private currentScale: PhysicalScale = PhysicalScale.PLANCK;
+  private currentZoomLevel: ZoomLevel = ZoomLevel.COSMIC;
   private paused: boolean = true; // START PAUSED - wait for user to press PLAY!
   private densityFieldInitialized: boolean = false;
   private bigBangTriggered: boolean = false; // Track if Big Bang happened yet
@@ -760,8 +762,18 @@ export class CompleteBottomUpScene {
   
   /**
    * Update star visuals - create meshes for new stars
+   * ONLY at STELLAR or closer zoom levels!
    */
   private updateStarVisuals(): void {
+    // Check zoom level
+    this.currentZoomLevel = getZoomLevelFromCameraDistance(this.camera.radius);
+    
+    // Stars only visible at STELLAR zoom or closer
+    if (this.currentZoomLevel === ZoomLevel.COSMIC || this.currentZoomLevel === ZoomLevel.GALACTIC) {
+      // Too zoomed out - hide stars, show galaxy markers instead
+      return;
+    }
+    
     const stellarAgents = this.spawner.getAgents(AgentType.STELLAR) as StellarAgent[];
     
     // When first star forms, fade out density cloud
