@@ -371,29 +371,48 @@ export class EntropyAgent extends Vehicle {
    */
   calculateActivityLevel(): number {
     let activity = 0.0;
+    const YEAR = 365.25 * 86400;
 
-    // Check agent spawn rate
+    // ═══════════════════════════════════════════════════════════════
+    // CINEMATIC ACTIVITY DETECTION
+    // ═══════════════════════════════════════════════════════════════
+    // Detect when AWESOME things are happening that players should see!
+    // ═══════════════════════════════════════════════════════════════
+
+    // PIVOTAL MOMENTS - Always high activity
+    if (this.age < 1) {
+      activity += 0.8; // BIG BANG - always dramatic!
+    } else if (this.age < 380000 * YEAR) {
+      activity += 0.6; // Particle/atom formation
+    }
+
+    // Check agent spawn rate (stars forming!)
     if (this.spawner && this.spawner.getTotalAgentCount) {
       const currentCount = this.spawner.getTotalAgentCount();
       const spawnRate = Math.abs(currentCount - this.lastAgentCount);
       this.lastAgentCount = currentCount;
 
-      // High spawn rate = activity
-      if (spawnRate > 10) activity += 0.5;
-      else if (spawnRate > 0) activity += 0.2;
+      // ANY spawning during stellar era = HIGH ACTIVITY
+      if (this.age > 100e6 * YEAR && this.age < 500e6 * YEAR) {
+        if (spawnRate > 0) activity += 0.8; // SLOW DOWN - stars forming!
+      } else {
+        // Normal spawn rate activity
+        if (spawnRate > 10) activity += 0.5;
+        else if (spawnRate > 0) activity += 0.3;
+      }
     }
 
     // Check recent events
     if (this.recentEvents.length > 5) {
-      activity += 0.3; // Many events happening
+      activity += 0.4; // Many events happening
     } else if (this.recentEvents.length > 0) {
-      activity += 0.1; // Some events
+      activity += 0.2; // Some events
     }
 
     // Check temperature change (rapid cooling = activity)
     const tempChangeRate = Math.abs(this.temperature - (this.initialTemperature / (this.scaleFactor - 1 || 1)));
     if (tempChangeRate > 1e10) {
-      activity += 0.2;
+      activity += 0.3;
     }
 
     return Math.min(1.0, activity); // Cap at 1.0
@@ -443,18 +462,60 @@ export class EntropyAgent extends Vehicle {
   calculateTimeScale(activity: number): number {
     const YEAR = 365.25 * 86400;
 
-    // Fast forward when nothing happening
-    if (activity < 0.1) {
-      return 1e15; // 1 quadrillion years/second
+    // ═══════════════════════════════════════════════════════════════
+    // CINEMATIC PACING FOR PLAYER EXPERIENCE
+    // ═══════════════════════════════════════════════════════════════
+    // This is a SIMULATION for PLAYERS to watch, not just physics!
+    // Make pivotal events SLOW and AWESOME to behold.
+    // ═══════════════════════════════════════════════════════════════
+
+    // PIVOTAL EVENTS - SLOW DOWN DRAMATICALLY
+    // Big Bang → Recombination (first 380kyr)
+    if (this.age < 380000 * YEAR) {
+      // Player should see: Quantum foam → Particles → Atoms
+      // Duration: ~30 seconds real-time for entire early universe
+      return 1e4 * YEAR; // 10,000 years/second (380kyr takes ~38 seconds)
     }
 
-    // Slow down when things happening
-    if (activity < 0.5) {
-      return 1e12; // 1 trillion years/second
+    // MOLECULAR ERA - Watch clouds form
+    // 380kyr → 100 Myr
+    if (this.age < 100e6 * YEAR) {
+      // Player should see: Atoms → Molecules → Clouds clustering
+      // Duration: ~20 seconds real-time
+      return 5e6 * YEAR; // 5 million years/second (100 Myr takes ~20 seconds)
     }
 
-    // Very slow when lots happening
-    return 1e9; // 1 billion years/second
+    // STELLAR FORMATION - DRAMATIC SLOWDOWN
+    // This is THE most visually important moment!
+    // Watch EACH STAR ignite, one by one
+    if (this.age < 500e6 * YEAR) {
+      // Player should see: Clouds collapse → Stars ignite → Light spreads
+      
+      // When stars actively forming (high activity) = SUPER SLOW
+      if (activity > 0.5) {
+        return 5e5 * YEAR; // 500k years/second (WATCH each star form!)
+      }
+      
+      // When some activity (clouds collapsing) = SLOW
+      if (activity > 0.1) {
+        return 1e6 * YEAR; // 1 million years/second
+      }
+      
+      // Otherwise still slower than later universe
+      return 5e6 * YEAR; // 5 million years/second
+    }
+
+    // GALACTIC ASSEMBLY - Watch structure emerge
+    // 500 Myr → 1 Gyr
+    if (this.age < 1e9 * YEAR) {
+      // Player should see: Stars cluster → Galaxies form → Cosmic web
+      // Duration: ~30 seconds real-time
+      return 20e6 * YEAR; // 20 million years/second
+    }
+
+    // MATURE UNIVERSE - Can speed up (less visually interesting)
+    // But still slow enough to appreciate scale
+    return 100e6 * YEAR; // 100 million years/second (13 Gyr takes ~130 seconds = 2 min)
   }
 
   /**
