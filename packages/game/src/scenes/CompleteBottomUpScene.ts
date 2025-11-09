@@ -700,25 +700,25 @@ export class CompleteBottomUpScene {
       targetRadius = this.camera.radius;
     } else {
       // Normal expansion - zoom OUT as age increases
-      if (age < 1) {
-        // Quantum foam (t < 1 second)
-        targetRadius = 0.1;
-      } else if (age < 180) {
-        // Nucleosynthesis (t < 3 minutes)
-        targetRadius = 1;
-      } else if (age < 380000 * YEAR) {
-        // Dark ages (t < 380k years)
-        targetRadius = 10;
-      } else if (age < 100e6 * YEAR) {
-        // Molecular era (t < 100 Myr)
-        targetRadius = 100;
-      } else if (age < 1e9 * YEAR) {
-        // Stellar era (t < 1 Gyr)
-        targetRadius = 500;
-      } else {
-        // Galactic era (t > 1 Gyr)
-        const ageGyr = age / (1e9 * YEAR);
-        targetRadius = 1000 + (ageGyr * 1000); // Zoom out as universe ages
+    if (age < 1) {
+      // Quantum foam (t < 1 second)
+      targetRadius = 0.1;
+    } else if (age < 180) {
+      // Nucleosynthesis (t < 3 minutes)
+      targetRadius = 1;
+    } else if (age < 380000 * YEAR) {
+      // Dark ages (t < 380k years)
+      targetRadius = 10;
+    } else if (age < 100e6 * YEAR) {
+      // Molecular era (t < 100 Myr)
+      targetRadius = 100;
+    } else if (age < 1e9 * YEAR) {
+      // Stellar era (t < 1 Gyr)
+      targetRadius = 500;
+    } else {
+      // Galactic era (t > 1 Gyr)
+      const ageGyr = age / (1e9 * YEAR);
+      targetRadius = 1000 + (ageGyr * 1000); // Zoom out as universe ages
       }
     }
     

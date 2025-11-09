@@ -40,7 +40,11 @@ export class UniverseEvolutionGoal extends Goal {
     // Universe expands OR contracts based on phase
     if (universe.phase === 'expansion') {
       const hubbleRate = universe.calculateExpansionRate();
-      universe.scaleFactor *= Math.pow(1 + hubbleRate, universe.deltaTime);
+      
+      // CRITICAL: Scale must advance by SAME timeScale as age!
+      // Otherwise age jumps billions of years but scale only ticks by frame delta
+      const scaledDelta = universe.deltaTime * timeScale;
+      universe.scaleFactor *= Math.pow(1 + hubbleRate, scaledDelta);
 
       // Check if reached maximum expansion
       if (universe.scaleFactor >= universe.maxScale) {
@@ -57,7 +61,10 @@ export class UniverseEvolutionGoal extends Goal {
       universe.recordEvent('contraction-begins');
     } else if (universe.phase === 'contraction') {
       const contractionRate = 0.01; // Shrink 1% per second
-      universe.scaleFactor *= Math.pow(1 - contractionRate, universe.deltaTime);
+      
+      // Scale also uses timeScale during contraction
+      const scaledDelta = universe.deltaTime * timeScale;
+      universe.scaleFactor *= Math.pow(1 - contractionRate, scaledDelta);
 
       // Check if Big Crunch imminent
       if (universe.scaleFactor < 1.0) {

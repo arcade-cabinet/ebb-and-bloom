@@ -103,7 +103,7 @@ async function runSimulation() {
       params: { density, temperature: T_CLOUD, mass },
       state: agent.getState(),
     });
-    
+  
     console.log(`Agent ${i}: M=${mass.toExponential(2)} kg, Jeans=${response.value ? 'CAN COLLAPSE ✅' : 'too low'}`);
     
     spawner.getManager().add(agent);

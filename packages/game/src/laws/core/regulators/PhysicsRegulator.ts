@@ -73,7 +73,7 @@ export class PhysicsRegulator implements DomainRegulator {
           precedent = 'Stellar evolution lifecycle';
         }
         break;
-      
+
       case 'check-jeans-instability':
         // Check if molecular cloud has sufficient mass to collapse (Jeans criterion)
         // M > M_J where M_J = (5 * k_B * T / (G * m_H))^(3/2) * (3 / (4 * π * ρ))^(1/2)
