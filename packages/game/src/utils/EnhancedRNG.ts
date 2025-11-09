@@ -17,19 +17,24 @@ export class EnhancedRNG {
   private normalGen: any;
   
   constructor(seed: string) {
-    // Convert string seed to numeric
+    // Convert string seed to numeric (constrained to uint32)
     const numericSeed = this.hashSeed(seed);
+    
+    console.log('[EnhancedRNG] Seed:', seed, '-> Hash:', numericSeed);
     
     // Mersenne Twister (much better than Math.random or basic seedrandom)
     // @stdlib exports a factory function by default
     this.mt = mt19937Factory.factory({ seed: numericSeed });
     
-    // Normal distribution generator
-    this.normalGen = normalFactory.factory({ prng: this.mt });
+    // Normal distribution generator - use the PRNG instance, not seed again
+    this.normalGen = normalFactory.factory({ 
+      prng: this.mt  // Pass the PRNG, not seed
+    });
   }
   
   /**
    * Hash string seed to number (FNV-1a)
+   * Returns 32-bit unsigned integer
    */
   private hashSeed(seed: string): number {
     let hash = 2166136261;
@@ -37,7 +42,8 @@ export class EnhancedRNG {
       hash ^= seed.charCodeAt(i);
       hash = Math.imul(hash, 16777619);
     }
-    return hash >>> 0; // Unsigned 32-bit
+    // Ensure it's within uint32 range
+    return (hash >>> 0) % 4294967296; // Max uint32
   }
   
   /**
