@@ -53,6 +53,27 @@ export class PhysicsRegulator implements DomainRegulator {
         }
         break;
 
+      case 'evaluate-spawn-conditions':
+        // Check if physics allows agent spawning
+        const agentType = request.params.agentType;
+        
+        // Stellar agents: Always OK from physics perspective (entropy regulates timing)
+        if (agentType === 'stellar') {
+          value = true;
+          precedent = 'Physics allows stellar formation';
+        } else {
+          value = true; // Other types OK by default
+        }
+        break;
+
+      case 'get-default-goals':
+        // Return goals for stellar agents
+        if (request.params.agentType === 'stellar') {
+          value = ['FusionGoal', 'SupernovaGoal'];
+          precedent = 'Stellar evolution lifecycle';
+        }
+        break;
+
       default:
         console.warn(`[PhysicsRegulator] Unknown action: ${request.action}`);
     }

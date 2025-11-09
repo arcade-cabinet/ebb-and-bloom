@@ -52,6 +52,11 @@ export interface SpawnResult {
 export class AgentSpawner {
   private entityManagers: Map<AgentType, EntityManager>;
   
+  // Epoch callbacks (EntropyAgent triggers these)
+  onStellarEpoch?: (state: any) => Promise<void>;
+  onPlanetaryEpoch?: (state: any) => Promise<void>;
+  onLifeEpoch?: (state: any) => Promise<void>;
+  
   constructor() {
     // One EntityManager per scale
     this.entityManagers = new Map([
@@ -63,6 +68,17 @@ export class AgentSpawner {
     ]);
     
     console.log('[AgentSpawner] Initialized with 5 entity managers (one per scale)');
+  }
+  
+  /**
+   * Get total agent count across all managers
+   */
+  getTotalAgentCount(): number {
+    let total = 0;
+    for (const manager of this.entityManagers.values()) {
+      total += manager.entities.length;
+    }
+    return total;
   }
   
   /**
@@ -84,14 +100,19 @@ export class AgentSpawner {
     }
     
     console.log(`  ✅ Spawn approved by legal broker`);
+    console.log(`  Creating agent...`);
     
     // Step 2: Create agent
     const agent = await this.createAgent(request);
+    console.log(`  Agent created: ${agent.name}`);
     
     // Step 3: Assign goals (from legal broker)
+    console.log(`  Assigning goals...`);
     await this.assignGoals(agent, request.state);
+    console.log(`  Goals assigned`);
     
     // Step 4: Add to appropriate entity manager
+    console.log(`  Adding to entity manager...`);
     const manager = this.entityManagers.get(request.type);
     if (!manager) {
       throw new Error(`No entity manager for type: ${request.type}`);

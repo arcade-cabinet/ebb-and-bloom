@@ -11,6 +11,7 @@
  * - Conflicts resolved by coordination
  */
 
+import { EntropyRegulator } from './regulators/EntropyRegulator';
 import { PhysicsRegulator } from './regulators/PhysicsRegulator';
 import { BiologyRegulator } from './regulators/BiologyRegulator';
 import { EcologyRegulator } from './regulators/EcologyRegulator';
@@ -88,12 +89,21 @@ export class LegalBroker {
 
   constructor() {
     // Register all domain regulators
+    // ENTROPY FIRST - it has veto power over everything
+    this.registerRegulator(new EntropyRegulator());
     this.registerRegulator(new PhysicsRegulator());
     this.registerRegulator(new BiologyRegulator());
     this.registerRegulator(new EcologyRegulator());
     this.registerRegulator(new SocialRegulator());
     this.registerRegulator(new TechnologyRegulator());
     this.registerRegulator(new PlanetaryRegulator());
+  }
+  
+  /**
+   * Get regulator (for external state updates)
+   */
+  getRegulator(domain: string): DomainRegulator | undefined {
+    return this.regulators.get(domain);
   }
 
   /**

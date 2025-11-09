@@ -13,47 +13,69 @@ import { LEGAL_BROKER } from '../../laws/core/LegalBroker';
 import { UniverseState, ComplexityLevel } from '../../laws/core/UniversalLawCoordinator';
 
 /**
- * Expand Universe Goal
+ * Universe Evolution Goal
+ * 
+ * Combined goal: Expand + Maximize Entropy (both happen simultaneously)
  */
-export class ExpandUniverseGoal extends Goal {
+export class UniverseEvolutionGoal extends Goal {
   private expansionRate: number = 1.0; // Hubble parameter
   
   activate(): void {
-    console.log('[EntropyAgent] Goal: Expand universe (Hubble flow)');
+    console.log('[EntropyAgent] Goal: Evolve universe (expansion + entropy)');
   }
   
   execute(): void {
     const universe = this.owner as EntropyAgent;
+    const YEAR = 365.25 * 86400;
     
-    // Universe expands (Hubble's Law)
-    universe.scale += this.expansionRate * universe.deltaTime;
+    // TIME SCALE DETERMINED BY UNIVERSE STATE (not hardcoded!)
+    // Fast when universe is homogeneous, slow when structure forms
+    const activityLevel = universe.calculateActivityLevel();
+    const timeScale = universe.calculateTimeScale(activityLevel);
     
-    // Temperature drops as universe expands
-    universe.temperature = universe.initialTemperature / Math.pow(universe.scale, 1);
+    // Advance cosmic time (EntropyAgent determines pace!)
+    universe.age += universe.deltaTime * timeScale;
+    
+    // Universe expands OR contracts based on phase
+    if (universe.phase === 'expansion') {
+      const hubbleRate = universe.calculateExpansionRate();
+      universe.scale *= Math.pow(1 + hubbleRate, universe.deltaTime);
+      
+      // Check if reached maximum expansion
+      if (universe.scale >= universe.maxScale) {
+        console.log(`\n[EntropyAgent] 🌌 MAXIMUM EXPANSION REACHED!`);
+        console.log(`  Scale: ${universe.scale.toExponential(2)}x`);
+        universe.phase = 'maximum';
+        universe.hasReachedMax = true;
+        universe.recordEvent('maximum-expansion');
+      }
+    } else if (universe.phase === 'maximum') {
+      // Brief pause at maximum, then begin contraction
+      universe.phase = 'contraction';
+      console.log(`\n[EntropyAgent] ⬇️ CONTRACTION BEGINS - Big Crunch countdown!`);
+      universe.recordEvent('contraction-begins');
+    } else if (universe.phase === 'contraction') {
+      const contractionRate = 0.01; // Shrink 1% per second
+      universe.scale *= Math.pow(1 - contractionRate, universe.deltaTime);
+      
+      // Check if Big Crunch imminent
+      if (universe.scale < 1.0) {
+        console.log(`\n[EntropyAgent] 🌀 BIG CRUNCH!`);
+        universe.recordEvent('big-crunch');
+      }
+    }
+    
+    // Temperature follows scale (T ∝ 1/a during expansion, T ∝ a during contraction)
+    if (universe.phase === 'expansion' || universe.phase === 'maximum') {
+      universe.temperature = universe.initialTemperature / universe.scale;
+    } else {
+      universe.temperature = universe.initialTemperature * (1 / universe.scale); // Heats up!
+    }
+    
+    // Entropy ALWAYS increases (2nd Law of Thermodynamics)
+    universe.entropy += universe.deltaTime;
     
     // Ongoing goal (never completes)
-    this.status = Goal.STATUS.ACTIVE;
-  }
-}
-
-/**
- * Maximize Entropy Goal
- */
-export class MaximizeEntropyGoal extends Goal {
-  activate(): void {
-    console.log('[EntropyAgent] Goal: Maximize entropy (2nd Law of Thermodynamics)');
-  }
-  
-  execute(): void {
-    const universe = this.owner as EntropyAgent;
-    
-    // Entropy always increases
-    universe.entropy += universe.deltaTime * 1e-10; // Slow increase
-    
-    // Check if conditions allow structure formation
-    // (Paradox: Local entropy DECREASES when stars/life form, but TOTAL increases)
-    
-    // Ongoing goal
     this.status = Goal.STATUS.ACTIVE;
   }
 }
@@ -76,6 +98,11 @@ export class EntropyAgent extends Vehicle {
   age: number = 0;               // Seconds since Big Bang
   deltaTime: number = 0;
   
+  // Cosmic cycle tracking
+  phase: 'expansion' | 'maximum' | 'contraction' = 'expansion';
+  maxScale: number = 1e30;       // Will expand to this then contract
+  hasReachedMax: boolean = false;
+  
   // Energy budget
   totalEnergy: number = 1e69;    // Joules (conserved)
   freeEnergy: number = 1e69;     // Available for work
@@ -83,18 +110,31 @@ export class EntropyAgent extends Vehicle {
   // State
   complexity: ComplexityLevel = ComplexityLevel.VOID;
   
-  constructor() {
+  // Spawner reference (so EntropyAgent can trigger spawning)
+  spawner?: any; // AgentSpawner
+  
+  // Spawn tracking
+  private spawnedDensityField: boolean = false;
+  private spawnedStellarAgents: boolean = false;
+  private spawnedPlanetaryAgents: boolean = false;
+  
+  // Event tracking (for adaptive time scale)
+  private lastAgentCount: number = 0;
+  private recentEvents: string[] = [];
+  private eventWindow: number = 10; // Track last 10 seconds
+  
+  constructor(spawner?: any) {
     super();
     
     this.name = 'Universe';
     this.position.set(0, 0, 0); // Origin (Big Bang location)
+    this.spawner = spawner;
     
     // Goal-driven behavior
     this.brain = new Think(this);
     
-    // Primary goals (never-ending)
-    this.brain.addSubgoal(new ExpandUniverseGoal(this));
-    this.brain.addSubgoal(new MaximizeEntropyGoal(this));
+    // Single goal: Evolve universe (expansion + entropy combined)
+    this.brain.addSubgoal(new UniverseEvolutionGoal(this));
     
     console.log('[EntropyAgent] Universe initialized');
     console.log(`  t=0 | T=${this.temperature.toExponential(2)}K | ρ=${this.density.toExponential(2)}kg/m³`);
@@ -128,7 +168,104 @@ export class EntropyAgent extends Vehicle {
     // Check for universe-scale events (RARE)
     this.checkCosmicEvents();
     
+    // Update EntropyRegulator state (so it can regulate spawning)
+    // Only update every 100 frames to avoid spam
+    if (Math.floor(this.age * 1000) % 100 === 0) {
+      this.updateRegulatorState();
+    }
+    
+    // Check if should trigger spawning (EntropyAgent orchestrates, Regulator validates)
+    this.checkSpawnTriggers();
+    
     super.update(delta);
+  }
+  
+  /**
+   * Update EntropyRegulator state
+   * 
+   * EntropyAgent feeds its state to the regulator.
+   * Regulator REGULATES spawning decisions.
+   */
+  private updateRegulatorState(): void {
+    // Update EntropyRegulator via Legal Broker
+    LEGAL_BROKER.ask({
+      domain: 'entropy',
+      action: 'update-state',
+      params: {
+        temperature: this.temperature,
+        density: this.density,
+        age: this.age,
+        scale: this.scale,
+      },
+      state: this.getState(),
+    }).catch(err => {
+      console.error('[EntropyAgent] Failed to update regulator:', err);
+    });
+  }
+  
+  /**
+   * Check if should trigger spawning
+   * 
+   * EntropyAgent is AWARE and ORCHESTRATES
+   * But validates through EntropyRegulator
+   */
+  private checkSpawnTriggers(): void {
+    if (!this.spawner) return;
+    
+    const YEAR = 365.25 * 86400;
+    const state = this.getState();
+    
+    // Debug
+    const ageYears = this.age / YEAR;
+    const ageMyr = ageYears / 1e6;
+    
+    // Stellar spawning (first stars form ~100-200 Myr after Big Bang)
+    // Stars form in LOCAL cold clouds, not waiting for whole universe to cool
+    if (ageMyr > 100 && ageMyr < 1000 && !this.spawnedStellarAgents) {
+      console.log(`\n[EntropyAgent] 🌟 STELLAR EPOCH!`);
+      console.log(`  Age: ${(this.age / (1e6 * YEAR)).toFixed(1)} Myr`);
+      console.log(`  T_universe: ${this.temperature.toExponential(2)} K (cosmic background)`);
+      console.log(`  Scale: ${this.scale.toExponential(2)}x`);
+      console.log(`  Phase: ${this.phase}`);
+      
+      // Mark flag IMMEDIATELY (prevents re-trigger)
+      this.spawnedStellarAgents = true;
+      
+      // Record event (slows down time to watch star formation)
+      this.recordEvent('stellar-epoch');
+      
+      // Record marker in Zustand (where galaxy hearts form)
+      this.recordStructureMarker('stellar-epoch', this.scale);
+      
+      // Trigger spawner callback (async but don't await - let it happen)
+      console.log(`  Checking spawner callback: ${typeof this.spawner.onStellarEpoch}`);
+      if (this.spawner.onStellarEpoch) {
+        console.log(`  Calling spawner.onStellarEpoch...`);
+        this.spawner.onStellarEpoch(state).catch((err: any) => {
+          console.error('[EntropyAgent] Stellar spawn failed:', err);
+        });
+      } else {
+        console.log(`  ⚠️ No onStellarEpoch callback registered!`);
+      }
+    }
+    
+    // Planetary spawning (planet formation era)
+    if (this.age > 9.2e9 * YEAR && !this.spawnedPlanetaryAgents) {
+      console.log(`\n[EntropyAgent] 🪐 PLANETARY EPOCH!`);
+      
+      // Mark flag IMMEDIATELY
+      this.spawnedPlanetaryAgents = true;
+      
+      // Record event
+      this.recordEvent('planetary-epoch');
+      
+      // Trigger spawner callback
+      if (this.spawner.onPlanetaryEpoch) {
+        this.spawner.onPlanetaryEpoch(state).catch((err: any) => {
+          console.error('[EntropyAgent] Planetary spawn failed:', err);
+        });
+      }
+    }
   }
   
   /**
@@ -185,6 +322,122 @@ export class EntropyAgent extends Vehicle {
     } else {
       this.complexity = ComplexityLevel.MOLECULES;
     }
+  }
+  
+  /**
+   * Calculate activity level (how much is happening)
+   * 
+   * ENTROPY AGENT IS AWARE:
+   * - Tracks agent spawning rate
+   * - Monitors events (supernovae, life, etc.)
+   * - Detects phase transitions
+   * 
+   * Low activity = fast forward
+   * High activity = slow down to watch
+   */
+  calculateActivityLevel(): number {
+    let activity = 0.0;
+    
+    // Check agent spawn rate
+    if (this.spawner && this.spawner.getTotalAgentCount) {
+      const currentCount = this.spawner.getTotalAgentCount();
+      const spawnRate = Math.abs(currentCount - this.lastAgentCount);
+      this.lastAgentCount = currentCount;
+      
+      // High spawn rate = activity
+      if (spawnRate > 10) activity += 0.5;
+      else if (spawnRate > 0) activity += 0.2;
+    }
+    
+    // Check recent events
+    if (this.recentEvents.length > 5) {
+      activity += 0.3; // Many events happening
+    } else if (this.recentEvents.length > 0) {
+      activity += 0.1; // Some events
+    }
+    
+    // Check temperature change (rapid cooling = activity)
+    const tempChangeRate = Math.abs(this.temperature - (this.initialTemperature / (this.scale - 1 || 1)));
+    if (tempChangeRate > 1e10) {
+      activity += 0.2;
+    }
+    
+    return Math.min(1.0, activity); // Cap at 1.0
+  }
+  
+  /**
+   * Record event (for activity tracking)
+   */
+  recordEvent(event: string): void {
+    this.recentEvents.push(event);
+    
+    // Keep only recent events
+    if (this.recentEvents.length > 20) {
+      this.recentEvents.shift();
+    }
+  }
+  
+  /**
+   * Record structure marker (for Zustand state)
+   * 
+   * As universe EXPANDS, EntropyAgent marks where structures form
+   * Later: zoom in → load markers → spawn agents at those locations
+   */
+  recordStructureMarker(type: string, scale: number): void {
+    console.log(`[EntropyAgent] 📍 MARKER: ${type} at scale ${scale.toExponential(2)}x`);
+    
+    // TODO: Write to Zustand state
+    // This tells the system WHERE galaxy hearts are, WHERE star clusters formed, etc.
+    // When player zooms in → read markers → spawn agents at marked locations
+  }
+  
+  /**
+   * Calculate time scale (how fast time flows)
+   * 
+   * EntropyAgent DETERMINES PACE based on activity
+   */
+  calculateTimeScale(activity: number): number {
+    const YEAR = 365.25 * 86400;
+    
+    // Fast forward when nothing happening
+    if (activity < 0.1) {
+      return 1e15; // 1 quadrillion years/second
+    }
+    
+    // Slow down when things happening
+    if (activity < 0.5) {
+      return 1e12; // 1 trillion years/second
+    }
+    
+    // Very slow when lots happening
+    return 1e9; // 1 billion years/second
+  }
+  
+  /**
+   * Calculate expansion rate (Hubble parameter)
+   * 
+   * EntropyAgent determines expansion based on age
+   */
+  calculateExpansionRate(): number {
+    const YEAR = 365.25 * 86400;
+    
+    // Cosmic inflation (early universe)
+    if (this.age < 1e-32) {
+      return 100; // Doubles every 10^-35 seconds!
+    }
+    
+    // Post-inflation expansion
+    if (this.age < 1e6 * YEAR) {
+      return 1.0; // Fast expansion until recombination
+    }
+    
+    // Matter-dominated era
+    if (this.age < 7e9 * YEAR) {
+      return 0.1; // Slower
+    }
+    
+    // Dark energy era (accelerated expansion)
+    return 0.2; // Speeds up again
   }
   
   /**
