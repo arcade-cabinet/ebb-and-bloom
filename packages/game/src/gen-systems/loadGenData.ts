@@ -54,7 +54,7 @@ export async function generateGameData(seed: string, verbose = false) {
  * Generate ecological parameters from planet
  */
 function generateEcology(planet: any, rng: EnhancedRNG) {
-  const temperature = planet.surfaceTemp || 288;
+  const temperature = planet.surfaceTemp || planet.surfaceTemperature || 288;
   const gravity = planet.surfaceGravity || 9.81;
   const atmosphere = planet.atmosphere;
   
@@ -62,11 +62,11 @@ function generateEcology(planet: any, rng: EnhancedRNG) {
   const sunlight = 250; // W/m² (Earth-like for now)
   const rainfall = atmosphere ? rng.normal(1000, 500) : 0; // mm/year
   
-  const productivity = LAWS.ecology.carryingCapacity.primaryProductivity(
+  const productivity = LAWS.ecology.carryingCapacity?.primaryProductivity?.(
     temperature,
     rainfall,
     sunlight
-  );
+  ) || 1000; // Default kcal/m²/yr if law missing
   
   // Determine biomes from temperature and rainfall
   const biomes = determineBiomes(temperature, rainfall, rng);
@@ -146,7 +146,8 @@ function generateCreatureArchetypes(ecology: any, planet: any, rng: EnhancedRNG)
     const mass = Math.min(typicalMass, maxMass * 0.1); // Don't exceed 10% of max
     
     // Metabolism from Kleiber's Law
-    const metabolism = LAWS.biology.allometry?.basalMetabolicRate?.(mass) || 70 * Math.pow(mass, 0.75);
+    const metabolicRate = LAWS.biology.allometry?.basalMetabolicRate?.(mass) || 70 * Math.pow(mass, 0.75);
+    const metabolism = isNaN(metabolicRate) ? 70 * Math.pow(mass, 0.75) : metabolicRate;
     
     // Determine locomotion from biome
     const locomotion = determineLocomotion(biome.type, rng);
@@ -177,10 +178,11 @@ function generateCreatureArchetypes(ecology: any, planet: any, rng: EnhancedRNG)
       sociality,
       groupSize: sociality === 'pack' ? rng.poisson(8) + 2 : 1,
       
-      // Derived properties
+      // Derived properties (with NaN guards)
       lifespan: LAWS.biology.allometry?.maxLifespan?.(mass) || 10.5 * Math.pow(mass, 0.25),
       homeRange: LAWS.biology.allometry?.homeRange?.(mass, trophicLevel) || 0.011 * Math.pow(mass, 1.02),
-      metabolism,
+      metabolism: isNaN(metabolism) ? 70 * Math.pow(mass, 0.75) : metabolism,
+      metabolicRate: metabolism, // Alias for compatibility
     });
   }
   
