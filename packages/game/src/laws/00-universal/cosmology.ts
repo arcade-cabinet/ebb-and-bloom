@@ -1,6 +1,6 @@
 /**
  * Cosmological Laws
- * 
+ *
  * The Big Bang, expansion, and ultimate fate of the universe.
  * Anchors ALL timescales.
  */
@@ -16,12 +16,12 @@ export const UniversalTimeline = {
    * Absolute zero: The Big Bang
    */
   t_bigBang: 0,
-  
+
   /**
    * Current age of universe (observed)
    */
   t_now: 13.8e9 * YEAR, // 13.8 billion years
-  
+
   /**
    * Key milestones (observed)
    */
@@ -41,7 +41,7 @@ export const UniversalTimeline = {
     animals_earth: 13.2e9 * YEAR, // ~600 Mya ago
     humanCivilization_earth: 13.799999e9 * YEAR, // ~10,000 ya ago
   },
-  
+
   /**
    * Future projections
    */
@@ -53,7 +53,7 @@ export const UniversalTimeline = {
     lastRedDwarf: 10e15 * YEAR, // Quadrillion years
     lastBlackHoleDeath: 1e100 * YEAR, // Googol years (Hawking radiation)
   },
-  
+
   /**
    * Ultimate fate (choose one)
    */
@@ -83,27 +83,25 @@ export const Expansion = {
    * Hubble constant (current value)
    */
   H0_kmPerSPerMpc: 70, // km/s/Mpc
-  
+
   /**
    * Hubble parameter at time t
    * H(t) = H₀ × √(Ω_m × (1+z)³ + Ω_Λ)
-   * 
+   *
    * Simplified: Assume matter-dominated early, Λ-dominated late
    */
   hubbleParameter: (t_seconds: number): number => {
     const t_years = t_seconds / YEAR;
     const z = Expansion.redshift(t_years); // Redshift
-    
+
     const Omega_m = 0.3; // Matter density
     const Omega_Lambda = 0.7; // Dark energy
-    
-    const H_t = Expansion.H0_kmPerSPerMpc * Math.sqrt(
-      Omega_m * Math.pow(1 + z, 3) + Omega_Lambda
-    );
-    
+
+    const H_t = Expansion.H0_kmPerSPerMpc * Math.sqrt(Omega_m * Math.pow(1 + z, 3) + Omega_Lambda);
+
     return H_t;
   },
-  
+
   /**
    * Redshift from time
    * Earlier times → higher redshift
@@ -111,9 +109,9 @@ export const Expansion = {
   redshift: (t_years: number): number => {
     const t_now_years = UniversalTimeline.t_now / YEAR;
     // Simplified: z ≈ (t_now / t) - 1
-    return Math.max(0, (t_now_years / t_years) - 1);
+    return Math.max(0, t_now_years / t_years - 1);
   },
-  
+
   /**
    * Scale factor
    * How much has universe expanded since time t?
@@ -140,13 +138,13 @@ export const Nucleosynthesis = {
     Li: 1e-10, // Trace lithium
     // Everything else comes from stars!
   },
-  
+
   /**
    * Time when nucleosynthesis occurs
    */
   t_start: 10, // 10 seconds after Big Bang
   t_end: 1200, // 20 minutes (then universe too cool)
-  
+
   /**
    * Temperature at time t (early universe)
    * T(t) ∝ t^(-1/2)
@@ -172,20 +170,20 @@ export const StructureFormation = {
    */
   jeansMass: (temperature_K: number, density_kgm3: number): number => {
     const k_B = 1.380649e-23; // Boltzmann constant
-    const G = 6.67430e-11;
+    const G = 6.6743e-11;
     const m_H = 1.67e-27; // Hydrogen mass
-    
-    const numerator = Math.pow(Math.PI * k_B * temperature_K / (G * m_H), 1.5);
+
+    const numerator = Math.pow((Math.PI * k_B * temperature_K) / (G * m_H), 1.5);
     const denominator = Math.sqrt(density_kgm3);
-    
+
     return numerator / denominator; // kg
   },
-  
+
   /**
    * First stars form when universe cools enough
    */
   t_firstStarFormation: 100e6 * YEAR,
-  
+
   /**
    * Star formation rate over cosmic time
    * Peaked at z ~ 2 (10 billion years ago)
@@ -194,7 +192,7 @@ export const StructureFormation = {
     const t_now = UniversalTimeline.t_now / YEAR;
     const age = t_now - t_years;
     const peak = 3e9; // 3 Gyr after Big Bang
-    
+
     // Gaussian-ish peak
     const rate = Math.exp(-Math.pow((age - peak) / 2e9, 2));
     return rate; // Relative to current
@@ -210,4 +208,3 @@ export const CosmologyLaws = {
   nucleosynthesis: Nucleosynthesis,
   structure: StructureFormation,
 } as const;
-

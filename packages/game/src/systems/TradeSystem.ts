@@ -1,9 +1,9 @@
 /**
  * Trade System (Gen4)
- * 
+ *
  * Enables resource and tool exchange between creatures and packs.
  * Trade emerges from surplus, need, and social relationships.
- * 
+ *
  * Trade Types:
  * - Direct barter (creature to creature)
  * - Pack trade (pack to pack)
@@ -54,14 +54,17 @@ export class TradeSystem {
    * Update trade system
    */
   update(
-    creatures: Map<string, {
-      position: { lat: number; lon: number };
-      traits?: {
-        social?: string;
-        intelligence?: number;
-        temperament?: string;
-      };
-    }>,
+    creatures: Map<
+      string,
+      {
+        position: { lat: number; lon: number };
+        traits?: {
+          social?: string;
+          intelligence?: number;
+          temperament?: string;
+        };
+      }
+    >,
     packs: Map<string, { members: string[]; leaderId: string }>,
     _tools: Map<string, { position: { lat: number; lon: number }; type: string }>,
     _deltaTime: number
@@ -85,9 +88,7 @@ export class TradeSystem {
   /**
    * Initialize inventories for new creatures
    */
-  private initializeInventories(
-    creatures: Map<string, any>
-  ): void {
+  private initializeInventories(creatures: Map<string, any>): void {
     for (const creatureId of creatures.keys()) {
       if (!this.inventories.has(creatureId)) {
         this.inventories.set(creatureId, {
@@ -95,7 +96,7 @@ export class TradeSystem {
           tools: [],
           food: 0,
           materials: new Map(),
-          socialCredit: 5.0 // Start neutral
+          socialCredit: 5.0, // Start neutral
         });
       }
     }
@@ -105,13 +106,16 @@ export class TradeSystem {
    * Creatures create trade offers
    */
   private createTradeOffers(
-    creatures: Map<string, {
-      position: { lat: number; lon: number };
-      traits?: {
-        social?: string;
-        intelligence?: number;
-      };
-    }>,
+    creatures: Map<
+      string,
+      {
+        position: { lat: number; lon: number };
+        traits?: {
+          social?: string;
+          intelligence?: number;
+        };
+      }
+    >,
     _packs: Map<string, any>
   ): void {
     const OFFER_CHANCE = 0.001; // 0.1% per frame
@@ -121,12 +125,12 @@ export class TradeSystem {
       if (!inventory) continue;
 
       const intelligence = creature.traits?.intelligence || 0.5;
-      
+
       // Only intelligent creatures trade
       if (intelligence < 0.6) continue;
 
       // Already has active offer?
-      const hasOffer = Array.from(this.offers.values()).some(o => o.offererId === creatureId);
+      const hasOffer = Array.from(this.offers.values()).some((o) => o.offererId === creatureId);
       if (hasOffer) continue;
 
       // Create offer check
@@ -163,7 +167,7 @@ export class TradeSystem {
       requestingType,
       requestingItem,
       value: 0.5, // Base value
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
 
     this.offers.set(offer.id, offer);
@@ -174,9 +178,12 @@ export class TradeSystem {
    * Match offers and execute trades
    */
   private matchAndExecuteTrades(
-    creatures: Map<string, {
-      position: { lat: number; lon: number };
-    }>
+    creatures: Map<
+      string,
+      {
+        position: { lat: number; lon: number };
+      }
+    >
   ): void {
     const TRADE_RANGE = 5; // degrees
 
@@ -196,7 +203,11 @@ export class TradeSystem {
         if (dist > TRADE_RANGE) continue;
 
         // Buyer has what seller wants?
-        const canFulfill = this.canFulfillRequest(buyerInventory, offer.requestingType, offer.requestingItem);
+        const canFulfill = this.canFulfillRequest(
+          buyerInventory,
+          offer.requestingType,
+          offer.requestingItem
+        );
         if (!canFulfill) continue;
 
         // Execute trade
@@ -210,11 +221,7 @@ export class TradeSystem {
   /**
    * Check if inventory can fulfill request
    */
-  private canFulfillRequest(
-    inventory: CreatureInventory,
-    type: string,
-    item: string
-  ): boolean {
+  private canFulfillRequest(inventory: CreatureInventory, type: string, item: string): boolean {
     switch (type) {
       case 'food':
         return inventory.food >= 1;
@@ -283,7 +290,7 @@ export class TradeSystem {
       itemId: offer.offeringItem,
       price: offer.value,
       timestamp: Date.now(),
-      packToPackTrade: false
+      packToPackTrade: false,
     };
 
     this.transactions.push(transaction);
@@ -292,9 +299,7 @@ export class TradeSystem {
   /**
    * Pack-level resource sharing
    */
-  private shareWithinPacks(
-    packs: Map<string, { members: string[]; leaderId: string }>
-  ): void {
+  private shareWithinPacks(packs: Map<string, { members: string[]; leaderId: string }>): void {
     for (const pack of packs.values()) {
       // Calculate pack totals
       let totalFood = 0;
@@ -371,7 +376,12 @@ export class TradeSystem {
   /**
    * Add item to inventory
    */
-  addToInventory(creatureId: string, type: 'tool' | 'food' | 'material', item: string, amount: number = 1): void {
+  addToInventory(
+    creatureId: string,
+    type: 'tool' | 'food' | 'material',
+    item: string,
+    amount: number = 1
+  ): void {
     const inv = this.inventories.get(creatureId);
     if (!inv) return;
 

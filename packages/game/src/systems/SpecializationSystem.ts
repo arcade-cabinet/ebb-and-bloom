@@ -1,17 +1,23 @@
 /**
  * Specialization System (Gen4)
- * 
+ *
  * Creatures develop specialized roles based on traits and experience:
  * - Hunters: High strength, track and gather food
  * - Builders: High strength + intelligence, construct structures
  * - Crafters: High intelligence, create tools
  * - Scouts: High speed, explore and map territory
  * - Leaders: High intelligence + social, coordinate packs
- * 
+ *
  * Specialization emerges from repeated actions and natural aptitude.
  */
 
-export type SpecializationRole = 'hunter' | 'builder' | 'crafter' | 'scout' | 'leader' | 'generalist';
+export type SpecializationRole =
+  | 'hunter'
+  | 'builder'
+  | 'crafter'
+  | 'scout'
+  | 'leader'
+  | 'generalist';
 
 export interface Specialization {
   creatureId: string;
@@ -34,7 +40,7 @@ export interface SpecializationBenefit {
 
 export class SpecializationSystem {
   private specializations: Map<string, Specialization> = new Map();
-  
+
   // Role requirements (min trait values)
   private readonly ROLE_REQUIREMENTS: Record<SpecializationRole, any> = {
     hunter: { strength: 0.6, speed: 0.5 },
@@ -42,22 +48,25 @@ export class SpecializationSystem {
     crafter: { intelligence: 0.7 },
     scout: { speed: 0.7, intelligence: 0.5 },
     leader: { intelligence: 0.7, social: 'pack' },
-    generalist: {} // No requirements
+    generalist: {}, // No requirements
   };
 
   /**
    * Update specializations
    */
   update(
-    creatures: Map<string, {
-      traits?: {
-        strength?: number;
-        intelligence?: number;
-        speed?: number;
-        social?: string;
-        locomotion?: string;
-      };
-    }>,
+    creatures: Map<
+      string,
+      {
+        traits?: {
+          strength?: number;
+          intelligence?: number;
+          speed?: number;
+          social?: string;
+          locomotion?: string;
+        };
+      }
+    >,
     actions: Map<string, string[]> // creature ID -> actions performed this frame
   ): void {
     // Initialize specializations for new creatures
@@ -76,9 +85,7 @@ export class SpecializationSystem {
   /**
    * Initialize specializations
    */
-  private initializeSpecializations(
-    creatures: Map<string, { traits?: any }>
-  ): void {
+  private initializeSpecializations(creatures: Map<string, { traits?: any }>): void {
     for (const [creatureId, creature] of creatures) {
       if (this.specializations.has(creatureId)) continue;
 
@@ -87,7 +94,7 @@ export class SpecializationSystem {
         role: 'generalist',
         proficiency: 0.1,
         experience: new Map(),
-        traits: creature.traits || {}
+        traits: creature.traits || {},
       });
     }
   }
@@ -95,9 +102,7 @@ export class SpecializationSystem {
   /**
    * Track experience from actions
    */
-  private trackExperience(
-    actions: Map<string, string[]>
-  ): void {
+  private trackExperience(actions: Map<string, string[]>): void {
     for (const [creatureId, actionList] of actions) {
       const spec = this.specializations.get(creatureId);
       if (!spec) continue;
@@ -112,14 +117,12 @@ export class SpecializationSystem {
   /**
    * Update roles based on experience and traits
    */
-  private updateRoles(
-    _creatures: Map<string, { traits?: any }>
-  ): void {
+  private updateRoles(_creatures: Map<string, { traits?: any }>): void {
     for (const spec of this.specializations.values()) {
       // Get most performed action
       let maxAction = '';
       let maxCount = 0;
-      
+
       for (const [action, count] of spec.experience) {
         if (count > maxCount) {
           maxCount = count;
@@ -128,9 +131,10 @@ export class SpecializationSystem {
       }
 
       // Determine role from action pattern
-      if (maxCount > 100) { // Minimum experience threshold
+      if (maxCount > 100) {
+        // Minimum experience threshold
         const newRole = this.determineRoleFromAction(maxAction, spec.traits);
-        
+
         // Check if creature meets requirements
         if (this.meetsRequirements(spec.traits, newRole)) {
           spec.role = newRole;
@@ -169,7 +173,7 @@ export class SpecializationSystem {
    */
   private meetsRequirements(traits: any, role: SpecializationRole): boolean {
     const reqs = this.ROLE_REQUIREMENTS[role];
-    
+
     for (const [trait, minValue] of Object.entries(reqs)) {
       if (trait === 'social') {
         if (traits.social !== minValue) return false;
@@ -177,7 +181,7 @@ export class SpecializationSystem {
         if ((traits[trait] || 0) < (minValue as number)) return false;
       }
     }
-    
+
     return true;
   }
 
@@ -188,7 +192,7 @@ export class SpecializationSystem {
     for (const spec of this.specializations.values()) {
       // Proficiency grows with total experience
       const totalExp = Array.from(spec.experience.values()).reduce((sum, val) => sum + val, 0);
-      
+
       // Logarithmic growth: 0 exp = 0.1, 1000 exp = 0.5, 10000 exp = 1.0
       spec.proficiency = Math.min(1.0, 0.1 + Math.log10(totalExp + 1) * 0.25);
     }
@@ -219,7 +223,7 @@ export class SpecializationSystem {
       crafter: ['craft', 'create_tool', 'upgrade'],
       scout: ['explore', 'scout', 'navigate'],
       leader: ['lead', 'coordinate', 'teach'],
-      generalist: []
+      generalist: [],
     };
 
     return roleActions[role]?.includes(action) || false;
@@ -236,14 +240,14 @@ export class SpecializationSystem {
    * Get all specialized creatures (not generalists)
    */
   getSpecialized(): Specialization[] {
-    return Array.from(this.specializations.values()).filter(s => s.role !== 'generalist');
+    return Array.from(this.specializations.values()).filter((s) => s.role !== 'generalist');
   }
 
   /**
    * Get creatures by role
    */
   getByRole(role: SpecializationRole): Specialization[] {
-    return Array.from(this.specializations.values()).filter(s => s.role === role);
+    return Array.from(this.specializations.values()).filter((s) => s.role === role);
   }
 
   /**

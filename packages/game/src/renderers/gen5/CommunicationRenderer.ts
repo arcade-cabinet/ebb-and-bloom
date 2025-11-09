@@ -1,6 +1,6 @@
 /**
  * Communication Renderer (Gen5)
- * 
+ *
  * Visualizes symbolic communication:
  * - Symbol markers on surface (shapes + colors)
  * - Teaching indicators (beams of light)
@@ -77,42 +77,62 @@ export class CommunicationRenderer {
         mesh = MeshBuilder.CreateDisc(symbol.id, { radius: size }, this.scene);
         break;
       case 'triangle':
-        mesh = MeshBuilder.CreateCylinder(symbol.id, {
-          diameterTop: 0,
-          diameterBottom: size * 2,
-          height: size * 1.5,
-          tessellation: 3
-        }, this.scene);
+        mesh = MeshBuilder.CreateCylinder(
+          symbol.id,
+          {
+            diameterTop: 0,
+            diameterBottom: size * 2,
+            height: size * 1.5,
+            tessellation: 3,
+          },
+          this.scene
+        );
         mesh.rotation.x = Math.PI / 2;
         break;
       case 'square':
         mesh = MeshBuilder.CreateBox(symbol.id, { size: size * 1.5 }, this.scene);
         break;
       case 'line':
-        mesh = MeshBuilder.CreateCylinder(symbol.id, {
-          diameter: size * 0.3,
-          height: size * 2
-        }, this.scene);
+        mesh = MeshBuilder.CreateCylinder(
+          symbol.id,
+          {
+            diameter: size * 0.3,
+            height: size * 2,
+          },
+          this.scene
+        );
         break;
       case 'spiral':
-        mesh = MeshBuilder.CreateTorus(symbol.id, {
-          diameter: size * 2,
-          thickness: size * 0.3,
-          tessellation: 16
-        }, this.scene);
+        mesh = MeshBuilder.CreateTorus(
+          symbol.id,
+          {
+            diameter: size * 2,
+            thickness: size * 0.3,
+            tessellation: 16,
+          },
+          this.scene
+        );
         break;
       case 'cross':
         // Create + shape with two boxes
-        const box1 = MeshBuilder.CreateBox(`${symbol.id}-v`, {
-          width: size * 0.4,
-          height: size * 2,
-          depth: size * 0.4
-        }, this.scene);
-        const box2 = MeshBuilder.CreateBox(`${symbol.id}-h`, {
-          width: size * 2,
-          height: size * 0.4,
-          depth: size * 0.4
-        }, this.scene);
+        const box1 = MeshBuilder.CreateBox(
+          `${symbol.id}-v`,
+          {
+            width: size * 0.4,
+            height: size * 2,
+            depth: size * 0.4,
+          },
+          this.scene
+        );
+        const box2 = MeshBuilder.CreateBox(
+          `${symbol.id}-h`,
+          {
+            width: size * 2,
+            height: size * 0.4,
+            depth: size * 0.4,
+          },
+          this.scene
+        );
         box2.parent = box1;
         mesh = box1;
         break;
@@ -160,11 +180,15 @@ export class CommunicationRenderer {
       const pos3d = this.latLonToVector3(position.lat, position.lon);
 
       // Create glowing ring around teacher
-      const ring = MeshBuilder.CreateTorus(`teach-${teacherId}`, {
-        diameter: 2,
-        thickness: 0.1,
-        tessellation: 16
-      }, this.scene);
+      const ring = MeshBuilder.CreateTorus(
+        `teach-${teacherId}`,
+        {
+          diameter: 2,
+          thickness: 0.1,
+          tessellation: 16,
+        },
+        this.scene
+      );
 
       ring.position = pos3d;
 
@@ -182,7 +206,7 @@ export class CommunicationRenderer {
    * Clean up meshes for deleted symbols
    */
   private cleanupOldMeshes(symbols: Symbol[]): void {
-    const activeIds = new Set(symbols.map(s => s.id));
+    const activeIds = new Set(symbols.map((s) => s.id));
 
     for (const [id, mesh] of this.symbolMeshes) {
       if (!activeIds.has(id)) {

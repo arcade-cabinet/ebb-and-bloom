@@ -3,14 +3,7 @@
  * Uses GameEngine for direct function calls (no HTTP)
  */
 
-import {
-  Scene,
-  Engine,
-  ArcRotateCamera,
-  HemisphericLight,
-  Vector3,
-  Color4,
-} from '@babylonjs/core';
+import { Scene, Engine, ArcRotateCamera, HemisphericLight, Vector3, Color4 } from '@babylonjs/core';
 import {
   AdvancedDynamicTexture,
   Button,
@@ -65,11 +58,13 @@ export class MainMenuScene {
 
   private hexToRgb(hex: string): { r: number; g: number; b: number } {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-      r: parseInt(result[1], 16) / 255,
-      g: parseInt(result[2], 16) / 255,
-      b: parseInt(result[3], 16) / 255
-    } : { r: 0, g: 0, b: 0 };
+    return result
+      ? {
+          r: parseInt(result[1], 16) / 255,
+          g: parseInt(result[2], 16) / 255,
+          b: parseInt(result[3], 16) / 255,
+        }
+      : { r: 0, g: 0, b: 0 };
   }
 
   private setupGUI(): void {
@@ -277,14 +272,14 @@ export class MainMenuScene {
 
   private async handleStartNew(): Promise<void> {
     const seed = this.seedInput?.text || this.currentSeed || 'v1-test-world-seed';
-    
+
     if (!seed || seed.trim().length === 0) {
       alert('Please enter a seed (3 words)');
       return;
     }
 
     this.hideSeedInputModal();
-    
+
     try {
       // Create game via direct function call (no HTTP)
       const gameId = `game-${Date.now()}`;
@@ -305,7 +300,7 @@ export class MainMenuScene {
 
   private async handleContinue(): Promise<void> {
     const gameId = await getItem('ebb-bloom-gameId');
-    
+
     if (!gameId) {
       alert('No saved game found. Please start a new game.');
       return;
@@ -315,7 +310,7 @@ export class MainMenuScene {
       // Verify game exists via direct function call
       const engine = new GameEngine(gameId);
       const state = engine.getState();
-      
+
       if (!state || (state.generation === 0 && !state.planet)) {
         throw new Error('Saved game not found or invalid');
       }
@@ -448,7 +443,10 @@ export class MainMenuScene {
     techLabel.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
     this.creditsModal.addControl(techLabel);
 
-    const techStack = new TextBlock('techStack', 'BabylonJS • TypeScript • Capacitor\nVercel AI SDK • Zod • Yuka AI');
+    const techStack = new TextBlock(
+      'techStack',
+      'BabylonJS • TypeScript • Capacitor\nVercel AI SDK • Zod • Yuka AI'
+    );
     techStack.fontSize = 14;
     techStack.fontFamily = 'JetBrains Mono, monospace';
     techStack.color = '#A0AEC0';

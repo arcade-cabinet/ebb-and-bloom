@@ -1,12 +1,12 @@
 /**
  * Structure Building System (Gen3)
- * 
+ *
  * Enables creatures to build simple structures based on their archetype:
  * - Burrow Engineers: Underground burrow complexes
  * - Arboreal Opportunists: Tree platform nests
  * - Littoral Harvesters: Stilt structures in shallow water
  * - Cursorial Foragers: Windbreak shelters
- * 
+ *
  * Structures provide benefits:
  * - Safety (reduced fear)
  * - Energy efficiency (faster rest)
@@ -42,16 +42,19 @@ export class StructureBuildingSystem {
    * Update building system
    */
   update(
-    creatures: Map<string, {
-      position: { lat: number; lon: number };
-      traits?: {
-        locomotion?: string;
-        social?: string;
-        intelligence?: number;
-        strength?: number;
-      };
-      energy?: number;
-    }>,
+    creatures: Map<
+      string,
+      {
+        position: { lat: number; lon: number };
+        traits?: {
+          locomotion?: string;
+          social?: string;
+          intelligence?: number;
+          strength?: number;
+        };
+        energy?: number;
+      }
+    >,
     toolKnowledge: Map<string, boolean>, // creature ID -> has tools
     deltaTime: number
   ): void {
@@ -75,14 +78,17 @@ export class StructureBuildingSystem {
    * Smart creatures with tools start building projects
    */
   private initiateProjects(
-    creatures: Map<string, {
-      position: { lat: number; lon: number };
-      traits?: {
-        locomotion?: string;
-        intelligence?: number;
-        social?: string;
-      };
-    }>,
+    creatures: Map<
+      string,
+      {
+        position: { lat: number; lon: number };
+        traits?: {
+          locomotion?: string;
+          intelligence?: number;
+          social?: string;
+        };
+      }
+    >,
     toolKnowledge: Map<string, boolean>
   ): void {
     const INITIATION_CHANCE = 0.0005; // 0.05% per frame
@@ -91,7 +97,7 @@ export class StructureBuildingSystem {
       // Only smart creatures with tools initiate
       const intelligence = creature.traits?.intelligence || 0.5;
       const hasTools = toolKnowledge.get(creatureId) || false;
-      
+
       if (!hasTools || intelligence < 0.6) continue;
 
       // Already too many projects nearby?
@@ -101,7 +107,7 @@ export class StructureBuildingSystem {
       if (Math.random() < INITIATION_CHANCE * intelligence) {
         const locomotion = creature.traits?.locomotion || 'cursorial';
         const structureType = this.getStructureTypeForLocomotion(locomotion);
-        
+
         this.startProject(structureType, creature.position, creatureId);
       }
     }
@@ -111,15 +117,18 @@ export class StructureBuildingSystem {
    * Creatures work on nearby projects
    */
   private workOnProjects(
-    creatures: Map<string, {
-      position: { lat: number; lon: number };
-      traits?: {
-        strength?: number;
-        intelligence?: number;
-        social?: string;
-      };
-      energy?: number;
-    }>,
+    creatures: Map<
+      string,
+      {
+        position: { lat: number; lon: number };
+        traits?: {
+          strength?: number;
+          intelligence?: number;
+          social?: string;
+        };
+        energy?: number;
+      }
+    >,
     toolKnowledge: Map<string, boolean>,
     deltaTime: number
   ): void {
@@ -171,7 +180,7 @@ export class StructureBuildingSystem {
       targetType: type,
       location: position,
       contributors: new Map([[initiatorId, 0.01]]), // Start with small contribution from initiator
-      startTime: Date.now()
+      startTime: Date.now(),
     };
 
     this.projects.set(projectId, project);
@@ -186,7 +195,10 @@ export class StructureBuildingSystem {
     const toComplete: string[] = [];
     for (const [projId, project] of this.projects) {
       // Calculate total progress
-      const totalWork = Array.from(project.contributors.values()).reduce((sum, work) => sum + work, 0);
+      const totalWork = Array.from(project.contributors.values()).reduce(
+        (sum, work) => sum + work,
+        0
+      );
 
       if (totalWork >= COMPLETION_THRESHOLD) {
         toComplete.push(projId);
@@ -196,7 +208,7 @@ export class StructureBuildingSystem {
     // Complete projects
     for (const projId of toComplete) {
       const project = this.projects.get(projId)!;
-      
+
       // Create structure
       const structure: Structure = {
         id: project.structureId,
@@ -207,7 +219,7 @@ export class StructureBuildingSystem {
         durability: 1.0,
         capacity: this.getCapacityForType(project.targetType),
         occupants: new Set(),
-        foodStorage: 0
+        foodStorage: 0,
       };
 
       this.structures.set(structure.id, structure);
@@ -235,10 +247,13 @@ export class StructureBuildingSystem {
    * Creatures use structures for benefits
    */
   private useStructures(
-    creatures: Map<string, {
-      position: { lat: number; lon: number };
-      energy?: number;
-    }>
+    creatures: Map<
+      string,
+      {
+        position: { lat: number; lon: number };
+        energy?: number;
+      }
+    >
   ): void {
     const USE_RANGE = 1; // degrees
 
@@ -347,12 +362,12 @@ export class StructureBuildingSystem {
    */
   getStructureAt(position: { lat: number; lon: number }): Structure | null {
     const RANGE = 1;
-    
+
     for (const structure of this.structures.values()) {
       const dist = this.distanceOnSphere(position, structure.position);
       if (dist < RANGE) return structure;
     }
-    
+
     return null;
   }
 }

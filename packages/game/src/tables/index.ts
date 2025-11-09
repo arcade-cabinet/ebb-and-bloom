@@ -1,6 +1,6 @@
 /**
  * Tables Index
- * 
+ *
  * Lookup tables and constants for the law-based simulation.
  */
 

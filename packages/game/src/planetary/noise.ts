@@ -15,7 +15,7 @@ export class PerlinNoise {
     // Seed-based random number generator
     let hash = 0;
     for (let i = 0; i < seed.length; i++) {
-      hash = ((hash << 5) - hash) + seed.charCodeAt(i);
+      hash = (hash << 5) - hash + seed.charCodeAt(i);
       hash = hash & hash; // Convert to 32-bit integer
     }
 
@@ -33,7 +33,7 @@ export class PerlinNoise {
   }
 
   private seededRandom(seed: number) {
-    return function() {
+    return function () {
       seed = (seed * 9301 + 49297) % 233280;
       return seed / 233280;
     };

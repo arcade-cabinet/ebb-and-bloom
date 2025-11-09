@@ -1,6 +1,6 @@
 /**
  * Acoustics Laws
- * 
+ *
  * Sound propagation, frequency generation, vocal production.
  * From physics → procedural audio generation.
  */
@@ -9,7 +9,7 @@ export const SoundPropagation = {
   /**
    * Speed of sound in medium
    * v = √(γ × R × T / M)
-   * 
+   *
    * Where γ = adiabatic index, R = gas constant, T = temp, M = molar mass
    */
   speedOfSound_ms: (
@@ -20,18 +20,18 @@ export const SoundPropagation = {
     const R = 8.314; // J/(mol·K)
     return Math.sqrt((gamma * R * temperature_K) / (molarMass_gmol / 1000));
   },
-  
+
   /**
    * Atmospheric absorption
    * High frequencies absorbed more than low
-   * 
+   *
    * Why thunder rumbles (high frequencies attenuated)
    */
   attenuationCoefficient_dBperM: (frequency_Hz: number, humidity: number): number => {
     // Simplified
     return (Math.pow(frequency_Hz / 1000, 2) * 0.01) / (1 + humidity);
   },
-  
+
   /**
    * Max hearing distance
    */
@@ -42,10 +42,10 @@ export const SoundPropagation = {
   ): number => {
     const hearingThreshold_dB = 0;
     const attenuation = this.attenuationCoefficient_dBperM(frequency_Hz, 0.5) * atmosphericDensity;
-    
+
     return (sourceIntensity_dB - hearingThreshold_dB) / attenuation;
   },
-  
+
   /**
    * Doppler shift
    * f' = f × (v_sound + v_observer) / (v_sound + v_source)
@@ -56,7 +56,10 @@ export const SoundPropagation = {
     observerVelocity_ms: number,
     soundSpeed_ms: number
   ): number => {
-    return originalFreq_Hz * (soundSpeed_ms + observerVelocity_ms) / (soundSpeed_ms + sourceVelocity_ms);
+    return (
+      (originalFreq_Hz * (soundSpeed_ms + observerVelocity_ms)) /
+      (soundSpeed_ms + sourceVelocity_ms)
+    );
   },
 };
 
@@ -64,7 +67,7 @@ export const VocalProduction = {
   /**
    * Formant frequencies from vocal tract
    * F_n = (2n - 1) × c / (4L)
-   * 
+   *
    * Where c = sound speed, L = vocal tract length
    */
   formantFrequency_Hz: (
@@ -74,7 +77,7 @@ export const VocalProduction = {
   ): number => {
     return ((2 * formantNumber - 1) * soundSpeed_ms) / (4 * vocalTractLength_m);
   },
-  
+
   /**
    * Vocal tract length from body size
    * Larger animals = deeper voices
@@ -82,31 +85,31 @@ export const VocalProduction = {
   vocalTractLength_m: (bodyLength_m: number): number => {
     return bodyLength_m * 0.15; // ~15% of body length
   },
-  
+
   /**
    * Fundamental frequency (pitch)
    * f₀ = c / (2L) for vocal folds
-   * 
+   *
    * Smaller = higher pitch
    */
   fundamentalFrequency_Hz: (mass_kg: number): number => {
     // Empirical: f₀ ∝ M^(-0.4)
     return 500 * Math.pow(mass_kg, -0.4); // Hz
   },
-  
+
   /**
    * Vowel from formants
    * Different formant combinations = different sounds
    */
   vowelFromFormants: (F1_Hz: number, F2_Hz: number): string => {
     // Simplified vowel space
-    if (F1 < 400 && F2 > 2000) return 'ee'; // [i]
-    if (F1 < 400 && F2 < 1000) return 'oo'; // [u]
-    if (F1 > 700 && F2 < 1200) return 'ah'; // [ɑ]
-    if (F1 > 500 && F2 > 1800) return 'ay'; // [æ]
+    if (F1_Hz < 400 && F2_Hz > 2000) return 'ee'; // [i]
+    if (F1_Hz < 400 && F2_Hz < 1000) return 'oo'; // [u]
+    if (F1_Hz > 700 && F2_Hz < 1200) return 'ah'; // [ɑ]
+    if (F1_Hz > 500 && F2_Hz > 1800) return 'ay'; // [æ]
     return 'uh'; // [ə] schwa
   },
-  
+
   /**
    * Call loudness from lung capacity
    * Larger lungs = louder calls
@@ -132,7 +135,7 @@ export const AnimalSounds = {
     };
     return calls[purpose] || calls.contact;
   },
-  
+
   /**
    * Frequency modulation (vibrato, tremolo)
    * Living sounds fluctuate
@@ -140,7 +143,7 @@ export const AnimalSounds = {
   modulationDepth_Hz: (emotionalArousal: number): number => {
     return 5 + emotionalArousal * 20; // Hz deviation
   },
-  
+
   /**
    * Harmonics (overtones)
    * Fundamental + integer multiples
@@ -158,7 +161,7 @@ export const Resonance = {
   cavityResonance_Hz: (length_m: number, soundSpeed_ms: number = 343): number => {
     return soundSpeed_ms / (2 * length_m);
   },
-  
+
   /**
    * Q factor (sharpness of resonance)
    * Higher Q = more "ringy" sound
@@ -174,4 +177,3 @@ export const AcousticsLaws = {
   animalSounds: AnimalSounds,
   resonance: Resonance,
 } as const;
-

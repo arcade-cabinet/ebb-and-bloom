@@ -20,7 +20,7 @@ for (let i = 0; i < iterations; i++) {
 
 const time1 = Date.now() - start1;
 console.log(`  ✅ ${iterations} universes in ${time1}ms`);
-console.log(`  ${(iterations / time1 * 1000).toFixed(0)} universes/second\n`);
+console.log(`  ${((iterations / time1) * 1000).toFixed(0)} universes/second\n`);
 
 // Benchmark 2: Biological calculations
 console.log(`Running ${iterations} biological calculations...`);
@@ -36,7 +36,7 @@ for (let i = 0; i < iterations; i++) {
 
 const time2 = Date.now() - start2;
 console.log(`  ✅ ${iterations * 4} calculations in ${time2}ms`);
-console.log(`  ${(iterations * 4 / time2 * 1000).toFixed(0)} calculations/second\n`);
+console.log(`  ${(((iterations * 4) / time2) * 1000).toFixed(0)} calculations/second\n`);
 
 // Benchmark 3: Social simulations
 console.log(`Running ${iterations} social calculations...`);
@@ -50,11 +50,12 @@ for (let i = 0; i < iterations; i++) {
 
 const time3 = Date.now() - start3;
 console.log(`  ✅ ${iterations * 2} calculations in ${time3}ms`);
-console.log(`  ${(iterations * 2 / time3 * 1000).toFixed(0)} calculations/second\n`);
+console.log(`  ${(((iterations * 2) / time3) * 1000).toFixed(0)} calculations/second\n`);
 
 console.log('═══════════════════════════════════════════════════════════');
-console.log(`TOTAL: ${((iterations + iterations * 4 + iterations * 2) / (time1 + time2 + time3) * 1000).toFixed(0)} operations/second`);
+console.log(
+  `TOTAL: ${(((iterations + iterations * 4 + iterations * 2) / (time1 + time2 + time3)) * 1000).toFixed(0)} operations/second`
+);
 console.log('═══════════════════════════════════════════════════════════\n');
 
 console.log('✅ Performance excellent - laws are FAST.\n');
-

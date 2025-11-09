@@ -1,6 +1,6 @@
 /**
  * Gen4 Civilization Renderer
- * 
+ *
  * Visualizes advanced civilization features:
  * - Trade routes (lines between traders)
  * - Specialization badges (icons above creatures)
@@ -8,7 +8,15 @@
  * - Advanced tools (enhanced tool models)
  */
 
-import { Scene, MeshBuilder, StandardMaterial, Color3, Vector3, Mesh, LinesMesh } from '@babylonjs/core';
+import {
+  Scene,
+  MeshBuilder,
+  StandardMaterial,
+  Color3,
+  Vector3,
+  Mesh,
+  LinesMesh,
+} from '@babylonjs/core';
 import type { TradeOffer } from '../../systems/TradeSystem.js';
 import type { Specialization } from '../../systems/SpecializationSystem.js';
 import type { Workshop } from '../../systems/WorkshopSystem.js';
@@ -48,7 +56,7 @@ export class CivilizationRenderer {
   ): void {
     // Remove old lines
     for (const [id, line] of this.tradeLines) {
-      if (!offers.find(o => o.id === id)) {
+      if (!offers.find((o) => o.id === id)) {
         line.dispose();
         this.tradeLines.delete(id);
       }
@@ -78,19 +86,18 @@ export class CivilizationRenderer {
   /**
    * Create trade line between two creatures
    */
-  private createTradeLine(
-    offerId: string,
-    start: Vector3,
-    end: Vector3,
-    tradeType: string
-  ): void {
+  private createTradeLine(offerId: string, start: Vector3, end: Vector3, tradeType: string): void {
     let line = this.tradeLines.get(offerId);
 
     if (!line) {
-      line = MeshBuilder.CreateLines(`trade-${offerId}`, {
-        points: [start, end],
-        updatable: true
-      }, this.scene);
+      line = MeshBuilder.CreateLines(
+        `trade-${offerId}`,
+        {
+          points: [start, end],
+          updatable: true,
+        },
+        this.scene
+      );
 
       // Color by trade type
       const color = this.getTradeColor(tradeType);
@@ -101,9 +108,13 @@ export class CivilizationRenderer {
     } else {
       // Update line positions
       line.dispose();
-      line = MeshBuilder.CreateLines(`trade-${offerId}`, {
-        points: [start, end]
-      }, this.scene);
+      line = MeshBuilder.CreateLines(
+        `trade-${offerId}`,
+        {
+          points: [start, end],
+        },
+        this.scene
+      );
       line.color = this.getTradeColor(tradeType);
       line.alpha = 0.5;
       this.tradeLines.set(offerId, line);
@@ -117,10 +128,14 @@ export class CivilizationRenderer {
     let marker = this.tradeLines.get(`marker-${offerId}`) as Mesh;
 
     if (!marker) {
-      marker = MeshBuilder.CreateSphere(`trade-marker-${offerId}`, {
-        diameter: 0.2,
-        segments: 8
-      }, this.scene);
+      marker = MeshBuilder.CreateSphere(
+        `trade-marker-${offerId}`,
+        {
+          diameter: 0.2,
+          segments: 8,
+        },
+        this.scene
+      );
 
       const mat = new StandardMaterial(`mat-trade-${offerId}`, this.scene);
       const color = this.getTradeColor(tradeType);
@@ -164,7 +179,7 @@ export class CivilizationRenderer {
   ): void {
     // Remove old badges
     for (const [id, badge] of this.specializationBadges) {
-      if (!specializations.find(s => s.creatureId === id)) {
+      if (!specializations.find((s) => s.creatureId === id)) {
         badge.dispose();
         this.specializationBadges.delete(id);
       }
@@ -219,54 +234,78 @@ export class CivilizationRenderer {
     switch (role) {
       case 'hunter':
         // Triangle (spear)
-        badge = MeshBuilder.CreateCylinder(`badge-${creatureId}`, {
-          diameterTop: 0,
-          diameterBottom: 0.15,
-          height: 0.2
-        }, this.scene);
+        badge = MeshBuilder.CreateCylinder(
+          `badge-${creatureId}`,
+          {
+            diameterTop: 0,
+            diameterBottom: 0.15,
+            height: 0.2,
+          },
+          this.scene
+        );
         mat.diffuseColor = new Color3(0.8, 0.2, 0.2); // Red
         break;
 
       case 'builder':
         // Cube (building block)
-        badge = MeshBuilder.CreateBox(`badge-${creatureId}`, {
-          size: 0.15
-        }, this.scene);
+        badge = MeshBuilder.CreateBox(
+          `badge-${creatureId}`,
+          {
+            size: 0.15,
+          },
+          this.scene
+        );
         mat.diffuseColor = new Color3(0.6, 0.4, 0.2); // Brown
         break;
 
       case 'crafter':
         // Torus (tool)
-        badge = MeshBuilder.CreateTorus(`badge-${creatureId}`, {
-          diameter: 0.15,
-          thickness: 0.03
-        }, this.scene);
+        badge = MeshBuilder.CreateTorus(
+          `badge-${creatureId}`,
+          {
+            diameter: 0.15,
+            thickness: 0.03,
+          },
+          this.scene
+        );
         mat.diffuseColor = new Color3(0.8, 0.8, 0.2); // Yellow
         break;
 
       case 'scout':
         // Elongated sphere (fast movement)
-        badge = MeshBuilder.CreateSphere(`badge-${creatureId}`, {
-          diameterX: 0.1,
-          diameterY: 0.15,
-          diameterZ: 0.1
-        }, this.scene);
+        badge = MeshBuilder.CreateSphere(
+          `badge-${creatureId}`,
+          {
+            diameterX: 0.1,
+            diameterY: 0.15,
+            diameterZ: 0.1,
+          },
+          this.scene
+        );
         mat.diffuseColor = new Color3(0.2, 0.8, 0.8); // Cyan
         break;
 
       case 'leader':
         // Star/crown (authority)
-        badge = MeshBuilder.CreatePolyhedron(`badge-${creatureId}`, {
-          type: 0,
-          size: 0.1
-        }, this.scene);
+        badge = MeshBuilder.CreatePolyhedron(
+          `badge-${creatureId}`,
+          {
+            type: 0,
+            size: 0.1,
+          },
+          this.scene
+        );
         mat.diffuseColor = new Color3(0.8, 0.2, 0.8); // Purple
         break;
 
       default:
-        badge = MeshBuilder.CreateSphere(`badge-${creatureId}`, {
-          diameter: 0.1
-        }, this.scene);
+        badge = MeshBuilder.CreateSphere(
+          `badge-${creatureId}`,
+          {
+            diameter: 0.1,
+          },
+          this.scene
+        );
         mat.diffuseColor = new Color3(0.5, 0.5, 0.5); // Gray
     }
 
@@ -281,7 +320,7 @@ export class CivilizationRenderer {
   private renderWorkshops(workshops: Workshop[]): void {
     // Remove old markers
     for (const [id, marker] of this.workshopMarkers) {
-      if (!workshops.find(w => w.id === id)) {
+      if (!workshops.find((w) => w.id === id)) {
         marker.dispose();
         this.workshopMarkers.delete(id);
       }
@@ -301,11 +340,15 @@ export class CivilizationRenderer {
 
     if (!marker) {
       // Create glowing cylinder above workshop
-      marker = MeshBuilder.CreateCylinder(`workshop-${workshop.id}`, {
-        diameterTop: 0.3,
-        diameterBottom: 0.4,
-        height: 0.5
-      }, this.scene);
+      marker = MeshBuilder.CreateCylinder(
+        `workshop-${workshop.id}`,
+        {
+          diameterTop: 0.3,
+          diameterBottom: 0.4,
+          height: 0.5,
+        },
+        this.scene
+      );
 
       const mat = new StandardMaterial(`mat-workshop-${workshop.id}`, this.scene);
       const color = this.getWorkshopColor(workshop.type);

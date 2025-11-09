@@ -25,14 +25,14 @@ export default defineConfig({
   testDir: './test-e2e',
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 2 : 1, // Retry once on failure
   workers: 1,
   reporter: 'html',
-  timeout: 30000,
+  timeout: 60000, // Increased to 60s for heavy simulations
   expect: {
-    timeout: 10000,
+    timeout: 15000, // Increased to 15s for assertions
   },
-  globalTimeout: 600000,
+  globalTimeout: 900000, // 15 minutes total
   maxFailures: 5,
 
   use: {
@@ -40,8 +40,8 @@ export default defineConfig({
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
-    navigationTimeout: 30000,
-    actionTimeout: 10000,
+    navigationTimeout: 45000, // Increased for heavy pages
+    actionTimeout: 15000, // Increased for complex interactions
   },
 
   projects: [

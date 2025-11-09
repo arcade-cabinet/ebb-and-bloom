@@ -1,6 +1,6 @@
 /**
  * Interaction Visualizer (Gen2)
- * 
+ *
  * Renders visual indicators for creature interactions:
  * - Territorial disputes (red sparks/flashes)
  * - Social bonds (connection lines)
@@ -30,7 +30,7 @@ export class InteractionVisualizer {
   ): void {
     // Remove old markers
     for (const [id, marker] of this.interactionMarkers) {
-      if (!interactions.find(i => this.getInteractionId(i) === id)) {
+      if (!interactions.find((i) => this.getInteractionId(i) === id)) {
         marker.dispose();
         this.interactionMarkers.delete(id);
       }
@@ -39,7 +39,7 @@ export class InteractionVisualizer {
     // Render each interaction
     for (const interaction of interactions) {
       const id = this.getInteractionId(interaction);
-      
+
       switch (interaction.type) {
         case 'territorial':
           this.renderTerritorialDispute(id, interaction, creatures);
@@ -67,7 +67,7 @@ export class InteractionVisualizer {
   ): void {
     const actor = creatures.get(interaction.actorId);
     const target = creatures.get(interaction.targetId);
-    
+
     if (!actor || !target) return;
 
     const actorPos = this.latLonToVector3(actor.lat, actor.lon, 0.2);
@@ -75,24 +75,32 @@ export class InteractionVisualizer {
 
     // Draw line between creatures
     let line = this.interactionMarkers.get(id);
-    
+
     if (!line) {
-      line = MeshBuilder.CreateLines(`territorial-${id}`, {
-        points: [actorPos, targetPos],
-        updatable: true
-      }, this.scene);
-      
+      line = MeshBuilder.CreateLines(
+        `territorial-${id}`,
+        {
+          points: [actorPos, targetPos],
+          updatable: true,
+        },
+        this.scene
+      );
+
       line.color = new Color3(1, 0, 0); // Red
       line.alpha = 0.6 * interaction.strength;
-      
+
       this.interactionMarkers.set(id, line);
     } else {
       // Update positions
       line.dispose();
-      line = MeshBuilder.CreateLines(`territorial-${id}`, {
-        points: [actorPos, targetPos],
-        updatable: true
-      }, this.scene);
+      line = MeshBuilder.CreateLines(
+        `territorial-${id}`,
+        {
+          points: [actorPos, targetPos],
+          updatable: true,
+        },
+        this.scene
+      );
       line.color = new Color3(1, 0, 0);
       line.alpha = 0.6 * interaction.strength;
       this.interactionMarkers.set(id, line);
@@ -109,31 +117,39 @@ export class InteractionVisualizer {
   ): void {
     const actor = creatures.get(interaction.actorId);
     const target = creatures.get(interaction.targetId);
-    
+
     if (!actor || !target) return;
 
     const actorPos = this.latLonToVector3(actor.lat, actor.lon, 0.15);
     const targetPos = this.latLonToVector3(target.lat, target.lon, 0.15);
 
     let line = this.interactionMarkers.get(id);
-    
+
     if (!line) {
-      line = MeshBuilder.CreateLines(`social-${id}`, {
-        points: [actorPos, targetPos],
-        updatable: true
-      }, this.scene);
-      
+      line = MeshBuilder.CreateLines(
+        `social-${id}`,
+        {
+          points: [actorPos, targetPos],
+          updatable: true,
+        },
+        this.scene
+      );
+
       line.color = new Color3(0, 1, 0); // Green
       line.alpha = 0.3;
-      
+
       this.interactionMarkers.set(id, line);
     } else {
       // Update positions
       line.dispose();
-      line = MeshBuilder.CreateLines(`social-${id}`, {
-        points: [actorPos, targetPos],
-        updatable: true
-      }, this.scene);
+      line = MeshBuilder.CreateLines(
+        `social-${id}`,
+        {
+          points: [actorPos, targetPos],
+          updatable: true,
+        },
+        this.scene
+      );
       line.color = new Color3(0, 1, 0);
       line.alpha = 0.3;
       this.interactionMarkers.set(id, line);
@@ -150,31 +166,39 @@ export class InteractionVisualizer {
   ): void {
     const actor = creatures.get(interaction.actorId);
     const target = creatures.get(interaction.targetId);
-    
+
     if (!actor || !target) return;
 
     const actorPos = this.latLonToVector3(actor.lat, actor.lon, 0.2);
     const targetPos = this.latLonToVector3(target.lat, target.lon, 0.2);
 
     let line = this.interactionMarkers.get(id);
-    
+
     if (!line) {
-      line = MeshBuilder.CreateLines(`predation-${id}`, {
-        points: [actorPos, targetPos],
-        updatable: true
-      }, this.scene);
-      
+      line = MeshBuilder.CreateLines(
+        `predation-${id}`,
+        {
+          points: [actorPos, targetPos],
+          updatable: true,
+        },
+        this.scene
+      );
+
       line.color = new Color3(1, 0.5, 0); // Orange
       line.alpha = 0.8;
-      
+
       this.interactionMarkers.set(id, line);
     } else {
       // Update positions
       line.dispose();
-      line = MeshBuilder.CreateLines(`predation-${id}`, {
-        points: [actorPos, targetPos],
-        updatable: true
-      }, this.scene);
+      line = MeshBuilder.CreateLines(
+        `predation-${id}`,
+        {
+          points: [actorPos, targetPos],
+          updatable: true,
+        },
+        this.scene
+      );
       line.color = new Color3(1, 0.5, 0);
       line.alpha = 0.8;
       this.interactionMarkers.set(id, line);
@@ -191,23 +215,27 @@ export class InteractionVisualizer {
   ): void {
     const actor = creatures.get(interaction.actorId);
     const target = creatures.get(interaction.targetId);
-    
+
     if (!actor || !target) return;
 
     const actorPos = this.latLonToVector3(actor.lat, actor.lon, 0.15);
     const targetPos = this.latLonToVector3(target.lat, target.lon, 0.15);
 
     let line = this.interactionMarkers.get(id);
-    
+
     if (!line) {
-      line = MeshBuilder.CreateLines(`pack-${id}`, {
-        points: [actorPos, targetPos],
-        updatable: true
-      }, this.scene);
-      
+      line = MeshBuilder.CreateLines(
+        `pack-${id}`,
+        {
+          points: [actorPos, targetPos],
+          updatable: true,
+        },
+        this.scene
+      );
+
       line.color = new Color3(0, 1, 1); // Cyan
       line.alpha = 0.4;
-      
+
       this.interactionMarkers.set(id, line);
     }
   }

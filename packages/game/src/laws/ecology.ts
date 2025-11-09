@@ -1,6 +1,6 @@
 /**
  * Ecological Laws
- * 
+ *
  * Laws governing populations, carrying capacity, trophic dynamics,
  * and species interactions.
  */
@@ -14,26 +14,34 @@ import { BiologicalLaws } from './biology.js';
 export const CarryingCapacity = {
   /**
    * Calculate carrying capacity from primary productivity
-   * 
+   *
    * K = (Primary Productivity × Trophic Efficiency) / Individual Energy Needs
+   * 
+   * UNITS FIXED: Now accepts kcal/m²/yr and kcal/day (as actually passed)
    */
   calculate: (
-    primaryProductivity: number, // kJ/km²/year
+    primaryProductivity: number, // kcal/m²/year (NET PRIMARY PRODUCTIVITY)
     trophicLevel: number, // 1 = herbivore, 2 = carnivore, etc.
-    individualMetabolicRate: number // W
+    individualMetabolicRate: number // kcal/day (BASAL METABOLIC RATE)
   ): number => {
     // Trophic efficiency (10% rule)
     const efficiency = Math.pow(0.1, trophicLevel - 1);
+
+    // Available energy at this trophic level (kcal/m²/year)
+    const availableEnergy = primaryProductivity * efficiency;
+
+    // Individual energy needs per year (kcal/year)
+    const individualNeed = individualMetabolicRate * 365.25;
+
+    // Carrying capacity (individuals per m²)
+    const K_per_m2 = availableEnergy / individualNeed;
     
-    // Available energy at this trophic level
-    const availableEnergy = primaryProductivity * efficiency; // kJ/km²/year
+    // Convert to individuals per km² (more realistic scale)
+    const K_per_km2 = K_per_m2 * 1e6; // 1 km² = 1e6 m²
     
-    // Individual energy needs per year
-    const individualNeed = individualMetabolicRate * 31536000 / 1000; // kJ/year
-    
-    return availableEnergy / individualNeed; // individuals/km²
+    return K_per_km2; // individuals/km²
   },
-  
+
   /**
    * Primary productivity from environmental factors
    */
@@ -44,20 +52,20 @@ export const CarryingCapacity = {
   ): number => {
     // Simplified Miami model
     // NPP increases with temperature and rainfall (to a point)
-    
+
     const tempOptimum = 298; // 25°C
     const tempFactor = Math.exp(-Math.pow((temperature - tempOptimum) / 15, 2));
-    
+
     const rainFactor = Math.min(1, rainfall / 1500); // Saturates at 1500mm
-    
+
     const sunFactor = sunlight / 250; // Normalize to Earth average
-    
+
     // Base productivity: tropical rainforest ≈ 2000 g C/m²/year ≈ 8e7 kJ/km²/year
     const maxProductivity = 8e7;
-    
+
     return maxProductivity * tempFactor * rainFactor * sunFactor;
   },
-  
+
   /**
    * Logistic growth equation
    * dN/dt = r * N * (1 - N/K)
@@ -89,10 +97,11 @@ export const PredatorPreyDynamics = {
     predationRate: number, // β
     dt: number
   ): number => {
-    const dN = (birthRate * preyPopulation - predationRate * preyPopulation * predatorPopulation) * dt;
+    const dN =
+      (birthRate * preyPopulation - predationRate * preyPopulation * predatorPopulation) * dt;
     return preyPopulation + dN;
   },
-  
+
   /**
    * Predator population change
    * dN_predator/dt = δ*N_prey*N_predator - γ*N_predator
@@ -104,10 +113,11 @@ export const PredatorPreyDynamics = {
     deathRate: number, // γ
     dt: number
   ): number => {
-    const dN = (conversionRate * preyPopulation * predatorPopulation - deathRate * predatorPopulation) * dt;
+    const dN =
+      (conversionRate * preyPopulation * predatorPopulation - deathRate * predatorPopulation) * dt;
     return predatorPopulation + dN;
   },
-  
+
   /**
    * Equilibrium populations
    */
@@ -141,10 +151,13 @@ export const Competition = {
     competitionCoeff: number, // α12
     dt: number
   ): number => {
-    const dN = species1r * species1Pop * (species1K - species1Pop - competitionCoeff * species2Pop) / species1K * dt;
+    const dN =
+      ((species1r * species1Pop * (species1K - species1Pop - competitionCoeff * species2Pop)) /
+        species1K) *
+      dt;
     return species1Pop + dN;
   },
-  
+
   /**
    * Who wins competition?
    */
@@ -152,7 +165,7 @@ export const Competition = {
     species1K: number,
     species2K: number,
     alpha12: number, // effect of sp2 on sp1
-    alpha21: number  // effect of sp1 on sp2
+    alpha21: number // effect of sp1 on sp2
   ): string => {
     if (species1K > species2K * alpha12 && species2K > species1K * alpha21) {
       return 'coexistence'; // Stable coexistence
@@ -165,7 +178,7 @@ export const Competition = {
     }
     return 'unstable'; // Outcome depends on initial conditions
   },
-  
+
   /**
    * Niche differentiation required for coexistence
    */
@@ -176,7 +189,7 @@ export const Competition = {
   ): number => {
     return (dietOverlap + habitatOverlap + temporalOverlap) / 3;
   },
-  
+
   /**
    * Can species coexist?
    */
@@ -198,20 +211,20 @@ export const IslandBiogeography = {
   speciesRichness: (area_km2: number, c: number = 10, z: number = 0.25): number => {
     return Math.floor(c * Math.pow(area_km2, z));
   },
-  
+
   /**
    * Distance effect on colonization
    */
   colonizationRate: (distanceToSource_km: number, maxColonizationRate: number = 1): number => {
     return maxColonizationRate * Math.exp(-distanceToSource_km / 100);
   },
-  
+
   /**
    * Extinction rate increases as species count increases
    */
   extinctionRate: (speciesCount: number, area_km2: number): number => {
     const baseExtinction = 0.01; // per species per year
-    return baseExtinction * speciesCount / area_km2;
+    return (baseExtinction * speciesCount) / area_km2;
   },
 };
 
@@ -224,7 +237,7 @@ export const TrophicDynamics = {
    * Only ~10% of energy transfers between trophic levels
    */
   TROPHIC_EFFICIENCY: 0.1,
-  
+
   /**
    * Biomass pyramid
    * Biomass at each level
@@ -232,7 +245,7 @@ export const TrophicDynamics = {
   biomassByLevel: (primaryProduction: number, level: number): number => {
     return primaryProduction * Math.pow(TrophicDynamics.TROPHIC_EFFICIENCY, level - 1);
   },
-  
+
   /**
    * Number of trophic levels sustainable
    */
@@ -243,7 +256,7 @@ export const TrophicDynamics = {
     }
     return level - 1;
   },
-  
+
   /**
    * Predator-prey mass ratio
    * Predators typically 10-100x larger than prey
@@ -253,7 +266,7 @@ export const TrophicDynamics = {
     if (diet === 'insectivore') return 100; // Birds eating insects
     return 50; // General carnivore
   },
-  
+
   /**
    * Calculate sustainable predator population
    */
@@ -281,7 +294,7 @@ export const TerritoryLaws = {
     const trophicLevel = diet === 'herbivore' ? 1 : 2;
     return BiologicalLaws.allometry.homeRange(mass_kg, trophicLevel);
   },
-  
+
   /**
    * Territory defense
    * Defend if: Benefits > Costs
@@ -293,14 +306,14 @@ export const TerritoryLaws = {
   ): boolean => {
     // Concentrated resources are worth defending
     if (resourceDistribution === 'concentrated' && resourceValue > 0.5) return true;
-    
+
     // Patchy resources are hard to defend
     if (resourceDistribution === 'patchy') return false;
-    
+
     // High value + high pressure = worth defending
     return resourceValue * intruderPressure > 0.3;
   },
-  
+
   /**
    * Population density from territory size
    */

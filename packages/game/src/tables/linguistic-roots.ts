@@ -1,6 +1,6 @@
 /**
  * Linguistic Roots for Systematic Naming
- * 
+ *
  * Based on Latin and Greek etymology used in real scientific nomenclature.
  * These roots combine systematically to generate taxonomic names,
  * tool names, and architectural classifications.
@@ -8,64 +8,64 @@
 
 // LOCOMOTION ROOTS (from Latin/Greek)
 export const LOCOMOTION_ROOTS = {
-  cursorial: 'cursor',    // Latin: runner
-  arboreal: 'dendro',     // Greek: tree-dweller
-  fossorial: 'fossor',    // Latin: digger
-  aquatic: 'hydro',       // Greek: water
-  aerial: 'aero',         // Greek: air
-  scansorial: 'petro',    // Greek: rock-climber
+  cursorial: 'cursor', // Latin: runner
+  arboreal: 'dendro', // Greek: tree-dweller
+  fossorial: 'fossor', // Latin: digger
+  aquatic: 'hydro', // Greek: water
+  aerial: 'aero', // Greek: air
+  scansorial: 'petro', // Greek: rock-climber
   serpentine: 'serpento', // Latin: snake-like
-  sessile: 'fixo',        // Latin: fixed in place
+  sessile: 'fixo', // Latin: fixed in place
 } as const;
 
 // DIET ROOTS
 export const DIET_ROOTS = {
-  herbivore: 'herbivor',     // Latin: plant-eater
-  carnivore: 'carnivor',     // Latin: meat-eater
-  omnivore: 'omnivor',       // Latin: all-eater
+  herbivore: 'herbivor', // Latin: plant-eater
+  carnivore: 'carnivor', // Latin: meat-eater
+  omnivore: 'omnivor', // Latin: all-eater
   insectivore: 'insectivor', // Latin: insect-eater
-  frugivore: 'frugivor',     // Latin: fruit-eater
-  piscivore: 'piscivor',     // Latin: fish-eater
+  frugivore: 'frugivor', // Latin: fruit-eater
+  piscivore: 'piscivor', // Latin: fish-eater
   nectarivore: 'nectarivor', // Latin: nectar-eater
-  detritivore: 'detrivor',   // Latin: detritus-eater
+  detritivore: 'detrivor', // Latin: detritus-eater
 } as const;
 
 // SIZE ROOTS (Allometric scale)
 export const SIZE_ROOTS = {
-  micro: 'micro',   // < 0.1 kg
-  parvo: 'parvo',   // 0.1-1 kg (small)
-  meso: 'meso',     // 1-10 kg (medium)
-  macro: 'macro',   // 10-100 kg (large)
-  mega: 'mega',     // 100-1000 kg (very large)
+  micro: 'micro', // < 0.1 kg
+  parvo: 'parvo', // 0.1-1 kg (small)
+  meso: 'meso', // 1-10 kg (medium)
+  macro: 'macro', // 10-100 kg (large)
+  mega: 'mega', // 100-1000 kg (very large)
   giganto: 'giganto', // > 1000 kg (gigantic)
 } as const;
 
 // BODY PLAN ROOTS
 export const BODY_ROOTS = {
-  biped: 'bi',          // Two legs
-  quadruped: 'quadra',  // Four legs
-  hexapod: 'hexa',      // Six legs (arthropod-like)
-  octopod: 'octo',      // Eight legs
+  biped: 'bi', // Two legs
+  quadruped: 'quadra', // Four legs
+  hexapod: 'hexa', // Six legs (arthropod-like)
+  octopod: 'octo', // Eight legs
   serpentine: 'serpento', // Legless
-  multiped: 'multi',    // Many legs
+  multiped: 'multi', // Many legs
 } as const;
 
 // HABITAT MODIFIERS
 export const HABITAT_MODIFIERS = {
-  desert: 'xero',       // Greek: dry
-  forest: 'silvo',      // Latin: forest
-  mountain: 'oro',      // Greek: mountain
-  coastal: 'littoro',   // Latin: shore
-  grassland: 'prato',   // Latin: meadow
-  tundra: 'gelo',       // Greek: frost
-  wetland: 'paludo',    // Latin: marsh
-  cave: 'speleo',       // Greek: cave
+  desert: 'xero', // Greek: dry
+  forest: 'silvo', // Latin: forest
+  mountain: 'oro', // Greek: mountain
+  coastal: 'littoro', // Latin: shore
+  grassland: 'prato', // Latin: meadow
+  tundra: 'gelo', // Greek: frost
+  wetland: 'paludo', // Latin: marsh
+  cave: 'speleo', // Greek: cave
 } as const;
 
 // THERMOREGULATION ROOTS
 export const THERMO_ROOTS = {
-  endothermic: 'thermo',  // Warm-blooded
-  ectothermic: 'cryo',    // Cold-blooded
+  endothermic: 'thermo', // Warm-blooded
+  ectothermic: 'cryo', // Cold-blooded
 } as const;
 
 // SOCIALITY ROOTS
@@ -79,13 +79,13 @@ export const SOCIAL_ROOTS = {
 
 // MATERIAL ROOTS (for tools and structures)
 export const MATERIAL_ROOTS = {
-  stone: 'litho',    // Greek: stone
-  wood: 'ligno',     // Latin: wood
-  bone: 'osseo',     // Latin: bone
-  metal: 'metallo',  // Greek: metal
-  clay: 'argillo',   // Latin: clay
-  fiber: 'fibro',    // Latin: fiber
-  hide: 'dermo',     // Greek: skin
+  stone: 'litho', // Greek: stone
+  wood: 'ligno', // Latin: wood
+  bone: 'osseo', // Latin: bone
+  metal: 'metallo', // Greek: metal
+  clay: 'argillo', // Latin: clay
+  fiber: 'fibro', // Latin: fiber
+  hide: 'dermo', // Greek: skin
 } as const;
 
 // CONSTRUCTION METHOD ROOTS
@@ -101,15 +101,15 @@ export const CONSTRUCTION_ROOTS = {
 // LATIN/GREEK SUFFIXES
 export const SUFFIXES = {
   // Taxonomic suffixes
-  species: 'us',      // Standard species ending
-  genus: '',          // Genus is just the root
-  family: 'idae',     // Family suffix
-  order: 'iformes',   // Order suffix
-  
+  species: 'us', // Standard species ending
+  genus: '', // Genus is just the root
+  family: 'idae', // Family suffix
+  order: 'iformes', // Order suffix
+
   // Tool suffixes
   simple: 'is',
   complex: 'orum',
-  
+
   // Place suffixes
   place: 'um',
   site: 'ia',
@@ -129,7 +129,10 @@ export function combineRoots(
 /**
  * Generate genus name from locomotion and habitat
  */
-export function generateGenus(locomotion: keyof typeof LOCOMOTION_ROOTS, habitat?: keyof typeof HABITAT_MODIFIERS): string {
+export function generateGenus(
+  locomotion: keyof typeof LOCOMOTION_ROOTS,
+  habitat?: keyof typeof HABITAT_MODIFIERS
+): string {
   const locoRoot = LOCOMOTION_ROOTS[locomotion];
   const habitatMod = habitat ? HABITAT_MODIFIERS[habitat] : '';
   return capitalize(habitatMod + locoRoot);
@@ -138,7 +141,10 @@ export function generateGenus(locomotion: keyof typeof LOCOMOTION_ROOTS, habitat
 /**
  * Generate species name from diet and size
  */
-export function generateSpecies(diet: keyof typeof DIET_ROOTS, size: keyof typeof SIZE_ROOTS): string {
+export function generateSpecies(
+  diet: keyof typeof DIET_ROOTS,
+  size: keyof typeof SIZE_ROOTS
+): string {
   const sizeRoot = SIZE_ROOTS[size];
   const dietRoot = DIET_ROOTS[diet];
   return `${sizeRoot}${dietRoot}${SUFFIXES.species}`;
@@ -168,16 +174,16 @@ export function generateCommonName(traits: {
   sociality?: keyof typeof SOCIAL_ROOTS;
 }): string {
   const parts: string[] = [];
-  
+
   // Size descriptor
   if (traits.size === 'parvo') parts.push('Lesser');
   if (traits.size === 'mega' || traits.size === 'giganto') parts.push('Greater');
-  
+
   // Habitat descriptor
   if (traits.habitat) {
     parts.push(capitalize(traits.habitat));
   }
-  
+
   // Locomotion descriptor (converted to common English)
   if (traits.locomotion) {
     const commonLocomotion: Record<string, string> = {
@@ -190,12 +196,12 @@ export function generateCommonName(traits: {
     };
     parts.push(commonLocomotion[traits.locomotion] || traits.locomotion);
   }
-  
+
   // Pack indicator
   if (traits.sociality === 'pack') {
     parts.push('(pack)');
   }
-  
+
   return parts.join(' ');
 }
 

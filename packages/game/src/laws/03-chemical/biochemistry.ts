@@ -34,4 +34,3 @@ export const BiochemistryLaws = {
   metabolism: MetabolicPathways,
   enzymes: EnzymeKinetics,
 } as const;
-

@@ -1,12 +1,12 @@
 /**
  * Cultural Expression System (Gen5)
- * 
+ *
  * Creatures engage in non-functional cultural behaviors:
  * - Decorative patterns (body paint, markings)
  * - Ritualistic movements (dances, ceremonies)
  * - Art objects (decorative structures, sculptures)
  * - Music (rhythmic sounds, coordinated vocalizations)
- * 
+ *
  * Culture spreads within packs and between allied groups.
  */
 
@@ -53,13 +53,16 @@ export class CulturalExpressionSystem {
    * Update cultural expressions
    */
   update(
-    creatures: Map<string, {
-      position: { lat: number; lon: number };
-      traits?: {
-        intelligence?: number;
-        social?: string;
-      };
-    }>,
+    creatures: Map<
+      string,
+      {
+        position: { lat: number; lon: number };
+        traits?: {
+          intelligence?: number;
+          social?: string;
+        };
+      }
+    >,
     packs: Map<string, { members: string[]; id: string }>,
     structures: Map<string, { position: { lat: number; lon: number }; type: string }>,
     deltaTime: number
@@ -100,7 +103,7 @@ export class CulturalExpressionSystem {
         expressions: new Map(),
         activeExpression: undefined,
         expressionTimer: 0,
-        innovator: intelligence > 0.85 && social === 'pack' // Very high intelligence + social
+        innovator: intelligence > 0.85 && social === 'pack', // Very high intelligence + social
       });
     }
   }
@@ -149,7 +152,7 @@ export class CulturalExpressionSystem {
           type: siteType,
           packId,
           expressions: [],
-          visitors: new Set()
+          visitors: new Set(),
         };
 
         this.sites.set(site.id, site);
@@ -161,13 +164,16 @@ export class CulturalExpressionSystem {
    * Innovators create new cultural expressions
    */
   private createExpressions(
-    creatures: Map<string, {
-      position: { lat: number; lon: number };
-      traits?: {
-        intelligence?: number;
-        social?: string;
-      };
-    }>,
+    creatures: Map<
+      string,
+      {
+        position: { lat: number; lon: number };
+        traits?: {
+          intelligence?: number;
+          social?: string;
+        };
+      }
+    >,
     packs: Map<string, { members: string[]; id: string }>
   ): void {
     const CREATION_CHANCE = 0.0002; // 0.02% per frame
@@ -212,7 +218,7 @@ export class CulturalExpressionSystem {
       position: type === 'sculpture' ? { ...position } : undefined,
       complexity: 0.3 + Math.random() * 0.7, // 0.3-1.0
       timestamp: Date.now(),
-      practitioners: new Set([creatorId])
+      practitioners: new Set([creatorId]),
     };
 
     // Generate type-specific data
@@ -227,7 +233,7 @@ export class CulturalExpressionSystem {
       for (let i = 0; i < moveCount; i++) {
         expression.movements.push({
           angle: Math.random() * Math.PI * 2,
-          duration: 0.5 + Math.random() * 1.5 // 0.5-2 seconds
+          duration: 0.5 + Math.random() * 1.5, // 0.5-2 seconds
         });
       }
     }
@@ -247,13 +253,16 @@ export class CulturalExpressionSystem {
    * Creatures learn nearby expressions
    */
   private learnExpressions(
-    creatures: Map<string, {
-      position: { lat: number; lon: number };
-      traits?: {
-        intelligence?: number;
-        social?: string;
-      };
-    }>
+    creatures: Map<
+      string,
+      {
+        position: { lat: number; lon: number };
+        traits?: {
+          intelligence?: number;
+          social?: string;
+        };
+      }
+    >
   ): void {
     const LEARNING_RANGE = 5; // degrees
     const LEARNING_CHANCE = 0.01; // 1% per frame
@@ -306,15 +315,15 @@ export class CulturalExpressionSystem {
   ): void {
     const PERFORMANCE_CHANCE = 0.005; // 0.5% per frame
 
-      for (const [_creatureId, culture] of this.cultures) {
+    for (const [_creatureId, culture] of this.cultures) {
       // Update timer
       if (culture.expressionTimer > 0) {
         culture.expressionTimer -= deltaTime;
-        
+
         // Performance ended
         if (culture.expressionTimer <= 0) {
           culture.activeExpression = undefined;
-          
+
           // Increase proficiency
           if (culture.activeExpression) {
             const currentProf = culture.expressions.get(culture.activeExpression) || 0;
@@ -332,7 +341,7 @@ export class CulturalExpressionSystem {
 
         if (expr) {
           culture.activeExpression = exprId;
-          
+
           // Performance duration based on complexity
           culture.expressionTimer = expr.complexity * 5000 + 2000; // 2-7 seconds
         }

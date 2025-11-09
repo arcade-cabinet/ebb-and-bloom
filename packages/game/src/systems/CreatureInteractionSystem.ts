@@ -1,6 +1,6 @@
 /**
  * Creature Interaction System (Gen2)
- * 
+ *
  * Handles creature-to-creature interactions:
  * - Territorial disputes
  * - Mating behaviors
@@ -33,7 +33,7 @@ export interface CreatureInteractionState {
 export class CreatureInteractionSystem {
   private activeInteractions: Map<string, Interaction> = new Map();
   private nextInteractionId: number = 0;
-  
+
   // Interaction ranges (in degrees on sphere)
   private readonly TERRITORIAL_RANGE = 5;
   private readonly SOCIAL_RANGE = 10;
@@ -42,24 +42,23 @@ export class CreatureInteractionSystem {
   /**
    * Update all creature interactions
    */
-  update(
-    creatures: Map<string, CreatureInteractionState>
-  ): Map<string, Interaction> {
+  update(creatures: Map<string, CreatureInteractionState>): Map<string, Interaction> {
     // Clear old interactions
     for (const [id, interaction] of this.activeInteractions) {
-      if (Date.now() - interaction.timestamp > 5000) { // 5 second timeout
+      if (Date.now() - interaction.timestamp > 5000) {
+        // 5 second timeout
         this.activeInteractions.delete(id);
       }
     }
 
     // Check for new interactions
     const creatureList = Array.from(creatures.entries());
-    
+
     for (let i = 0; i < creatureList.length; i++) {
       for (let j = i + 1; j < creatureList.length; j++) {
         const [id1, creature1] = creatureList[i];
         const [id2, creature2] = creatureList[j];
-        
+
         this.checkInteraction(id1, creature1, id2, creature2);
       }
     }
@@ -77,17 +76,17 @@ export class CreatureInteractionSystem {
     creature2: CreatureInteractionState
   ): void {
     const dist = this.distanceOnSphere(creature1.position, creature2.position);
-    
+
     // Territorial interaction
     if (dist < this.TERRITORIAL_RANGE) {
       this.checkTerritorialInteraction(id1, creature1, id2, creature2, dist);
     }
-    
+
     // Social interaction (for pack creatures)
     if (dist < this.SOCIAL_RANGE) {
       this.checkSocialInteraction(id1, creature1, id2, creature2);
     }
-    
+
     // Predation (very close range)
     if (dist < this.PREDATION_RANGE) {
       this.checkPredationInteraction(id1, creature1, id2, creature2);
@@ -106,27 +105,24 @@ export class CreatureInteractionSystem {
   ): void {
     const temp1 = creature1.traits?.temperament || 'neutral';
     const temp2 = creature2.traits?.temperament || 'neutral';
-    
+
     // Aggressive creatures engage more
     const isAggressive = temp1 === 'aggressive' || temp2 === 'aggressive';
-    
+
     if (!isAggressive && Math.random() > 0.3) return; // 30% chance for non-aggressive
-    
+
     // Create territorial interaction
-    const strength = Math.max(
-      creature1.traits?.strength || 0.5,
-      creature2.traits?.strength || 0.5
-    );
-    
+    const strength = Math.max(creature1.traits?.strength || 0.5, creature2.traits?.strength || 0.5);
+
     const interaction: Interaction = {
       type: 'territorial',
       actorId: id1,
       targetId: id2,
       strength: strength * (1 - distance / this.TERRITORIAL_RANGE), // Closer = stronger
       outcome: 'ongoing',
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
-    
+
     this.activeInteractions.set(`interaction-${this.nextInteractionId++}`, interaction);
   }
 
@@ -141,26 +137,26 @@ export class CreatureInteractionSystem {
   ): void {
     const social1 = creature1.traits?.social || 'solitary';
     const social2 = creature2.traits?.social || 'solitary';
-    
+
     // Only pack creatures interact socially
     if (social1 !== 'pack' && social2 !== 'pack') return;
-    
+
     // Both must be pack creatures
     if (social1 === 'pack' && social2 === 'pack') {
       const intelligence = Math.max(
         creature1.traits?.intelligence || 0.5,
         creature2.traits?.intelligence || 0.5
       );
-      
+
       const interaction: Interaction = {
         type: 'social',
         actorId: id1,
         targetId: id2,
         strength: intelligence,
         outcome: 'success',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
-      
+
       this.activeInteractions.set(`interaction-${this.nextInteractionId++}`, interaction);
     }
   }
@@ -176,18 +172,18 @@ export class CreatureInteractionSystem {
   ): void {
     // For now, just check if creature1 has low energy (hungry)
     const isHungry = (creature1.energy || 1.0) < 0.3;
-    
+
     if (!isHungry) return;
-    
+
     const interaction: Interaction = {
       type: 'predation',
       actorId: id1,
       targetId: id2,
       strength: 0.8, // High intensity
       outcome: 'ongoing',
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
-    
+
     this.activeInteractions.set(`interaction-${this.nextInteractionId++}`, interaction);
   }
 
@@ -208,13 +204,13 @@ export class CreatureInteractionSystem {
    */
   getInteractionsForCreature(creatureId: string): Interaction[] {
     const result: Interaction[] = [];
-    
+
     for (const interaction of this.activeInteractions.values()) {
       if (interaction.actorId === creatureId || interaction.targetId === creatureId) {
         result.push(interaction);
       }
     }
-    
+
     return result;
   }
 

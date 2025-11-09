@@ -9,18 +9,18 @@ export const MendelianGenetics = {
 
 export const PopulationGenetics = {
   hardyWeinberg: (p: number) => ({ AA: p * p, Aa: 2 * p * (1 - p), aa: (1 - p) * (1 - p) }),
-  
+
   selectionResponse: (heritability: number, selectionDifferential: number) => {
     return heritability * selectionDifferential;
   },
-  
+
   mutationRate_perGeneration: 1e-8,
   effectivepopulationSize: (N_census: number) => N_census / 3,
-  
+
   geneticDrift: (alleleFreq: number, Ne: number) => {
-    return alleleFreq * (1 - alleleFreq) / (2 * Ne);
+    return (alleleFreq * (1 - alleleFreq)) / (2 * Ne);
   },
-  
+
   fixationTime_generations: (Ne: number) => 4 * Ne,
 };
 
@@ -28,4 +28,3 @@ export const GeneticsLaws = {
   mendelian: MendelianGenetics,
   population: PopulationGenetics,
 } as const;
-

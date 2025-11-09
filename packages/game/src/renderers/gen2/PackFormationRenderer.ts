@@ -1,6 +1,6 @@
 /**
  * Pack Formation Visualizer (Gen2 Prep)
- * 
+ *
  * Visualizes creature social groupings with visual indicators:
  * - Pack boundaries (colored auras)
  * - Pack leader indicators
@@ -8,7 +8,15 @@
  * - Formation patterns
  */
 
-import { Scene, Mesh, MeshBuilder, StandardMaterial, Color3, Vector3, LinesMesh } from '@babylonjs/core';
+import {
+  Scene,
+  Mesh,
+  MeshBuilder,
+  StandardMaterial,
+  Color3,
+  Vector3,
+  LinesMesh,
+} from '@babylonjs/core';
 
 export interface PackData {
   id: string;
@@ -33,10 +41,13 @@ export class PackFormationRenderer {
   /**
    * Render pack formations with visual indicators
    */
-  render(packs: PackData[], creatures: Map<string, { lat: number; lon: number; alt?: number }>): void {
+  render(
+    packs: PackData[],
+    creatures: Map<string, { lat: number; lon: number; alt?: number }>
+  ): void {
     // Remove old packs
     for (const [id, aura] of this.packAuras) {
-      if (!packs.find(p => p.id === id)) {
+      if (!packs.find((p) => p.id === id)) {
         aura.dispose();
         this.packAuras.delete(id);
       }
@@ -52,10 +63,13 @@ export class PackFormationRenderer {
   /**
    * Render pack aura (colored glow around pack members)
    */
-  private renderPackAura(pack: PackData, creatures: Map<string, { lat: number; lon: number; alt?: number }>): void {
+  private renderPackAura(
+    pack: PackData,
+    creatures: Map<string, { lat: number; lon: number; alt?: number }>
+  ): void {
     // Calculate pack boundary (convex hull of members)
     const memberPositions: Vector3[] = [];
-    
+
     for (const memberId of pack.members) {
       const creature = creatures.get(memberId);
       if (creature) {
@@ -71,12 +85,16 @@ export class PackFormationRenderer {
 
     // Create or update aura
     let aura = this.packAuras.get(pack.id);
-    
+
     if (!aura) {
-      aura = MeshBuilder.CreateSphere(`pack-aura-${pack.id}`, {
-        diameter: radius * 2,
-        segments: 16
-      }, this.scene);
+      aura = MeshBuilder.CreateSphere(
+        `pack-aura-${pack.id}`,
+        {
+          diameter: radius * 2,
+          segments: 16,
+        },
+        this.scene
+      );
 
       const mat = new StandardMaterial(`pack-mat-${pack.id}`, this.scene);
       const color = Color3.FromHexString(pack.color);
@@ -102,9 +120,12 @@ export class PackFormationRenderer {
   /**
    * Render bonds between pack members
    */
-  private renderPackBonds(pack: PackData, creatures: Map<string, { lat: number; lon: number; alt?: number }>): void {
+  private renderPackBonds(
+    pack: PackData,
+    creatures: Map<string, { lat: number; lon: number; alt?: number }>
+  ): void {
     const bondKey = `bonds-${pack.id}`;
-    
+
     // Remove old bonds
     const oldBonds = this.bondLines.get(bondKey);
     if (oldBonds) {
@@ -114,7 +135,7 @@ export class PackFormationRenderer {
     // Create new bonds
     const points: Vector3[] = [];
     const leaderPos = creatures.get(pack.leaderId);
-    
+
     if (!leaderPos) return;
 
     const leaderVec = this.latLonToVector3(leaderPos.lat, leaderPos.lon, 0.15);
@@ -122,12 +143,12 @@ export class PackFormationRenderer {
     // Draw lines from leader to each member
     for (const memberId of pack.members) {
       if (memberId === pack.leaderId) continue;
-      
+
       const member = creatures.get(memberId);
       if (!member) continue;
 
       const memberVec = this.latLonToVector3(member.lat, member.lon, 0.15);
-      
+
       points.push(leaderVec);
       points.push(memberVec);
     }
@@ -135,10 +156,14 @@ export class PackFormationRenderer {
     if (points.length < 2) return;
 
     // Create lines mesh
-    const bonds = MeshBuilder.CreateLines(bondKey, {
-      points: points,
-      updatable: true
-    }, this.scene);
+    const bonds = MeshBuilder.CreateLines(
+      bondKey,
+      {
+        points: points,
+        updatable: true,
+      },
+      this.scene
+    );
 
     const color = Color3.FromHexString(pack.color);
     bonds.color = color;

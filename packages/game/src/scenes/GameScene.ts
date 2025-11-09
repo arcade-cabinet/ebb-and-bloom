@@ -1,10 +1,10 @@
 /**
  * Unified Game Scene - BabylonJS implementation
- * 
+ *
  * ONE scene that renders the current game state:
  * - Gen0: Planetary sphere (always rendered as base)
  * - Gen1+: Creatures, tools, buildings (rendered on top of planet)
- * 
+ *
  * The scene adapts to whatever generation the game is currently at.
  * This is NOT separate scenes per generation - it's ONE unified scene.
  */
@@ -31,16 +31,33 @@ import { PackFormationRenderer, InteractionVisualizer } from '../renderers/gen2'
 import { ToolRenderer, StructureRenderer } from '../renderers/gen3';
 import { CivilizationRenderer } from '../renderers/gen4';
 import { CommunicationRenderer, CultureRenderer } from '../renderers/gen5';
-import { CreatureBehaviorSystem, type CreatureBehaviorState, type ResourceNode } from '../systems/CreatureBehaviorSystem';
+import {
+  CreatureBehaviorSystem,
+  type CreatureBehaviorState,
+  type ResourceNode,
+} from '../systems/CreatureBehaviorSystem';
 import { PackFormationSystem, type PackFormation } from '../systems/PackFormationSystem';
 import { CreatureInteractionSystem, type Interaction } from '../systems/CreatureInteractionSystem';
 import { ToolSystem, type Tool, type ToolKnowledge } from '../systems/ToolSystem';
-import { StructureBuildingSystem, type Structure, type BuildingProject } from '../systems/StructureBuildingSystem';
+import {
+  StructureBuildingSystem,
+  type Structure,
+  type BuildingProject,
+} from '../systems/StructureBuildingSystem';
 import { TradeSystem, type TradeOffer } from '../systems/TradeSystem';
 import { SpecializationSystem, type Specialization } from '../systems/SpecializationSystem';
 import { WorkshopSystem, type Workshop } from '../systems/WorkshopSystem';
-import { SymbolicCommunicationSystem, type Symbol as CommSymbol, type SymbolKnowledge } from '../systems/SymbolicCommunicationSystem';
-import { CulturalExpressionSystem, type CulturalExpression, type CreatureCulture, type CulturalSite } from '../systems/CulturalExpressionSystem';
+import {
+  SymbolicCommunicationSystem,
+  type Symbol as CommSymbol,
+  type SymbolKnowledge,
+} from '../systems/SymbolicCommunicationSystem';
+import {
+  CulturalExpressionSystem,
+  type CulturalExpression,
+  type CreatureCulture,
+  type CulturalSite,
+} from '../systems/CulturalExpressionSystem';
 
 // Render data from game engine (supports all generations)
 interface GameRenderData {
@@ -83,11 +100,11 @@ export class GameScene {
   private renderData: GameRenderData | null = null;
   private time: number = 0;
   private infoContent: HTMLElement | null = null;
-  
+
   // UI
   private hud: EvolutionHUD | null = null;
   private narrative: NarrativeDisplay | null = null;
-  
+
   // Renderers
   private planetRenderer: PlanetRenderer | null = null;
   private moonRenderer: MoonRenderer | null = null;
@@ -100,7 +117,7 @@ export class GameScene {
   private civilizationRenderer: CivilizationRenderer | null = null;
   private communicationRenderer: CommunicationRenderer | null = null;
   private cultureRenderer: CultureRenderer | null = null;
-  
+
   // Systems
   private behaviorSystem: CreatureBehaviorSystem | null = null;
   private packSystem: PackFormationSystem | null = null;
@@ -112,7 +129,7 @@ export class GameScene {
   private workshopSystem: WorkshopSystem | null = null;
   private communicationSystem: SymbolicCommunicationSystem | null = null;
   private cultureSystem: CulturalExpressionSystem | null = null;
-  
+
   // System data
   private creatureBehaviors: Map<string, CreatureBehaviorState> = new Map();
   private resources: ResourceNode[] = [];
@@ -139,7 +156,7 @@ export class GameScene {
     this.setupUI();
     this.loadGameData();
     this.startAnimation();
-    
+
     // Expose scene to window for E2E testing
     if (typeof window !== 'undefined') {
       (window as any).scene = scene;
@@ -200,10 +217,10 @@ export class GameScene {
     this.hud = new EvolutionHUD(this.scene, async () => {
       await this.advanceGeneration();
     });
-    
-    // Create Narrative Display  
+
+    // Create Narrative Display
     this.narrative = new NarrativeDisplay(this.scene);
-    
+
     // Initialize renderers
     this.planetRenderer = new PlanetRenderer(this.scene);
     this.moonRenderer = new MoonRenderer(this.scene);
@@ -216,7 +233,7 @@ export class GameScene {
     this.civilizationRenderer = new CivilizationRenderer(this.scene, 5);
     this.communicationRenderer = new CommunicationRenderer(this.scene, 5);
     this.cultureRenderer = new CultureRenderer(this.scene, 5);
-    
+
     // Initialize systems
     this.behaviorSystem = new CreatureBehaviorSystem(5); // Planet radius = 5
     this.packSystem = new PackFormationSystem();
@@ -228,7 +245,7 @@ export class GameScene {
     this.workshopSystem = new WorkshopSystem();
     this.communicationSystem = new SymbolicCommunicationSystem();
     this.cultureSystem = new CulturalExpressionSystem();
-    
+
     // Spawn some initial resources for testing
     this.spawnTestResources();
   }
@@ -244,15 +261,17 @@ export class GameScene {
     }
 
     try {
-      console.log(`🔄 Advancing from Gen${this.renderData?.generation} to Gen${(this.renderData?.generation || 0) + 1}...`);
-      
+      console.log(
+        `🔄 Advancing from Gen${this.renderData?.generation} to Gen${(this.renderData?.generation || 0) + 1}...`
+      );
+
       // Call backend to advance generation
       const newState = await this.gameEngine.advanceGeneration();
-      
+
       // Update render data
       const currentGen = newState.generation || 0;
       const renderData = await this.gameEngine.getGen0RenderData(this.time);
-      
+
       if (renderData) {
         this.renderData = {
           generation: currentGen,
@@ -277,7 +296,7 @@ export class GameScene {
         this.narrative.addHaiku('First creatures emerge', [
           'Life stirs in the deep',
           'Consciousness takes fragile form',
-          'The planet awakens'
+          'The planet awakens',
         ]);
       }
 
@@ -340,7 +359,6 @@ export class GameScene {
     }
   }
 
-
   /**
    * Render using dedicated renderer packages
    * Properly separated: simulation logic in backend, visual interpretation in renderers
@@ -358,21 +376,25 @@ export class GameScene {
 
     // Gen0: Render moons (meso level)
     if (moons && moons.length > 0 && this.moonRenderer) {
-      this.moonRenderer.render(moons.map(m => ({
-        id: m.id,
-        radius: m.radius,
-        distance: m.distance,
-        orbitalPeriod: m.orbitalPeriod,
-        composition: 'rocky' as const // TODO: Get from archetype
-      })));
+      this.moonRenderer.render(
+        moons.map((m) => ({
+          id: m.id,
+          radius: m.radius,
+          distance: m.distance,
+          orbitalPeriod: m.orbitalPeriod,
+          composition: 'rocky' as const, // TODO: Get from archetype
+        }))
+      );
       console.log(`✅ ${moons.length} moons rendered via MoonRenderer`);
     }
 
     // Gen1+: Render creatures (micro level)
     // LOD handled in animation loop based on camera distance
     if (generation >= 1 && creatures && creatures.length > 0) {
-      console.log(`✅ ${creatures.length} creatures ready (will render as lights/meshes based on zoom)`);
-      
+      console.log(
+        `✅ ${creatures.length} creatures ready (will render as lights/meshes based on zoom)`
+      );
+
       // Initialize behavior system for creatures
       this.initializeCreatureBehaviors();
     }
@@ -384,98 +406,98 @@ export class GameScene {
 
   private startAnimation(): void {
     let lastTime = Date.now();
-    
+
     // Update time for orbital mechanics and LOD
     this.scene.registerBeforeRender(() => {
       const now = Date.now();
       const deltaTime = (now - lastTime) / 1000; // seconds
       lastTime = now;
-      
+
       this.time += deltaTime;
-      
+
       // Update moon positions based on time
       if (this.moonRenderer) {
         this.moonRenderer.updateOrbitalPositions(this.time);
       }
-      
+
       // Update creature behaviors
       if (this.behaviorSystem && this.renderData?.creatures) {
         this.updateCreatureBehaviors(deltaTime);
-        
+
         // Update pack formations
         if (this.packSystem) {
           this.updatePackFormations();
         }
-        
+
         // Update creature interactions
         if (this.interactionSystem) {
           this.updateCreatureInteractions();
         }
-        
+
         // Update tools (Gen3)
         if (this.toolSystem) {
           this.updateTools(deltaTime);
         }
-        
+
         // Update structures (Gen3)
         if (this.structureSystem && this.toolSystem) {
           this.updateStructures(deltaTime);
         }
-        
+
         // Update trade (Gen4)
         if (this.tradeSystem) {
           this.updateTrade(deltaTime);
         }
-        
+
         // Update specializations (Gen4)
         if (this.specializationSystem) {
           this.updateSpecializations();
         }
-        
+
         // Update workshops (Gen4)
         if (this.workshopSystem && this.structureSystem) {
           this.updateWorkshops(deltaTime);
         }
-        
+
         // Update communication (Gen5)
         if (this.communicationSystem) {
           this.updateCommunication(deltaTime);
         }
-        
+
         // Update culture (Gen5)
         if (this.cultureSystem && this.structureSystem) {
           this.updateCulture(deltaTime);
         }
       }
-      
+
       // Update creature LOD based on camera distance
       if (this.creatureRenderer && this.renderData?.creatures) {
         const camera = this.scene.activeCamera;
         if (camera) {
           const cameraDistance = Vector3.Distance(camera.position, Vector3.Zero());
-          
+
           // Convert behavior states to creature data for rendering
-          const creaturesForRender = this.renderData.creatures.map(c => {
+          const creaturesForRender = this.renderData.creatures.map((c) => {
             const behavior = this.creatureBehaviors.get(c.id);
             if (behavior) {
               // Use updated position from behavior system
               return {
                 ...c,
-                position: behavior.position
+                position: behavior.position,
               };
             }
             return c;
           });
-          
+
           this.creatureRenderer.render(creaturesForRender, cameraDistance);
         }
       }
-      
+
       // Update resource rendering
       if (this.resourceRenderer && this.resources.length > 0) {
         this.resourceRenderer.render(this.resources);
       }
-      
+
       // Update pack formation rendering
       if (this.packRenderer && this.packs.length > 0) {
         const creaturePositions = new Map<string, { lat: number; lon: number }>();
@@ -484,7 +506,7 @@ export class GameScene {
         }
         this.packRenderer.render(this.packs, creaturePositions);
       }
-      
+
       // Update interaction rendering
       if (this.interactionVisualizer && this.interactions.length > 0) {
         const creaturePositions = new Map<string, { lat: number; lon: number }>();
@@ -493,7 +515,7 @@ export class GameScene {
         }
         this.interactionVisualizer.render(this.interactions, creaturePositions);
       }
-      
+
       // Update tool rendering (Gen3)
       if (this.toolRenderer && this.toolSystem && this.tools.length > 0) {
         const creaturePositions = new Map<string, { lat: number; lon: number }>();
@@ -507,12 +529,12 @@ export class GameScene {
         }
         this.toolRenderer.render(this.tools, knowledge, creaturePositions);
       }
-      
+
       // Update structure rendering (Gen3)
       if (this.structureRenderer && (this.structures.length > 0 || this.projects.length > 0)) {
         this.structureRenderer.render(this.structures, this.projects);
       }
-      
+
       // Update civilization rendering (Gen4)
       if (this.civilizationRenderer) {
         const creaturePositions = new Map<string, { lat: number; lon: number }>();
@@ -526,20 +548,16 @@ export class GameScene {
           creaturePositions
         );
       }
-      
+
       // Update communication rendering (Gen5)
       if (this.communicationRenderer && this.symbols.length > 0) {
         const creaturePositions = new Map<string, { lat: number; lon: number }>();
         for (const [id, behavior] of this.creatureBehaviors) {
           creaturePositions.set(id, { lat: behavior.position.lat, lon: behavior.position.lon });
         }
-        this.communicationRenderer.render(
-          this.symbols,
-          this.symbolKnowledge,
-          creaturePositions
-        );
+        this.communicationRenderer.render(this.symbols, this.symbolKnowledge, creaturePositions);
       }
-      
+
       // Update culture rendering (Gen5)
       if (this.cultureRenderer) {
         const creaturePositions = new Map<string, { lat: number; lon: number }>();
@@ -579,7 +597,7 @@ export class GameScene {
       buildings ? `Buildings: ${buildings.length}` : '',
     ];
 
-    this.infoContent.textContent = lines.filter(l => l).join('\n');
+    this.infoContent.textContent = lines.filter((l) => l).join('\n');
   }
 
   public dispose(): void {
@@ -603,29 +621,28 @@ export class GameScene {
    */
   private initializeCreatureBehaviors(): void {
     if (!this.renderData?.creatures) return;
-    
+
     this.creatureBehaviors.clear();
-    
+
     for (const creature of this.renderData.creatures) {
       // Convert creature data to behavior state
-      const position = 'lat' in creature.position 
-        ? creature.position 
-        : this.vector3ToLatLon(creature.position);
-      
+      const position =
+        'lat' in creature.position ? creature.position : this.vector3ToLatLon(creature.position);
+
       const behaviorState: CreatureBehaviorState = {
         id: creature.id,
         position: {
           lat: position.lat,
           lon: position.lon,
-          alt: position.alt || 0.2
+          alt: position.alt || 0.2,
         },
         velocity: { lat: 0, lon: 0 },
         currentGoal: 'idle',
         energy: 1.0,
         hunger: 0.3,
-        fear: 0.0
+        fear: 0.0,
       };
-      
+
       this.creatureBehaviors.set(creature.id, behaviorState);
     }
   }
@@ -635,20 +652,16 @@ export class GameScene {
    */
   private updateCreatureBehaviors(deltaTime: number): void {
     if (!this.behaviorSystem) return;
-    
+
     for (const [id, behavior] of this.creatureBehaviors) {
-      const creature = this.renderData!.creatures!.find(c => c.id === id);
+      const creature = this.renderData!.creatures!.find((c) => c.id === id);
       if (!creature) continue;
-      
+
       // Update behavior
-      const updated = this.behaviorSystem.update(
-        behavior,
-        deltaTime,
-        creature.traits || {}
-      );
-      
+      const updated = this.behaviorSystem.update(behavior, deltaTime, creature.traits || {});
+
       this.creatureBehaviors.set(id, updated);
-      
+
       // Update animation state based on behavior
       if (this.creatureRenderer) {
         const speed = this.behaviorSystem.getSpeed(updated);
@@ -666,13 +679,13 @@ export class GameScene {
    */
   private updatePackFormations(): void {
     if (!this.packSystem || !this.renderData?.creatures) return;
-    
+
     // Build traits map
     const traits = new Map<string, { social?: string; strength?: number; intelligence?: number }>();
     for (const creature of this.renderData.creatures) {
       traits.set(creature.id, creature.traits || {});
     }
-    
+
     // Update pack system
     const packs = this.packSystem.update(this.creatureBehaviors, traits);
     this.packs = Array.from(packs.values());
@@ -683,21 +696,21 @@ export class GameScene {
    */
   private updateCreatureInteractions(): void {
     if (!this.interactionSystem || !this.renderData?.creatures) return;
-    
+
     // Build creature state map with traits
     const creatureStates = new Map();
     for (const [id, behavior] of this.creatureBehaviors) {
-      const creature = this.renderData.creatures.find(c => c.id === id);
+      const creature = this.renderData.creatures.find((c) => c.id === id);
       if (creature) {
         creatureStates.set(id, {
           position: behavior.position,
           traits: creature.traits,
           energy: behavior.energy,
-          fear: behavior.fear
+          fear: behavior.fear,
         });
       }
     }
-    
+
     // Update interaction system
     const interactions = this.interactionSystem.update(creatureStates);
     this.interactions = Array.from(interactions.values());
@@ -708,19 +721,19 @@ export class GameScene {
    */
   private updateTools(deltaTime: number): void {
     if (!this.toolSystem || !this.renderData?.creatures) return;
-    
+
     // Build creature map with traits
     const creatures = new Map();
     for (const [id, behavior] of this.creatureBehaviors) {
-      const creature = this.renderData.creatures.find(c => c.id === id);
+      const creature = this.renderData.creatures.find((c) => c.id === id);
       if (creature) {
         creatures.set(id, {
           position: behavior.position,
-          traits: creature.traits
+          traits: creature.traits,
         });
       }
     }
-    
+
     // Update tool system
     this.toolSystem.update(creatures, deltaTime);
     this.tools = this.toolSystem.getTools();
@@ -731,26 +744,26 @@ export class GameScene {
    */
   private updateStructures(deltaTime: number): void {
     if (!this.structureSystem || !this.toolSystem || !this.renderData?.creatures) return;
-    
+
     // Build creature map with traits and energy
     const creatures = new Map();
     for (const [id, behavior] of this.creatureBehaviors) {
-      const creature = this.renderData.creatures.find(c => c.id === id);
+      const creature = this.renderData.creatures.find((c) => c.id === id);
       if (creature) {
         creatures.set(id, {
           position: behavior.position,
           traits: creature.traits,
-          energy: behavior.energy
+          energy: behavior.energy,
         });
       }
     }
-    
+
     // Build tool knowledge map
     const toolKnowledge = new Map<string, boolean>();
     for (const creatureId of this.toolSystem.getKnowledgeableCreatures()) {
       toolKnowledge.set(creatureId, true);
     }
-    
+
     // Update structure system
     this.structureSystem.update(creatures, toolKnowledge, deltaTime);
     this.structures = this.structureSystem.getStructures();
@@ -765,15 +778,15 @@ export class GameScene {
     for (let i = 0; i < 10; i++) {
       const lat = (Math.random() - 0.5) * 160; // -80 to 80
       const lon = (Math.random() - 0.5) * 360; // -180 to 180
-      
+
       this.resources.push({
         id: `food-${i}`,
         type: 'food',
         position: { lat, lon },
-        amount: 0.8 + Math.random() * 0.2 // 0.8 to 1.0
+        amount: 0.8 + Math.random() * 0.2, // 0.8 to 1.0
       });
     }
-    
+
     // Add resources to behavior system
     for (const resource of this.resources) {
       this.behaviorSystem?.addResource(resource);
@@ -785,31 +798,41 @@ export class GameScene {
    */
   private updateTrade(deltaTime: number): void {
     if (!this.tradeSystem || !this.renderData?.creatures || !this.toolSystem) return;
-    
+
     // Build creature map
     const creatures = new Map();
     for (const [id, behavior] of this.creatureBehaviors) {
-      const creature = this.renderData.creatures.find(c => c.id === id);
+      const creature = this.renderData.creatures.find((c) => c.id === id);
       if (creature) {
         creatures.set(id, {
           position: behavior.position,
-          traits: creature.traits
+          traits: creature.traits,
         });
       }
     }
-    
+
     // Build pack map for trade system
-    const packsMap = new Map(this.packs.map(p => [p.id, {
-      members: p.members,
-      leaderId: p.leaderId
-    }]));
-    
+    const packsMap = new Map(
+      this.packs.map((p) => [
+        p.id,
+        {
+          members: p.members,
+          leaderId: p.leaderId,
+        },
+      ])
+    );
+
     // Build tools map
-    const toolsMap = new Map(this.tools.map(t => [t.id, {
-      position: t.position,
-      type: t.type
-    }]));
-    
+    const toolsMap = new Map(
+      this.tools.map((t) => [
+        t.id,
+        {
+          position: t.position,
+          type: t.type,
+        },
+      ])
+    );
+
     // Update trade system
     this.tradeSystem.update(creatures, packsMap, toolsMap, deltaTime);
     this.tradeOffers = this.tradeSystem.getOffers();
@@ -820,22 +843,22 @@ export class GameScene {
    */
   private updateSpecializations(): void {
     if (!this.specializationSystem || !this.renderData?.creatures) return;
-    
+
     // Build creature map
     const creatures = new Map();
     for (const [id, behavior] of this.creatureBehaviors) {
-      const creature = this.renderData.creatures.find(c => c.id === id);
+      const creature = this.renderData.creatures.find((c) => c.id === id);
       if (creature) {
         creatures.set(id, {
           position: behavior.position,
-          traits: creature.traits
+          traits: creature.traits,
         });
       }
     }
-    
+
     // Track actions from tools, structures, and trade
     const actions = new Map<string, string[]>();
-    
+
     // Track tool creation as "craft"
     for (const tool of this.tools) {
       if (tool.createdBy) {
@@ -845,7 +868,7 @@ export class GameScene {
         actions.get(tool.createdBy)!.push('craft');
       }
     }
-    
+
     // Track structure work as "build"
     for (const project of this.projects) {
       for (const [contributorId] of project.contributors) {
@@ -855,10 +878,10 @@ export class GameScene {
         actions.get(contributorId)!.push('build');
       }
     }
-    
+
     // Update specialization system
     this.specializationSystem.update(creatures, actions);
-    
+
     // Build specializations map from system
     this.specializations.clear();
     for (const [creatureId] of creatures) {
@@ -874,29 +897,24 @@ export class GameScene {
    */
   private updateWorkshops(deltaTime: number): void {
     if (!this.workshopSystem || !this.structureSystem || !this.renderData?.creatures) return;
-    
+
     // Build creature map
     const creatures = new Map();
     for (const [id, behavior] of this.creatureBehaviors) {
-      const creature = this.renderData.creatures.find(c => c.id === id);
+      const creature = this.renderData.creatures.find((c) => c.id === id);
       if (creature) {
         creatures.set(id, {
           position: behavior.position,
-          traits: creature.traits
+          traits: creature.traits,
         });
       }
     }
-    
+
     // Update workshop system
-    const structuresMap = new Map(this.structures.map(s => [s.id, s]));
-    this.workshopSystem.update(
-      creatures,
-      structuresMap,
-      this.specializations,
-      deltaTime
-    );
-    
-    this.workshops = new Map(this.workshopSystem.getWorkshops().map(w => [w.id, w]));
+    const structuresMap = new Map(this.structures.map((s) => [s.id, s]));
+    this.workshopSystem.update(creatures, structuresMap, this.specializations, deltaTime);
+
+    this.workshops = new Map(this.workshopSystem.getWorkshops().map((w) => [w.id, w]));
   }
 
   /**
@@ -904,32 +922,32 @@ export class GameScene {
    */
   private updateCommunication(deltaTime: number): void {
     if (!this.communicationSystem || !this.renderData?.creatures) return;
-    
+
     // Build creature map
     const creatures = new Map();
     for (const [id, behavior] of this.creatureBehaviors) {
-      const creature = this.renderData.creatures.find(c => c.id === id);
+      const creature = this.renderData.creatures.find((c) => c.id === id);
       if (creature) {
         creatures.set(id, {
           position: behavior.position,
-          traits: creature.traits
+          traits: creature.traits,
         });
       }
     }
-    
+
     // Build pack map
     const packs = new Map();
     for (const pack of this.packs) {
       packs.set(pack.id, {
         id: pack.id,
-        members: pack.members
+        members: pack.members,
       });
     }
-    
+
     // Update communication system
     this.communicationSystem.update(creatures, packs, deltaTime);
     this.symbols = this.communicationSystem.getSymbols();
-    
+
     // Update symbol knowledge map
     this.symbolKnowledge.clear();
     for (const [id] of this.creatureBehaviors) {
@@ -945,42 +963,42 @@ export class GameScene {
    */
   private updateCulture(deltaTime: number): void {
     if (!this.cultureSystem || !this.structureSystem || !this.renderData?.creatures) return;
-    
+
     // Build creature map
     const creatures = new Map();
     for (const [id, behavior] of this.creatureBehaviors) {
-      const creature = this.renderData.creatures.find(c => c.id === id);
+      const creature = this.renderData.creatures.find((c) => c.id === id);
       if (creature) {
         creatures.set(id, {
           position: behavior.position,
-          traits: creature.traits
+          traits: creature.traits,
         });
       }
     }
-    
+
     // Build pack map
     const packs = new Map();
     for (const pack of this.packs) {
       packs.set(pack.id, {
         id: pack.id,
-        members: pack.members
+        members: pack.members,
       });
     }
-    
+
     // Build structures map
     const structures = new Map();
     for (const structure of this.structures) {
       structures.set(structure.id, {
         position: structure.position,
-        type: structure.type
+        type: structure.type,
       });
     }
-    
+
     // Update culture system
     this.cultureSystem.update(creatures, packs, structures, deltaTime);
     this.culturalExpressions = this.cultureSystem.getExpressions();
     this.culturalSites = this.cultureSystem.getSites();
-    
+
     // Update culture map
     this.creatureCultures.clear();
     for (const [id] of this.creatureBehaviors) {
@@ -994,14 +1012,18 @@ export class GameScene {
   /**
    * Convert Vector3 to lat/lon
    */
-  private vector3ToLatLon(pos: { x: number; y: number; z: number }): { lat: number; lon: number; alt: number } {
+  private vector3ToLatLon(pos: { x: number; y: number; z: number }): {
+    lat: number;
+    lon: number;
+    alt: number;
+  } {
     const vec = new Vector3(pos.x, pos.y, pos.z);
     const radius = vec.length();
     const alt = radius - 5; // Planet radius = 5
-    
+
     const lat = 90 - Math.acos(pos.y / radius) * (180 / Math.PI);
     const lon = Math.atan2(pos.z, pos.x) * (180 / Math.PI) - 180;
-    
+
     return { lat, lon, alt };
   }
 }

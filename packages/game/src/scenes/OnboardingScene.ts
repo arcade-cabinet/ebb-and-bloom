@@ -3,14 +3,7 @@
  * 4-step tutorial for first-time users
  */
 
-import {
-  Scene,
-  Engine,
-  ArcRotateCamera,
-  HemisphericLight,
-  Vector3,
-  Color4,
-} from '@babylonjs/core';
+import { Scene, Engine, ArcRotateCamera, HemisphericLight, Vector3, Color4 } from '@babylonjs/core';
 import {
   AdvancedDynamicTexture,
   Button,
@@ -30,24 +23,27 @@ interface OnboardingStep {
 const STEPS: OnboardingStep[] = [
   {
     title: 'Welcome to Ebb & Bloom',
-    description: 'A meditative evolutionary ecosystem where consciousness flows through living forms. You are awareness itself, witnessing emergence of complexity.',
-    icon: '🌱'
+    description:
+      'A meditative evolutionary ecosystem where consciousness flows through living forms. You are awareness itself, witnessing emergence of complexity.',
+    icon: '🌱',
   },
   {
     title: 'Camera: Spore-Style Exploration',
     description: 'Pinch to zoom • Drag to orbit • Double-tap to reset view',
-    icon: '📷'
+    icon: '📷',
   },
   {
     title: 'Observe: Watch Life Unfold',
-    description: 'Tap creatures to see their traits, pack dynamics, and evolutionary history. Your gaze influences their awareness.',
-    icon: '👁️'
+    description:
+      'Tap creatures to see their traits, pack dynamics, and evolutionary history. Your gaze influences their awareness.',
+    icon: '👁️',
   },
   {
     title: 'Influence: Guide Evolution',
-    description: 'Long-press to nudge evolutionary pressures. The ecosystem responds organically, never forced.',
-    icon: '🧬'
-  }
+    description:
+      'Long-press to nudge evolutionary pressures. The ecosystem responds organically, never forced.',
+    icon: '🧬',
+  },
 ];
 
 export class OnboardingScene {
@@ -85,11 +81,13 @@ export class OnboardingScene {
 
   private hexToRgb(hex: string): { r: number; g: number; b: number } {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-      r: parseInt(result[1], 16) / 255,
-      g: parseInt(result[2], 16) / 255,
-      b: parseInt(result[3], 16) / 255
-    } : { r: 0, g: 0, b: 0 };
+    return result
+      ? {
+          r: parseInt(result[1], 16) / 255,
+          g: parseInt(result[2], 16) / 255,
+          b: parseInt(result[3], 16) / 255,
+        }
+      : { r: 0, g: 0, b: 0 };
   }
 
   private setupGUI(): void {

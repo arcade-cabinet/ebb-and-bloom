@@ -18,4 +18,3 @@ export const NeuroscienceLaws = {
   neurons: NeuronProperties,
   scaling: NeuralScaling,
 } as const;
-

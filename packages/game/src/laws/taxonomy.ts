@@ -1,6 +1,6 @@
 /**
  * Taxonomic Classification Laws
- * 
+ *
  * These are the rules for classifying organisms into taxonomic categories.
  * Just like physics laws, these are deterministic functions that map
  * properties to classifications.
@@ -36,7 +36,7 @@ export const LinnaeanTaxonomy = {
     }
     return 'Xenobiota'; // Other exotic chemistry
   },
-  
+
   /**
    * Phylum classification (body plan)
    */
@@ -55,7 +55,7 @@ export const LinnaeanTaxonomy = {
     }
     return 'Incertae'; // Uncertain
   },
-  
+
   /**
    * Class classification (major adaptations)
    */
@@ -69,13 +69,13 @@ export const LinnaeanTaxonomy = {
       if (traits.locomotion === 'aerial') return 'Aves'; // Birds
       return 'Mammalia'; // Mammals
     }
-    
+
     // Ectothermic (cold-blooded)
     if (traits.locomotion === 'aquatic') return 'Pisces'; // Fish
     if (traits.reproduction === 'eggs') return 'Reptilia'; // Reptiles
     return 'Amphibia'; // Amphibians
   },
-  
+
   /**
    * Order classification (ecological role)
    */
@@ -86,18 +86,18 @@ export const LinnaeanTaxonomy = {
       if (traits.locomotion === 'aerial') return 'Falconiformes';
       return 'Predatora';
     }
-    
+
     // Herbivores
     if (traits.diet === 'herbivore') {
       if (traits.locomotion === 'arboreal') return 'Primates';
       if (traits.locomotion === 'cursorial') return 'Artiodactyla';
       return 'Herbivora';
     }
-    
+
     // Omnivores
     return 'Omnivora';
   },
-  
+
   /**
    * Family classification (specific traits)
    */
@@ -105,7 +105,7 @@ export const LinnaeanTaxonomy = {
     // Family = genus + "idae"
     return `${genus}idae`;
   },
-  
+
   /**
    * Genus classification (primary characteristic)
    */
@@ -117,14 +117,11 @@ export const LinnaeanTaxonomy = {
     const modifier = habitat ? HABITAT_MODIFIERS[habitat] : '';
     return capitalize(modifier + root);
   },
-  
+
   /**
    * Species classification (secondary traits)
    */
-  species: (
-    diet: keyof typeof DIET_ROOTS,
-    size: keyof typeof SIZE_ROOTS
-  ): string => {
+  species: (diet: keyof typeof DIET_ROOTS, size: keyof typeof SIZE_ROOTS): string => {
     const sizeRoot = SIZE_ROOTS[size];
     const dietRoot = DIET_ROOTS[diet];
     return `${sizeRoot}${dietRoot}us`;
@@ -152,7 +149,7 @@ export const TraitClassification = {
     if (traits.legs === 0) return 'serpentine';
     return 'cursorial'; // Default: ground-dwelling
   },
-  
+
   /**
    * Diet type from teeth and gut morphology
    */
@@ -164,13 +161,13 @@ export const TraitClassification = {
     if (traits.trophicLevel === 1) return 'herbivore';
     if (traits.trophicLevel === 2) return 'carnivore';
     if (traits.trophicLevel === 1.5) return 'omnivore';
-    
+
     // From morphology
     if (traits.teethType === 'grinding') return 'herbivore';
     if (traits.teethType === 'tearing') return 'carnivore';
     return 'omnivore';
   },
-  
+
   /**
    * Size category from mass
    */
@@ -182,7 +179,7 @@ export const TraitClassification = {
     if (mass_kg < 1000) return 'mega';
     return 'giganto';
   },
-  
+
   /**
    * Habitat from environment
    */
@@ -198,7 +195,7 @@ export const TraitClassification = {
     if (environment.terrain === 'coastal') return 'coastal';
     return undefined;
   },
-  
+
   /**
    * Thermoregulation from metabolic properties
    */
@@ -223,21 +220,21 @@ export const OrganismClassifier = {
   classify: (organism: {
     // Life chemistry
     chemistry: { backbone: string; solvent: string };
-    
+
     // Body plan
     bodyPlan: { symmetry: string; skeleton: string };
-    
+
     // Morphology
     legs: number;
     wings: boolean;
     fins: boolean;
-    
+
     // Physiology
     mass_kg: number;
     metabolicRate: number;
     teethType: string;
     gutLength: number;
-    
+
     // Ecology
     trophicLevel: number;
     habitat: { biome: string; terrain: string };
@@ -249,22 +246,22 @@ export const OrganismClassifier = {
       fins: organism.fins,
       habitat: organism.habitat.biome,
     });
-    
+
     const diet = TraitClassification.diet({
       teethType: organism.teethType,
       gutLength: organism.gutLength,
       trophicLevel: organism.trophicLevel,
     });
-    
+
     const size = TraitClassification.size(organism.mass_kg);
-    
+
     const habitatType = TraitClassification.habitat(organism.habitat);
-    
+
     const thermoregulation = TraitClassification.thermoregulation({
       metabolicRate: organism.metabolicRate,
       mass: organism.mass_kg,
     });
-    
+
     // Generate taxonomic hierarchy
     const kingdom = LinnaeanTaxonomy.kingdom(organism.chemistry);
     const phylum = LinnaeanTaxonomy.phylum(organism.bodyPlan);
@@ -277,7 +274,7 @@ export const OrganismClassifier = {
     const genus = LinnaeanTaxonomy.genus(locomotion, habitatType);
     const species = LinnaeanTaxonomy.species(diet, size);
     const family = LinnaeanTaxonomy.family(genus);
-    
+
     // Generate names
     const scientificName = `${genus} ${species}`;
     const commonName = generateCommonName({
@@ -286,7 +283,7 @@ export const OrganismClassifier = {
       locomotion,
       sociality: undefined,
     });
-    
+
     return {
       taxonomy: {
         kingdom,

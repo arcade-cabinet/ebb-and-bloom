@@ -1,9 +1,9 @@
 /**
  * Tool System (Gen3)
- * 
+ *
  * Enables creatures to discover, use, and share knowledge of simple tools.
  * Tools emerge from environmental resources and creature intelligence.
- * 
+ *
  * Tool Types:
  * - Digging Sticks: Break ground, dig burrows (Burrow Engineers)
  * - Gathering Poles: Reach high food (Arboreal Opportunists)
@@ -36,14 +36,17 @@ export class ToolSystem {
    * Update tool system each frame
    */
   update(
-    creatures: Map<string, {
-      position: { lat: number; lon: number };
-      traits?: {
-        locomotion?: string;
-        intelligence?: number;
-        social?: string;
-      };
-    }>,
+    creatures: Map<
+      string,
+      {
+        position: { lat: number; lon: number };
+        traits?: {
+          locomotion?: string;
+          intelligence?: number;
+          social?: string;
+        };
+      }
+    >,
     deltaTime: number
   ): void {
     // Tool discovery (smart creatures find tools)
@@ -63,16 +66,19 @@ export class ToolSystem {
    * Creatures discover nearby tools
    */
   private checkToolDiscovery(
-    creatures: Map<string, {
-      position: { lat: number; lon: number };
-      traits?: { intelligence?: number };
-    }>
+    creatures: Map<
+      string,
+      {
+        position: { lat: number; lon: number };
+        traits?: { intelligence?: number };
+      }
+    >
   ): void {
     const DISCOVERY_RANGE = 2; // degrees
 
     for (const [creatureId, creature] of creatures) {
       const intelligence = creature.traits?.intelligence || 0.5;
-      
+
       // Smarter creatures discover more easily
       const discoveryChance = intelligence * 0.1; // 5-10% per frame
 
@@ -98,13 +104,13 @@ export class ToolSystem {
    */
   private learnTool(creatureId: string, toolType: string, teacherId?: string): void {
     let knowledge = this.knowledge.get(creatureId);
-    
+
     if (!knowledge) {
       knowledge = {
         creatureId,
         knownTools: new Map(),
         learnedFrom: new Map(),
-        teaching: false
+        teaching: false,
       };
       this.knowledge.set(creatureId, knowledge);
     }
@@ -112,7 +118,7 @@ export class ToolSystem {
     // Initial proficiency: low (0.1-0.3)
     if (!knowledge.knownTools.has(toolType)) {
       knowledge.knownTools.set(toolType, 0.1 + Math.random() * 0.2);
-      
+
       if (teacherId) {
         knowledge.learnedFrom.set(toolType, teacherId);
       }
@@ -145,13 +151,16 @@ export class ToolSystem {
    * Cultural transmission: creatures teach each other
    */
   private transmitKnowledge(
-    creatures: Map<string, {
-      position: { lat: number; lon: number };
-      traits?: {
-        social?: string;
-        intelligence?: number;
-      };
-    }>
+    creatures: Map<
+      string,
+      {
+        position: { lat: number; lon: number };
+        traits?: {
+          social?: string;
+          intelligence?: number;
+        };
+      }
+    >
   ): void {
     const TEACHING_RANGE = 3; // degrees
     const TEACHING_CHANCE = 0.05; // 5% per frame
@@ -204,13 +213,16 @@ export class ToolSystem {
    * Smart creatures create new tools
    */
   private attemptToolCreation(
-    creatures: Map<string, {
-      position: { lat: number; lon: number };
-      traits?: {
-        locomotion?: string;
-        intelligence?: number;
-      };
-    }>
+    creatures: Map<
+      string,
+      {
+        position: { lat: number; lon: number };
+        traits?: {
+          locomotion?: string;
+          intelligence?: number;
+        };
+      }
+    >
   ): void {
     const CREATION_CHANCE = 0.001; // 0.1% per frame
 
@@ -232,22 +244,18 @@ export class ToolSystem {
   /**
    * Create a new tool
    */
-  createTool(
-    type: Tool['type'],
-    position: { lat: number; lon: number },
-    creatorId: string
-  ): Tool {
+  createTool(type: Tool['type'], position: { lat: number; lon: number }, creatorId: string): Tool {
     const tool: Tool = {
       id: `tool-${this.nextToolId++}`,
       type,
       position: { ...position },
       createdBy: creatorId,
       durability: 1.0,
-      discoveredBy: new Set([creatorId])
+      discoveredBy: new Set([creatorId]),
     };
 
     this.tools.set(tool.id, tool);
-    
+
     // Creator automatically knows how to use it
     this.learnTool(creatorId, type);
 

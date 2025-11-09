@@ -1,10 +1,18 @@
 /**
  * Resource Node Renderer
- * 
+ *
  * Renders food sources, water, and other resources on planet surface
  */
 
-import { Scene, Mesh, MeshBuilder, StandardMaterial, Color3, Vector3, Animation } from '@babylonjs/core';
+import {
+  Scene,
+  Mesh,
+  MeshBuilder,
+  StandardMaterial,
+  Color3,
+  Vector3,
+  Animation,
+} from '@babylonjs/core';
 
 export interface ResourceNode {
   id: string;
@@ -29,7 +37,7 @@ export class ResourceNodeRenderer {
   render(resources: ResourceNode[]): void {
     // Remove nodes no longer present
     for (const [id, mesh] of this.nodes) {
-      if (!resources.find(r => r.id === id)) {
+      if (!resources.find((r) => r.id === id)) {
         mesh.dispose();
         this.nodes.delete(id);
       }
@@ -69,37 +77,53 @@ export class ResourceNodeRenderer {
     switch (resource.type) {
       case 'food':
         // Berry bush / vegetation
-        mesh = MeshBuilder.CreateIcoSphere(`resource-${resource.id}`, {
-          radius: 0.3,
-          subdivisions: 2
-        }, this.scene);
+        mesh = MeshBuilder.CreateIcoSphere(
+          `resource-${resource.id}`,
+          {
+            radius: 0.3,
+            subdivisions: 2,
+          },
+          this.scene
+        );
         color = new Color3(0.8, 0.9, 0.2); // Yellow-green
         break;
 
       case 'water':
         // Water puddle / source
-        mesh = MeshBuilder.CreateCylinder(`resource-${resource.id}`, {
-          diameter: 0.4,
-          height: 0.1,
-          tessellation: 16
-        }, this.scene);
+        mesh = MeshBuilder.CreateCylinder(
+          `resource-${resource.id}`,
+          {
+            diameter: 0.4,
+            height: 0.1,
+            tessellation: 16,
+          },
+          this.scene
+        );
         color = new Color3(0.2, 0.6, 0.9); // Blue
         break;
 
       case 'shelter':
         // Rock outcrop / cave
-        mesh = MeshBuilder.CreateBox(`resource-${resource.id}`, {
-          width: 0.5,
-          height: 0.4,
-          depth: 0.4
-        }, this.scene);
+        mesh = MeshBuilder.CreateBox(
+          `resource-${resource.id}`,
+          {
+            width: 0.5,
+            height: 0.4,
+            depth: 0.4,
+          },
+          this.scene
+        );
         color = new Color3(0.5, 0.5, 0.5); // Gray
         break;
 
       default:
-        mesh = MeshBuilder.CreateSphere(`resource-${resource.id}`, {
-          diameter: 0.3
-        }, this.scene);
+        mesh = MeshBuilder.CreateSphere(
+          `resource-${resource.id}`,
+          {
+            diameter: 0.3,
+          },
+          this.scene
+        );
         color = new Color3(0.7, 0.7, 0.7);
     }
 
@@ -130,7 +154,7 @@ export class ResourceNodeRenderer {
     const keys = [
       { frame: 0, value: baseScale },
       { frame: frameRate, value: baseScale * 1.1 },
-      { frame: frameRate * 2, value: baseScale }
+      { frame: frameRate * 2, value: baseScale },
     ];
 
     anim.setKeys(keys);

@@ -1,6 +1,6 @@
 /**
  * Haptics Laws
- * 
+ *
  * Force feedback, vibration, touch sensations.
  * From physics calculations → haptic output.
  */
@@ -13,7 +13,7 @@ export const ForceFeedback = {
   impactForce_N: (mass_kg: number, velocityChange_ms: number, duration_s: number): number => {
     return (mass_kg * velocityChange_ms) / duration_s;
   },
-  
+
   /**
    * Vibration intensity from force
    */
@@ -21,7 +21,7 @@ export const ForceFeedback = {
     // Normalize to 0-1 range for haptic API
     return Math.min(1, force_N / 100); // 100N = max vibration
   },
-  
+
   /**
    * Vibration frequency from material
    * Harder materials = higher frequency
@@ -29,12 +29,17 @@ export const ForceFeedback = {
   vibrationFrequency_Hz: (materialHardness_mohs: number): number => {
     return 50 + materialHardness_mohs * 30; // 50-350 Hz range
   },
-  
+
   /**
    * Haptic pattern from event type
    */
-  patternFromEvent: (eventType: string): { intensity: number; duration_ms: number; frequency_Hz: number } => {
-    const patterns: Record<string, { intensity: number; duration_ms: number; frequency_Hz: number }> = {
+  patternFromEvent: (
+    eventType: string
+  ): { intensity: number; duration_ms: number; frequency_Hz: number } => {
+    const patterns: Record<
+      string,
+      { intensity: number; duration_ms: number; frequency_Hz: number }
+    > = {
       impact: { intensity: 0.8, duration_ms: 50, frequency_Hz: 200 },
       rumble: { intensity: 0.3, duration_ms: 500, frequency_Hz: 80 },
       click: { intensity: 0.4, duration_ms: 20, frequency_Hz: 150 },
@@ -54,7 +59,7 @@ export const TouchSensation = {
     // Rough surfaces produce higher frequency vibrations
     return 100 + roughness_01 * 200; // 100-300 Hz
   },
-  
+
   /**
    * Temperature sensation
    * Hot/cold affects perceived touch
@@ -69,4 +74,3 @@ export const HapticsLaws = {
   force: ForceFeedback,
   touch: TouchSensation,
 } as const;
-

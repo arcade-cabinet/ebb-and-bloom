@@ -1,6 +1,6 @@
 /**
  * Unified Game Engine
- * 
+ *
  * Direct function calls (no HTTP, no REST)
  * All game logic in one package
  */
@@ -61,26 +61,27 @@ export class GameEngine {
    */
   async getGen0RenderData(time?: number): Promise<GameRenderData | null> {
     const state = this.backend.getState();
-    
+
     if (!state.planet || !state.gen0Data) {
       return null;
     }
 
     // Calculate moon positions if time provided
-    const moons = state.gen0Data.moons?.map((moon: any, index: number) => {
-      const angle = time ? (time / moon.orbitalPeriod) * Math.PI * 2 : 0;
-      return {
-        id: moon.id || `moon-${index}`,
-        radius: moon.radius,
-        distance: moon.distance,
-        orbitalPeriod: moon.orbitalPeriod,
-        position: {
-          x: Math.cos(angle) * moon.distance,
-          y: 0,
-          z: Math.sin(angle) * moon.distance,
-        },
-      };
-    }) || [];
+    const moons =
+      state.gen0Data.moons?.map((moon: any, index: number) => {
+        const angle = time ? (time / moon.orbitalPeriod) * Math.PI * 2 : 0;
+        return {
+          id: moon.id || `moon-${index}`,
+          radius: moon.radius,
+          distance: moon.distance,
+          orbitalPeriod: moon.orbitalPeriod,
+          position: {
+            x: Math.cos(angle) * moon.distance,
+            y: 0,
+            z: Math.sin(angle) * moon.distance,
+          },
+        };
+      }) || [];
 
     return {
       planet: state.planet,
@@ -98,4 +99,3 @@ export class GameEngine {
     return this.backend.getState();
   }
 }
-

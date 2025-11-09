@@ -4,7 +4,8 @@
  */
 
 import { Texture } from '@babylonjs/core';
-import type { TextureManifest } from '@ebb/gen/schemas';
+// import type { TextureManifest } from '@ebb/gen/schemas'; // Removed
+type TextureManifest = any;
 
 let manifestCache: TextureManifest | null = null;
 const textureCache = new Map<string, Texture>();
@@ -14,7 +15,7 @@ const textureCache = new Map<string, Texture>();
  */
 export async function loadTextureManifest(): Promise<TextureManifest> {
   if (manifestCache) return manifestCache;
-  
+
   try {
     const response = await fetch('/textures/manifest.json');
     if (!response.ok) {
@@ -33,15 +34,15 @@ export async function loadTextureManifest(): Promise<TextureManifest> {
  */
 export async function getTexturePath(assetId: string): Promise<string | null> {
   const manifest = await loadTextureManifest();
-  const asset = manifest.assets.find(a => a.assetId === assetId);
+  const asset = manifest.assets.find((a: any) => a.assetId === assetId);
   if (!asset) {
     console.warn(`Texture not found in manifest: ${assetId}`);
     return null;
   }
-  
+
   // Convert manifest path to web-accessible path
   let webPath = asset.localPath;
-  
+
   // Remove "public/" prefix if present
   if (webPath.startsWith('public/')) {
     webPath = webPath.replace(/^public\//, '/');
@@ -50,7 +51,7 @@ export async function getTexturePath(assetId: string): Promise<string | null> {
   else if (!webPath.startsWith('/')) {
     webPath = `/textures/${webPath}`;
   }
-  
+
   // Ensure it starts with /textures/
   if (!webPath.startsWith('/textures/')) {
     const match = webPath.match(/(?:textures\/)?([^/]+)\/([^/]+)$/);
@@ -59,7 +60,7 @@ export async function getTexturePath(assetId: string): Promise<string | null> {
     }
     return `/textures/${webPath}`;
   }
-  
+
   return webPath;
 }
 
@@ -74,14 +75,14 @@ export async function loadTexture(
   if (textureCache.has(assetId)) {
     return textureCache.get(assetId)!;
   }
-  
+
   // Get texture path from manifest
   const path = await getTexturePath(assetId);
   if (!path) {
     console.warn(`Texture path not found for: ${assetId}`);
     return null;
   }
-  
+
   try {
     // Load texture with BabylonJS
     const texture = new Texture(path, scene);
@@ -101,14 +102,13 @@ export async function loadTextures(
   scene: import('@babylonjs/core').Scene
 ): Promise<Map<string, Texture>> {
   const textures = new Map<string, Texture>();
-  
+
   for (const assetId of assetIds) {
     const texture = await loadTexture(assetId, scene);
     if (texture) {
       textures.set(assetId, texture);
     }
   }
-  
+
   return textures;
 }
-

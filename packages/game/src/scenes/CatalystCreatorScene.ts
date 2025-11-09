@@ -1,7 +1,7 @@
 /**
  * Catalyst Creator Scene - BabylonJS GUI implementation
  * Trait allocation for Gen1 evolution (10 points across 10 traits)
- * 
+ *
  * STUB: Core GUI structure ready, needs full implementation for Gen1
  */
 
@@ -26,8 +26,16 @@ export class CatalystCreatorScene {
   private scene: Scene;
   private guiTexture: AdvancedDynamicTexture | null = null;
   private traits: TraitAllocation = {
-    mobility: 0, manipulation: 0, excavation: 0, social: 0, sensing: 0,
-    illumination: 0, storage: 0, filtration: 0, defense: 0, toxicity: 0
+    mobility: 0,
+    manipulation: 0,
+    excavation: 0,
+    social: 0,
+    sensing: 0,
+    illumination: 0,
+    storage: 0,
+    filtration: 0,
+    defense: 0,
+    toxicity: 0,
   };
   private onComplete: (traits: TraitAllocation) => void;
 

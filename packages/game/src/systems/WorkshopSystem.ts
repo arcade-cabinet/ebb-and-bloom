@@ -1,6 +1,6 @@
 /**
  * Workshop System (Gen4)
- * 
+ *
  * Advanced crafting stations where specialized creatures create better tools.
  * Workshops are upgraded structures with specific functions:
  * - Smithy: Create/upgrade striking tools
@@ -58,13 +58,16 @@ export class WorkshopSystem {
    * Update workshop system
    */
   update(
-    creatures: Map<string, {
-      position: { lat: number; lon: number };
-      traits?: {
-        intelligence?: number;
-        strength?: number;
-      };
-    }>,
+    creatures: Map<
+      string,
+      {
+        position: { lat: number; lon: number };
+        traits?: {
+          intelligence?: number;
+          strength?: number;
+        };
+      }
+    >,
     structures: Map<string, { position: { lat: number; lon: number }; type: string }>,
     specializations: Map<string, { role: string; proficiency: number }>,
     deltaTime: number
@@ -98,7 +101,9 @@ export class WorkshopSystem {
 
     for (const [structureId, structure] of structures) {
       // Already a workshop?
-      const existing = Array.from(this.workshops.values()).find(w => w.structureId === structureId);
+      const existing = Array.from(this.workshops.values()).find(
+        (w) => w.structureId === structureId
+      );
       if (existing) continue;
 
       // Find nearby crafters
@@ -154,7 +159,7 @@ export class WorkshopSystem {
       efficiency: 0.5, // Starts at medium efficiency
       activeProjects: [],
       builtBy: [builderId],
-      durability: 1.0
+      durability: 1.0,
     };
 
     this.workshops.set(workshop.id, workshop);
@@ -207,14 +212,14 @@ export class WorkshopSystem {
       crafterIds: [crafterId],
       outputTool: {
         type: this.getToolTypeForWorkshop(workshopType),
-        quality: 0.5 // Will improve with crafter skill
+        quality: 0.5, // Will improve with crafter skill
       },
       requiredMaterials: new Map([
         ['wood', 2],
-        ['stone', 1]
+        ['stone', 1],
       ]),
       progress: 0,
-      startTime: Date.now()
+      startTime: Date.now(),
     };
 
     this.projects.set(project.id, project);
@@ -307,10 +312,7 @@ export class WorkshopSystem {
   /**
    * Create an advanced tool
    */
-  private createAdvancedTool(
-    project: CraftingProject,
-    workshop: Workshop
-  ): AdvancedTool {
+  private createAdvancedTool(project: CraftingProject, workshop: Workshop): AdvancedTool {
     // Quality based on crafter proficiency and workshop efficiency
     const quality = (project.outputTool.quality + workshop.efficiency) / 2;
 
@@ -322,7 +324,7 @@ export class WorkshopSystem {
       efficiencyMultiplier: 1.0 + quality, // 1.0-2.0x efficiency
       craftedBy: project.crafterIds[0],
       craftedAt: workshop.id,
-      components: ['wood', 'stone', 'composite']
+      components: ['wood', 'stone', 'composite'],
     };
 
     return tool;

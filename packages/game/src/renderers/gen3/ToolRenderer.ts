@@ -1,12 +1,12 @@
 /**
  * Tool Renderer (Gen3)
- * 
+ *
  * Visualizes tools on the planet surface:
  * - Digging sticks: Brown cylinder
  * - Gathering poles: Green cylinder (longer)
  * - Wading spears: Blue cylinder with point
  * - Striking stones: Gray sphere
- * 
+ *
  * Also shows tool knowledge transmission with visual indicators
  */
 
@@ -34,7 +34,7 @@ export class ToolRenderer {
   ): void {
     // Remove old tool meshes
     for (const [id, mesh] of this.toolMeshes) {
-      if (!tools.find(t => t.id === id)) {
+      if (!tools.find((t) => t.id === id)) {
         mesh.dispose();
         this.toolMeshes.delete(id);
       }
@@ -84,12 +84,12 @@ export class ToolRenderer {
     mesh.lookAt(normal.add(pos));
 
     // Scale by durability (tools shrink as they wear)
-    const scale = 0.3 + (tool.durability * 0.2); // 0.3-0.5
+    const scale = 0.3 + tool.durability * 0.2; // 0.3-0.5
     mesh.scaling.set(scale, scale, scale);
 
     // Fade by durability
     if (mesh.material instanceof StandardMaterial) {
-      mesh.material.alpha = 0.5 + (tool.durability * 0.5); // 0.5-1.0
+      mesh.material.alpha = 0.5 + tool.durability * 0.5; // 0.5-1.0
     }
   }
 
@@ -97,11 +97,15 @@ export class ToolRenderer {
    * Create digging stick (brown cylinder)
    */
   private createDiggingStick(id: string): Mesh {
-    const stick = MeshBuilder.CreateCylinder(`tool-stick-${id}`, {
-      diameter: 0.05,
-      height: 0.4,
-      tessellation: 8
-    }, this.scene);
+    const stick = MeshBuilder.CreateCylinder(
+      `tool-stick-${id}`,
+      {
+        diameter: 0.05,
+        height: 0.4,
+        tessellation: 8,
+      },
+      this.scene
+    );
 
     const mat = new StandardMaterial(`mat-stick-${id}`, this.scene);
     mat.diffuseColor = new Color3(0.4, 0.26, 0.13); // Brown
@@ -115,11 +119,15 @@ export class ToolRenderer {
    * Create gathering pole (green cylinder, longer)
    */
   private createGatheringPole(id: string): Mesh {
-    const pole = MeshBuilder.CreateCylinder(`tool-pole-${id}`, {
-      diameter: 0.04,
-      height: 0.6,
-      tessellation: 8
-    }, this.scene);
+    const pole = MeshBuilder.CreateCylinder(
+      `tool-pole-${id}`,
+      {
+        diameter: 0.04,
+        height: 0.6,
+        tessellation: 8,
+      },
+      this.scene
+    );
 
     const mat = new StandardMaterial(`mat-pole-${id}`, this.scene);
     mat.diffuseColor = new Color3(0.4, 0.6, 0.2); // Green
@@ -133,11 +141,15 @@ export class ToolRenderer {
    * Create wading spear (blue cylinder with point)
    */
   private createWadingSpear(id: string): Mesh {
-    const spear = MeshBuilder.CreateCylinder(`tool-spear-${id}`, {
-      diameter: 0.04,
-      height: 0.5,
-      tessellation: 8
-    }, this.scene);
+    const spear = MeshBuilder.CreateCylinder(
+      `tool-spear-${id}`,
+      {
+        diameter: 0.04,
+        height: 0.5,
+        tessellation: 8,
+      },
+      this.scene
+    );
 
     const mat = new StandardMaterial(`mat-spear-${id}`, this.scene);
     mat.diffuseColor = new Color3(0.2, 0.4, 0.6); // Blue
@@ -145,12 +157,16 @@ export class ToolRenderer {
     spear.material = mat;
 
     // Add point (small cone)
-    const point = MeshBuilder.CreateCylinder(`tool-spear-point-${id}`, {
-      diameterTop: 0,
-      diameterBottom: 0.06,
-      height: 0.15,
-      tessellation: 6
-    }, this.scene);
+    const point = MeshBuilder.CreateCylinder(
+      `tool-spear-point-${id}`,
+      {
+        diameterTop: 0,
+        diameterBottom: 0.06,
+        height: 0.15,
+        tessellation: 6,
+      },
+      this.scene
+    );
     point.parent = spear;
     point.position.y = 0.3;
     point.material = mat;
@@ -162,10 +178,14 @@ export class ToolRenderer {
    * Create striking stone (gray sphere)
    */
   private createStrikingStone(id: string): Mesh {
-    const stone = MeshBuilder.CreateSphere(`tool-stone-${id}`, {
-      diameter: 0.15,
-      segments: 8
-    }, this.scene);
+    const stone = MeshBuilder.CreateSphere(
+      `tool-stone-${id}`,
+      {
+        diameter: 0.15,
+        segments: 8,
+      },
+      this.scene
+    );
 
     const mat = new StandardMaterial(`mat-stone-${id}`, this.scene);
     mat.diffuseColor = new Color3(0.5, 0.5, 0.5); // Gray
@@ -196,11 +216,15 @@ export class ToolRenderer {
         if (!creature) continue;
 
         // Create glowing ring above creature
-        const ring = MeshBuilder.CreateTorus(`knowledge-${creatureId}`, {
-          diameter: 0.3,
-          thickness: 0.02,
-          tessellation: 16
-        }, this.scene);
+        const ring = MeshBuilder.CreateTorus(
+          `knowledge-${creatureId}`,
+          {
+            diameter: 0.3,
+            thickness: 0.02,
+            tessellation: 16,
+          },
+          this.scene
+        );
 
         const pos = this.latLonToVector3(creature.lat, creature.lon, 0.3);
         ring.position.copyFrom(pos);

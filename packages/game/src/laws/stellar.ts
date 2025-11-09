@@ -1,6 +1,6 @@
 /**
  * Stellar Evolution Laws
- * 
+ *
  * Laws governing star formation, main sequence evolution, and stellar death.
  * Based on observed relationships and stellar physics.
  */
@@ -19,20 +19,20 @@ export const IMF = {
    */
   sampleMass: (random: () => number): number => {
     const r = random();
-    
+
     // Kroupa IMF (broken power law)
     if (r < 0.5) {
       // Low mass stars (0.08 - 0.5 M☉)
       return 0.08 + r * 0.42;
     } else if (r < 0.9) {
       // Solar-type stars (0.5 - 2 M☉)
-      return 0.5 + (r - 0.5) * 1.5 / 0.4;
+      return 0.5 + ((r - 0.5) * 1.5) / 0.4;
     } else {
       // Massive stars (2 - 100 M☉)
-      return 2 + (r - 0.9) * 98 / 0.1;
+      return 2 + ((r - 0.9) * 98) / 0.1;
     }
   },
-  
+
   /**
    * Probability density at given mass
    */
@@ -64,7 +64,7 @@ export const MainSequence = {
       return 32000 * mass;
     }
   },
-  
+
   /**
    * Mass-Radius Relation
    * R ∝ M^0.8 (for most stars)
@@ -76,7 +76,7 @@ export const MainSequence = {
       return Math.pow(mass, 0.57);
     }
   },
-  
+
   /**
    * Mass-Temperature Relation
    * T ∝ M^0.5
@@ -85,16 +85,16 @@ export const MainSequence = {
     const T_sun = 5778; // K
     return T_sun * Math.pow(mass, 0.505);
   },
-  
+
   /**
    * Main Sequence Lifetime
    * t ∝ M / L ∝ M^(-2.5)
    */
   lifetime: (mass: number): number => {
     const t_sun = 10e9; // 10 billion years
-    return t_sun * mass / MainSequence.luminosity(mass);
+    return (t_sun * mass) / MainSequence.luminosity(mass);
   },
-  
+
   /**
    * Spectral Classification
    * Based on surface temperature
@@ -102,24 +102,24 @@ export const MainSequence = {
   spectralType: (temperature: number): string => {
     if (temperature > 30000) return 'O'; // Blue
     if (temperature > 10000) return 'B'; // Blue-white
-    if (temperature > 7500) return 'A';  // White
-    if (temperature > 6000) return 'F';  // Yellow-white
-    if (temperature > 5200) return 'G';  // Yellow (Sun-like)
-    if (temperature > 3700) return 'K';  // Orange
+    if (temperature > 7500) return 'A'; // White
+    if (temperature > 6000) return 'F'; // Yellow-white
+    if (temperature > 5200) return 'G'; // Yellow (Sun-like)
+    if (temperature > 3700) return 'K'; // Orange
     return 'M'; // Red
   },
-  
+
   /**
    * Luminosity Class
    * I = Supergiant, III = Giant, V = Main Sequence (dwarf)
    */
   luminosityClass: (mass: number, age: number, lifetime: number): string => {
     const ageRatio = age / lifetime;
-    
-    if (ageRatio < 0.9) return 'V';   // Main sequence
-    if (mass < 0.5) return 'V';       // Low mass stars stay main sequence
-    if (mass < 8) return 'III';       // Red giant phase
-    return 'I';                        // Supergiant
+
+    if (ageRatio < 0.9) return 'V'; // Main sequence
+    if (mass < 0.5) return 'V'; // Low mass stars stay main sequence
+    if (mass < 8) return 'III'; // Red giant phase
+    return 'I'; // Supergiant
   },
 };
 
@@ -134,21 +134,21 @@ export const HabitableZone = {
   innerEdge: (luminosity: number): number => {
     return Math.sqrt(luminosity / 1.1); // AU
   },
-  
+
   /**
    * Outer edge (maximum greenhouse)
    */
   outerEdge: (luminosity: number): number => {
     return Math.sqrt(luminosity / 0.53); // AU
   },
-  
+
   /**
    * Optimum distance (Earth-equivalent flux)
    */
   optimum: (luminosity: number): number => {
     return Math.sqrt(luminosity); // AU
   },
-  
+
   /**
    * Check if orbit is in habitable zone
    */
@@ -157,13 +157,13 @@ export const HabitableZone = {
     const outer = HabitableZone.outerEdge(luminosity);
     return orbitRadius >= inner && orbitRadius <= outer;
   },
-  
+
   /**
    * Stellar flux at distance
    * F = L / (4π d²)
    */
   flux: (luminosity: number, distance: number): number => {
-    return luminosity * C.SOLAR_LUMINOSITY / (4 * Math.PI * Math.pow(distance * C.AU, 2));
+    return (luminosity * C.SOLAR_LUMINOSITY) / (4 * Math.PI * Math.pow(distance * C.AU, 2));
   },
 };
 
@@ -179,7 +179,7 @@ export const CondensationSequence = {
   temperature: (luminosity: number, distance: number): number => {
     return 280 * Math.pow(luminosity, 0.25) * Math.pow(distance, -0.5);
   },
-  
+
   /**
    * Frost line (where water ice can condense)
    * Beyond this, gas giants can form
@@ -187,15 +187,15 @@ export const CondensationSequence = {
   frostLine: (luminosity: number): number => {
     // Water freezes at ~170K
     // Solve: 170 = 280 * L^0.25 * d^(-0.5)
-    return Math.pow(280 * Math.pow(luminosity, 0.25) / 170, 2);
+    return Math.pow((280 * Math.pow(luminosity, 0.25)) / 170, 2);
   },
-  
+
   /**
    * What materials condense at this temperature?
    */
   condensedMaterials: (temperature: number): string[] => {
     const materials: string[] = [];
-    
+
     if (temperature < 1700) materials.push('refractory_metals'); // Al, Ca, Ti oxides
     if (temperature < 1500) materials.push('iron', 'nickel');
     if (temperature < 1000) materials.push('silicates'); // Rock
@@ -204,10 +204,10 @@ export const CondensationSequence = {
     if (temperature < 120) materials.push('ammonia_ice');
     if (temperature < 70) materials.push('methane_ice');
     if (temperature < 40) materials.push('nitrogen_ice');
-    
+
     return materials;
   },
-  
+
   /**
    * Expected planet type based on distance
    */
@@ -234,7 +234,7 @@ export const StellarActivity = {
     const youngRotation = 1; // days (for solar mass)
     return youngRotation * Math.sqrt(age / 1e9) * Math.pow(mass, -0.5);
   },
-  
+
   /**
    * X-ray luminosity (stellar wind and flares)
    * Young stars are very active
@@ -244,7 +244,7 @@ export const StellarActivity = {
     const ageFactor = Math.pow(age / 1e9, -1.5); // Decay with age
     return L_x_sun * Math.pow(mass, 2) * ageFactor;
   },
-  
+
   /**
    * Is the star still highly active? (bad for life)
    */

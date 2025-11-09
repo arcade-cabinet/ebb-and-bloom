@@ -99,4 +99,3 @@ declare module 'yuka' {
     terminate(): void;
   }
 }
-

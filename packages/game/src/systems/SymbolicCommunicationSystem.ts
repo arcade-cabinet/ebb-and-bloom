@@ -1,16 +1,16 @@
 /**
  * Symbolic Communication System (Gen5)
- * 
+ *
  * Creatures develop visual symbol systems for communication:
  * - Territorial markers (boundary symbols)
  * - Resource markers (food/water/danger indicators)
  * - Identity symbols (pack/lineage markers)
  * - Abstract concepts (trade, alliance, warning)
- * 
+ *
  * Symbols emerge from need and spread through social learning.
  */
 
-export type SymbolType = 
+export type SymbolType =
   | 'territory_marker'
   | 'resource_food'
   | 'resource_water'
@@ -51,13 +51,16 @@ export class SymbolicCommunicationSystem {
    * Update symbolic communication
    */
   update(
-    creatures: Map<string, {
-      position: { lat: number; lon: number };
-      traits?: {
-        intelligence?: number;
-        social?: string;
-      };
-    }>,
+    creatures: Map<
+      string,
+      {
+        position: { lat: number; lon: number };
+        traits?: {
+          intelligence?: number;
+          social?: string;
+        };
+      }
+    >,
     packs: Map<string, { members: string[]; id: string }>,
     deltaTime: number
   ): void {
@@ -93,7 +96,7 @@ export class SymbolicCommunicationSystem {
         knownSymbols: new Map(),
         createdSymbols: [],
         canCreate: intelligence > 0.8, // Very high intelligence required
-        teachingSymbol: undefined
+        teachingSymbol: undefined,
       });
     }
   }
@@ -102,13 +105,16 @@ export class SymbolicCommunicationSystem {
    * Intelligent creatures create symbols
    */
   private createSymbols(
-    creatures: Map<string, {
-      position: { lat: number; lon: number };
-      traits?: {
-        intelligence?: number;
-        social?: string;
-      };
-    }>,
+    creatures: Map<
+      string,
+      {
+        position: { lat: number; lon: number };
+        traits?: {
+          intelligence?: number;
+          social?: string;
+        };
+      }
+    >,
     packs: Map<string, { members: string[]; id: string }>
   ): void {
     const CREATION_CHANCE = 0.0001; // 0.01% per frame
@@ -123,7 +129,7 @@ export class SymbolicCommunicationSystem {
       if (Math.random() < CREATION_CHANCE * intelligence) {
         // Determine symbol type based on context
         const symbolType = this.determineSymbolType(creatureId, creature, packs);
-        
+
         // Get pack ID if creature is in a pack
         let packId: string | undefined;
         for (const pack of packs.values()) {
@@ -157,7 +163,7 @@ export class SymbolicCommunicationSystem {
       'resource_food',
       'danger_warning',
       'trade_offer',
-      'abstract'
+      'abstract',
     ];
 
     return types[Math.floor(Math.random() * types.length)];
@@ -185,7 +191,7 @@ export class SymbolicCommunicationSystem {
       createdBy: creatorId,
       packId,
       timestamp: Date.now(),
-      recognizedBy: new Set([creatorId])
+      recognizedBy: new Set([creatorId]),
     };
 
     this.symbols.set(symbol.id, symbol);
@@ -204,7 +210,10 @@ export class SymbolicCommunicationSystem {
    * Creatures learn nearby symbols
    */
   private learnSymbols(
-    creatures: Map<string, { position: { lat: number; lon: number }; traits?: { intelligence?: number } }>
+    creatures: Map<
+      string,
+      { position: { lat: number; lon: number }; traits?: { intelligence?: number } }
+    >
   ): void {
     const LEARNING_RANGE = 3; // degrees
     const LEARNING_CHANCE = 0.01; // 1% per frame
@@ -227,7 +236,7 @@ export class SymbolicCommunicationSystem {
         // Learning check (smart creatures learn faster)
         if (Math.random() < LEARNING_CHANCE * intelligence) {
           symbol.recognizedBy.add(creatureId);
-          
+
           // Update knowledge
           const currentProf = knowledge.knownSymbols.get(symbol.type) || 0;
           knowledge.knownSymbols.set(symbol.type, Math.min(1.0, currentProf + 0.1));
@@ -240,13 +249,16 @@ export class SymbolicCommunicationSystem {
    * Social creatures teach symbols
    */
   private teachSymbols(
-    creatures: Map<string, {
-      position: { lat: number; lon: number };
-      traits?: {
-        social?: string;
-        intelligence?: number;
-      };
-    }>
+    creatures: Map<
+      string,
+      {
+        position: { lat: number; lon: number };
+        traits?: {
+          social?: string;
+          intelligence?: number;
+        };
+      }
+    >
   ): void {
     const TEACHING_RANGE = 3; // degrees
     const TEACHING_CHANCE = 0.05; // 5% per frame
@@ -282,12 +294,12 @@ export class SymbolicCommunicationSystem {
           const knownTypes = Array.from(teacherKnowledge.knownSymbols.keys());
           if (knownTypes.length > 0) {
             const symbolType = knownTypes[Math.floor(Math.random() * knownTypes.length)];
-            
+
             const studentKnowledge = this.knowledge.get(studentId);
             if (studentKnowledge) {
               const currentProf = studentKnowledge.knownSymbols.get(symbolType) || 0;
               studentKnowledge.knownSymbols.set(symbolType, Math.min(1.0, currentProf + 0.2));
-              
+
               teacherKnowledge.teachingSymbol = symbolType;
             }
           }

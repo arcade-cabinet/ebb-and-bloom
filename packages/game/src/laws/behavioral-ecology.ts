@@ -1,6 +1,6 @@
 /**
  * Behavioral Ecology Laws
- * 
+ *
  * Decision-making rules from optimal foraging theory and behavioral ecology.
  * Based on peer-reviewed research.
  */
@@ -14,20 +14,17 @@ export const OptimalForaging = {
   /**
    * Marginal Value Theorem
    * Leave patch when marginal gain rate drops to environmental average
-   * 
+   *
    * This predicts when animals should leave food patches
    */
-  shouldLeavePatch: (
-    currentGainRate_Jpers: number,
-    averageGainRate_Jpers: number
-  ): boolean => {
+  shouldLeavePatch: (currentGainRate_Jpers: number, averageGainRate_Jpers: number): boolean => {
     return currentGainRate_Jpers < averageGainRate_Jpers;
   },
-  
+
   /**
    * Diet breadth: Should I eat this prey?
    * Include if: E/h > λ × E_best/h_best
-   * 
+   *
    * Where:
    * - E = energy value of prey
    * - h = handling time
@@ -40,10 +37,10 @@ export const OptimalForaging = {
     bestPreyProfitability_Jpers: number
   ): boolean => {
     const profitability = preyEnergy_J / handlingTime_s;
-    const opportunityCost = encounterRate_perHour * bestPreyProfitability_Jpers / 3600;
+    const opportunityCost = (encounterRate_perHour * bestPreyProfitability_Jpers) / 3600;
     return profitability > opportunityCost;
   },
-  
+
   /**
    * Optimal load size for central place foragers
    * Maximize: (Energy - TravelCost) / (ForagingTime + TravelTime)
@@ -71,7 +68,7 @@ export const OptimalForaging = {
 export const RiskSensitiveForaging = {
   /**
    * Risk aversion depends on energy state
-   * 
+   *
    * Starving animals: Risk-prone (variance-seeking)
    * Satiated animals: Risk-averse (variance-avoiding)
    */
@@ -88,7 +85,7 @@ export const RiskSensitiveForaging = {
     }
     return 'risk-neutral';
   },
-  
+
   /**
    * Choose between options with different variance
    * If energy is below threshold, prefer high variance (risky) option
@@ -121,32 +118,29 @@ export const SocialForaging = {
   /**
    * Group foraging benefit
    * Many eyes hypothesis: Detection increases with group size
-   * 
+   *
    * P_detect = 1 - (1 - p)^n
    * Where p = individual detection probability, n = group size
    */
-  detectionProbability: (
-    individualProbability: number,
-    groupSize: number
-  ): number => {
+  detectionProbability: (individualProbability: number, groupSize: number): number => {
     return 1 - Math.pow(1 - individualProbability, groupSize);
   },
-  
+
   /**
    * Scrounger-Producer game
    * Optimal scrounging frequency depends on group size
-   * 
+   *
    * Based on Barnard & Sibly (1981)
    */
   optimalScroungerFrequency: (groupSize: number): number => {
     // Nash equilibrium: f_scrounger = 1 - (1 / groupSize)
-    return 1 - (1 / groupSize);
+    return 1 - 1 / groupSize;
   },
-  
+
   /**
    * Individual intake rate in group
    * Decreases with competition: R_i = R_total / n^α
-   * 
+   *
    * α ≈ 1: Linear (food equally shared)
    * α < 1: Interference (scrounging)
    */
@@ -169,49 +163,40 @@ export const AntiPredatorBehavior = {
    * Dilution effect: Predation risk decreases in groups
    * P_individual = P_group / n
    */
-  predationRisk: (
-    groupPredationRate_perHour: number,
-    groupSize: number
-  ): number => {
+  predationRisk: (groupPredationRate_perHour: number, groupSize: number): number => {
     return groupPredationRate_perHour / groupSize;
   },
-  
+
   /**
    * Many eyes: Detection distance increases with group
    * D = D_individual × √n
    */
-  detectionDistance: (
-    individualDetection_m: number,
-    groupSize: number
-  ): number => {
+  detectionDistance: (individualDetection_m: number, groupSize: number): number => {
     return individualDetection_m * Math.sqrt(groupSize);
   },
-  
+
   /**
    * Optimal group size for safety
    * Balances dilution effect vs resource competition
    */
-  optimalGroupSize: (
-    predationPressure: number,
-    resourceCompetition: number
-  ): number => {
+  optimalGroupSize: (predationPressure: number, resourceCompetition: number): number => {
     // High predation → large groups
     // High competition → small groups
     const baseline = 5;
     const predationFactor = predationPressure * 20;
     const competitionFactor = resourceCompetition * 10;
-    
+
     return Math.round(baseline + predationFactor - competitionFactor);
   },
-  
+
   /**
    * Vigilance time: Trade-off between feeding and watching for predators
    * V = 1 - (1 / √n)
-   * 
+   *
    * Larger groups = less individual vigilance needed
    */
   vigilanceTime(groupSize: number): number {
-    return 1 - (1 / Math.sqrt(groupSize));
+    return 1 - 1 / Math.sqrt(groupSize);
   },
 };
 
@@ -224,4 +209,3 @@ export const BehavioralEcologyLaws = {
   social: SocialForaging,
   antiPredator: AntiPredatorBehavior,
 } as const;
-

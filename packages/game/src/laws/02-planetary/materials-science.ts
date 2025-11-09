@@ -1,9 +1,9 @@
 /**
  * Materials Science Laws
- * 
+ *
  * Properties of materials from composition.
  * Metallurgy, ceramics, polymers, composites.
- * 
+ *
  * FROM PERIODIC TABLE TO ENGINEERING.
  */
 
@@ -15,7 +15,7 @@ export const MetallicProperties = {
   /**
    * Electrical conductivity
    * Metals have free electrons
-   * 
+   *
    * σ = n × e² × τ / m
    * Where n = electron density, τ = relaxation time
    */
@@ -31,7 +31,7 @@ export const MetallicProperties = {
     };
     return conductivities[element] || 1e-10; // S/m
   },
-  
+
   /**
    * Thermal conductivity
    * Metals conduct heat well
@@ -47,11 +47,11 @@ export const MetallicProperties = {
     };
     return conductivities[element] || 0.1; // W/(m·K)
   },
-  
+
   /**
    * Malleability
    * Can be hammered into sheets without breaking
-   * 
+   *
    * Au > Ag > Al > Cu > Fe
    */
   malleability: (element: string): number => {
@@ -64,7 +64,7 @@ export const MetallicProperties = {
     };
     return scores[element] || 0.1; // 0-1
   },
-  
+
   /**
    * Ductility
    * Can be drawn into wires
@@ -96,7 +96,7 @@ export const Alloys = {
     meltingPoint: 1223, // K (lower than Cu alone!)
     strength: 350, // MPa (tensile)
   },
-  
+
   /**
    * Steel: Fe + C
    * Much harder than pure iron
@@ -107,23 +107,25 @@ export const Alloys = {
     meltingPoint: 1783, // K
     strength: 500, // MPa (varies with carbon %)
   },
-  
+
   /**
    * Brass: Cu + Zn
    * Corrosion resistant
    */
   brass: {
-    composition: { Cu: 0.70, Zn: 0.30 },
+    composition: { Cu: 0.7, Zn: 0.3 },
     hardness: 3.5,
     meltingPoint: 1173, // K
     corrosionResistance: 0.9, // 0-1
   },
-  
+
   /**
    * Calculate alloy properties from composition
    * Not simple average - interactions matter!
    */
-  calculateAlloyProperties: (composition: Record<string, number>): {
+  calculateAlloyProperties: (
+    composition: Record<string, number>
+  ): {
     hardness: number;
     meltingPoint: number;
     strength: number;
@@ -135,7 +137,7 @@ export const Alloys = {
     if (composition.Fe > 0.95 && composition.C > 0.005) {
       return Alloys.steel;
     }
-    
+
     // Otherwise: Weighted average with interaction terms
     let hardness = 0;
     let meltingPoint = 0;
@@ -143,7 +145,7 @@ export const Alloys = {
       hardness += fraction * 4; // Rough average
       meltingPoint += fraction * 1500; // Rough average
     }
-    
+
     return {
       hardness,
       meltingPoint,
@@ -162,23 +164,23 @@ export const Ceramics = {
    * Firing removes water, hardens structure
    */
   pottery: {
-    composition: { Si: 0.30, Al: 0.15, O: 0.50, H: 0.05 },
+    composition: { Si: 0.3, Al: 0.15, O: 0.5, H: 0.05 },
     firingTemp: 1073, // K (800°C)
     hardness: 5.5, // After firing
     porosity: 0.15, // Porous (absorbs water)
   },
-  
+
   /**
    * Brick
    * Fired clay, very hard
    */
   brick: {
-    composition: { Si: 0.35, Al: 0.20, O: 0.45 },
+    composition: { Si: 0.35, Al: 0.2, O: 0.45 },
     firingTemp: 1273, // K (1000°C)
     hardness: 6.0,
     compressiveStrength: 20, // MPa
   },
-  
+
   /**
    * Glass (SiO₂)
    * Amorphous (non-crystalline) solid
@@ -200,7 +202,7 @@ export const StrengthOfMaterials = {
   /**
    * Tensile strength
    * Maximum pulling force before breaking
-   * 
+   *
    * Units: MPa (megapascals)
    */
   tensileStrength: (material: string): number => {
@@ -210,29 +212,29 @@ export const StrengthOfMaterials = {
       iron: 200,
       copper: 220,
       bronze: 350,
-      
+
       // Stone
       granite: 130,
       limestone: 15,
       sandstone: 25,
-      
+
       // Organic
       wood_oak: 90,
       bone: 130,
       silk: 500, // Stronger than steel per weight!
-      
+
       // Ceramics
       pottery: 40,
       brick: 10,
     };
-    
+
     return strengths[material] || 50; // MPa
   },
-  
+
   /**
    * Compressive strength
    * Resistance to crushing
-   * 
+   *
    * Rock is MUCH stronger in compression than tension
    */
   compressiveStrength: (material: string): number => {
@@ -241,23 +243,23 @@ export const StrengthOfMaterials = {
       granite: 200,
       limestone: 50,
       concrete: 40,
-      
+
       // Metals
       steel: 550,
       iron: 250,
-      
+
       // Organic (weak in compression)
       wood_oak: 50,
       bone: 170,
     };
-    
+
     return strengths[material] || 30; // MPa
   },
-  
+
   /**
    * Hardness (Mohs scale)
    * Resistance to scratching
-   * 
+   *
    * 1: Talc (softest)
    * 10: Diamond (hardest)
    */
@@ -265,11 +267,11 @@ export const StrengthOfMaterials = {
     // Pure elements
     if (composition.C && composition.C > 0.99) return 10; // Diamond
     if (composition.Fe && composition.Fe > 0.95) return 4.5; // Iron
-    
+
     // Compounds
     const silicate = (composition.Si || 0) + (composition.O || 0);
     if (silicate > 0.8) return 7; // Quartz
-    
+
     return 3; // Default (limestone)
   },
 };

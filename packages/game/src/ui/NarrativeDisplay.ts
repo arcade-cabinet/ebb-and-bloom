@@ -1,7 +1,7 @@
 /**
  * Narrative Display - Haiku journal for evolution events
  * Gen3+ feature for poetic storytelling
- * 
+ *
  * STUB: Ready for Gen3 implementation
  */
 
@@ -73,7 +73,10 @@ export class NarrativeDisplay {
     title.top = '-250px';
     panel.addControl(title);
 
-    const stub = new TextBlock('stub', 'Haiku journal\n(Gen3 implementation)\n\n"Life flows like water\nThrough forms that rise and settle\nAwareness observes"');
+    const stub = new TextBlock(
+      'stub',
+      'Haiku journal\n(Gen3 implementation)\n\n"Life flows like water\nThrough forms that rise and settle\nAwareness observes"'
+    );
     stub.fontSize = 16;
     stub.fontFamily = FONTS.body;
     stub.color = COLORS.text.muted;

@@ -1,6 +1,6 @@
 /**
  * Gen0 Renderer - Main Entry Point
- * 
+ *
  * Coordinates macro (planet) + meso (moons) + micro (layers) rendering
  * Interprets WARP/WEFT archetype data from backend Protobuf
  */

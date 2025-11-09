@@ -1,16 +1,25 @@
 /**
  * Structure Renderer (Gen3)
- * 
+ *
  * Visualizes creature-built structures:
  * - Burrows: Underground entrance (circular opening with mound)
  * - Platforms: Elevated tree nest (flat platform)
  * - Stiltworks: Water structures (platform on stilts)
  * - Windbreaks: Ground shelter (angled wall)
- * 
+ *
  * Shows construction progress and structural state
  */
 
-import { Scene, MeshBuilder, StandardMaterial, PBRMaterial, Color3, Vector3, Mesh, TransformNode } from '@babylonjs/core';
+import {
+  Scene,
+  MeshBuilder,
+  StandardMaterial,
+  PBRMaterial,
+  Color3,
+  Vector3,
+  Mesh,
+  TransformNode,
+} from '@babylonjs/core';
 import type { Structure, BuildingProject } from '../../systems/StructureBuildingSystem.js';
 
 export class StructureRenderer {
@@ -30,7 +39,7 @@ export class StructureRenderer {
   render(structures: Structure[], projects: BuildingProject[]): void {
     // Remove old structures
     for (const [id, node] of this.structureMeshes) {
-      if (!structures.find(s => s.id === id)) {
+      if (!structures.find((s) => s.id === id)) {
         node.dispose();
         this.structureMeshes.delete(id);
       }
@@ -43,7 +52,7 @@ export class StructureRenderer {
 
     // Remove old projects
     for (const [id, mesh] of this.projectMeshes) {
-      if (!projects.find(p => `project-${p.structureId}` === id)) {
+      if (!projects.find((p) => `project-${p.structureId}` === id)) {
         mesh.dispose();
         this.projectMeshes.delete(id);
       }
@@ -87,12 +96,12 @@ export class StructureRenderer {
 
     // Orient to surface
     const normal = pos.normalize();
-    
+
     // Align to surface normal
     node.lookAt(normal.add(pos));
 
     // Scale by durability
-    const scale = 0.8 + (structure.durability * 0.2); // 0.8-1.0
+    const scale = 0.8 + structure.durability * 0.2; // 0.8-1.0
     node.scaling.set(scale, scale, scale);
 
     // Show occupancy with glow
@@ -108,10 +117,14 @@ export class StructureRenderer {
     const root = new TransformNode(`burrow-${id}`, this.scene);
 
     // Entrance (dark circle)
-    const entrance = MeshBuilder.CreateDisc(`burrow-entrance-${id}`, {
-      radius: 0.3,
-      tessellation: 16
-    }, this.scene);
+    const entrance = MeshBuilder.CreateDisc(
+      `burrow-entrance-${id}`,
+      {
+        radius: 0.3,
+        tessellation: 16,
+      },
+      this.scene
+    );
     entrance.parent = root;
     entrance.rotation.x = Math.PI / 2;
     entrance.position.y = -0.05;
@@ -122,11 +135,15 @@ export class StructureRenderer {
     entrance.material = entranceMat;
 
     // Mound (raised dirt)
-    const mound = MeshBuilder.CreateCylinder(`burrow-mound-${id}`, {
-      diameter: 0.8,
-      height: 0.2,
-      tessellation: 16
-    }, this.scene);
+    const mound = MeshBuilder.CreateCylinder(
+      `burrow-mound-${id}`,
+      {
+        diameter: 0.8,
+        height: 0.2,
+        tessellation: 16,
+      },
+      this.scene
+    );
     mound.parent = root;
     mound.position.y = 0.05;
 
@@ -146,10 +163,14 @@ export class StructureRenderer {
     const root = new TransformNode(`platform-${id}`, this.scene);
 
     // Platform base
-    const platform = MeshBuilder.CreateDisc(`platform-base-${id}`, {
-      radius: 0.5,
-      tessellation: 20
-    }, this.scene);
+    const platform = MeshBuilder.CreateDisc(
+      `platform-base-${id}`,
+      {
+        radius: 0.5,
+        tessellation: 20,
+      },
+      this.scene
+    );
     platform.parent = root;
     platform.rotation.x = Math.PI / 2;
     platform.position.y = 0.3; // Elevated
@@ -166,11 +187,15 @@ export class StructureRenderer {
       const x = Math.cos(angle) * 0.3;
       const z = Math.sin(angle) * 0.3;
 
-      const branch = MeshBuilder.CreateCylinder(`platform-leg-${id}-${i}`, {
-        diameter: 0.05,
-        height: 0.3,
-        tessellation: 6
-      }, this.scene);
+      const branch = MeshBuilder.CreateCylinder(
+        `platform-leg-${id}-${i}`,
+        {
+          diameter: 0.05,
+          height: 0.3,
+          tessellation: 6,
+        },
+        this.scene
+      );
       branch.parent = root;
       branch.position.set(x, 0.15, z);
       branch.material = platformMat;
@@ -186,11 +211,15 @@ export class StructureRenderer {
     const root = new TransformNode(`stilt-${id}`, this.scene);
 
     // Platform
-    const platform = MeshBuilder.CreateBox(`stilt-platform-${id}`, {
-      width: 0.8,
-      height: 0.1,
-      depth: 0.8
-    }, this.scene);
+    const platform = MeshBuilder.CreateBox(
+      `stilt-platform-${id}`,
+      {
+        width: 0.8,
+        height: 0.1,
+        depth: 0.8,
+      },
+      this.scene
+    );
     platform.parent = root;
     platform.position.y = 0.5; // Above water
 
@@ -202,19 +231,26 @@ export class StructureRenderer {
 
     // Stilts (6 legs)
     const positions = [
-      [-0.3, -0.3], [0.3, -0.3], // Front
-      [-0.3, 0.3], [0.3, 0.3],   // Back
-      [0, -0.3], [0, 0.3]        // Middle
+      [-0.3, -0.3],
+      [0.3, -0.3], // Front
+      [-0.3, 0.3],
+      [0.3, 0.3], // Back
+      [0, -0.3],
+      [0, 0.3], // Middle
     ];
 
     for (let i = 0; i < positions.length; i++) {
       const [x, z] = positions[i];
-      
-      const stilt = MeshBuilder.CreateCylinder(`stilt-leg-${id}-${i}`, {
-        diameter: 0.06,
-        height: 0.5,
-        tessellation: 8
-      }, this.scene);
+
+      const stilt = MeshBuilder.CreateCylinder(
+        `stilt-leg-${id}-${i}`,
+        {
+          diameter: 0.06,
+          height: 0.5,
+          tessellation: 8,
+        },
+        this.scene
+      );
       stilt.parent = root;
       stilt.position.set(x, 0.25, z);
       stilt.material = platformMat;
@@ -230,11 +266,15 @@ export class StructureRenderer {
     const root = new TransformNode(`windbreak-${id}`, this.scene);
 
     // Wall (angled box)
-    const wall = MeshBuilder.CreateBox(`windbreak-wall-${id}`, {
-      width: 1.2,
-      height: 0.6,
-      depth: 0.1
-    }, this.scene);
+    const wall = MeshBuilder.CreateBox(
+      `windbreak-wall-${id}`,
+      {
+        width: 1.2,
+        height: 0.6,
+        depth: 0.1,
+      },
+      this.scene
+    );
     wall.parent = root;
     wall.rotation.x = Math.PI / 6; // Angled
     wall.position.y = 0.3;
@@ -249,11 +289,15 @@ export class StructureRenderer {
     for (let i = 0; i < 3; i++) {
       const x = (i - 1) * 0.5; // -0.5, 0, 0.5
 
-      const post = MeshBuilder.CreateCylinder(`windbreak-post-${id}-${i}`, {
-        diameter: 0.06,
-        height: 0.4,
-        tessellation: 6
-      }, this.scene);
+      const post = MeshBuilder.CreateCylinder(
+        `windbreak-post-${id}-${i}`,
+        {
+          diameter: 0.06,
+          height: 0.4,
+          tessellation: 6,
+        },
+        this.scene
+      );
       post.parent = root;
       post.position.set(x, 0.2, 0);
       post.material = wallMat;
@@ -271,11 +315,15 @@ export class StructureRenderer {
 
     if (!mesh) {
       // Create ghost mesh (simple box)
-      mesh = MeshBuilder.CreateBox(projectId, {
-        width: 0.5,
-        height: 0.5,
-        depth: 0.5
-      }, this.scene);
+      mesh = MeshBuilder.CreateBox(
+        projectId,
+        {
+          width: 0.5,
+          height: 0.5,
+          depth: 0.5,
+        },
+        this.scene
+      );
 
       const mat = new StandardMaterial(`mat-${projectId}`, this.scene);
       mat.diffuseColor = new Color3(1, 1, 0); // Yellow
@@ -302,13 +350,17 @@ export class StructureRenderer {
    */
   private addOccupancyGlow(node: TransformNode, occupancyRatio: number): void {
     // Find or create glow mesh
-    let glow = node.getChildMeshes().find(m => m.name.includes('glow'));
-    
+    let glow = node.getChildMeshes().find((m) => m.name.includes('glow'));
+
     if (!glow) {
-      glow = MeshBuilder.CreateSphere(`glow-${node.name}`, {
-        diameter: 0.5,
-        segments: 8
-      }, this.scene);
+      glow = MeshBuilder.CreateSphere(
+        `glow-${node.name}`,
+        {
+          diameter: 0.5,
+          segments: 8,
+        },
+        this.scene
+      );
       glow.parent = node;
 
       const mat = new StandardMaterial(`mat-glow-${node.name}`, this.scene);

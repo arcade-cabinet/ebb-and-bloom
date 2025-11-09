@@ -13,7 +13,7 @@ export class StructureVisuals {
     const primaryMaterial = materials[0];
     const color = this.materialColor(primaryMaterial, age_years);
     const geometry = this.constructionGeometry(construction);
-    
+
     return {
       baseColor: color,
       roughness: this.weatheringRoughness(primaryMaterial, age_years),
@@ -21,7 +21,7 @@ export class StructureVisuals {
       scale: this.structureScale(construction),
     };
   }
-  
+
   /**
    * Material colors
    */
@@ -33,16 +33,16 @@ export class StructureVisuals {
       thatch: new Color3(0.8, 0.75, 0.5),
       brick: new Color3(0.7, 0.4, 0.3),
     };
-    
+
     const base = fresh[material] || fresh.stone;
-    
+
     // Weathering darkens and grays
     const weathering = Math.min(1, age_years / 1000);
     const gray = 0.5;
-    
+
     return Color3.Lerp(base, new Color3(gray, gray, gray), weathering * 0.4);
   }
-  
+
   /**
    * Weathering increases roughness
    */
@@ -51,34 +51,33 @@ export class StructureVisuals {
     const weathering = Math.min(1, age_years / 500);
     return Math.min(1, baseRoughness + weathering * 0.2);
   }
-  
+
   /**
    * Construction method → geometric form
    */
   private static constructionGeometry(construction: string): string {
     const forms: Record<string, string> = {
-      'pit': 'excavated',
+      pit: 'excavated',
       'post-and-beam': 'rectangular',
-      'wattle': 'rounded',
-      'masonry': 'blocky',
-      'thatch': 'conical',
-      'platform': 'elevated',
+      wattle: 'rounded',
+      masonry: 'blocky',
+      thatch: 'conical',
+      platform: 'elevated',
     };
     return forms[construction] || 'rectangular';
   }
-  
+
   /**
    * Structure scale
    */
   private static structureScale(construction: string): number {
     const scales: Record<string, number> = {
-      'windbreak': 1,
-      'hut': 2,
-      'house': 3,
-      'longhouse': 5,
-      'hall': 6,
+      windbreak: 1,
+      hut: 2,
+      house: 3,
+      longhouse: 5,
+      hall: 6,
     };
     return scales[construction] || 2;
   }
 }
-

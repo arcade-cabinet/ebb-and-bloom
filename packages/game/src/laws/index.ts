@@ -1,9 +1,9 @@
 /**
  * Universal Laws
- * 
+ *
  * This is the foundation of the entire simulation.
  * Everything in the game emerges from these deterministic laws.
- * 
+ *
  * NO AI GENERATION. NO RANDOM GUESSES. ONLY MATHEMATICAL RELATIONSHIPS.
  */
 
@@ -40,12 +40,12 @@ import { AgricultureLaws } from './07-technological/agriculture.js';
 import { ArchitectureLaws } from './07-technological/architecture.js';
 import { LinguisticsLaws } from './05-cognitive/linguistics.js';
 
-export { 
-  PhysicalLaws, 
-  StellarLaws, 
-  BiologicalLaws, 
-  EcologicalLaws, 
-  SocialLaws, 
+export {
+  PhysicalLaws,
+  StellarLaws,
+  BiologicalLaws,
+  EcologicalLaws,
+  SocialLaws,
   TaxonomicLaws,
   BiomechanicsLaws,
   BehavioralEcologyLaws,
@@ -60,10 +60,10 @@ export {
 
 /**
  * The Complete Law System
- * 
+ *
  * This object contains ALL the laws of the universe.
  * Pass in properties, get deterministic results.
- * 
+ *
  * EVERY FORMULA IS PEER-REVIEWED.
  * EVERY RELATIONSHIP IS VALIDATED.
  * YUKA CAN SIMULATE MILLENNIA INTO THE FUTURE.
@@ -72,45 +72,45 @@ export const LAWS = {
   // Foundation
   physics: PhysicalLaws,
   stellar: StellarLaws,
-  
+
   // Life
   biology: BiologicalLaws,
   biomechanics: BiomechanicsLaws,
   sensory: SensoryBiologyLaws,
   reproduction: ReproductionLaws,
   growth: GrowthModelLaws,
-  
+
   // Populations
   ecology: EcologicalLaws,
   behavioral: BehavioralEcologyLaws,
-  
+
   // Mind
   cognitive: CognitiveScienceLaws,
   gameTheory: GameTheoryLaws,
-  
+
   // Society
   social: SocialLaws,
   economics: EconomicsLaws,
   taxonomy: TaxonomicLaws,
-  
+
   // Applied
   husbandry: AnimalHusbandryLaws,
-  
+
   // Planetary sciences
   climate: ClimateScienceLaws,
   soil: SoilScienceLaws,
   geology: GeologyLaws,
   hydrology: HydrologyLaws,
   materials: MaterialsScienceLaws,
-  
+
   // Extended biological
   anatomy: AnatomyLaws,
-  
+
   // Extended social
   demographics: DemographicsLaws,
   epidemiology: EpidemiologyLaws,
   linguistics: LinguisticsLaws,
-  
+
   // Technology
   combustion: CombustionLaws,
   metallurgy: MetallurgyLaws,
@@ -125,10 +125,10 @@ export type Law<Input, Output> = (input: Input) => Output;
 
 /**
  * All laws follow this pattern:
- * 
+ *
  * const gravity: Law<{m1, m2, r}, Force> = ({m1, m2, r}) => G * m1 * m2 / r²
  * const metabolism: Law<Mass, Power> = (mass) => 70 * mass^0.75
  * const governanceType: Law<{pop, surplus}, Type> = ({pop, surplus}) => ...
- * 
+ *
  * Everything is deterministic. Same inputs = same outputs. Always.
  */

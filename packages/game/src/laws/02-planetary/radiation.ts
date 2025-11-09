@@ -12,7 +12,7 @@ export const ThermalRadiation = {
     const sigma = 5.670374419e-8; // W/(m²·K⁴)
     return sigma * surfaceArea_m2 * Math.pow(temperature_K, 4);
   },
-  
+
   /**
    * Peak wavelength (Wien's law)
    * λ_max = b / T where b = 2.897771955×10^-3 m·K
@@ -20,14 +20,14 @@ export const ThermalRadiation = {
   peakWavelength_m: (temperature_K: number): number => {
     return 2.897771955e-3 / temperature_K;
   },
-  
+
   /**
    * Is visible to human eye?
    */
   isVisibleGlow: (temperature_K: number): boolean => {
     return temperature_K > 800; // Dull red glow starts ~800K
   },
-  
+
   /**
    * Glow color from temperature
    */
@@ -53,7 +53,7 @@ export const RadioactiveDecay = {
     C14: 5730, // Carbon-14 (for dating)
     Ra226: 1600, // Radium
   },
-  
+
   /**
    * Decay rate from half-life
    * λ = ln(2) / t_half
@@ -61,7 +61,7 @@ export const RadioactiveDecay = {
   decayConstant_perYear: (halfLife_years: number): number => {
     return Math.LN2 / halfLife_years;
   },
-  
+
   /**
    * Activity (decays per second)
    * A = λ × N
@@ -69,7 +69,7 @@ export const RadioactiveDecay = {
   activity_Bq: (atomCount: number, decayConstant_perSecond: number): number => {
     return atomCount * decayConstant_perSecond;
   },
-  
+
   /**
    * Heat from radioactive decay
    * U238: 95.6 μW/kg
@@ -84,7 +84,7 @@ export const RadioactiveDecay = {
     };
     return rates[element] || 0;
   },
-  
+
   /**
    * Total radioactive heating in planetary core
    * Major source of internal heat!
@@ -96,12 +96,13 @@ export const RadioactiveDecay = {
     K_concentration: number
   ): number => {
     const U_heat = coreMass_kg * U_concentration * RadioactiveDecay.heatGeneration_WperKg('U238');
-    const Th_heat = coreMass_kg * Th_concentration * RadioactiveDecay.heatGeneration_WperKg('Th232');
+    const Th_heat =
+      coreMass_kg * Th_concentration * RadioactiveDecay.heatGeneration_WperKg('Th232');
     const K_heat = coreMass_kg * K_concentration * RadioactiveDecay.heatGeneration_WperKg('K40');
-    
+
     return U_heat + Th_heat + K_heat;
   },
-  
+
   /**
    * Surface radiation dose
    * Dangerous if no magnetic field to deflect cosmic rays
@@ -114,7 +115,7 @@ export const RadioactiveDecay = {
     const cosmic = hasMagneticField ? cosmicRays_mSv * 0.5 : cosmicRays_mSv * 3;
     return cosmic + terrestrialRadiation_mSv;
   },
-  
+
   /**
    * Is radiation level safe for life?
    * Earth surface: ~2-3 mSv/year
@@ -134,10 +135,10 @@ export const StellarRadiation = {
     const L_sun_watts = 3.828e26; // W
     const L_watts = stellarLuminosity_Lsun * L_sun_watts;
     const distance_m = distance_AU * 1.496e11; // m
-    
+
     return L_watts / (4 * Math.PI * Math.pow(distance_m, 2));
   },
-  
+
   /**
    * UV radiation (harmful to life)
    * Depends on stellar temperature
@@ -147,13 +148,13 @@ export const StellarRadiation = {
     // Sun (5778K): ~10% UV
     // M-dwarf (3000K): ~1% UV
     // O-star (30000K): ~90% UV
-    
+
     if (stellarTemperature_K < 4000) return 0.01; // M-dwarf
-    if (stellarTemperature_K < 6000) return 0.10; // Sun-like
-    if (stellarTemperature_K < 10000) return 0.30; // A-star
-    return 0.70; // O/B star (deadly)
+    if (stellarTemperature_K < 6000) return 0.1; // Sun-like
+    if (stellarTemperature_K < 10000) return 0.3; // A-star
+    return 0.7; // O/B star (deadly)
   },
-  
+
   /**
    * Radiation pressure (affects small particles, comets)
    * P = F / c
@@ -169,4 +170,3 @@ export const RadiationLaws = {
   radioactive: RadioactiveDecay,
   stellar: StellarRadiation,
 } as const;
-

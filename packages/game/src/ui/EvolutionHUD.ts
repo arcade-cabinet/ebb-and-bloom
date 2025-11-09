@@ -1,7 +1,7 @@
 /**
  * Evolution HUD - In-game overlay for Gen1+
  * Shows generation, environmental status, event feed, pack dynamics
- * 
+ *
  * STUB: Ready for Gen1 implementation
  */
 

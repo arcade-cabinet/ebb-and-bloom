@@ -16,10 +16,10 @@ export class SplashScreenScene {
   constructor(scene: Scene, _engine: Engine, onComplete: () => void) {
     this.scene = scene;
     this.onComplete = onComplete;
-    
+
     // Random duration between 2-3 seconds
     this.splashDuration = 2000 + Math.random() * 1000;
-    
+
     this.setupScene();
     this.setupGUI();
     this.startTransition();
@@ -44,10 +44,8 @@ export class SplashScreenScene {
     this.guiTexture.addControl(container);
 
     // Load splash image
-    const splashVariants = [
-      'splash/splash-harmony-1.webp',
-    ];
-    
+    const splashVariants = ['splash/splash-harmony-1.webp'];
+
     const randomVariant = splashVariants[Math.floor(Math.random() * splashVariants.length)];
     const splashPath = `/${randomVariant}`;
 
@@ -58,7 +56,7 @@ export class SplashScreenScene {
     this.splashImage.height = 1;
     this.splashImage.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
     this.splashImage.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
-    
+
     // Fade in animation
     this.splashImage.alpha = 0;
     this.scene.onBeforeRenderObservable.add(() => {
@@ -109,4 +107,3 @@ export class SplashScreenScene {
     this.cleanup();
   }
 }
-

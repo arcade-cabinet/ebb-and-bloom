@@ -14,7 +14,7 @@ export class ToolVisuals {
     const composition = this.materialComposition(material);
     const color = this.materialColor(material, weathering);
     const properties = this.materialProperties(material);
-    
+
     return {
       baseColor: color,
       metallic: properties.metallic,
@@ -23,7 +23,7 @@ export class ToolVisuals {
       wear: weathering,
     };
   }
-  
+
   /**
    * Material composition lookup
    */
@@ -33,12 +33,12 @@ export class ToolVisuals {
       bronze: { Cu: 0.88, Sn: 0.12 },
       iron: { Fe: 1.0 },
       steel: { Fe: 0.99, C: 0.01 },
-      bone: { Ca: 0.35, P: 0.17, C: 0.25, O: 0.20, other: 0.03 },
-      wood: { C: 0.50, O: 0.42, H: 0.06, N: 0.02 },
+      bone: { Ca: 0.35, P: 0.17, C: 0.25, O: 0.2, other: 0.03 },
+      wood: { C: 0.5, O: 0.42, H: 0.06, N: 0.02 },
     };
     return compositions[material] || compositions.stone;
   }
-  
+
   /**
    * Material color
    */
@@ -51,14 +51,14 @@ export class ToolVisuals {
       bone: new Color3(0.9, 0.85, 0.8),
       wood: new Color3(0.6, 0.4, 0.25),
     };
-    
+
     const base = colors[material] || colors.stone;
-    
+
     // Weathering darkens
     const weatherFactor = 1 - weathering * 0.3;
     return new Color3(base.r * weatherFactor, base.g * weatherFactor, base.b * weatherFactor);
   }
-  
+
   /**
    * Material physical properties
    */
@@ -68,7 +68,7 @@ export class ToolVisuals {
       roughness: material === 'stone' ? 0.8 : material === 'bone' ? 0.6 : 0.3,
     };
   }
-  
+
   /**
    * Tool shape from purpose
    */
@@ -83,4 +83,3 @@ export class ToolVisuals {
     return shapes[purpose] || 'generic';
   }
 }
-

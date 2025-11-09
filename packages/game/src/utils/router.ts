@@ -10,7 +10,7 @@ import { Capacitor } from '@capacitor/core';
  */
 export function navigateTo(params: Record<string, string>): void {
   const queryString = new URLSearchParams(params).toString();
-  
+
   // Use hash-based routing for better Capacitor compatibility
   window.location.hash = queryString;
 }

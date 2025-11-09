@@ -48,9 +48,7 @@ export class PlanetaryComposition {
     const radiusKm = distanceFromCenter / 1000;
 
     // Find which layer this radius falls into
-    const layer = this.layers.find(
-      (l) => radiusKm >= l.minRadius && radiusKm <= l.maxRadius
-    );
+    const layer = this.layers.find((l) => radiusKm >= l.minRadius && radiusKm <= l.maxRadius);
 
     // If outside all layers, return void
     if (!layer) {
@@ -172,19 +170,13 @@ export class PlanetaryComposition {
       layers: this.layers.map((layer) => ({
         name: layer.name,
         radiusRange: [layer.minRadius, layer.maxRadius],
-        depthRange: [
-          this.planetRadius - layer.maxRadius,
-          this.planetRadius - layer.minRadius,
-        ],
+        depthRange: [this.planetRadius - layer.maxRadius, this.planetRadius - layer.minRadius],
         state: layer.state,
         temperatureRange: [
           layer.temperatureFunc(layer.minRadius),
           layer.temperatureFunc(layer.maxRadius),
         ],
-        pressureRange: [
-          layer.pressureFunc(layer.minRadius),
-          layer.pressureFunc(layer.maxRadius),
-        ],
+        pressureRange: [layer.pressureFunc(layer.minRadius), layer.pressureFunc(layer.maxRadius)],
         materials: layer.materials.map((m) => ({
           type: m.type,
           abundance: m.abundance,
@@ -209,9 +201,7 @@ export class PlanetaryComposition {
     const points: PlanetaryPoint[] = [];
 
     // Normalize direction
-    const len = Math.sqrt(
-      direction.x ** 2 + direction.y ** 2 + direction.z ** 2
-    );
+    const len = Math.sqrt(direction.x ** 2 + direction.y ** 2 + direction.z ** 2);
     const dir = {
       x: direction.x / len,
       y: direction.y / len,

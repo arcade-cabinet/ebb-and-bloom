@@ -23,4 +23,3 @@ export const ImmunologyLaws = {
   adaptive: AdaptiveImmunity,
   herd: HerdImmunity,
 } as const;
-

@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 /**
  * LAW EXPLORER
- * 
+ *
  * Interactive tool for exploring all available laws and formulas.
  */
 
@@ -13,7 +13,7 @@ console.log('╚═════════════════════�
 
 function exploreLaws(obj: any, prefix = '') {
   let count = 0;
-  
+
   for (const [key, value] of Object.entries(obj)) {
     if (typeof value === 'function') {
       console.log(`  ${prefix}${key}()`);
@@ -25,7 +25,7 @@ function exploreLaws(obj: any, prefix = '') {
       count += exploreLaws(value, prefix + '  ');
     }
   }
-  
+
   return count;
 }
 
@@ -42,4 +42,3 @@ console.log('  LAWS.cognitive.encephalization.EQ(0.0014, 70)');
 console.log('  LAWS.economics.supplyDemand.equilibriumPrice(100, 2, 20, 1.5)\n');
 
 console.log('🔬 All laws accessible through LAWS object. 🔬\n');
-

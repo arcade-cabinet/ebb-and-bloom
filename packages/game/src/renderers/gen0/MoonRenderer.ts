@@ -1,6 +1,6 @@
 /**
  * Gen0 Moon Renderer - Meso Level
- * 
+ *
  * Handles orbital mechanics and visual interpretation:
  * - WARP: Moon formation → orbital stabilization
  * - WEFT: Captured asteroids + volcanic moons + ice moons
@@ -30,7 +30,7 @@ export class MoonRenderer {
    */
   render(moons: MoonData[]): void {
     // Clear existing
-    this.meshes.forEach(m => m.dispose());
+    this.meshes.forEach((m) => m.dispose());
     this.meshes.clear();
 
     for (const moon of moons) {
@@ -40,10 +40,14 @@ export class MoonRenderer {
   }
 
   private createMoon(data: MoonData): Mesh {
-    const mesh = MeshBuilder.CreateSphere(`moon_${data.id}`, {
-      segments: 32,
-      diameter: (data.radius / 1000) * 2,
-    }, this.scene);
+    const mesh = MeshBuilder.CreateSphere(
+      `moon_${data.id}`,
+      {
+        segments: 32,
+        diameter: (data.radius / 1000) * 2,
+      },
+      this.scene
+    );
 
     // Position at orbital distance
     const orbitalDistance = (data.distance / 1000) * 2;
@@ -51,7 +55,7 @@ export class MoonRenderer {
 
     // Create material based on composition (WEFT archetype)
     const material = new PBRMaterial(`moonMat_${data.id}`, this.scene);
-    
+
     switch (data.composition as string) {
       case 'icy':
         material.albedoColor = Color3.FromHexString('#C0D6DF');
@@ -85,7 +89,7 @@ export class MoonRenderer {
 
       const angle = (time / moonData.orbitalPeriod) * Math.PI * 2;
       const orbitalDistance = (moonData.distance / 1000) * 2;
-      
+
       mesh.position.x = Math.cos(angle) * orbitalDistance;
       mesh.position.z = Math.sin(angle) * orbitalDistance;
     });
@@ -98,7 +102,7 @@ export class MoonRenderer {
   }
 
   dispose(): void {
-    this.meshes.forEach(m => m.dispose());
+    this.meshes.forEach((m) => m.dispose());
     this.meshes.clear();
   }
 }

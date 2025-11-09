@@ -5,22 +5,23 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { TIMEOUTS, waitForCycles, waitForUniverseReady, safeNavigate } from './test-helpers';
 
 test.describe('Full Integration - Universe to Game', () => {
   
   test('COMPLETE: Big Bang → Planet → Life → Civilization', async ({ page }) => {
     const seed = 'full-integration';
     
-    await page.goto(`http://localhost:5173/simulation.html?seed=${seed}&cycles=100&autoAdvance=true`);
+    await safeNavigate(page, `http://localhost:5173/simulation.html?seed=${seed}&cycles=100&autoAdvance=true`, TIMEOUTS.PAGE_LOAD);
     
     const logs: string[] = [];
     page.on('console', msg => logs.push(msg.text()));
     
-    // Wait for completion
-    await page.waitForFunction(() => {
-      return window.document.body.textContent?.includes('Cycle 100') ||
-             window.document.body.textContent?.includes('Year 10000');
-    }, { timeout: 60000 });
+    // Wait for universe ready first
+    await waitForUniverseReady(page, TIMEOUTS.SIMULATION_INIT);
+    
+    // Wait for completion with extended timeout
+    await waitForCycles(page, 100, TIMEOUTS.BATCH_CYCLES);
     
     // Verify full pipeline
     const pipelineStages = [
@@ -43,12 +44,13 @@ test.describe('Full Integration - Universe to Game', () => {
   });
   
   test('laws: all categories exercised in full run', async ({ page }) => {
-    await page.goto('http://localhost:5173/simulation.html?seed=law-exercise&cycles=50&autoAdvance=true');
-    
     const logs: string[] = [];
     page.on('console', msg => logs.push(msg.text()));
     
-    await page.waitForTimeout(30000);
+    await safeNavigate(page, 'http://localhost:5173/simulation.html?seed=law-exercise&cycles=50&autoAdvance=true', TIMEOUTS.PAGE_LOAD);
+    
+    await waitForUniverseReady(page, TIMEOUTS.SIMULATION_INIT);
+    await waitForCycles(page, 50, TIMEOUTS.BATCH_CYCLES / 2);
     
     // Check which law categories were used
     const lawCategories = {
@@ -73,12 +75,12 @@ test.describe('Full Integration - Universe to Game', () => {
   });
   
   test('visual synthesis: elements → rendering', async ({ page }) => {
-    await page.goto('http://localhost:5173/simulation.html?seed=visual-full');
-    
     const logs: string[] = [];
     page.on('console', msg => logs.push(msg.text()));
     
-    await page.waitForTimeout(3000);
+    await safeNavigate(page, 'http://localhost:5173/simulation.html?seed=visual-full', TIMEOUTS.PAGE_LOAD);
+    
+    await waitForUniverseReady(page, TIMEOUTS.SIMULATION_INIT);
     
     // Check for visual synthesis
     const visualLogs = logs.filter(log => 
@@ -94,12 +96,12 @@ test.describe('Full Integration - Universe to Game', () => {
   });
   
   test('audio: cosmic sonification → atmospheric sound', async ({ page }) => {
-    await page.goto('http://localhost:5173/simulation.html?seed=audio-full');
-    
     const logs: string[] = [];
     page.on('console', msg => logs.push(msg.text()));
     
-    await page.waitForTimeout(3000);
+    await safeNavigate(page, 'http://localhost:5173/simulation.html?seed=audio-full', TIMEOUTS.PAGE_LOAD);
+    
+    await page.waitForTimeout(TIMEOUTS.AUDIO_INIT);
     
     // Check for audio
     const audioLogs = logs.filter(log => 
@@ -116,11 +118,9 @@ test.describe('Full Integration - Universe to Game', () => {
   test('performance: 100 cycles completes in reasonable time', async ({ page }) => {
     const start = Date.now();
     
-    await page.goto('http://localhost:5173/simulation.html?seed=perf-test&cycles=100&autoAdvance=true');
+    await safeNavigate(page, 'http://localhost:5173/simulation.html?seed=perf-test&cycles=100&autoAdvance=true', TIMEOUTS.PAGE_LOAD);
     
-    await page.waitForFunction(() => {
-      return window.document.body.textContent?.includes('Cycle 100');
-    }, { timeout: 120000 });
+    await waitForCycles(page, 100, TIMEOUTS.BATCH_CYCLES);
     
     const duration = Date.now() - start;
     

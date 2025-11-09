@@ -9,12 +9,12 @@ export type {
   Vector3,
   Coordinate,
   Color,
-  
+
   // Materials
   MaterialType,
   Material,
   MaterialComposition,
-  
+
   // Gen 0: Accretion
   DebrisObject,
   AccretionEvent,
@@ -22,37 +22,37 @@ export type {
   CoreType,
   PrimordialWell,
   Planet,
-  
+
   // Gen 1: Creatures
   Archetype,
   Traits,
   Need,
   Creature,
-  
+
   // Gen 2: Packs
   Pack,
-  
+
   // Gen 3: Tools
   ToolType,
   ToolBoost,
   Tool,
-  
+
   // Gen 4: Tribes
   Territory,
   Tribe,
-  
+
   // Gen 5: Buildings
   BuildingType,
   Building,
-  
+
   // Gen 6: Religion
   Ritual,
   Myth,
   Religion,
-  
+
   // Game State
   GameState,
-  
+
   // API Types
   CreateGameRequest,
   CreateGameResponse,
@@ -60,4 +60,3 @@ export type {
   QueryMaterialsRequest,
   QueryMaterialsResponse,
 } from '@ebb/shared/schemas';
-

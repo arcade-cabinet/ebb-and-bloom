@@ -11,47 +11,47 @@
 export const COLORS = {
   // Primary
   background: {
-    deep: '#1A202C',      // Deep indigo background
-    space: '#050510',     // Deep space (rgba equivalent)
+    deep: '#1A202C', // Deep indigo background
+    space: '#050510', // Deep space (rgba equivalent)
   },
-  
+
   // Brand Colors
   ebb: {
-    indigo: '#4A5568',    // Ebb indigo (panels, borders)
+    indigo: '#4A5568', // Ebb indigo (panels, borders)
     darker: 'rgba(26, 32, 44, 0.95)', // Modal backgrounds
   },
-  
+
   bloom: {
-    emerald: '#38A169',   // Bloom emerald (primary actions)
+    emerald: '#38A169', // Bloom emerald (primary actions)
   },
-  
+
   seed: {
-    gold: '#D69E2E',      // Seed gold (seed input, highlights)
+    gold: '#D69E2E', // Seed gold (seed input, highlights)
   },
-  
+
   // Neutrals
   neutral: {
-    white: '#F7FAFC',     // Accent white (text)
-    slate: '#A0AEC0',     // Muted slate (secondary text)
-    gray: '#718096',      // Mid gray
+    white: '#F7FAFC', // Accent white (text)
+    slate: '#A0AEC0', // Muted slate (secondary text)
+    gray: '#718096', // Mid gray
   },
-  
+
   // Semantic
   semantic: {
-    success: '#38A169',   // Same as bloom emerald
-    warning: '#D69E2E',   // Same as seed gold
-    error: '#E53E3E',     // Red
-    info: '#3182CE',      // Blue
+    success: '#38A169', // Same as bloom emerald
+    warning: '#D69E2E', // Same as seed gold
+    error: '#E53E3E', // Red
+    info: '#3182CE', // Blue
   },
-  
+
   // Space/Celestial
   space: {
     starlight: {
-      warm: '#FFF6E5',    // Warm star light
-      cool: '#E5F0FF',    // Cool star light
+      warm: '#FFF6E5', // Warm star light
+      cool: '#E5F0FF', // Cool star light
     },
-    ambient: '#CCCCDD',   // Ambient space light
-    fog: '#000000',       // Deep space fog
+    ambient: '#CCCCDD', // Ambient space light
+    fog: '#000000', // Deep space fog
   },
 } as const;
 
@@ -61,10 +61,10 @@ export const COLORS = {
  */
 export const FONTS = {
   // Primary font families
-  display: 'Playfair Display, serif',     // Titles, headings, haikus, poetic text
-  sans: 'Work Sans, sans-serif',           // Body text, UI labels, buttons
-  mono: 'JetBrains Mono, monospace',       // Seed codes, technical data, coordinates
-  
+  display: 'Playfair Display, serif', // Titles, headings, haikus, poetic text
+  sans: 'Work Sans, sans-serif', // Body text, UI labels, buttons
+  mono: 'JetBrains Mono, monospace', // Seed codes, technical data, coordinates
+
   // Semantic font assignments
   title: 'Playfair Display, serif',
   body: 'Work Sans, sans-serif',
@@ -83,17 +83,17 @@ export const FONT_SIZES = {
   h2: 24,
   h3: 20,
   h4: 18,
-  
+
   // Body
   body: 16,
   bodySmall: 14,
-  
+
   // UI
   button: 16,
   buttonLarge: 18,
   label: 14,
   caption: 12,
-  
+
   // Technical
   code: 14,
   seed: 14,
@@ -134,15 +134,15 @@ export const LAYOUT = {
     widthSmall: '200px',
     heightSmall: '44px',
   },
-  
+
   // Modal dimensions
   modal: {
-    width: 0.7,      // 70% of screen
-    height: 0.4,     // 40% of screen
+    width: 0.7, // 70% of screen
+    height: 0.4, // 40% of screen
     widthLarge: 0.8,
     heightLarge: 0.6,
   },
-  
+
   // Panel dimensions
   panel: {
     width: '500px',
@@ -195,15 +195,14 @@ export const MATERIALS = {
     metallic: 0.1,
     emissiveIntensity: 0.2,
   },
-  
+
   moon: {
     roughness: 0.9,
     metallic: 0.0,
   },
-  
+
   ui: {
     roughness: 0.3,
     metallic: 0.8,
   },
 } as const;
-

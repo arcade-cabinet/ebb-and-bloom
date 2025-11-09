@@ -15,9 +15,12 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
-    // Build simulation.html as the main entry point
+    // Build ALL entry points for Capacitor (iOS, Android, Desktop, Web)
     rollupOptions: {
-      input: resolve(__dirname, 'simulation.html'),
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        universe: resolve(__dirname, 'universe.html'),
+      },
     },
   },
 });

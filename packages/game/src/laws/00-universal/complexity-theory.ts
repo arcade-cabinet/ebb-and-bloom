@@ -1,9 +1,9 @@
 /**
  * Complexity Theory
- * 
+ *
  * How simple rules → complex systems
  * Emergence, self-organization, criticality
- * 
+ *
  * THE META-LAWS that explain how all other laws combine.
  */
 
@@ -11,22 +11,22 @@ export const Emergence = {
   /**
    * Emergent complexity from component interactions
    * C = N × log(I)
-   * 
+   *
    * Where N = components, I = interactions per component
    */
   complexity: (componentCount: number, interactionsPerComponent: number): number => {
     return componentCount * Math.log(interactionsPerComponent + 1);
   },
-  
+
   /**
    * Is property emergent?
    * Can't predict from components alone
    */
   isEmergent: (componentProperties: any[], systemProperty: any): boolean => {
     // Simplified: Emergent if system property not in any component
-    return !componentProperties.some(p => p === systemProperty);
+    return !componentProperties.some((p) => p === systemProperty);
   },
-  
+
   /**
    * Emergence threshold
    * Below this, system is simple sum of parts
@@ -50,7 +50,7 @@ export const SelfOrganization = {
     // Strong interaction + fast feedback + low noise = patterns
     return localInteractionStrength / (1 + feedbackDelay + noise);
   },
-  
+
   /**
    * Collective behavior emergence
    * Flocking, schooling, herding
@@ -64,7 +64,7 @@ export const SelfOrganizedCriticality = {
   /**
    * Power law distributions
    * P(x) ∝ x^-α
-   * 
+   *
    * Seen in: Earthquakes, avalanches, extinctions, city sizes
    */
   powerLawExponent: (systemType: string): number => {
@@ -77,7 +77,7 @@ export const SelfOrganizedCriticality = {
     };
     return exponents[systemType] || 2.0;
   },
-  
+
   /**
    * Is system at critical point?
    * Balance between order and chaos
@@ -86,7 +86,7 @@ export const SelfOrganizedCriticality = {
     // Critical point usually around 0.5
     return Math.abs(orderParameter - 0.5) < 0.1;
   },
-  
+
   /**
    * Avalanche size distribution
    * Power law with exponential cutoff
@@ -108,7 +108,7 @@ export const PhaseTransitions = {
     const distance = Math.abs(controlParameter - criticalValue);
     return 1 / distance; // Diverges at critical point
   },
-  
+
   /**
    * Hysteresis width
    * System shows different behavior going up vs down
@@ -116,7 +116,7 @@ export const PhaseTransitions = {
   hysteresisWidth: (bistabilityStrength: number): number => {
     return 0.2 * bistabilityStrength; // Rough estimate
   },
-  
+
   /**
    * Early warning signals
    * Variance increases before critical transition
@@ -132,4 +132,3 @@ export const ComplexityLaws = {
   criticality: SelfOrganizedCriticality,
   phaseTransitions: PhaseTransitions,
 } as const;
-

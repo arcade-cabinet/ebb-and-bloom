@@ -1,11 +1,11 @@
 /**
  * Gen0 Planet Renderer - Macro Level
- * 
+ *
  * Handles visual interpretation of Gen0 planetary data:
  * - WARP (through-line): Planetary evolution from accretion → cooling → stabilization
  * - WEFT (horizontal): Archetype synthesis (terrestrial + ice + volcanic variants)
  * - Parameterization: Visual ranges from WARP/WEFT that Yuka can vary
- * 
+ *
  * Backend provides: Protobuf data with archetype references
  * Frontend interprets: Visual blueprints + PBR properties + textures
  */
@@ -43,10 +43,14 @@ export class PlanetRenderer {
     const { planet, visualBlueprint } = data;
 
     // Create planet sphere (macro level)
-    this.mesh = MeshBuilder.CreateSphere('planet', {
-      segments: 64,
-      diameter: (planet.radius / 1000) * 2, // Scale to scene units
-    }, this.scene);
+    this.mesh = MeshBuilder.CreateSphere(
+      'planet',
+      {
+        segments: 64,
+        diameter: (planet.radius / 1000) * 2, // Scale to scene units
+      },
+      this.scene
+    );
 
     // Apply PBR material from visual blueprint
     const material = await this.createMaterial(visualBlueprint);
@@ -57,7 +61,7 @@ export class PlanetRenderer {
       const rotationSpeed = (2 * Math.PI) / planet.rotationPeriod;
       this.scene.registerBeforeRender(() => {
         if (this.mesh) {
-          this.mesh.rotation.y += rotationSpeed * this.scene.getEngine().getDeltaTime() / 1000;
+          this.mesh.rotation.y += (rotationSpeed * this.scene.getEngine().getDeltaTime()) / 1000;
         }
       });
     }
@@ -74,21 +78,21 @@ export class PlanetRenderer {
 
     // Extract PBR properties (from archetype synthesis)
     const pbr = this.extractPBRProperties(blueprint);
-    
+
     if (pbr) {
       material.albedoColor = Color3.FromHexString(pbr.baseColor);
       material.roughness = pbr.roughness ?? 0.7;
       material.metallic = pbr.metallic ?? 0.1;
-      
+
       if (pbr.emissive && pbr.emissive !== '#000000') {
         material.emissiveColor = Color3.FromHexString(pbr.emissive);
         material.emissiveIntensity = 0.2;
       }
-      
+
       if (pbr.aoStrength !== undefined) {
         material.ambientTextureStrength = pbr.aoStrength;
       }
-      
+
       if (pbr.heightScale !== undefined) {
         material.parallaxScaleBias = pbr.heightScale;
       }
@@ -127,7 +131,7 @@ export class PlanetRenderer {
     if (blueprint.visualProperties?.pbrProperties) {
       return blueprint.visualProperties.pbrProperties as PBRProperties;
     }
-    
+
     // Nested structure (from game engine)
     if (blueprint.representations?.shaders?.baseColor) {
       const shaders = blueprint.representations.shaders;
@@ -141,12 +145,12 @@ export class PlanetRenderer {
         heightScale: shaders.heightScale,
       } as PBRProperties;
     }
-    
+
     // Flat structure
     if (blueprint.representations?.baseColor) {
       return blueprint.representations as PBRProperties;
     }
-    
+
     return null;
   }
 
@@ -157,15 +161,15 @@ export class PlanetRenderer {
     if (blueprint.textureReferences?.length > 0) {
       return blueprint.textureReferences;
     }
-    
+
     if (blueprint.representations?.materials?.length > 0) {
       return blueprint.representations.materials;
     }
-    
+
     if (blueprint.visualProperties?.primaryTextures?.length > 0) {
       return blueprint.visualProperties.primaryTextures;
     }
-    
+
     return [];
   }
 

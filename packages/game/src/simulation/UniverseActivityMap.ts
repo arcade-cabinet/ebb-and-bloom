@@ -1,0 +1,229 @@
+/**
+ * UNIVERSE ACTIVITY MAP
+ * 
+ * The default view: Entire cosmos with light tracers showing activity.
+ * 
+ * Concept:
+ * - Sample many regions of universe (grid of seeds)
+ * - Run GenesisSynthesisEngine for each
+ * - Render as points of light (brightness = activity level)
+ * - Fast-forward time, watch civilizations rise and fall
+ * 
+ * Zoom hierarchy:
+ * Level 0: Universe (100 Mpc³) - Galaxy clusters
+ * Level 1: Galaxy (100 kpc) - Stellar systems
+ * Level 2: Star system (100 AU) - Planets
+ * Level 3: Planet surface (100 km) - Game mode
+ */
+
+import { GenesisSynthesisEngine, SynthesisState } from '../synthesis/GenesisSynthesisEngine';
+import { EnhancedRNG } from '../utils/EnhancedRNG';
+
+/**
+ * A region of spacetime with synthesized state
+ */
+export interface UniverseRegion {
+  // Position in cosmic grid
+  x: number; // Mpc
+  y: number; // Mpc
+  z: number; // Mpc
+  
+  // Seed for this region (coordinates → deterministic seed)
+  seed: string;
+  
+  // Synthesis state at current time
+  state: SynthesisState;
+  
+  // Activity level (0-10, determines brightness)
+  activity: number;
+  
+  // Kardashev level (if civilized)
+  kardashev?: number; // 0, 1, 2, 3
+}
+
+/**
+ * Universe Activity Map
+ * 
+ * Samples cosmic grid and tracks activity
+ */
+export class UniverseActivityMap {
+  private regions: Map<string, UniverseRegion>;
+  private currentTime: number; // Seconds since Big Bang
+  private gridSize: number; // Regions per dimension
+  private gridSpacing: number; // Mpc between samples
+  
+  constructor(gridSize: number = 10, gridSpacing: number = 100) {
+    this.regions = new Map();
+    this.currentTime = 0;
+    this.gridSize = gridSize;
+    this.gridSpacing = gridSpacing;
+    
+    this.initializeGrid();
+  }
+  
+  /**
+   * Initialize cosmic grid
+   * Sample universe at regular intervals
+   */
+  private initializeGrid(): void {
+    console.log(`[UniverseActivityMap] Initializing ${this.gridSize}³ grid...`);
+    console.log(`  Grid spacing: ${this.gridSpacing} Mpc`);
+    console.log(`  Total volume: ${Math.pow(this.gridSize * this.gridSpacing, 3).toExponential(2)} Mpc³`);
+    
+    const halfGrid = Math.floor(this.gridSize / 2);
+    
+    for (let x = -halfGrid; x < halfGrid; x++) {
+      for (let y = -halfGrid; y < halfGrid; y++) {
+        for (let z = -halfGrid; z < halfGrid; z++) {
+          const xMpc = x * this.gridSpacing;
+          const yMpc = y * this.gridSpacing;
+          const zMpc = z * this.gridSpacing;
+          
+          // Deterministic seed from coordinates
+          const seed = `univ-${x}-${y}-${z}`;
+          const key = this.regionKey(xMpc, yMpc, zMpc);
+          
+          this.regions.set(key, {
+            x: xMpc,
+            y: yMpc,
+            z: zMpc,
+            seed,
+            state: null as any, // Will synthesize on demand
+            activity: 0,
+          });
+        }
+      }
+    }
+    
+    console.log(`  Total regions: ${this.regions.size}`);
+  }
+  
+  /**
+   * Region key from coordinates
+   */
+  private regionKey(x: number, y: number, z: number): string {
+    return `${Math.floor(x / this.gridSpacing)},${Math.floor(y / this.gridSpacing)},${Math.floor(z / this.gridSpacing)}`;
+  }
+  
+  /**
+   * Synthesize a single region
+   */
+  async synthesizeRegion(region: UniverseRegion): Promise<void> {
+    const engine = new GenesisSynthesisEngine(region.seed);
+    region.state = await engine.synthesizeUniverse();
+    region.activity = engine.getActivityLevel();
+    
+    // Determine Kardashev level
+    if (region.state.complexity >= 9) { // ComplexityLevel.TECHNOLOGICAL
+      if (region.state.tools.length >= 10) {
+        region.kardashev = 2; // Type II (many advanced technologies)
+      } else if (region.state.tools.length >= 5) {
+        region.kardashev = 1; // Type I (some technologies)
+      } else {
+        region.kardashev = 0; // Type 0 (primitive)
+      }
+    }
+  }
+  
+  /**
+   * Synthesize all regions (SLOW - run once at start)
+   * 
+   * Yields to browser regularly to:
+   * - Update progress bar
+   * - Prevent "page unresponsive" warnings
+   * - Allow animation to run
+   */
+  async synthesizeAll(onProgress?: (completed: number, total: number) => void): Promise<void> {
+    console.log(`[UniverseActivityMap] Synthesizing ${this.regions.size} regions...`);
+    console.log(`  This may take a while...`);
+    
+    let completed = 0;
+    const total = this.regions.size;
+    const startTime = Date.now();
+    
+    for (const region of this.regions.values()) {
+      await this.synthesizeRegion(region);
+      completed++;
+      
+      // Update progress callback (for UI)
+      if (onProgress) {
+        onProgress(completed, total);
+      }
+      
+      // Log progress every 10 regions
+      if (completed % 10 === 0) {
+        const elapsed = (Date.now() - startTime) / 1000;
+        const rate = completed / elapsed;
+        const remaining = (total - completed) / rate;
+        console.log(`  Progress: ${completed}/${total} (${(completed/total*100).toFixed(1)}%) - ETA: ${remaining.toFixed(0)}s`);
+      }
+      
+      // Yield to browser every 5 regions to keep UI responsive
+      if (completed % 5 === 0) {
+        await new Promise(resolve => setTimeout(resolve, 0));
+      }
+    }
+    
+    const elapsed = (Date.now() - startTime) / 1000;
+    console.log(`[UniverseActivityMap] Complete! (${elapsed.toFixed(1)}s)`);
+    console.log(`  Active regions: ${this.getActiveRegions().length}`);
+    console.log(`  Civilizations: ${this.getCivilizedRegions().length}`);
+  }
+  
+  /**
+   * Get all active regions (activity > 0)
+   */
+  getActiveRegions(): UniverseRegion[] {
+    return Array.from(this.regions.values()).filter(r => r.activity > 0);
+  }
+  
+  /**
+   * Get civilized regions (Kardashev level > 0)
+   */
+  getCivilizedRegions(): UniverseRegion[] {
+    return Array.from(this.regions.values()).filter(r => r.kardashev !== undefined);
+  }
+  
+  /**
+   * Get brightest regions (top N by activity)
+   */
+  getBrightestRegions(n: number = 10): UniverseRegion[] {
+    return Array.from(this.regions.values())
+      .sort((a, b) => b.activity - a.activity)
+      .slice(0, n);
+  }
+  
+  /**
+   * Get all regions (for rendering)
+   */
+  getAllRegions(): UniverseRegion[] {
+    return Array.from(this.regions.values());
+  }
+  
+  /**
+   * Update cosmic time (for animations)
+   */
+  updateTime(dt: number): void {
+    this.currentTime += dt;
+    // TODO: Update synthesis states forward in time
+  }
+}
+
+/**
+ * USAGE:
+ * 
+ * const map = new UniverseActivityMap(10, 100); // 10³ grid, 100 Mpc spacing
+ * await map.synthesizeAll(); // Run once at startup
+ * 
+ * // Render as point cloud
+ * const regions = map.getAllRegions();
+ * for (const region of regions) {
+ *   const brightness = region.activity / 10; // 0-1
+ *   const color = activityToColor(region.activity);
+ *   renderPoint(region.x, region.y, region.z, brightness, color);
+ * }
+ * 
+ * // Find interesting regions
+ * const civilizations = map.getCivilizedRegions();
+ * const brightest = map.getBrightestRegions(10);
+ */

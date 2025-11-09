@@ -1,6 +1,6 @@
 /**
  * Pack Formation System (Gen2)
- * 
+ *
  * Groups creatures into packs based on social traits and proximity:
  * - Pack detection (nearby creatures with pack trait)
  * - Leader selection (highest strength/intelligence)
@@ -41,7 +41,7 @@ export class PackFormationSystem {
   ): Map<string, PackFormation> {
     // Get creatures with pack social trait
     const packCreatures = new Map<string, CreatureBehaviorState>();
-    
+
     for (const [id, creature] of creatures) {
       const trait = traits.get(id);
       if (trait?.social === 'pack') {
@@ -110,13 +110,13 @@ export class PackFormationSystem {
     const activeMemberIds = new Set<string>();
 
     for (const cluster of newClusters) {
-      cluster.forEach(id => activeMemberIds.add(id));
+      cluster.forEach((id) => activeMemberIds.add(id));
     }
 
     for (const packId of existingPackIds) {
       const pack = this.packs.get(packId)!;
-      const stillActive = pack.members.some(id => activeMemberIds.has(id));
-      
+      const stillActive = pack.members.some((id) => activeMemberIds.has(id));
+
       if (!stillActive) {
         this.packs.delete(packId);
       }
@@ -129,7 +129,7 @@ export class PackFormationSystem {
       let bestOverlap = 0;
 
       for (const pack of this.packs.values()) {
-        const overlap = cluster.filter(id => pack.members.includes(id)).length;
+        const overlap = cluster.filter((id) => pack.members.includes(id)).length;
         if (overlap > bestOverlap) {
           bestOverlap = overlap;
           bestMatch = pack;
@@ -150,7 +150,7 @@ export class PackFormationSystem {
           cohesion: 0.5,
           color: this.packColors[this.nextPackId % this.packColors.length],
           center: { lat: 0, lon: 0 },
-          formed: Date.now()
+          formed: Date.now(),
         };
 
         this.updatePackLeader(pack, creatures);
@@ -168,25 +168,25 @@ export class PackFormationSystem {
     creatures: Map<string, CreatureBehaviorState>
   ): void {
     if (pack.members.length === 0) return;
-    
+
     // Find strongest/smartest member
     let bestLeader = pack.members[0];
     let bestScore = 0;
-    
+
     for (const memberId of pack.members) {
       const creature = creatures.get(memberId);
       if (!creature) continue;
-      
+
       // Leadership score = strength + intelligence (if available from traits)
       // For now, just use first member as placeholder until traits are fully available
       const score = Math.random(); // Will be replaced with actual trait scoring
-      
+
       if (score > bestScore) {
         bestScore = score;
         bestLeader = memberId;
       }
     }
-    
+
     pack.leaderId = bestLeader;
   }
 
@@ -213,7 +213,7 @@ export class PackFormationSystem {
     if (count > 0) {
       pack.center = {
         lat: sumLat / count,
-        lon: sumLon / count
+        lon: sumLon / count,
       };
     }
   }
@@ -221,10 +221,7 @@ export class PackFormationSystem {
   /**
    * Update pack cohesion (how tight the pack is)
    */
-  private updateCohesion(
-    pack: PackFormation,
-    creatures: Map<string, CreatureBehaviorState>
-  ): void {
+  private updateCohesion(pack: PackFormation, creatures: Map<string, CreatureBehaviorState>): void {
     // Calculate average distance from center
     let totalDist = 0;
     let count = 0;

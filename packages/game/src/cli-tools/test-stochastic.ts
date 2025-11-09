@@ -14,12 +14,12 @@ let prey = 100;
 let predators = 10;
 
 const params = {
-  alpha: 0.5,      // Prey birth rate
-  beta: 0.02,      // Predation rate
-  delta: 0.01,     // Predator efficiency
-  gamma: 0.4,      // Predator death rate
-  sigmaEnv: 0.1,   // Environmental noise
-  sigmaDemog: 0.05 // Demographic noise
+  alpha: 0.5, // Prey birth rate
+  beta: 0.02, // Predation rate
+  delta: 0.01, // Predator efficiency
+  gamma: 0.4, // Predator death rate
+  sigmaEnv: 0.1, // Environmental noise
+  sigmaDemog: 0.05, // Demographic noise
 };
 
 console.log('Initial state:');
@@ -32,7 +32,7 @@ for (let i = 0; i < 100; i++) {
   const result = simulator.stepPredatorPrey(prey, predators, params, 1.0);
   prey = result.prey;
   predators = result.predator;
-  
+
   if (i % 20 === 0) {
     console.log(`Step ${i}: Prey=${prey.toFixed(0)}, Predators=${predators.toFixed(0)}`);
   }

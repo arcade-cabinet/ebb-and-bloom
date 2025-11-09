@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Universe Activity Map - Ebb & Bloom</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Courier New', monospace;
+      background: #000;
+      color: #0f0;
+      overflow: hidden;
+    }
+    
+    #renderCanvas {
+      width: 100%;
+      height: 100vh;
+      display: block;
+      touch-action: none;
+    }
+    
+    #ui {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      border: 2px solid #0f0;
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 1.6;
+      max-width: 400px;
+    }
+    
+    #status {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 15px;
+      border: 2px solid #0f0;
+      border-radius: 8px;
+      font-size: 12px;
+      min-width: 200px;
+    }
+    
+    .stat {
+      display: flex;
+      justify-content: space-between;
+      margin: 5px 0;
+    }
+    
+    .bright {
+      color: #ff0;
+      font-weight: bold;
+    }
+    
+    .dim {
+      color: #888;
+    }
+    
+    button {
+      background: #000;
+      color: #0f0;
+      border: 2px solid #0f0;
+      padding: 8px 16px;
+      margin: 5px;
+      cursor: pointer;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      border-radius: 4px;
+    }
+    
+    button:hover {
+      background: #0f0;
+      color: #000;
+    }
+    
+    #controls {
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="renderCanvas"></canvas>
+  
+  <div id="ui">
+    <h2>🌌 UNIVERSE ACTIVITY MAP</h2>
+    <p style="margin: 10px 0; color: #888;">
+      Sampling cosmic grid... Each point = region of space
+    </p>
+    <div id="progress" style="margin: 10px 0;">
+      <div style="background: #111; height: 20px; border: 1px solid #0f0;">
+        <div id="progressBar" style="background: #0f0; height: 100%; width: 0%; transition: width 0.3s;"></div>
+      </div>
+      <div id="progressText" style="margin-top: 5px;">Initializing...</div>
+    </div>
+    <div id="controls" style="display: none;">
+      <button onclick="toggleRotation()">⏯ Rotation</button>
+      <button onclick="resetCamera()">🎯 Reset Camera</button>
+    </div>
+  </div>
+  
+  <div id="status" style="display: none;">
+    <div class="stat"><span>Regions:</span><span id="regionCount">0</span></div>
+    <div class="stat"><span>Active:</span><span id="activeCount" class="bright">0</span></div>
+    <div class="stat"><span>Civilizations:</span><span id="civCount" class="bright">0</span></div>
+    <div class="stat"><span>Camera:</span><span id="cameraPos">-</span></div>
+  </div>
+  
+  <script type="module">
+    import { LazyUniverseMap } from './src/simulation/LazyUniverseMap';
+    import {
+      Engine,
+      Scene,
+      ArcRotateCamera,
+      Vector3,
+      HemisphericLight,
+      PointsCloudSystem,
+      Color3,
+      Color4,
+      StandardMaterial,
+    } from '@babylonjs/core';
+    
+    // Canvas
+    const canvas = document.getElementById('renderCanvas');
+    const engine = new Engine(canvas, true);
+    
+    // Scene
+    const scene = new Scene(engine);
+    scene.clearColor = new Color4(0.01, 0.01, 0.05, 1);
+    
+    // Camera
+    const camera = new ArcRotateCamera(
+      'camera',
+      0,
+      Math.PI / 3,
+      500,
+      Vector3.Zero(),
+      scene
+    );
+    camera.attachControl(canvas, true);
+    camera.lowerRadiusLimit = 50;
+    camera.upperRadiusLimit = 2000;
+    
+    // Lighting
+    const light = new HemisphericLight('light', new Vector3(0, 1, 0), scene);
+    light.intensity = 0.7;
+    
+    // Auto-rotation
+    let autoRotate = true;
+    window.toggleRotation = () => {
+      autoRotate = !autoRotate;
+    };
+    
+    window.resetCamera = () => {
+      camera.alpha = 0;
+      camera.beta = Math.PI / 3;
+      camera.radius = 500;
+    };
+    
+    // Render loop
+    engine.runRenderLoop(() => {
+      if (autoRotate) {
+        camera.alpha += 0.002;
+      }
+      
+      // Update camera position display
+      const pos = camera.position;
+      document.getElementById('cameraPos').textContent = 
+        `${pos.x.toFixed(0)}, ${pos.y.toFixed(0)}, ${pos.z.toFixed(0)}`;
+      
+      scene.render();
+    });
+    
+    // Resize
+    window.addEventListener('resize', () => {
+      engine.resize();
+    });
+    
+    // Initialize universe activity map (THE SMART WAY)
+    async function initialize() {
+      const progressBar = document.getElementById('progressBar');
+      const progressText = document.getElementById('progressText');
+      
+      progressText.textContent = 'Creating cosmic grid...';
+      progressBar.style.width = '10%';
+      
+      // Create lazy map (INSTANT - no synthesis yet)
+      const map = new LazyUniverseMap(10, 100); // 10³ = 1000 regions
+      
+      progressText.textContent = 'Estimating regions (analytical, fast)...';
+      progressBar.style.width = '20%';
+      
+      // Quick analytical estimates (2-3 SECONDS, not minutes!)
+      await map.estimateAll((completed, total) => {
+        const percent = (completed / total) * 100;
+        progressBar.style.width = `${20 + percent * 0.6}%`; // 20% → 80%
+        progressText.textContent = `Estimating region ${completed}/${total} (${percent.toFixed(0)}%)...`;
+      });
+      
+      progressBar.style.width = '80%';
+      progressText.textContent = 'Rendering point cloud...';
+      
+      // Get regions (using quick estimates)
+      const regions = map.getAllRegions();
+      const active = map.getActiveRegions();
+      const lifeBearing = map.getLifeBearingRegions();
+      const civilized = map.getCivilizedRegions();
+      
+      // Update UI
+      document.getElementById('regionCount').textContent = regions.length;
+      document.getElementById('activeCount').textContent = active.length;
+      document.getElementById('civCount').textContent = civilized.length;
+      
+      // Create point cloud using simpler method (PointsCloudSystem has recursion bug with 1000+ particles)
+      // Use individual spheres with instancing instead
+      const { MeshBuilder, InstancedMesh, Matrix } = await import('@babylonjs/core');
+      
+      // Create template sphere (will be instanced)
+      const template = MeshBuilder.CreateSphere('template', { diameter: 5, segments: 8 }, scene);
+      template.isVisible = false;
+      
+      // Create material for each activity level
+      const materials = {
+        civilization: new StandardMaterial('mat-civ', scene),
+        life: new StandardMaterial('mat-life', scene),
+        planets: new StandardMaterial('mat-planets', scene),
+        stars: new StandardMaterial('mat-stars', scene),
+        dead: new StandardMaterial('mat-dead', scene),
+      };
+      
+      materials.civilization.emissiveColor = new Color3(1, 0.84, 0);
+      materials.life.emissiveColor = new Color3(0, 1, 0.5);
+      materials.planets.emissiveColor = new Color3(0.3, 0.5, 1);
+      materials.stars.emissiveColor = new Color3(1, 1, 1);
+      materials.dead.emissiveColor = new Color3(0.2, 0.2, 0.2);
+      
+      // Create instances for each region (max 1000)
+      let instanceCount = 0;
+      for (const region of regions) {
+        const activity = region.estimate.activity;
+        
+        // Pick material
+        let mat;
+        if (activity > 8) mat = materials.civilization;
+        else if (activity > 5) mat = materials.life;
+        else if (activity > 2) mat = materials.planets;
+        else if (activity > 0) mat = materials.stars;
+        else mat = materials.dead;
+        
+        // Create instance
+        const instance = template.createInstance(`region-${instanceCount}`);
+        instance.position.set(region.x, region.y, region.z);
+        instance.scaling.setAll(Math.max(1, activity * 0.5));
+        instance.material = mat;
+        
+        instanceCount++;
+      }
+      
+      console.log(`  Created ${instanceCount} sphere instances`);
+      
+      progressBar.style.width = '100%';
+      progressText.textContent = '✅ Complete! Use mouse to explore.';
+      
+      // Show controls
+      document.getElementById('controls').style.display = 'block';
+      document.getElementById('status').style.display = 'block';
+      
+      console.log('🌌 Universe rendered!');
+      console.log(`  Regions: ${regions.length}`);
+      console.log(`  Active: ${active.length}`);
+      console.log(`  Life-bearing: ${lifeBearing.length}`);
+      console.log(`  Civilizations: ${civilized.length}`);
+      
+      // Log brightest regions
+      const brightest = map.getBrightestRegions(5);
+      console.log('\n📍 BRIGHTEST REGIONS (Estimates):');
+      brightest.forEach((r, i) => {
+        console.log(`  ${i+1}. (${r.x}, ${r.y}, ${r.z}) - Activity: ${r.estimate.activity.toFixed(2)}/10`);
+      });
+      
+      console.log('\n💡 TIP: Full synthesis runs when you click a region (not implemented yet)');
+      console.log('   Right now you\'re seeing ANALYTICAL ESTIMATES (instant!)');
+      console.log('   This is the Daggerfall approach: show immediately, generate on-demand');
+    }
+    
+    // Start
+    initialize().catch(err => {
+      console.error('Failed to initialize:', err);
+      document.getElementById('progressText').textContent = '❌ Error: ' + err.message;
+    });
+  </script>
+</body>
+</html>
+

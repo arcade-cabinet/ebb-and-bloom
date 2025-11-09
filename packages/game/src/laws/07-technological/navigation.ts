@@ -3,7 +3,7 @@
  */
 
 export const CelestialNavigation = {
-  latitude FromStar: (starAltitude_deg: number) => starAltitude_deg,
+  latitudeFromStar: (starAltitude_deg: number) => starAltitude_deg,
   longitudeFromTime: (localNoon_hours: number, referenceLongitude_deg: number) => {
     return referenceLongitude_deg + (localNoon_hours - 12) * 15;
   },
@@ -13,7 +13,7 @@ export const CelestialNavigation = {
 export const Cartography = {
   mapAccuracy: (surveyingTech: number) => Math.min(1, surveyingTech / 100),
   distortionFromProjection: (latitude_deg: number, projection: string) => {
-    if (projection === 'mercator') return Math.tan(latitude_deg * Math.PI / 180);
+    if (projection === 'mercator') return Math.tan((latitude_deg * Math.PI) / 180);
     return 0.1;
   },
 };
@@ -22,4 +22,3 @@ export const NavigationLaws = {
   celestial: CelestialNavigation,
   cartography: Cartography,
 } as const;
-

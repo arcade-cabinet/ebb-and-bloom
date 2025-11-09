@@ -1,6 +1,6 @@
 /**
  * Culture Renderer (Gen5)
- * 
+ *
  * Visualizes cultural expressions:
  * - Body art (colored auras around creatures)
  * - Dances (movement trails and particles)
@@ -16,7 +16,7 @@ import { ParticleSystem } from '@babylonjs/core/Particles/particleSystem';
 import type {
   CulturalExpression,
   CreatureCulture,
-  CulturalSite
+  CulturalSite,
 } from '../../systems/CulturalExpressionSystem.js';
 
 export class CultureRenderer {
@@ -60,7 +60,7 @@ export class CultureRenderer {
     for (const [creatureId, culture] of creatureCultures) {
       // Find active body art expression
       const activeExpr = culture.activeExpression
-        ? expressions.find(e => e.id === culture.activeExpression && e.type === 'body_art')
+        ? expressions.find((e) => e.id === culture.activeExpression && e.type === 'body_art')
         : null;
 
       if (!activeExpr) {
@@ -82,9 +82,13 @@ export class CultureRenderer {
       // Create or update body art mesh
       let mesh = this.bodyArtMeshes.get(creatureId);
       if (!mesh) {
-        mesh = MeshBuilder.CreateSphere(`bodyart-${creatureId}`, {
-          diameter: 1.5
-        }, this.scene);
+        mesh = MeshBuilder.CreateSphere(
+          `bodyart-${creatureId}`,
+          {
+            diameter: 1.5,
+          },
+          this.scene
+        );
 
         const material = new StandardMaterial(`bodyart-mat-${creatureId}`, this.scene);
         material.diffuseColor = Color3.FromHexString(activeExpr.pattern || '#ffffff');
@@ -115,7 +119,7 @@ export class CultureRenderer {
     for (const [creatureId, culture] of creatureCultures) {
       // Find active dance expression
       const activeExpr = culture.activeExpression
-        ? expressions.find(e => e.id === culture.activeExpression && e.type === 'dance')
+        ? expressions.find((e) => e.id === culture.activeExpression && e.type === 'dance')
         : null;
 
       if (!activeExpr) {
@@ -141,7 +145,7 @@ export class CultureRenderer {
         particles.emitter = pos3d;
         particles.minEmitBox = new Vector3(-0.5, -0.5, -0.5);
         particles.maxEmitBox = new Vector3(0.5, 0.5, 0.5);
-        
+
         particles.color1 = new Color4(1, 0.8, 0, 1);
         particles.color2 = new Color4(1, 0.5, 0, 1);
         particles.colorDead = new Color4(1, 0.3, 0, 0);
@@ -205,25 +209,37 @@ export class CultureRenderer {
     // More complex sculptures have more intricate shapes
     if (expr.complexity > 0.8) {
       // High complexity: Totem pole
-      mesh = MeshBuilder.CreateCylinder(`${expr.id}`, {
-        diameterTop: 0.3,
-        diameterBottom: 0.5,
-        height: 2,
-        tessellation: 6
-      }, this.scene);
+      mesh = MeshBuilder.CreateCylinder(
+        `${expr.id}`,
+        {
+          diameterTop: 0.3,
+          diameterBottom: 0.5,
+          height: 2,
+          tessellation: 6,
+        },
+        this.scene
+      );
     } else if (expr.complexity > 0.5) {
       // Medium complexity: Abstract shape
-      mesh = MeshBuilder.CreatePolyhedron(`${expr.id}`, {
-        type: 1, // Icosahedron
-        size: 0.8
-      }, this.scene);
+      mesh = MeshBuilder.CreatePolyhedron(
+        `${expr.id}`,
+        {
+          type: 1, // Icosahedron
+          size: 0.8,
+        },
+        this.scene
+      );
     } else {
       // Low complexity: Simple cairn
-      mesh = MeshBuilder.CreateBox(`${expr.id}`, {
-        width: 0.6,
-        height: 1.2,
-        depth: 0.6
-      }, this.scene);
+      mesh = MeshBuilder.CreateBox(
+        `${expr.id}`,
+        {
+          width: 0.6,
+          height: 1.2,
+          depth: 0.6,
+        },
+        this.scene
+      );
     }
 
     // Apply material
@@ -268,27 +284,39 @@ export class CultureRenderer {
 
     switch (site.type) {
       case 'gathering_site':
-        mesh = MeshBuilder.CreateTorus(`${site.id}`, {
-          diameter: 3,
-          thickness: 0.2,
-          tessellation: 16
-        }, this.scene);
+        mesh = MeshBuilder.CreateTorus(
+          `${site.id}`,
+          {
+            diameter: 3,
+            thickness: 0.2,
+            tessellation: 16,
+          },
+          this.scene
+        );
         color = new Color3(0.5, 1, 0.5); // Green
         break;
       case 'art_site':
-        mesh = MeshBuilder.CreateTorus(`${site.id}`, {
-          diameter: 3,
-          thickness: 0.2,
-          tessellation: 16
-        }, this.scene);
+        mesh = MeshBuilder.CreateTorus(
+          `${site.id}`,
+          {
+            diameter: 3,
+            thickness: 0.2,
+            tessellation: 16,
+          },
+          this.scene
+        );
         color = new Color3(1, 0.5, 1); // Magenta
         break;
       case 'ceremonial_site':
-        mesh = MeshBuilder.CreateTorus(`${site.id}`, {
-          diameter: 3,
-          thickness: 0.2,
-          tessellation: 16
-        }, this.scene);
+        mesh = MeshBuilder.CreateTorus(
+          `${site.id}`,
+          {
+            diameter: 3,
+            thickness: 0.2,
+            tessellation: 16,
+          },
+          this.scene
+        );
         color = new Color3(1, 1, 0.5); // Yellow
         break;
     }
@@ -311,7 +339,7 @@ export class CultureRenderer {
     creatureCultures: Map<string, CreatureCulture>
   ): void {
     // Cleanup sculptures
-    const activeExprIds = new Set(expressions.map(e => e.id));
+    const activeExprIds = new Set(expressions.map((e) => e.id));
     for (const [id, mesh] of this.sculptures) {
       if (!activeExprIds.has(id)) {
         mesh.dispose();
@@ -320,7 +348,7 @@ export class CultureRenderer {
     }
 
     // Cleanup sites
-    const activeSiteIds = new Set(sites.map(s => s.id));
+    const activeSiteIds = new Set(sites.map((s) => s.id));
     for (const [id, mesh] of this.siteMarkers) {
       if (!activeSiteIds.has(id)) {
         mesh.dispose();
@@ -332,7 +360,7 @@ export class CultureRenderer {
     for (const [creatureId, mesh] of this.bodyArtMeshes) {
       const culture = creatureCultures.get(creatureId);
       const isPerforming = culture?.activeExpression && culture.expressionTimer > 0;
-      
+
       if (!isPerforming) {
         mesh.dispose();
         this.bodyArtMeshes.delete(creatureId);

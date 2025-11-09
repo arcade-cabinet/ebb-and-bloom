@@ -1,9 +1,9 @@
 /**
  * The Periodic Table of Elements
- * 
+ *
  * Complete data for all 92 naturally occurring elements.
  * This is the foundation of all chemistry in the universe.
- * 
+ *
  * Properties are based on real scientific data and determine:
  * - What materials can exist
  * - What chemical reactions occur
@@ -16,35 +16,35 @@ export interface Element {
   symbol: string;
   name: string;
   atomicMass: number; // u (unified atomic mass units)
-  
+
   // Electronic structure
   electronConfiguration: string;
   valenceElectrons: number;
   oxidationStates: number[];
-  
+
   // Physical properties at STP (Standard Temperature and Pressure)
   density: number; // kg/m³
   meltingPoint: number; // K
   boilingPoint: number; // K
   phase: 'solid' | 'liquid' | 'gas';
-  
+
   // Thermal properties
   heatCapacity: number; // J/(mol·K)
   thermalConductivity: number; // W/(m·K)
-  
+
   // Chemical properties
   electronegativity: number; // Pauling scale
   ionizationEnergy: number; // kJ/mol - First ionization
   atomicRadius: number; // pm (picometers)
   covalentRadius: number; // pm
-  
+
   // Bonding behavior
   bondEnergies: { [element: string]: number }; // kJ/mol
-  
+
   // Cosmic abundance
   solarSystemAbundance: number; // Fraction by mass
   universeAbundance: number; // Fraction by mass
-  
+
   // Special properties
   radioactive?: boolean;
   halfLife?: number; // years (if radioactive)
@@ -66,7 +66,7 @@ export const PERIODIC_TABLE: { [symbol: string]: Element } = {
     phase: 'gas',
     heatCapacity: 28.836,
     thermalConductivity: 0.1805,
-    electronegativity: 2.20,
+    electronegativity: 2.2,
     ionizationEnergy: 1312,
     atomicRadius: 37,
     covalentRadius: 31,
@@ -79,7 +79,7 @@ export const PERIODIC_TABLE: { [symbol: string]: Element } = {
     solarSystemAbundance: 0.75,
     universeAbundance: 0.75,
   },
-  
+
   He: {
     atomicNumber: 2,
     symbol: 'He',
@@ -102,7 +102,7 @@ export const PERIODIC_TABLE: { [symbol: string]: Element } = {
     solarSystemAbundance: 0.23,
     universeAbundance: 0.23,
   },
-  
+
   C: {
     atomicNumber: 6,
     symbol: 'C',
@@ -131,7 +131,7 @@ export const PERIODIC_TABLE: { [symbol: string]: Element } = {
     universeAbundance: 0.005,
     allotropes: ['diamond', 'graphite', 'graphene', 'fullerene', 'carbon nanotubes'],
   },
-  
+
   N: {
     atomicNumber: 7,
     symbol: 'N',
@@ -158,7 +158,7 @@ export const PERIODIC_TABLE: { [symbol: string]: Element } = {
     solarSystemAbundance: 0.0001,
     universeAbundance: 0.001,
   },
-  
+
   O: {
     atomicNumber: 8,
     symbol: 'O',
@@ -169,7 +169,7 @@ export const PERIODIC_TABLE: { [symbol: string]: Element } = {
     oxidationStates: [-2, -1, 0, 1, 2],
     density: 1.429, // gas at STP
     meltingPoint: 54.36,
-    boilingPoint: 90.20,
+    boilingPoint: 90.2,
     phase: 'gas',
     heatCapacity: 29.378,
     thermalConductivity: 0.02658,
@@ -187,7 +187,7 @@ export const PERIODIC_TABLE: { [symbol: string]: Element } = {
     universeAbundance: 0.01,
     allotropes: ['dioxygen (O₂)', 'ozone (O₃)'],
   },
-  
+
   Si: {
     atomicNumber: 14,
     symbol: 'Si',
@@ -202,7 +202,7 @@ export const PERIODIC_TABLE: { [symbol: string]: Element } = {
     phase: 'solid',
     heatCapacity: 19.789,
     thermalConductivity: 149,
-    electronegativity: 1.90,
+    electronegativity: 1.9,
     ionizationEnergy: 786,
     atomicRadius: 110,
     covalentRadius: 111,
@@ -215,7 +215,7 @@ export const PERIODIC_TABLE: { [symbol: string]: Element } = {
     solarSystemAbundance: 0.0007,
     universeAbundance: 0.0007,
   },
-  
+
   Fe: {
     atomicNumber: 26,
     symbol: 'Fe',
@@ -228,7 +228,7 @@ export const PERIODIC_TABLE: { [symbol: string]: Element } = {
     meltingPoint: 1811,
     boilingPoint: 3134,
     phase: 'solid',
-    heatCapacity: 25.10,
+    heatCapacity: 25.1,
     thermalConductivity: 80.4,
     electronegativity: 1.83,
     ionizationEnergy: 762,
@@ -242,7 +242,7 @@ export const PERIODIC_TABLE: { [symbol: string]: Element } = {
     universeAbundance: 0.0011,
     allotropes: ['alpha-iron', 'gamma-iron', 'delta-iron'],
   },
-  
+
   // NOTE: In a complete implementation, all 92 elements would be here.
   // For now, we include the most important elements for planet formation
   // and biochemistry. The pattern is established.
@@ -252,7 +252,7 @@ export const PERIODIC_TABLE: { [symbol: string]: Element } = {
  * Get element by atomic number
  */
 export function getElementByNumber(atomicNumber: number): Element | undefined {
-  return Object.values(PERIODIC_TABLE).find(e => e.atomicNumber === atomicNumber);
+  return Object.values(PERIODIC_TABLE).find((e) => e.atomicNumber === atomicNumber);
 }
 
 /**
@@ -262,7 +262,7 @@ export function getElementsByPhase(
   temperature: number,
   pressure: number = 101325 // Pa (1 atm)
 ): Element[] {
-  return Object.values(PERIODIC_TABLE).filter(element => {
+  return Object.values(PERIODIC_TABLE).filter((element) => {
     // Simplified phase determination (real calculation more complex)
     if (temperature < element.meltingPoint) return element.phase === 'solid';
     if (temperature < element.boilingPoint) return element.phase === 'liquid';
@@ -274,11 +274,11 @@ export function getElementsByPhase(
  * Primordial abundances (Big Bang nucleosynthesis + stellar nucleosynthesis)
  */
 export const PRIMORDIAL_ABUNDANCES = {
-  H: 0.75,  // 75% hydrogen
+  H: 0.75, // 75% hydrogen
   He: 0.23, // 23% helium
   C: 0.005, // 0.5% carbon
   N: 0.001, // 0.1% nitrogen
-  O: 0.01,  // 1% oxygen
+  O: 0.01, // 1% oxygen
   Si: 0.0007,
   Fe: 0.0011,
   // Other elements: ~0.2% combined

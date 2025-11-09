@@ -1,6 +1,6 @@
 /**
  * Ebb & Bloom - Unified Game Package
- * 
+ *
  * Single entry point combining frontend (BabylonJS) + backend (simulation)
  * Direct function calls - no HTTP REST API overhead
  */
@@ -38,7 +38,7 @@ let gameId = getParam('gameId');
 window.addEventListener('hashchange', () => {
   const params = getRouteParams();
   const newGameId = params.get('gameId');
-  
+
   if (newGameId && newGameId !== gameId) {
     // Navigate to game scene
     gameId = newGameId;
@@ -58,10 +58,10 @@ function disposeCurrentScene() {
 // Show onboarding or main menu
 async function showMainMenu() {
   disposeCurrentScene();
-  
+
   // Check if user has seen onboarding
   const hasSeenOnboarding = await getItem('hasSeenOnboarding');
-  
+
   if (!hasSeenOnboarding) {
     // First time user - show onboarding
     currentScene = new OnboardingScene(scene, engine, async () => {
@@ -97,4 +97,3 @@ window.addEventListener('resize', () => {
 engine.runRenderLoop(() => {
   scene.render();
 });
-

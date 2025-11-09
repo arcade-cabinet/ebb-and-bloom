@@ -1,9 +1,9 @@
 /**
  * Enhanced Random Number Generation
- * 
+ *
  * Uses seedrandom for deterministic randomness with string seeds.
  * Provides proper statistical distributions (normal, Poisson, exponential).
- * 
+ *
  * REVERTED FROM MERSENNE TWISTER: seedrandom is simpler, works with string seeds,
  * and is perfectly good quality for game generation. No overflow issues!
  */
@@ -16,13 +16,13 @@ import * as ss from 'simple-statistics';
  */
 export class EnhancedRNG {
   private rng: seedrandom.PRNG;
-  
+
   constructor(seed: string) {
     // seedrandom accepts strings directly - no hash conversion needed!
     this.rng = seedrandom(seed);
     console.log('[EnhancedRNG] Initialized with seed:', seed);
   }
-  
+
   /**
    * Uniform random [0, 1) or [min, max)
    */
@@ -31,16 +31,16 @@ export class EnhancedRNG {
     if (min === undefined || max === undefined) {
       return value;
     }
-    return min + (value * (max - min));
+    return min + value * (max - min);
   }
-  
+
   /**
    * Uniform integer in range [min, max)
    */
   uniformInt(min: number, max: number): number {
     return Math.floor(this.uniform() * (max - min)) + min;
   }
-  
+
   /**
    * Normal distribution (Gaussian) using Box-Muller transform
    * Mean = mu, Standard Deviation = sigma
@@ -52,26 +52,26 @@ export class EnhancedRNG {
     const z0 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
     return z0 * sigma + mu;
   }
-  
+
   /**
    * Poisson distribution
    * Used for discrete count data (offspring, events)
    */
   poisson(lambda: number): number {
     if (lambda < 0) return 0;
-    
+
     const L = Math.exp(-lambda);
     let k = 0;
     let p = 1;
-    
+
     do {
       k++;
       p *= this.rng();
     } while (p > L);
-    
+
     return k - 1;
   }
-  
+
   /**
    * Exponential distribution
    * Used for time between events
@@ -79,26 +79,31 @@ export class EnhancedRNG {
   exponential(rate: number): number {
     return -Math.log(1 - this.rng()) / rate;
   }
-  
+
   /**
    * Power law distribution (for IMF, etc.)
    * p(x) ∝ x^(-alpha)
+   * 
+   * Uses inverse transform sampling:
+   * x = [xMin^(1-α) + u * (xMax^(1-α) - xMin^(1-α))]^(1/(1-α))
    */
   powerLaw(alpha: number, xMin: number, xMax: number): number {
     const u = this.rng();
-    const beta = alpha - 1;
-    
-    if (Math.abs(beta) < 1e-10) {
+    const exponent = 1 - alpha;
+
+    if (Math.abs(exponent) < 1e-10) {
       // alpha ≈ 1, use logarithmic
       return xMin * Math.exp(u * Math.log(xMax / xMin));
     }
+
+    // Inverse CDF for power law
+    const xMinPow = Math.pow(xMin, exponent);
+    const xMaxPow = Math.pow(xMax, exponent);
+    const x = Math.pow(xMinPow + u * (xMaxPow - xMinPow), 1 / exponent);
     
-    return xMin * Math.pow(
-      1 - u * (1 - Math.pow(xMin / xMax, beta)),
-      1 / beta
-    );
+    return x;
   }
-  
+
   /**
    * Log-normal distribution
    * Used for multiplicative processes (planet sizes, etc.)
@@ -107,7 +112,7 @@ export class EnhancedRNG {
     const z = this.normal(0, 1);
     return Math.exp(muLog + sigmaLog * z);
   }
-  
+
   /**
    * Beta distribution (bounded [0,1])
    * Used for fractions, probabilities
@@ -118,13 +123,13 @@ export class EnhancedRNG {
     do {
       const u = this.rng();
       const v = this.rng();
-      x = Math.pow(u, 1/alpha);
-      y = Math.pow(v, 1/beta);
+      x = Math.pow(u, 1 / alpha);
+      y = Math.pow(v, 1 / beta);
     } while (x + y > 1);
-    
+
     return x / (x + y);
   }
-  
+
   /**
    * Gamma distribution
    * Used for waiting times, sizes
@@ -132,33 +137,33 @@ export class EnhancedRNG {
   gamma(shape: number, scale: number = 1): number {
     // Marsaglia and Tsang method
     if (shape < 1) {
-      return this.gamma(shape + 1, scale) * Math.pow(this.rng(), 1/shape);
+      return this.gamma(shape + 1, scale) * Math.pow(this.rng(), 1 / shape);
     }
-    
-    const d = shape - 1/3;
+
+    const d = shape - 1 / 3;
     const c = 1 / Math.sqrt(9 * d);
-    
+
     while (true) {
       let x, v;
       do {
         x = this.normal(0, 1);
         v = 1 + c * x;
       } while (v <= 0);
-      
+
       v = v * v * v;
       const u = this.rng();
       const x2 = x * x;
-      
+
       if (u < 1 - 0.0331 * x2 * x2) {
         return scale * d * v;
       }
-      
+
       if (Math.log(u) < 0.5 * x2 + d * (1 - v + Math.log(v))) {
         return scale * d * v;
       }
     }
   }
-  
+
   /**
    * Weighted choice from array
    */
@@ -166,20 +171,20 @@ export class EnhancedRNG {
     if (!weights) {
       return items[this.uniformInt(0, items.length)];
     }
-    
+
     const totalWeight = weights.reduce((a, b) => a + b, 0);
     let random = this.rng() * totalWeight;
-    
+
     for (let i = 0; i < items.length; i++) {
       random -= weights[i];
       if (random <= 0) {
         return items[i];
       }
     }
-    
+
     return items[items.length - 1];
   }
-  
+
   /**
    * Shuffle array in-place (Fisher-Yates)
    */
@@ -204,23 +209,23 @@ export const Statistics = {
   mode: (data: number[]) => ss.mode(data),
   variance: (data: number[]) => ss.variance(data),
   standardDeviation: (data: number[]) => ss.standardDeviation(data),
-  
+
   /**
    * Quantiles
    */
   quantile: (data: number[], p: number) => ss.quantile(data, p),
   quartiles: (data: number[]) => [
     ss.quantile(data, 0.25),
-    ss.quantile(data, 0.50),
+    ss.quantile(data, 0.5),
     ss.quantile(data, 0.75),
   ],
   interquartileRange: (data: number[]) => ss.interquartileRange(data),
-  
+
   /**
    * Correlation
    */
   correlation: (x: number[], y: number[]) => ss.sampleCorrelation(x, y),
-  
+
   /**
    * Regression
    */
@@ -230,12 +235,12 @@ export const Statistics = {
     const r2 = ss.rSquared(data, predict);
     return { line, predict, r2 };
   },
-  
+
   /**
    * Sample from distribution using inverse CDF
    */
-  sampleNormal: (mean: number, stdev: number, random: () => number) => 
-    ss.sampleNormal(mean, stdev, random),
+  // sampleNormal: (mean: number, stdev: number, random: () => number) =>
+  // ss.sampleNormal(mean, stdev, random), // Method doesn't exist in simple-statistics
 };
 
 export default EnhancedRNG;

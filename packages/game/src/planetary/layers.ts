@@ -5,23 +5,23 @@
 
 export interface MaterialDistribution {
   type: string;
-  abundance: number;      // 0-1 (percentage)
-  noiseScale: number;     // Spatial variation scale
+  abundance: number; // 0-1 (percentage)
+  noiseScale: number; // Spatial variation scale
   noiseThreshold: number; // Cumulative threshold for selection
-  color: string;          // Hex color for visualization
-  hardness: number;       // Mohs scale (1-10)
-  density: number;        // g/cm³
-  value: number;          // Game value (0-10)
+  color: string; // Hex color for visualization
+  hardness: number; // Mohs scale (1-10)
+  density: number; // g/cm³
+  value: number; // Game value (0-10)
 }
 
 export interface PlanetaryLayer {
   name: string;
-  minRadius: number;      // km from center
-  maxRadius: number;      // km from center
+  minRadius: number; // km from center
+  maxRadius: number; // km from center
   state: 'solid' | 'liquid' | 'gas';
   materials: MaterialDistribution[];
-  temperatureFunc: (radius: number) => number;  // Celsius
-  pressureFunc: (radius: number) => number;     // bar
+  temperatureFunc: (radius: number) => number; // Celsius
+  pressureFunc: (radius: number) => number; // bar
 }
 
 /**
@@ -70,9 +70,9 @@ export const EARTH_LIKE_LAYERS: PlanetaryLayer[] = [
     materials: [
       {
         type: 'molten_iron',
-        abundance: 0.80,
+        abundance: 0.8,
         noiseScale: 200,
-        noiseThreshold: 0.80,
+        noiseThreshold: 0.8,
         color: '#FF4500',
         hardness: 0, // Liquid
         density: 10.0,
@@ -80,9 +80,9 @@ export const EARTH_LIKE_LAYERS: PlanetaryLayer[] = [
       },
       {
         type: 'molten_nickel',
-        abundance: 0.10,
+        abundance: 0.1,
         noiseScale: 200,
-        noiseThreshold: 0.90,
+        noiseThreshold: 0.9,
         color: '#FF6347',
         hardness: 0,
         density: 7.8,
@@ -128,9 +128,9 @@ export const EARTH_LIKE_LAYERS: PlanetaryLayer[] = [
     materials: [
       {
         type: 'bridgmanite',
-        abundance: 0.60,
+        abundance: 0.6,
         noiseScale: 300,
-        noiseThreshold: 0.60,
+        noiseThreshold: 0.6,
         color: '#8B4513',
         hardness: 8,
         density: 4.0,
@@ -138,9 +138,9 @@ export const EARTH_LIKE_LAYERS: PlanetaryLayer[] = [
       },
       {
         type: 'ferropericlase',
-        abundance: 0.30,
+        abundance: 0.3,
         noiseScale: 300,
-        noiseThreshold: 0.90,
+        noiseThreshold: 0.9,
         color: '#A0522D',
         hardness: 7,
         density: 3.8,
@@ -148,7 +148,7 @@ export const EARTH_LIKE_LAYERS: PlanetaryLayer[] = [
       },
       {
         type: 'calcium_perovskite',
-        abundance: 0.10,
+        abundance: 0.1,
         noiseScale: 250,
         noiseThreshold: 1.0,
         color: '#D2691E',
@@ -176,9 +176,9 @@ export const EARTH_LIKE_LAYERS: PlanetaryLayer[] = [
     materials: [
       {
         type: 'olivine',
-        abundance: 0.50,
+        abundance: 0.5,
         noiseScale: 200,
-        noiseThreshold: 0.50,
+        noiseThreshold: 0.5,
         color: '#9ACD32',
         hardness: 6.5,
         density: 3.3,
@@ -186,9 +186,9 @@ export const EARTH_LIKE_LAYERS: PlanetaryLayer[] = [
       },
       {
         type: 'pyroxene',
-        abundance: 0.30,
+        abundance: 0.3,
         noiseScale: 200,
-        noiseThreshold: 0.80,
+        noiseThreshold: 0.8,
         color: '#556B2F',
         hardness: 6,
         density: 3.2,
@@ -196,7 +196,7 @@ export const EARTH_LIKE_LAYERS: PlanetaryLayer[] = [
       },
       {
         type: 'garnet',
-        abundance: 0.20,
+        abundance: 0.2,
         noiseScale: 180,
         noiseThreshold: 1.0,
         color: '#8B0000',
@@ -236,7 +236,7 @@ export const EARTH_LIKE_LAYERS: PlanetaryLayer[] = [
         type: 'granite',
         abundance: 0.25,
         noiseScale: 50,
-        noiseThreshold: 0.50,
+        noiseThreshold: 0.5,
         color: '#FFB6C1',
         hardness: 6.5,
         density: 2.7,
@@ -244,9 +244,9 @@ export const EARTH_LIKE_LAYERS: PlanetaryLayer[] = [
       },
       {
         type: 'limestone',
-        abundance: 0.20,
+        abundance: 0.2,
         noiseScale: 30,
-        noiseThreshold: 0.70,
+        noiseThreshold: 0.7,
         color: '#F5F5DC',
         hardness: 3,
         density: 2.7,
