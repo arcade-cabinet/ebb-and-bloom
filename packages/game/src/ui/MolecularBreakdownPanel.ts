@@ -22,6 +22,7 @@ import {
   Color3,
   Mesh,
   Viewport,
+  GlowLayer,
 } from '@babylonjs/core';
 import { MolecularVisuals } from '../renderers/MolecularVisuals';
 
@@ -49,40 +50,46 @@ export class MolecularBreakdownPanel {
   private currentContext?: MolecularContext;
   
   // Panel dimensions (fraction of screen)
-  private readonly width = 0.25;  // 25% of screen width
-  private readonly height = 0.25; // 25% of screen height
+  private readonly width = 0.20;  // 20% of screen width (right panel)
+  private readonly height = 0.50; // 50% of screen height (middle section)
   
   constructor(mainScene: Scene, engine: any) {
     // Create separate scene for molecular view
     this.scene = new Scene(engine);
     this.scene.clearColor = new Color3(0.05, 0.05, 0.1).toColor4();
     
-    // Camera for molecular view (always close-up)
+    // Camera for molecular view (close-up on molecules)
     this.camera = new ArcRotateCamera(
       'molecular-camera',
-      0,
-      Math.PI / 2,
-      15,
+      Math.PI / 4,  // Angle for better 3D view
+      Math.PI / 3,  // Elevation
+      20,           // Distance from center
       Vector3.Zero(),
       this.scene
     );
     
-    // Bright light (molecules need to be visible!)
+    // BRIGHT light (molecules must glow!)
     const light = new HemisphericLight('mol-light', new Vector3(0, 1, 0), this.scene);
-    light.intensity = 1.0;
+    light.intensity = 1.5; // Extra bright
+    light.groundColor = new Color3(0.3, 0.3, 0.3);
     
-    // Set viewport (bottom-right corner)
+    // Set viewport (RIGHT 20%, MIDDLE 50%)
+    // Position: x=0.8 (right panel starts), y=0.25 (below HUD), height=0.50 (middle section)
     this.camera.viewport = new Viewport(
-      1 - this.width,  // x (75% from left)
-      0,               // y (bottom)
-      this.width,      // width (25%)
-      this.height      // height (25%)
+      0.8,             // x = 80% from left (right panel starts)
+      0.25,            // y = 25% from bottom (below HUD space at top)
+      this.width,      // width = 20%
+      this.height      // height = 50%
     );
     
     // Active camera for this scene
     this.scene.activeCamera = this.camera;
     
-    console.log('[MolecularBreakdownPanel] Initialized - bottom-right viewport');
+    // Enable glow for molecules
+    const glow = new GlowLayer('mol-glow', this.scene);
+    glow.intensity = 1.5;
+    
+    console.log('[MolecularBreakdownPanel] Initialized - RIGHT 20%, MIDDLE 50% viewport');
   }
   
   /**
