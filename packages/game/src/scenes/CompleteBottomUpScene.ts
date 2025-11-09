@@ -142,14 +142,15 @@ export class CompleteBottomUpScene {
       1.0     // height = full height
     );
     
-    // CRITICAL: Bright light for visibility
+    // MAXIMUM lighting (space is dark but we need visibility!)
     const ambient = new HemisphericLight('ambient', new BabylonVector3(0, 1, 0), this.scene);
-    ambient.intensity = 0.8; // Bright enough to see everything
-    ambient.groundColor = new Color3(0.2, 0.2, 0.3);
+    ambient.intensity = 1.5; // MAXIMUM
+    ambient.groundColor = new Color3(0.5, 0.5, 0.5);
+    ambient.specular = new Color3(0.3, 0.3, 0.3);
     
-    // GLOW LAYER - Maximum intensity
+    // GLOW LAYER - MAXIMUM
     const glow = new GlowLayer('glow', this.scene);
-    glow.intensity = 1.5;
+    glow.intensity = 2.0; // MAX
     
     // GUI
     this.gui = AdvancedDynamicTexture.CreateFullscreenUI('UI');
