@@ -47,10 +47,14 @@ export class EnhancedRNG {
   }
   
   /**
-   * Uniform random [0, 1)
+   * Uniform random [0, 1) or [min, max)
    */
-  uniform(): number {
-    return this.mt();
+  uniform(min?: number, max?: number): number {
+    const value = this.mt();
+    if (min === undefined || max === undefined) {
+      return value;
+    }
+    return min + (value * (max - min));
   }
   
   /**
