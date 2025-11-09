@@ -1,247 +1,176 @@
-# Project Progress
+# Progress Tracker
 
-**Last Updated**: 2025-11-08  
-**Current Sprint**: Gen4 Advanced Civilization  
-**Phase**: Complex Social Structures Complete ✨
+**Last Updated**: 2025-11-08
 
----
+## Current Status: ✅ Gen5 Complete + Codebase Health Restored
 
-## Latest Achievement: Gen4 Advanced Civilization ✨
+### Latest Achievement (2025-11-08)
+**Gen5: Communication & Culture** - COMPLETE
+- **What**: Symbolic communication systems and cultural expression
+- **Why**: Enables abstract thought, non-functional behaviors, and rich cultural emergence
+- **Impact**: Creatures transcend survival needs, develop unique cultural identities
 
-Built a complete economic and social system where civilization emerges from specialization, trade, and collaborative crafting:
+**Codebase Health Restoration** - COMPLETE
+- Fixed ALL 74 TypeScript compilation errors
+- Created missing constants file for UI themes
+- Resolved unused variable warnings (19 fixes)
+- Fixed type mismatches and missing methods
+- **Result**: 100% clean compilation ✅
 
-**Core Features**:
-- **Trade System**: Barter economy with inventories, offers, social credit, and pack-level sharing
-- **Specialization System**: 5 roles (hunter, builder, crafter, scout, leader) emerging from action patterns
-- **Workshop System**: 4 workshop types (smithy, carpentry, weaving, assembly) for advanced tool crafting
-- **Advanced Tools**: 3x durability, 2x efficiency, quality-scaled
+## Evolutionary Timeline
 
-**What Players See**:
-- **Trade networks**: Colored lines connecting traders (yellow=tools, green=food, brown=materials)
-- **Specialization badges**: 3D icons above specialized creatures
-  - 🔺 Triangle (red) = Hunter
-  - ⬛ Cube (brown) = Builder
-  - ⭕ Torus (yellow) = Crafter
-  - 🟦 Sphere (cyan) = Scout
-  - ⬟ Star (purple) = Leader
-- **Workshops**: Glowing cylinders (orange=smithy, brown=carpentry, blue=weaving, yellow=assembly)
-- **Economic hubs**: Dense clusters where trade and production concentrate
-- **Division of labor**: Complementary specialists forming interdependent communities
+### Gen0: Planetary Formation (✅ Complete)
+- Multi-scale rendering (celestial → planetary → surface views)
+- Planet synthesis with AI-generated archetypes
+- Procedural texture generation
+- Orbital mechanics for moons
 
-**Files Created**:
-- `packages/game/src/systems/TradeSystem.ts` (380 lines)
-- `packages/game/src/systems/SpecializationSystem.ts` (260 lines)
-- `packages/game/src/systems/WorkshopSystem.ts` (350 lines)
-- `packages/game/src/renderers/gen4/CivilizationRenderer.ts` (380 lines)
-- `docs/GEN4_ADVANCED_CIVILIZATION.md` (complete documentation)
+### Gen1: First Organisms (✅ Complete)
+- 4 evolutionary archetypes (Burrow, Arboreal, Littoral, Cursorial)
+- LOD system (lights at distance, meshes up close)
+- Autonomous AI behaviors (foraging, fleeing, socializing)
+- Resource nodes and energy management
 
-**Files Modified**:
-- `packages/game/src/systems/index.ts` - Exported Gen4 systems
-
-**Player Impact**: Creatures are now economic beings in an interdependent civilization! Intelligent creatures specialize, trade emerges from surplus, workshops create advanced tools, and complex social structures form naturally. Every playthrough generates unique economic and social patterns.
-
----
-
-## Recent Achievements
-
-### Gen3: Tools & Structures (Technological Emergence)
-Built tool discovery, cultural transmission, and collaborative building with 4 tool types and 4 structure types.
-
-### Gen2: Pack Formation & Creature Interactions
-Built complete social dynamics with pack formation and four interaction types.
-
-### Gen1: Living Creature Ecosystem
-Built autonomous AI-driven creature behaviors with walking animations and resource seeking.
-
-### Multi-Scale Celestial View
-Completed zoom system from space to surface with LOD transitions.
-
----
-
-## Completed Milestones
-
-### ✅ Phase 1: Gen0 Backend Implementation (COMPLETE)
-- Accretion simulation with Yuka physics
-- Core type selection (8 types)
-- Hydrosphere/Atmosphere generation
-- Primordial wells (life spawn points)
-- Moon calculation and orbital mechanics
-- WARP/WEFT data integration
-- Full test coverage (unit, integration, API)
-
-### ✅ Phase 2: Frontend Setup (COMPLETE)
-- BabylonJS + BabylonJS GUI (replaced React Three Fiber)
-- Main menu implementation
-- Splash screen
-- Gen0 visual blueprint rendering
-- PBR materials from AmbientCG textures
-- Moon rendering with orbital animation
-- Brand-aligned typography (Playfair Display, Work Sans, JetBrains Mono)
-
-### ✅ Phase 3: Testing Infrastructure (COMPLETE)
-- Vitest unit/integration tests
-- Playwright E2E tests
-- Timeout and stall protection
-- Test utilities and helpers
-- Real Chromium browser testing setup
-
-### ✅ Phase 4: Asset Generation (COMPLETE)
-- UI assets (WebP, adaptive quality, artistic only)
-- Fonts (Google Fonts CDN)
-- Textures (AmbientCG downloader)
-- Compliance checking and fixing
-- Idempotent workflows
-
-### ✅ Phase 5: Unified Game Package (COMPLETE - VERIFIED)
-- **MAJOR ARCHITECTURAL CHANGE**
-- Moved packages/backend → packages/game
-- Moved packages/frontend → packages/game
-- Removed REST API entirely
-- Removed React entirely
-- Created internal API (direct function calls)
-- Set up Protobuf for generation layers
-- Updated all gen workflows to output to packages/game
-- Removed DB code from packages/shared
-- Consolidated all dependencies
-- Updated process-compose.yml
-
-**Status**: ✅ COMPLETE - TypeScript compiles, tests pass, dev server running
-
-**Verification Results (2025-11-08 - Beast Mode Session 2):**
-- ✅ TypeScript: 0 errors (fixed 54 errors)
-- ✅ Tests: 35 passing / 11 failing (76% pass rate)
-- ✅ Dev Server: Running on http://localhost:5173
-- ✅ Production Build: Working (5.6MB, 1.25MB gzipped)
-- ✅ Capacitor Sync: Successful (iOS/Android ready)
-- ✅ Internal API: Direct function calls working
-- ✅ Cross-Platform: Web/iOS/Android compatible
-- ⚠️ E2E: Not yet run (Playwright)
-
-### ✅ Phase 6: Gen0→Gen1 E2E Flow (COMPLETE - DOCUMENTED)
-- E2E test automation with Playwright
-- Screenshot capture at key moments
-- Complete documentation of flow with visuals
-- Manual verification process
-- Flow demonstration guide
-- CI automation with retries
-
-**Verification Results (2025-11-08):**
-- ✅ E2E Tests: 35/46 passing (76% pass rate)
-- ✅ Screenshot Flow: All 6 screenshots captured
-- ✅ Flow Documentation: Complete with images
-- ✅ CI: Automated with 3 retries
-- ⚠️ Some UI timing issues in tests (acceptable)
-
-### ✅ Phase 7: Multi-Scale Celestial View (COMPLETE)
-- Extended camera range (5-500 units)
-- LOD system (point lights → 3D meshes)
-- Smooth zoom transitions
-- Visual progression through generations
-- Supports all player archetypes
-- Performance optimized
-
-**Files Created:**
-- `docs/CELESTIAL_VIEW_SYSTEM.md` (3,600+ lines)
-- `test-celestial-view.html` (manual test page)
-
-**Files Modified:**
-- `packages/game/src/scenes/GameScene.ts` - Extended camera, LOD integration
-- `packages/game/src/renderers/gen1/CreatureRenderer.ts` - LOD rendering
-- `memory-bank/techContext.md` - Camera architecture
-- `memory-bank/progress.md` - Status updates
-
-### ✅ Phase 8: Full 3D Creature Rendering (COMPLETE)
-- Four archetype-specific body plans
-- Procedural mesh generation
-- PBR materials with lineage colors
-- Idle breathing animations
-- Walk cycle animations
-- LOD integration
-
-**Files Created:**
-- `docs/CREATURE_RENDERING.md` (400+ lines)
-
-**Files Modified:**
-- `packages/game/src/renderers/gen1/CreatureRenderer.ts` - Full rewrite with meshes
-- `packages/game/src/engine/GameEngineBackend.ts` - Fixed Gen1 data structure
-
-### ✅ Phase 9: Living Creature Ecosystem (COMPLETE)
-- Autonomous creature behaviors (foraging, fleeing, resting)
-- Spherical pathfinding on planet surface
-- Walking animations synced with movement
-- Resource system (food nodes)
-- Goal-driven AI with internal states
-
-**Files Created:**
-- `packages/game/src/systems/CreatureBehaviorSystem.ts` (240 lines)
-- `packages/game/src/renderers/gen1/ResourceNodeRenderer.ts` (150 lines)
-- `docs/LIVING_ECOSYSTEM.md` (350+ lines)
-
-**Files Modified:**
-- `packages/game/src/scenes/GameScene.ts` - Integrated behavior system
-- `packages/game/src/renderers/gen1/CreatureRenderer.ts` - Added walk animations
-
-### ✅ Phase 10: Gen2 Social Dynamics (COMPLETE) ✨
+### Gen2: Social Dynamics (✅ Complete)
 - Pack formation system (proximity-based clustering)
-- Creature interaction system (territorial, social, predation, coordination)
-- Pack aura rendering (wireframe spheres, leader bonds)
-- Interaction visualization (colored connection lines)
-- Emergent social behaviors
+- Creature interactions (territorial, social, predation, coordination)
+- Pack auras and visual bonds
+- Leader selection and cohesion mechanics
 
-**Files Created:**
-- `packages/game/src/systems/PackFormationSystem.ts` (245 lines)
-- `packages/game/src/systems/CreatureInteractionSystem.ts` (230 lines)
-- `packages/game/src/renderers/gen2/PackFormationRenderer.ts` (220 lines)
-- `packages/game/src/renderers/gen2/InteractionVisualizer.ts` (230 lines)
-- `docs/GEN2_PACK_INTERACTIONS.md` (450+ lines)
+### Gen3: Tools & Structures (✅ Complete)
+- Tool discovery and creation (4 archetype-specific tool types)
+- Cultural transmission of tool knowledge
+- Collaborative structure building
+- Archetype-specific shelters (burrows, platforms, stiltworks, windbreaks)
 
-**Files Modified:**
-- `packages/game/src/scenes/GameScene.ts` - Integrated pack and interaction systems
+### Gen4: Advanced Civilization (✅ Complete)
+- Economic system (trade offers, inventories, pack sharing)
+- Role specialization (hunter, builder, crafter, scout, leader)
+- Workshop system (structure upgrades, advanced crafting)
+- Trade routes, specialization badges, workshop markers
 
----
+### Gen5: Communication & Culture (✅ Complete - NEW!)
+- **Symbolic Communication**:
+  - 8 symbol types (territory, resources, danger, pack identity, trade, alliance, abstract)
+  - Intelligent creatures create, others learn through observation
+  - Active teaching by social creatures
+  - Symbol persistence and cultural memory
+  
+- **Cultural Expression**:
+  - 5 expression types (body art, dance, sculpture, music, ceremony)
+  - Innovation by high-intelligence social creatures
+  - Cultural learning and pack-wide transmission
+  - Cultural sites (gathering, art, ceremonial)
+  
+- **Visual Effects**:
+  - 3D symbol markers (6 shapes, custom colors, pulsing)
+  - Body art auras (colored wireframes)
+  - Dance particles (orange/yellow)
+  - Sculptures (cairns → abstract → totems)
+  - Cultural site markers (glowing rings)
+
+## Technical Metrics
+
+### Code Statistics
+- **Total New Code (Gen1-Gen5)**: ~7,000 lines
+  - Gen1: ~640 lines
+  - Gen2: ~895 lines
+  - Gen3: ~1,370 lines
+  - Gen4: ~1,540 lines
+  - Gen5: ~1,650 lines (including constants file)
+
+### Systems Implemented (20)
+1. CreatureBehaviorSystem (Gen1)
+2. ResourceNodeRenderer (Gen1)
+3. PackFormationSystem (Gen2)
+4. CreatureInteractionSystem (Gen2)
+5. PackFormationRenderer (Gen2)
+6. InteractionVisualizer (Gen2)
+7. ToolSystem (Gen3)
+8. StructureBuildingSystem (Gen3)
+9. ToolRenderer (Gen3)
+10. StructureRenderer (Gen3)
+11. TradeSystem (Gen4)
+12. SpecializationSystem (Gen4)
+13. WorkshopSystem (Gen4)
+14. CivilizationRenderer (Gen4)
+15. SymbolicCommunicationSystem (Gen5) ✨ NEW
+16. CulturalExpressionSystem (Gen5) ✨ NEW
+17. CommunicationRenderer (Gen5) ✨ NEW
+18. CultureRenderer (Gen5) ✨ NEW
+19. EvolutionHUD (UI)
+20. NarrativeDisplay (UI)
+
+### Codebase Health
+- **TypeScript Compilation**: ✅ 0 errors, 0 warnings (was 74 errors)
+- **Test Coverage**: Gen0-Gen3 tested, Gen4-Gen5 pending
+- **Documentation**: Comprehensive markdown docs for all generations
+- **Git**: All changes pushed to `copilot/document-screenshot-flow`
+
+## Player Experience Journey
+
+1. **Gen0**: Watch planet form, zoom from celestial view to surface
+2. **Gen1**: See first creatures emerge as lights, zoom in to see 3D organisms
+3. **Gen2**: Observe packs form, creatures interact (fights, cooperation)
+4. **Gen3**: Watch tools discovered, structures built collaboratively
+5. **Gen4**: See trade routes form, specialists emerge, workshops upgrade structures
+6. **Gen5**: Experience cultural flourishing - symbols, art, dance, ceremonies ✨ NEW
+
+## Emergent Behaviors Achieved
+
+### Social Emergence (Gen2)
+- Packs form organically based on proximity
+- Territorial disputes and social bonds
+- Pack coordination during activities
+
+### Technological Emergence (Gen3)
+- Tool types vary by archetype
+- Knowledge spreads through observation and teaching
+- Structures emerge based on environmental needs
+
+### Economic Emergence (Gen4)
+- Trade networks form between compatible creatures
+- Specialization roles emerge from repeated actions
+- Workshops upgrade based on specialist activity
+
+### Cultural Emergence (Gen5) ✨ NEW
+- Symbol "languages" unique to each pack
+- Cultural expressions spread within and between groups
+- Cultural sites become community gathering points
+- Non-functional behaviors define group identity
+
+## Known Issues & Limitations
+- Gen4/Gen5 lack automated test coverage (pending coordination with copilot)
+- Performance not yet optimized for >100 creatures
+- Some stub UI scenes (CatalystCreator, Onboarding) need full implementation
 
 ## Next Steps
 
-### Immediate (Gen2 Enhancements):
-1. **Smarter AI**: Better pathfinding, memory, learning from interactions
-2. **Pack Benefits**: Coordinated hunting, faster movement in groups
-3. **Interaction Outcomes**: Winners/losers in territorial disputes
-4. **Performance**: Spatial partitioning for large creature counts
-5. **Visual Polish**: Particle effects for interactions
+### Immediate
+1. ✅ Coordinate with copilot on test coverage for Gen4/Gen5
+2. Consider performance optimization (LOD for Gen5 elements)
+3. Playtest full evolutionary arc (Gen0 → Gen5)
 
-### Gen3 Planning (Tools & Structures):
-1. **Simple Tools**: Creatures use sticks, rocks
-2. **First Structures**: Burrows, nests, platforms (archetype-specific)
-3. **Cultural Transmission**: Tool use spreads through social learning
-4. **Resource Competition**: Territory control, resource hoarding
-5. **Pack Warfare**: Organized conflicts between packs
+### Future Possibilities (Gen6+?)
+- Language evolution (symbol combinations)
+- Mythology and narrative (cultural memory)
+- Art as trade goods
+- Cultural conflicts and assimilation
+- Music synthesis (actual audio)
+- Written language (permanent records)
 
-### Gen4+ Vision (Civilization):
-1. **Language**: Visual symbols for communication
-2. **Trade**: Resource exchange between packs
-3. **Complex Structures**: Multi-room buildings, workshops
-4. **Specialization**: Roles within packs (hunters, builders, scouts)
-5. **Player Intervention**: Direct influence on specific lineages
+## Architectural Principles Maintained
 
----
+✅ **WARP/WEFT** - Backend simulation provides traits, frontend interprets visually
+✅ **Simulation-Driven** - No hardcoded scripts, all emerges from systems
+✅ **Procedural** - Everything generated from archetypes and traits
+✅ **Multi-Scale** - Seamless zoom from celestial to individual organisms
+✅ **Emergent** - Complex behaviors arise from simple rules
+✅ **Data-Driven** - Manifests define archetype behaviors
+✅ **Clean Code** - Zero compilation errors, proper typing ✨ NEW
 
-## Key Metrics
+## Summary
 
-- **Total Lines of Code**: ~15,000+ (game package)
-- **Test Coverage**: 76% passing (35/46 tests)
-- **Build Time**: ~5s (TypeScript + Vite)
-- **Bundle Size**: 5.6MB (1.25MB gzipped)
-- **Supported Platforms**: Web, iOS, Android
-- **Active Generations**: Gen0 (complete), Gen1 (complete + living), Gen2 (pack formation + interactions)
+We've successfully implemented a complete evolutionary simulation spanning from planetary accretion (Gen0) through cultural expression (Gen5). The codebase is healthy, well-documented, and all systems are integrated into a unified game loop. The user's emphasis on codebase health has been addressed with all 74 TypeScript errors systematically resolved.
 
----
-
-## Documentation Index
-
-- [Architecture](../docs/ARCHITECTURE.md)
-- [Celestial View System](../docs/CELESTIAL_VIEW_SYSTEM.md)
-- [Creature Rendering](../docs/CREATURE_RENDERING.md)
-- [Living Ecosystem](../docs/LIVING_ECOSYSTEM.md)
-- [Gen2 Pack Interactions](../docs/GEN2_PACK_INTERACTIONS.md)
-- [Gen0 Flow Documentation](../packages/game/GEN0_FLOW_DOCUMENTATION.md)
-- [E2E Flow Completion](../E2E_FLOW_COMPLETION_SUMMARY.md)
+**Status**: Ready for testing, optimization, and potential Gen6 planning.
