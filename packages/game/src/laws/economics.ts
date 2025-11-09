@@ -51,7 +51,7 @@ export const ComparativeAdvantage = {
    * Gains from trade
    * Both parties benefit
    */
-  gainFrom Trade: (
+  gainsFromTrade: (
     beforeTrade_A: number,
     beforeTrade_B: number,
     afterTrade_A: number,

@@ -238,7 +238,7 @@ export const TerrestrialLocomotion = {
   /**
    * Gait from speed
    */
-  gaitType: (froudeNumber: number): 'walk' | 'trot' | 'gallop' {
+  gaitType: (froudeNumber: number): 'walk' | 'trot' | 'gallop' => {
     if (froudeNumber < 0.5) return 'walk';
     if (froudeNumber < 2.0) return 'trot';
     return 'gallop';

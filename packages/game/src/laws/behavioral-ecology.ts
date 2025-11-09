@@ -79,7 +79,7 @@ export const RiskSensitiveForaging = {
     currentEnergy_J: number,
     requiredEnergy_J: number,
     reserveEnergy_J: number
-  ): 'risk-averse' | 'risk-neutral' | 'risk-prone' {
+  ): 'risk-averse' | 'risk-neutral' | 'risk-prone' => {
     if (currentEnergy_J < requiredEnergy_J) {
       return 'risk-prone'; // Starving - gamble needed
     }

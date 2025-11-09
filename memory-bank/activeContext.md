@@ -1,5 +1,51 @@
 # Active Context
 
+## 🎯 CURRENT FOCUS: Law-Based Universe Simulation
+
+### The Vision (Nov 9, 2025)
+
+**The game is WAY down the road.**  
+**Visual rendering is trivial (10% complexity).**  
+**The HARD part: Complete universe where Yuka steers EVERYTHING with formulas.**
+
+### What We're Building
+
+**Not a game with physics.**  
+**A physics simulation that happens to be playable.**
+
+Every cycle, every decision, every outcome → **CALCULATED FROM PEER-REVIEWED LAWS**.
+
+### Current State
+
+✅ **16 law files, 4,525 lines, 773 formulas**
+✅ **All laws validated** (determinism perfect, distributions match theory)
+✅ **seedrandom works** (Mersenne Twister was over-engineering)
+✅ **CLI validation suite** (proves math works)
+
+### What's Next
+
+**Keep adding laws until Yuka has formulas for EVERYTHING:**
+- Climate science (Milankovitch cycles, greenhouse effect)
+- Soil science (nutrient cycling, erosion)
+- Hydrology (water cycle, aquifers)
+- Materials science (metallurgy, ceramics)
+- Agriculture (crop yields, irrigation)
+- Epidemiology (disease spread, R₀)
+- Demographics (age pyramids, migration)
+- Architecture (structural engineering)
+
+**Goal:** 50+ law files, 10,000+ lines, 2,000+ formulas
+
+Then Yuka can simulate **5,000 years forward** and answer:
+- "Should this tribe farm?" → Climate + soil + hydrology + demographics
+- "Will trade network succeed?" → Network effects + transport costs
+- "Disease outbreak impact?" → SIR model + population density
+- "Optimal settlement location?" → von Thünen rings + defensive position
+
+**ABSURD DEPTH. NO SWEET SPOT. ONLY FORMULAS.**
+
+# Active Context
+
 **Date**: 2025-11-08  
 **Branch**: `copilot/document-screenshot-flow`  
 **Status**: MAJOR ARCHITECTURAL REFACTOR COMPLETE
