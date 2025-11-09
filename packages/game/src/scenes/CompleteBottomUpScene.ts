@@ -89,7 +89,7 @@ export class CompleteBottomUpScene {
   private currentPhase: SimulationPhase = 'quantum-foam';
   private currentScale: PhysicalScale = PhysicalScale.PLANCK;
   private currentZoomLevel: ZoomLevel = ZoomLevel.COSMIC;
-  private paused: boolean = true; // START PAUSED - wait for user to press PLAY!
+  private paused: boolean = false; // AUTO-START for testing!
   private densityFieldInitialized: boolean = false;
   private bigBangTriggered: boolean = false; // Track if Big Bang happened yet
   
