@@ -10,14 +10,19 @@
 
 import { EnhancedRNG } from '../utils/EnhancedRNG.js';
 import { NBodySimulator, initializePlanetarySystem } from '../physics/NBodySimulator.js';
+import { MonteCarloAccretion } from '../physics/MonteCarloAccretion.js';
 import { LAWS, PHYSICS_CONSTANTS as C } from '../laws/index.js';
 import type { Universe, Star, Planet } from './UniverseGenerator.js';
 
 export class EnhancedUniverseGenerator {
   private rng: EnhancedRNG;
+  private seed: string;
+  private useMonteCarloAccretion: boolean;
   
-  constructor(seed: string) {
+  constructor(seed: string, useMonteCarloAccretion = true) {
     this.rng = new EnhancedRNG(seed);
+    this.seed = seed;
+    this.useMonteCarloAccretion = useMonteCarloAccretion;
   }
   
   /**
@@ -25,11 +30,16 @@ export class EnhancedUniverseGenerator {
    */
   generate(): Universe {
     const star = this.generateStar();
-    const planets = this.generatePlanetsWithNBody(star);
+    
+    // Choose generation method
+    const planets = this.useMonteCarloAccretion
+      ? this.generatePlanetsWithMonteCarlo(star)
+      : this.generatePlanetsWithNBody(star);
+    
     const habitablePlanet = planets.find(p => p.habitability.score > 0.5);
     
     return {
-      seed: '',
+      seed: this.seed,
       star,
       planets,
       habitablePlanet,
@@ -141,6 +151,104 @@ export class EnhancedUniverseGenerator {
   }
   
   /**
+   * Generate planets using Monte Carlo accretion simulation
+   * This is MORE realistic than N-body for planet formation
+   */
+  private generatePlanetsWithMonteCarlo(star: Star): Planet[] {
+    const accretion = new MonteCarloAccretion(
+      this.seed + '-accretion',
+      star.mass
+    );
+    
+    // Disk properties from stellar properties
+    const diskMass = 0.01 * star.mass; // 1% of star mass (typical)
+    const innerEdge = 0.05; // AU
+    const outerEdge = 50; // AU
+    const numProtoplanets = 200; // Start with many small bodies
+    
+    // Initialize protoplanetary disk
+    const protoDisk = accretion.initializeDisk(
+      diskMass,
+      innerEdge,
+      outerEdge,
+      numProtoplanets
+    );
+    
+    console.log(`[Accretion] Starting with ${numProtoplanets} protoplanets`);
+    
+    // Run Monte Carlo simulation
+    const simulation = accretion.simulate(
+      protoDisk,
+      5000, // iterations
+      10000 // years per iteration
+    );
+    
+    console.log(`[Accretion] Finished after ${simulation.collisions} collisions, ${simulation.bodies.length} planets remain`);
+    
+    // Convert protoplanets to Planet objects
+    const formattedPlanets = accretion.getFormattedPlanets(simulation);
+    
+    return formattedPlanets.map((p, i) => this.createPlanetFromProtoplanet(p, star, i));
+  }
+  
+  /**
+   * Create Planet from protoplanet simulation result
+   */
+  private createPlanetFromProtoplanet(proto: any, star: Star, index: number): Planet {
+    const mass = proto.mass;
+    const radius = proto.radius;
+    const orbitRadiusAU = proto.orbit;
+    const density = mass / ((4/3) * Math.PI * Math.pow(radius, 3));
+    
+    // Orbital mechanics
+    const orbitalPeriod = LAWS.physics.orbital.orbitalPeriod(
+      star.mass * C.SOLAR_MASS,
+      orbitRadiusAU * C.AU
+    ) / (365.25 * 86400); // Convert to years
+    
+    const surfaceGravity = LAWS.physics.gravity.surfaceGravity(mass, radius);
+    const escapeVelocity = LAWS.physics.orbital.escapeVelocity(mass, radius);
+    
+    const temperature = LAWS.stellar.condensation.temperature(star.luminosity, orbitRadiusAU);
+    
+    const isGasGiant = proto.type === 'gas_giant';
+    const composition = proto.composition;
+    const atmosphere = this.generateAtmosphere(mass, radius, temperature, isGasGiant);
+    
+    const hasIronCore = !isGasGiant && composition.rock > 0.5;
+    const magneticField = hasIronCore ? 1e-5 * (mass / C.EARTH_MASS) : 0;
+    
+    // Rotation from normal distribution
+    const rotationPeriod = Math.abs(this.rng.normal(24, 12));
+    const axialTilt = this.rng.beta(2, 2) * 90;
+    
+    const inHZ = LAWS.stellar.habitableZone.isHabitable(orbitRadiusAU, star.luminosity);
+    const habitability = this.assessHabitability(inHZ, atmosphere, temperature, magneticField > 0, mass);
+    
+    return {
+      name: proto.name || `Planet ${index + 1}`,
+      mass,
+      radius,
+      density,
+      orbitalRadius: orbitRadiusAU,
+      orbitalPeriod,
+      surfaceGravity,
+      escapeVelocity,
+      surfaceTemperature: temperature,
+      composition: {
+        core: { Fe: composition.rock * 0.3, Si: composition.rock * 0.3, other: composition.rock * 0.4 },
+        mantle: { Si: composition.ice * 0.5, O: composition.ice * 0.5 },
+        crust: { Si: 0.3, O: 0.5, other: 0.2 },
+      },
+      atmosphere,
+      magneticField,
+      rotationPeriod,
+      axialTilt,
+      habitability,
+    };
+  }
+  
+  /**
    * Estimate planet radius from mass and composition
    */
   private estimateRadius(mass: number, isGasGiant: boolean): number {
@@ -234,6 +342,7 @@ export class EnhancedUniverseGenerator {
   private generateAtmosphere(mass: number, radius: number, temperature: number, isGasGiant: boolean): any {
     const H2_mass = 2 * 1.67e-27;
     const canRetainH2 = LAWS.physics.fluid.canRetainGas(mass, radius, H2_mass, temperature);
+    const surfaceGravity = LAWS.physics.gravity.surfaceGravity(mass, radius);
     
     if (!canRetainH2 && !isGasGiant) return null;
     
@@ -261,7 +370,7 @@ export class EnhancedUniverseGenerator {
     };
   }
   
-  private assessHabitability(inHZ: boolean, atmosphere: any, temperature: number, hasMagneticField: boolean, mass: number): any {
+  private assessHabitability(inHZ: boolean, atmosphere: any, temperature: number, hasMagneticField: boolean, _mass: number): any {
     const hasLiquidWater = temperature > 273 && temperature < 373 && atmosphere !== null;
     const hasAtmosphere = atmosphere !== null;
     

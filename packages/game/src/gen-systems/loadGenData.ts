@@ -8,6 +8,7 @@
 import { generateEnhancedUniverse } from '../generation/EnhancedUniverseGenerator.js';
 import { EnhancedRNG } from '../utils/EnhancedRNG.js';
 import { LAWS } from '../laws/index.js';
+import { StochasticPopulationDynamics } from '../ecology/StochasticPopulation.js';
 
 /**
  * Generate complete game data for a universe
@@ -31,6 +32,9 @@ export async function generateGameData(seed: string) {
   // Generate creature archetypes from ecological niches
   const creatures = generateCreatureArchetypes(ecology, planet, rng);
   
+  // Simulate population dynamics for creatures
+  const populationDynamics = simulatePopulationDynamics(creatures, ecology, seed);
+  
   // Generate resources from planet composition
   const resources = generateResources(planet, rng);
   
@@ -42,11 +46,12 @@ export async function generateGameData(seed: string) {
     ecology,
     creatures,
     resources,
+    populationDynamics,
     
     // Legacy structure for compatibility
     pools: {
       macro: { universe, planet },
-      meso: { ecology, creatures },
+      meso: { ecology, creatures, populationDynamics },
       micro: { resources },
     },
   };
@@ -86,7 +91,7 @@ function generateEcology(planet: any, rng: EnhancedRNG) {
 /**
  * Determine biomes from environmental parameters
  */
-function determineBiomes(temperature: number, rainfall: number, rng: EnhancedRNG) {
+function determineBiomes(temperature: number, rainfall: number, _rng: EnhancedRNG) {
   const biomes = [];
   
   const tempC = temperature - 273.15;
@@ -129,7 +134,6 @@ function determineBiomes(temperature: number, rainfall: number, rng: EnhancedRNG
 function generateCreatureArchetypes(ecology: any, planet: any, rng: EnhancedRNG) {
   const creatures = [];
   const gravity = planet.surfaceGravity;
-  const productivity = ecology.productivity;
   
   // Number of species from productivity (island biogeography)
   const area = 4 * Math.PI * Math.pow(planet.radius, 2) / 1e12; // 1000s of km²
@@ -139,7 +143,7 @@ function generateCreatureArchetypes(ecology: any, planet: any, rng: EnhancedRNG)
   // Generate species for each niche
   for (let i = 0; i < actualCount; i++) {
     // Determine niche
-    const biome = rng.choice(ecology.biomes, ecology.biomes.map((b: any) => b.coverage));
+    const biome: any = rng.choice(ecology.biomes, ecology.biomes.map((b: any) => b.coverage));
     const diet = rng.choice(['herbivore', 'carnivore', 'omnivore'], [0.5, 0.3, 0.2]);
     const trophicLevel = diet === 'herbivore' ? 1 : diet === 'carnivore' ? 2 : 1.5;
     
@@ -263,7 +267,7 @@ function generateScientificName(locomotion: string, diet: string, size: string, 
 /**
  * Generate resources from planet composition
  */
-function generateResources(planet: any, rng: EnhancedRNG) {
+function generateResources(planet: any, _rng: EnhancedRNG) {
   const resources = [];
   
   // Always have basic vegetation
@@ -310,6 +314,98 @@ function generateResources(planet: any, rng: EnhancedRNG) {
 
 function capitalize(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+/**
+ * Simulate stochastic population dynamics for ecosystem
+ */
+function simulatePopulationDynamics(creatures: any[], ecology: any, seed: string) {
+  const dynamics = new StochasticPopulationDynamics(seed + '-population');
+  
+  // Separate herbivores and carnivores
+  const herbivores = creatures.filter(c => c.diet === 'herbivore');
+  const carnivores = creatures.filter(c => c.diet === 'carnivore');
+  
+  if (herbivores.length === 0 || carnivores.length === 0) {
+    console.log('[Population] Not enough trophic levels for dynamics simulation');
+    return { equilibria: [], trajectories: [] };
+  }
+  
+  // Pick dominant species from each level
+  const dominantHerbivore = herbivores.sort((a, b) => b.mass - a.mass)[0];
+  const dominantCarnivore = carnivores.sort((a, b) => b.mass - a.mass)[0];
+  
+  // Calculate carrying capacity from productivity
+  const area = 1e10; // m² (sample area)
+  const K_prey = LAWS.ecology.carryingCapacity.fromProductivity(
+    ecology.productivity,
+    area,
+    dominantHerbivore.metabolism
+  );
+  
+  // Initial populations (start at ~50% of carrying capacity)
+  let preyPop = K_prey * 0.5;
+  let predatorPop = preyPop * 0.1; // 10:1 prey:predator ratio
+  
+  // Calculate dynamics parameters
+  const alpha = 0.5; // Prey birth rate (1/year)
+  const beta = 0.0001; // Predation rate
+  const delta = 0.00005; // Predator efficiency
+  const gamma = 0.3; // Predator death rate
+  
+  // Stochastic parameters
+  const sigmaEnv = 0.15; // 15% environmental noise
+  const sigmaDemog = 0.05; // 5% demographic noise
+  
+  // Run simulation for 100 years
+  const trajectory: { time: number; prey: number; predator: number }[] = [];
+  const dt = 0.1; // 0.1 year steps
+  
+  for (let t = 0; t < 100; t += dt) {
+    trajectory.push({
+      time: t,
+      prey: preyPop,
+      predator: predatorPop,
+    });
+    
+    const result = dynamics.stepPredatorPrey(
+      preyPop,
+      predatorPop,
+      { alpha, beta, delta, gamma, sigmaEnv, sigmaDemog },
+      dt
+    );
+    
+    preyPop = result.prey;
+    predatorPop = result.predator;
+    
+    // Extinction check
+    if (preyPop < 1 || predatorPop < 1) {
+      console.log(`[Population] Extinction at t=${t.toFixed(1)}`);
+      break;
+    }
+  }
+  
+  // Calculate equilibrium (average of last 20 years)
+  const equilibriumStart = trajectory.length - 200;
+  const equilibriumData = trajectory.slice(Math.max(0, equilibriumStart));
+  
+  const avgPrey = equilibriumData.reduce((sum, p) => sum + p.prey, 0) / equilibriumData.length;
+  const avgPredator = equilibriumData.reduce((sum, p) => sum + p.predator, 0) / equilibriumData.length;
+  
+  console.log(`[Population] Equilibrium: ${avgPrey.toFixed(0)} prey, ${avgPredator.toFixed(0)} predators`);
+  
+  return {
+    species: {
+      prey: dominantHerbivore.name,
+      predator: dominantCarnivore.name,
+    },
+    equilibria: {
+      prey: avgPrey,
+      predator: avgPredator,
+    },
+    trajectory: trajectory.filter((_, i) => i % 10 === 0), // Sample every 1 year
+    parameters: { alpha, beta, delta, gamma, sigmaEnv, sigmaDemog },
+  };
 }
 
 /**
