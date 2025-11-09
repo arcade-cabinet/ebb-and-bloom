@@ -128,9 +128,11 @@ export class CompleteBottomUpScene {
     this.camera.lowerRadiusLimit = 0.01;
     this.camera.upperRadiusLimit = 100000;
     
-    // Minimal ambient light
+    // CRITICAL: Bright light for seeing molecules in dark space!
+    // Space is black, but objects must be VISIBLE
     const ambient = new HemisphericLight('ambient', new BabylonVector3(0, 1, 0), this.scene);
-    ambient.intensity = 0.1;
+    ambient.intensity = 0.5; // Increased from 0.1 (molecules need more light!)
+    ambient.groundColor = new Color3(0.1, 0.1, 0.2); // Slight blue from below
     
     // GUI
     this.gui = AdvancedDynamicTexture.CreateFullscreenUI('UI');
