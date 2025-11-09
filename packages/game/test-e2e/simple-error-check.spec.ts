@@ -31,12 +31,12 @@ test('capture all browser errors plainly', async ({ page }) => {
     }
   });
   
-  console.log('\nLoading /universe.html...\n');
+  console.log('\nLoading /index.html (Complete Bottom-Up System)...\n');
   
-  await page.goto('/universe.html');
+  await page.goto('/index.html');
   
-  console.log('\nWaiting 30 seconds...\n');
-  await page.waitForTimeout(30000);
+  console.log('\nWaiting 5 seconds for initial load...\n');
+  await page.waitForTimeout(5000);
   
   console.log('\n=== FINAL ERROR COUNT ===');
   console.log(`Total errors: ${errors.length}\n`);

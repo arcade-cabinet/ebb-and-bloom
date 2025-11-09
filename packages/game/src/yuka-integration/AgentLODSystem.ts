@@ -11,7 +11,7 @@
  * Use statistics to advance state, spawn agents when zooming in.
  */
 
-import { EntityManager, Vehicle } from 'yuka';
+import { Vehicle, Vector3 } from 'yuka';
 import { create } from 'zustand';
 import { AgentSpawner, AgentType } from './AgentSpawner';
 import { LEGAL_BROKER } from '../laws/core/LegalBroker';
@@ -162,9 +162,9 @@ export class AgentLODSystem {
     const species: any[] = [];
     
     // Group by species and count
-    const speciesMap = new Map<string, Vehicle[]>();
+    const speciesMap = new Map<string, any[]>();
     for (const agent of agents) {
-      const speciesName = agent['species'] || 'Unknown';
+      const speciesName = (agent as any)['species'] || 'Unknown';
       if (!speciesMap.has(speciesName)) {
         speciesMap.set(speciesName, []);
       }
@@ -179,25 +179,31 @@ export class AgentLODSystem {
         species.push({
           scientificName: speciesName,
           population: members.length,
-          mass: members[0]['mass'] || 50,
+          mass: (members[0] as any)['mass'] || 50,
           // ... extract other properties
         });
       }
     }
     
+    // Calculate complexity based on what exists in region
+    const complexity = this.calculateComplexity(species, Array.from(populations.entries()));
+    
+    // Extract atomic/molecular composition
+    const { atoms, molecules } = this.extractChemistry(regionKey);
+    
     return {
       seed: regionKey,
       lastUpdateTime: useUniverseStore.getState().currentTime,
-      atoms: new Map(), // TODO: Extract from state
-      molecules: new Map(),
-      stars: [],
-      planets: [],
+      atoms,           // Keep as Map
+      molecules,       // Keep as Map
+      stars: [],       // Stars tracked separately in agent system
+      planets: [],     // Planets tracked separately in agent system
       species,
-      populations,
+      populations,     // Keep as Map
       groups: [],
       technologies: [],
-      complexity: 6, // TODO: Calculate from agents
-      activity: 7,
+      complexity,
+      activity: populations.size > 0 ? 8 : 2, // Active if life exists
     };
   }
   
@@ -335,14 +341,98 @@ export class AgentLODSystem {
     }
   }
   
-  private randomPositionInRegion(): any {
-    // TODO: Implement
-    return { x: 0, y: 0, z: 0 };
+  /**
+   * Calculate complexity level from region contents
+   */
+  private calculateComplexity(species: any[], populations: Array<[string, number]>): number {
+    // Complexity levels:
+    // 0 = Void, 1 = Particles, 2 = Atoms, 3 = Molecules
+    // 4 = Life, 5 = Multicellular, 6 = Cognitive, 7 = Social, 8 = Technological
+    
+    if (species.length === 0) {
+      return 3; // Molecules (no life)
+    }
+    
+    if (populations.length === 0) {
+      return 4; // Life exists but no populations yet
+    }
+    
+    // Check for social structures
+    const hasSocialGroups = populations.some(([_, count]) => count > 10);
+    if (hasSocialGroups) {
+      return 7; // Social
+    }
+    
+    // Check for cognitive abilities (brain mass heuristic)
+    const hasCognition = species.some(s => s.mass > 50); // 50kg+
+    if (hasCognition) {
+      return 6; // Cognitive
+    }
+    
+    // Check for multicellular life
+    const hasMulticellular = species.some(s => s.mass > 0.001); // > 1g
+    if (hasMulticellular) {
+      return 5; // Multicellular
+    }
+    
+    return 4; // Single-celled life
+  }
+  
+  /**
+   * Extract atomic and molecular composition of region
+   */
+  private extractChemistry(regionKey: string): {
+    atoms: Map<string, number>;
+    molecules: Map<string, number>;
+  } {
+    const atoms = new Map<string, number>();
+    const molecules = new Map<string, number>();
+    
+    // Default cosmic abundances (by mass)
+    atoms.set('H', 0.74);   // Hydrogen (most abundant)
+    atoms.set('He', 0.24);  // Helium
+    atoms.set('O', 0.01);   // Oxygen
+    atoms.set('C', 0.005);  // Carbon
+    atoms.set('N', 0.001);  // Nitrogen
+    atoms.set('Fe', 0.001); // Iron
+    
+    // Common molecules in space
+    molecules.set('H2', 0.5);    // Molecular hydrogen
+    molecules.set('H2O', 0.01);  // Water (if conditions allow)
+    molecules.set('CO', 0.005);  // Carbon monoxide
+    molecules.set('CO2', 0.003); // Carbon dioxide
+    molecules.set('CH4', 0.001); // Methane
+    
+    return { atoms, molecules };
+  }
+  
+  private randomPositionInRegion(): Vector3 {
+    // Random position within region (±50 units from center)
+    const range = 50;
+    return new Vector3(
+      (Math.random() - 0.5) * range * 2,
+      (Math.random() - 0.5) * range * 2,
+      (Math.random() - 0.5) * range * 2
+    );
   }
   
   private createUniverseStateFromRegion(state: RegionState): UniverseState {
-    // TODO: Convert RegionState to UniverseState
-    return {} as UniverseState;
+    // Convert RegionState to UniverseState
+    const universeStore = useUniverseStore.getState();
+    
+    return {
+      t: universeStore.currentTime,
+      localTime: 0,
+      temperature: 2.725, // CMB temperature (K)
+      pressure: 1e-15,
+      density: 1e-21,
+      complexity: state.complexity,
+      elements: { H: 0.74, He: 0.24, O: 0.01 },
+      hasLife: state.complexity >= 4,
+      hasCognition: state.complexity >= 6,
+      hasSociety: state.complexity >= 7,
+      hasTechnology: state.complexity >= 8,
+    };
   }
   
   /**

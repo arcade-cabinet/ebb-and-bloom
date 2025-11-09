@@ -1,331 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ebb & Bloom - Main Menu</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    body {
-      width: 100%;
-      height: 100vh;
-      background: linear-gradient(135deg, #0a0a15 0%, #1a1a2e 100%);
-      font-family: 'Courier New', monospace;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #00ff88;
-      overflow: hidden;
-    }
-    
-    .container {
-      max-width: 900px;
-      padding: 40px;
-      text-align: center;
-    }
-    
-    h1 {
-      font-size: 48px;
-      margin-bottom: 10px;
-      text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
-      letter-spacing: 4px;
-    }
-    
-    .subtitle {
-      font-size: 18px;
-      color: #88ccff;
-      margin-bottom: 40px;
-      font-style: italic;
-    }
-    
-    .tagline {
-      font-size: 14px;
-      color: #ffcc00;
-      margin-bottom: 60px;
-      line-height: 1.6;
-    }
-    
-    .menu {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 20px;
-      margin-bottom: 40px;
-    }
-    
-    .menu-item {
-      background: rgba(0, 255, 136, 0.1);
-      border: 2px solid #00ff88;
-      border-radius: 8px;
-      padding: 30px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-decoration: none;
-      color: inherit;
-      display: block;
-    }
-    
-    .menu-item:hover {
-      background: rgba(0, 255, 136, 0.2);
-      border-color: #00ffaa;
-      transform: translateY(-4px);
-      box-shadow: 0 8px 20px rgba(0, 255, 136, 0.3);
-    }
-    
-    .menu-item h2 {
-      font-size: 28px;
-      margin-bottom: 10px;
-      color: #00ff88;
-    }
-    
-    .menu-item p {
-      font-size: 14px;
-      color: #88ccff;
-      line-height: 1.5;
-    }
-    
-    .menu-item .badge {
-      display: inline-block;
-      background: #ff6600;
-      color: white;
-      padding: 4px 12px;
-      border-radius: 4px;
-      font-size: 11px;
-      margin-left: 10px;
-      font-weight: bold;
-    }
-    
-    .menu-item .badge.recommended {
-      background: #00cc66;
-    }
-    
-    .menu-item .badge.dev {
-      background: #0088cc;
-    }
-    
-    .footer {
-      margin-top: 40px;
-      font-size: 12px;
-      color: #666699;
-      line-height: 1.8;
-    }
-    
-    .footer a {
-      color: #88ccff;
-      text-decoration: none;
-    }
-    
-    .footer a:hover {
-      color: #00ff88;
-    }
-    
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-      margin-top: 40px;
-      padding-top: 30px;
-      border-top: 1px solid rgba(0, 255, 136, 0.2);
-    }
-    
-    .stat {
-      text-align: center;
-    }
-    
-    .stat-value {
-      font-size: 32px;
-      color: #00ff88;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-    
-    .stat-label {
-      font-size: 12px;
-      color: #88ccff;
-      text-transform: uppercase;
-    }
-    
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.6; }
-    }
-    
-    .pulse {
-      animation: pulse 2s ease-in-out infinite;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ebb & Bloom - Complete Bottom-Up Universe</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Courier New', monospace;
+            background: black;
+        }
+        
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+            display: block;
+        }
+        
+        #loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #00ff88;
+            font-size: 24px;
+            text-align: center;
+            z-index: 1000;
+        }
+        
+        #loading.hidden {
+            display: none;
+        }
+        
+        .spinner {
+            margin: 20px auto;
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(0, 255, 136, 0.3);
+            border-top-color: #00ff88;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .vision {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #88ccff;
+            max-width: 400px;
+            line-height: 1.6;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>🌌 EBB & BLOOM 🌌</h1>
-    <div class="subtitle">Law-Based Universe Simulation</div>
-    <div class="tagline">
-      <strong>NO TEXTURES. NO AI GENERATION. PURE SYNTHESIS FROM LAWS.</strong><br>
-      57 law files • 8,500+ lines of formulas • 1,500+ equations • 100% deterministic
+    <div id="loading">
+        <div>🌌 EBB & BLOOM</div>
+        <div class="spinner"></div>
+        <div style="font-size: 14px; margin-top: 10px;">Loading Complete System...</div>
+        <div class="vision">
+            <strong>The Vision:</strong><br>
+            Quantum Foam (t=0, Planck scale)<br>
+            → Particles → Atoms → Molecules<br>
+            → Stars → Galaxies → Cosmic Web<br>
+            → Maximum Expansion<br>
+            → Contraction → Big Crunch<br>
+            <br>
+            <em>Bottom-up emergence driven by Yuka agents + Legal Broker</em>
+        </div>
     </div>
     
-    <div class="menu">
-      <a href="/universe.html" class="menu-item pulse">
-        <h2>🌌 ENTER THE UNIVERSE</h2>
-        <p>
-          <strong class="tagline" style="color: #ffcc00;">Big Bang → Heat Death • Instant Loading</strong><br>
-          Point cloud of 1,000 cosmic regions. Each dot = analytical estimate of spacetime.<br>
-          Gold = Civilizations • Green = Life • Blue = Planets • Dark = Primordial<br>
-          <br>
-          <strong>Features:</strong><br>
-          • 1,000 regions (10³ grid @ 100 Mpc spacing)<br>
-          • Loads in 2-3 SECONDS (Daggerfall approach!)<br>
-          • Analytical estimates (not full simulation)<br>
-          • Full synthesis on-demand when you zoom in<br>
-          • Real Salpeter IMF, Cope's Rule, Kleiber's Law<br>
-          • Rotate with mouse, zoom with scroll<br>
-          <br>
-          <em>"Daggerfall generated Britain. We generate the cosmos." 🌌</em>
-        </p>
-      </a>
-    </div>
+    <canvas id="renderCanvas"></canvas>
     
-    <div class="stats">
-      <div class="stat">
-        <div class="stat-value">57</div>
-        <div class="stat-label">Law Files</div>
-      </div>
-      <div class="stat">
-        <div class="stat-value">8,500+</div>
-        <div class="stat-label">Lines of Formulas</div>
-      </div>
-      <div class="stat">
-        <div class="stat-value">100%</div>
-        <div class="stat-label">Deterministic</div>
-      </div>
-    </div>
-    
-    <div class="footer">
-      <strong>THE DAGGERFALL LESSON:</strong><br>
-      1996: Generated Great Britain (161,600 km²) on 8MB RAM<br>
-      2025: We generate THE UNIVERSE on modern hardware<br>
-      <br>
-      <strong>HOW IT WORKS:</strong><br>
-      Seed (3 words) → Laws → Complete Universe<br>
-      Same seed = Same universe. Always. Deterministic.<br>
-      <br>
-      <a href="https://github.com/jbogaty/ebb-and-bloom" target="_blank">📖 Documentation</a> • 
-      <a href="#" onclick="showQuickStart(); return false;">🚀 Quick Start</a> • 
-      <a href="#" onclick="showAbout(); return false;">ℹ️ About</a>
-    </div>
-  </div>
-  
-  <script>
-    function showQuickStart() {
-      alert(`QUICK START
-
-1. Click "ENTER THE UNIVERSE"
-   
-2. Wait 2-3 SECONDS (not minutes!)
-   - Using analytical estimates (Daggerfall approach)
-   - Shows 1,000 regions instantly
-   - Full synthesis runs on-demand when you zoom
-
-3. Explore the cosmos
-   - Mouse drag = Rotate camera
-   - Scroll = Zoom in/out
-   - Look for GOLD dots = civilizations!
-   - Green = life-bearing worlds
-   - Blue = rocky planets
-   - Dark = primordial (H/He only)
-
-WHAT YOU'RE SEEING:
-• 1,000 regions estimated analytically (FAST - 2-3 seconds!)
-• Daggerfall approach: Show immediately, generate on-demand
-• Full Big Bang → Present synthesis when you zoom in
-• 100% deterministic (same coordinates = same outcome)
-• Real physics: Salpeter IMF, Cope's Rule, Kleiber's Law
-• No AI generation, no textures, no pre-made content
-
-THE SMART APPROACH:
-• Not pre-generating everything (stupid, slow)
-• Using analytical estimates first (smart, fast)
-• Full simulation only when needed (Daggerfall way)
-
-COMING SOON:
-• Click gold dot → Full synthesis → See actual civilization
-• Zoom into star systems
-• Slow time → Game mode activates → Control evolution`);
-    }
-    
-    function showAbout() {
-      alert(`EBB & BLOOM
-Law-Based Universe Simulation
-
-WHAT IS THIS?
-A physics simulation that happens to be playable.
-Everything (planets, creatures, tools, societies) emerges from
-peer-reviewed mathematical laws. No AI generation, no hardcoded
-content, no texture files.
-
-THE VISION:
-"Daggerfall generated Britain. We generate the cosmos."
-
-FEATURES:
-✓ 57 law files (cosmology, physics, biology, ecology, social)
-✓ 8,500+ lines of peer-reviewed formulas
-✓ 1,500+ specific equations
-✓ 100% deterministic (same seed = same universe)
-✓ Procedural rendering (planets from element composition)
-✓ Audio synthesis (cosmic sonification + real acoustics)
-✓ LOD system (10 zoom levels: cosmic → molecular)
-✓ NO texture files, NO pre-made models
-
-CURRENT STATUS:
-✅ Genesis Synthesis Engine: OPERATIONAL
-✅ Universe Activity Map: LIVE
-✅ 100% civilization emergence rate
-✅ All prototypes deleted - this is the REAL system
-
-WHAT'S WORKING:
-• 11-epoch synthesis (Big Bang → Technology)
-• Salpeter IMF (correct stellar masses)
-• Cope's Rule (organisms grow to 200,000 kg)
-• Activity tracking (brightness 0-10)
-• Point cloud visualization
-• 100% deterministic
-
-COMING NEXT:
-• Click to zoom into bright regions
-• Multi-level zoom (Universe → Galaxy → System → Planet)
-• Game mode trigger (slow time = play)
-• Kardashev progression (Type 0 → I → II → III)
-
-VERSION: Beast Mode Complete + Visual Live (Nov 9, 2025)`);
-    }
-    
-    // Log to console
-    console.log('%c🌌 EBB & BLOOM 🌌', 'font-size: 24px; color: #00ff88; font-weight: bold;');
-    console.log('%cLaw-Based Universe Simulation', 'font-size: 14px; color: #88ccff;');
-    console.log('');
-    console.log('📊 STATS:');
-    console.log('  • 57 law files');
-    console.log('  • 8,500+ lines of formulas');
-    console.log('  • 1,500+ equations');
-    console.log('  • 100% deterministic');
-    console.log('');
-    console.log('🌌 THE UNIVERSE:');
-    console.log('  • /universe.html - Point cloud of 1,000 regions');
-    console.log('  • Loads in 2-3 SECONDS (Daggerfall approach!)');
-    console.log('  • Analytical estimates → Full synthesis on-demand');
-    console.log('  • Gold dots = Civilizations!');
-    console.log('  • This IS the game. The universe IS the engine.');
-    console.log('');
-    console.log('🔧 DEV TOOLS:');
-    console.log('  • window.scene (if in 3D view)');
-    console.log('  • window.simulation (if in text reports)');
-    console.log('');
-    console.log('💡 TIP: Add #seed to URL for specific universe');
-    console.log('   Example: /universe.html#my-test-seed');
-  </script>
+    <script type="module">
+        import { CompleteBottomUpScene } from './src/scenes/CompleteBottomUpScene.ts';
+        
+        // Parse URL parameters
+        const params = new URLSearchParams(window.location.search);
+        const seed = params.get('seed') || `v1-bottom-up-${Date.now()}`;
+        
+        // Get canvas
+        const canvas = document.getElementById('renderCanvas');
+        
+        // Hide loading screen
+        const loading = document.getElementById('loading');
+        setTimeout(() => {
+            loading.classList.add('hidden');
+        }, 2000);
+        
+        // Create THE scene
+        const scene = new CompleteBottomUpScene(canvas, seed);
+        
+        // Expose to window for debugging
+        window.universe = scene;
+        window.seed = seed;
+        
+        console.log('');
+        console.log('🌌 COMPLETE BOTTOM-UP UNIVERSE SIMULATOR');
+        console.log('');
+        console.log('THE VISION:');
+        console.log('  1. Big Bang (t=0) - Quantum foam at Planck scale');
+        console.log('  2. Particles → Atoms → Molecules');
+        console.log('  3. Camera ZOOMS OUT as complexity grows');
+        console.log('  4. Molecules → Stars → Galaxies → Cosmic web');
+        console.log('  5. Maximum expansion → Contraction → Big Crunch');
+        console.log('');
+        console.log('CONTROLS:');
+        console.log('  ▶ PLAY - Start/pause simulation');
+        console.log('  Speed buttons - Control time scale');
+        console.log('  Mouse - Rotate camera (zoom is automatic!)');
+        console.log('');
+        console.log('Seed: ' + seed);
+        console.log('');
+        console.log('🎬 Press PLAY to begin...');
+    </script>
 </body>
 </html>

@@ -30,19 +30,28 @@ async function test() {
     reason: 'Star formation in molecular cloud',
     state: {
       t: 100e6 * 365.25 * 86400, // 100 Myr
+      localTime: 0,
       complexity: ComplexityLevel.ATOMS,
       temperature: 10,
+      pressure: 1e-15,
       density: 1e-21,
+      elements: { H: 0.74, He: 0.24, O: 0.01 },
+      hasLife: false,
+      hasCognition: false,
+      hasSociety: false,
+      hasTechnology: false,
     },
     params: {
       mass: 1.0, // Solar mass
     },
   });
   
-  if (stellarResult.success) {
+  if (stellarResult.success && stellarResult.agent) {
+    const star = stellarResult.agent as StellarAgent;
     console.log('✅ Stellar agent spawned!');
-    console.log(`   Agent: ${stellarResult.agent?.name}`);
-    console.log(`   Position: ${stellarResult.agent?.position.x.toFixed(1)}, ${stellarResult.agent?.position.y.toFixed(1)}, ${stellarResult.agent?.position.z.toFixed(1)}`);
+    console.log(`   Agent: ${star.name}`);
+    console.log(`   Position: ${star.position.x.toFixed(1)}, ${star.position.y.toFixed(1)}, ${star.position.z.toFixed(1)}`);
+    console.log(`   Mass: ${star.mass} M☉`);
   } else {
     console.log(`❌ Spawn failed: ${stellarResult.reason}`);
   }
@@ -56,9 +65,16 @@ async function test() {
     reason: 'Life emerged on habitable planet',
     state: {
       t: 9.5e9 * 365.25 * 86400, // 9.5 Gyr
+      localTime: 1e9 * 365.25 * 86400, // 1 Gyr planet age
       complexity: ComplexityLevel.LIFE,
       temperature: 288,
+      pressure: 101325,
       density: 1e3,
+      elements: { H: 0.74, He: 0.24, O: 0.21, N: 0.78, C: 0.01 },
+      hasLife: true,
+      hasCognition: false,
+      hasSociety: false,
+      hasTechnology: false,
     },
     params: {
       species: 'Protosaurus rex',
@@ -67,11 +83,12 @@ async function test() {
     },
   });
   
-  if (creatureResult.success) {
+  if (creatureResult.success && creatureResult.agent) {
+    const creature = creatureResult.agent as CreatureAgent;
     console.log('✅ Creature agent spawned!');
-    console.log(`   Agent: ${creatureResult.agent?.name}`);
-    console.log(`   Species: Protosaurus rex`);
-    console.log(`   Mass: 50 kg`);
+    console.log(`   Agent: ${creature.name}`);
+    console.log(`   Species: ${creature.species}`);
+    console.log(`   Mass: ${creature.mass} kg`);
   } else {
     console.log(`❌ Spawn failed: ${creatureResult.reason}`);
   }
@@ -85,9 +102,16 @@ async function test() {
     reason: 'Attempting spawn on airless world',
     state: {
       t: 9.5e9 * 365.25 * 86400,
+      localTime: 1e9 * 365.25 * 86400,
       complexity: ComplexityLevel.LIFE,
       temperature: 288,
+      pressure: 0, // No atmosphere!
       density: 1e3,
+      elements: { H: 0, He: 0, O: 0.46, Si: 0.28, Fe: 0.05 }, // No volatiles
+      hasLife: false,
+      hasCognition: false,
+      hasSociety: false,
+      hasTechnology: false,
     },
     params: {
       species: 'Test creature',

@@ -35,16 +35,17 @@ export interface GameRenderData {
 export class GameEngine {
   private backend: BackendGameEngine;
 
-  constructor(gameId: string) {
-    this.backend = new BackendGameEngine(gameId);
+  constructor(config: { seed: string; useAI?: boolean }) {
+    this.backend = new BackendGameEngine(config);
   }
 
   /**
-   * Initialize game with seed
+   * Initialize game (backend is already initialized via constructor)
    * Direct function call - no HTTP
    */
-  async initialize(seed: string): Promise<void> {
-    await this.backend.initialize(seed);
+  async initialize(): Promise<void> {
+    // Backend already initialized in constructor
+    // This method kept for compatibility
   }
 
   /**
@@ -95,7 +96,8 @@ export class GameEngine {
    * Direct function call - no HTTP
    */
   async advanceGeneration(): Promise<GameState> {
-    await this.backend.advanceGeneration();
+    // Advance time (not generations - continuous timeline)
+    // Backend handles time advancement via update() calls
     return this.backend.getState();
   }
 }

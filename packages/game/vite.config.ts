@@ -15,11 +15,11 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
-    // Build ALL entry points for Capacitor (iOS, Android, Desktop, Web)
+    // Build main entry point (unified complete system)
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
-        universe: resolve(__dirname, 'universe.html'),
+        // timeline.html and universe.html redirect to index.html
       },
     },
   },

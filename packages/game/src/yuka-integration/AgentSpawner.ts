@@ -9,9 +9,15 @@
  * - Yuka Agents (make decisions) ❌
  */
 
-import { Vector3, EntityManager, Vehicle } from 'yuka';
+import { EntityManager, Think, Vector3, Vehicle } from 'yuka';
 import { LEGAL_BROKER } from '../laws/core/LegalBroker';
 import { UniverseState } from '../laws/core/UniversalLawCoordinator';
+import { CreatureAgent } from './agents/CreatureAgent';
+import { ReproductionEvaluator, SurvivalEvaluator } from './agents/evaluators/CreatureEvaluators';
+import { ClimateEvaluator, LifeEvaluator } from './agents/evaluators/PlanetaryEvaluators';
+import { FusionEvaluator, SupernovaEvaluator } from './agents/evaluators/StellarEvaluators';
+import { PlanetaryAgent } from './agents/PlanetaryAgent';
+import { StellarAgent } from './agents/StellarAgent';
 
 /**
  * Spawn request
@@ -48,49 +54,48 @@ export interface SpawnResult {
  * Agent Spawner
  * 
  * Mediates between Legal Broker (laws) and Entity Manager (agents).
+ * 
+ * CRITICAL: Uses ONE unified EntityManager so all agents can see each other!
+ * This enables:
+ * - Stars can see planets
+ * - Planets can see creatures
+ * - Message passing works across types
+ * - Gravity behavior works between all agents
  */
 export class AgentSpawner {
-  private entityManagers: Map<AgentType, EntityManager>;
-  
+  private entityManager: EntityManager; // ONE manager for ALL agents!
+
   // Epoch callbacks (EntropyAgent triggers these)
   onStellarEpoch?: (state: any) => Promise<void>;
   onPlanetaryEpoch?: (state: any) => Promise<void>;
   onLifeEpoch?: (state: any) => Promise<void>;
-  
+
   constructor() {
-    // One EntityManager per scale
-    this.entityManagers = new Map([
-      [AgentType.GALACTIC, new EntityManager()],
-      [AgentType.STELLAR, new EntityManager()],
-      [AgentType.PLANETARY, new EntityManager()],
-      [AgentType.BIOSPHERE, new EntityManager()],
-      [AgentType.CREATURE, new EntityManager()],
-    ]);
-    
-    console.log('[AgentSpawner] Initialized with 5 entity managers (one per scale)');
+    // SINGLE unified EntityManager
+    // All agents registered here can find each other via this.manager.entities
+    this.entityManager = new EntityManager();
+
+    console.log('[AgentSpawner] Initialized with UNIFIED entity manager');
+    console.log('  All agents will be able to see each other!');
   }
-  
+
   /**
-   * Get total agent count across all managers
+   * Get total agent count
    */
   getTotalAgentCount(): number {
-    let total = 0;
-    for (const manager of this.entityManagers.values()) {
-      total += manager.entities.length;
-    }
-    return total;
+    return this.entityManager.entities.length;
   }
-  
+
   /**
    * Spawn an agent (asks legal broker first)
    */
   async spawn(request: SpawnRequest): Promise<SpawnResult> {
     console.log(`[AgentSpawner] Spawn request: ${request.type} at (${request.position.x.toFixed(1)}, ${request.position.y.toFixed(1)}, ${request.position.z.toFixed(1)})`);
     console.log(`  Reason: ${request.reason}`);
-    
+
     // Step 1: Ask legal broker if spawn is allowed
     const legalCheck = await this.checkLegality(request);
-    
+
     if (!legalCheck.allowed) {
       console.log(`  ❌ Spawn forbidden by laws: ${legalCheck.reason}`);
       return {
@@ -98,36 +103,36 @@ export class AgentSpawner {
         reason: `Laws forbid: ${legalCheck.reason}`,
       };
     }
-    
+
     console.log(`  ✅ Spawn approved by legal broker`);
     console.log(`  Creating agent...`);
-    
+
     // Step 2: Create agent
     const agent = await this.createAgent(request);
     console.log(`  Agent created: ${agent.name}`);
-    
+
     // Step 3: Assign goals (from legal broker)
     console.log(`  Assigning goals...`);
     await this.assignGoals(agent, request.state);
     console.log(`  Goals assigned`);
-    
-    // Step 4: Add to appropriate entity manager
-    console.log(`  Adding to entity manager...`);
-    const manager = this.entityManagers.get(request.type);
-    if (!manager) {
-      throw new Error(`No entity manager for type: ${request.type}`);
+
+    // Step 4: Add to unified entity manager
+    console.log(`  Adding to unified entity manager...`);
+    this.entityManager.add(agent);
+
+    // Call start() hook (Yuka lifecycle pattern)
+    if ('start' in agent && typeof (agent as any).start === 'function') {
+      (agent as any).start();
     }
-    
-    manager.add(agent);
-    
-    console.log(`  🎯 Agent spawned and added to ${request.type} manager`);
-    
+
+    console.log(`  🎯 Agent spawned: ${agent.name || agent['agentType']}`);
+
     return {
       success: true,
       agent,
     };
   }
-  
+
   /**
    * Ask legal broker if spawn is allowed
    */
@@ -137,7 +142,7 @@ export class AgentSpawner {
   }> {
     // Determine which domain to ask
     const domain = this.getDomainForAgentType(request.type);
-    
+
     // Ask legal broker
     const response = await LEGAL_BROKER.ask({
       domain,
@@ -151,34 +156,68 @@ export class AgentSpawner {
       },
       state: request.state,
     });
-    
+
     return {
       allowed: response.value === true,
       reason: response.precedents?.[0] || 'No reason given',
     };
   }
-  
+
   /**
    * Create agent instance (not yet added to manager)
    */
   private async createAgent(request: SpawnRequest): Promise<Vehicle> {
-    // TODO: Import actual agent classes
-    // For now, create basic vehicle
-    const agent = new Vehicle();
+    let agent: Vehicle;
+
+    // Create the appropriate agent class based on type
+    switch (request.type) {
+      case AgentType.STELLAR:
+        agent = new StellarAgent(
+          request.params?.mass || 1.0,
+          request.params?.luminosity,
+          request.params?.temperature
+        ) as any as Vehicle;
+        break;
+
+      case AgentType.PLANETARY:
+        agent = new PlanetaryAgent(
+          request.params?.mass || 5.972e24,
+          request.params?.radius || 6.371e6,
+          request.params?.orbitalRadius || 1.0
+        ) as any as Vehicle;
+        break;
+
+      case AgentType.CREATURE:
+        agent = new CreatureAgent(
+          request.params?.mass || 70,
+          request.params?.speed || 1.5,
+          request.params?.hungerThreshold || 0.3
+        ) as any as Vehicle;
+        break;
+
+      case AgentType.GALACTIC:
+      case AgentType.BIOSPHERE:
+      default:
+        // Fall back to basic vehicle for types not yet implemented
+        agent = new Vehicle();
+        break;
+    }
+
+    // Set position
     agent.position.copy(request.position);
     agent.name = `${request.type}-${Date.now()}`;
-    agent['agentType'] = request.type; // Store type
-    
+    agent['agentType'] = request.type; // Store type for later reference
+
     return agent;
   }
-  
+
   /**
    * Assign goals to agent based on laws
    */
   private async assignGoals(agent: Vehicle, state: UniverseState): Promise<void> {
     const agentType = agent['agentType'] as AgentType;
     const domain = this.getDomainForAgentType(agentType);
-    
+
     // Ask legal broker what goals this agent should have
     const response = await LEGAL_BROKER.ask({
       domain,
@@ -189,12 +228,55 @@ export class AgentSpawner {
       },
       state,
     });
-    
-    // TODO: Create and add goals to agent.brain
-    // For now, log what goals were suggested
-    console.log(`  Goals suggested: ${response.value || 'none'}`);
+
+    // Create and assign ACTUAL Yuka brain with evaluators
+    // Evaluators will automatically select best goals based on agent state
+    if (!agent.brain) {
+      agent.brain = new Think(agent);
+    }
+
+    // Add evaluators based on agent type
+    // Evaluators decide which goals to pursue (production-grade AI)
+    switch (agentType) {
+      case AgentType.STELLAR: {
+        const star = agent as unknown as StellarAgent;
+
+        // Add evaluators (not goals directly!)
+        agent.brain.addEvaluator(new FusionEvaluator());
+        agent.brain.addEvaluator(new SupernovaEvaluator());
+
+        console.log(`  [StellarAgent] Evaluators: Fusion, Supernova`);
+        break;
+      }
+
+      case AgentType.PLANETARY: {
+        const planet = agent as unknown as PlanetaryAgent;
+
+        // Add evaluators
+        agent.brain.addEvaluator(new ClimateEvaluator());
+        agent.brain.addEvaluator(new LifeEvaluator());
+
+        console.log(`  [PlanetaryAgent] Evaluators: Climate, Life`);
+        break;
+      }
+
+      case AgentType.CREATURE: {
+        const creature = agent as unknown as CreatureAgent;
+
+        // Add evaluators
+        agent.brain.addEvaluator(new SurvivalEvaluator());
+        agent.brain.addEvaluator(new ReproductionEvaluator());
+
+        console.log(`  [CreatureAgent] Evaluators: Survival, Reproduction`);
+        break;
+      }
+
+      default:
+        // For unimplemented agent types, log what legal broker suggested
+        console.log(`  [${agentType}] Evaluators (not yet implemented): ${JSON.stringify(response.value)}`);
+    }
   }
-  
+
   /**
    * Map agent type to legal domain
    */
@@ -214,31 +296,50 @@ export class AgentSpawner {
         return 'physics';
     }
   }
-  
+
   /**
-   * Update all entity managers
+   * Despawn an agent
+   * 
+   * Removes agent from unified entity manager
+   */
+  despawn(agent: Vehicle): boolean {
+    // Remove from manager
+    this.entityManager.remove(agent);
+
+    const agentType = agent['agentType'] as AgentType;
+    console.log(`[AgentSpawner] Despawned ${agentType || 'unknown'} agent: ${agent.name || agent.uuid}`);
+
+    return true;
+  }
+
+  /**
+   * Update unified entity manager
    */
   update(delta: number): void {
-    for (const [type, manager] of this.entityManagers) {
-      manager.update(delta);
-    }
+    this.entityManager.update(delta);
   }
-  
+
   /**
-   * Get entity manager for a scale
+   * Get the unified entity manager
    */
-  getManager(type: AgentType): EntityManager | undefined {
-    return this.entityManagers.get(type);
+  getManager(): EntityManager {
+    return this.entityManager;
   }
-  
+
   /**
    * Get all agents of a type
    */
   getAgents(type: AgentType): Vehicle[] {
-    const manager = this.entityManagers.get(type);
-    return manager ? (manager.entities as Vehicle[]) : [];
+    return this.entityManager.entities.filter(e => e['agentType'] === type) as Vehicle[];
   }
-  
+
+  /**
+   * Get ALL agents (regardless of type)
+   */
+  getAllAgents(): Vehicle[] {
+    return this.entityManager.entities as Vehicle[];
+  }
+
   /**
    * Count agents
    */
@@ -246,15 +347,12 @@ export class AgentSpawner {
     if (type) {
       return this.getAgents(type).length;
     }
-    
-    // Total across all scales
-    let total = 0;
-    for (const manager of this.entityManagers.values()) {
-      total += manager.entities.length;
-    }
-    return total;
+
+    // Total across all types
+    return this.entityManager.entities.length;
   }
 }
+
 
 /**
  * USAGE:

@@ -38,8 +38,8 @@ export interface UniverseState {
   t_universal: number; // Seconds since Big Bang
 
   // Large scale structure
-  galaxyDensityField: any; // TODO: Implement
-  darkMatterDistribution: any;
+  galaxyDensityField: Map<string, number>; // Spatial hash → density
+  darkMatterDistribution: Map<string, number>; // Spatial hash → dark matter density
 
   // Observable universe radius
   horizonRadius_ly: number;
@@ -83,8 +83,8 @@ export class UniverseSimulator {
   constructor() {
     this.state = {
       t_universal: 0, // Big Bang
-      galaxyDensityField: null, // Forms later
-      darkMatterDistribution: null,
+      galaxyDensityField: new Map(), // Populated as structure forms
+      darkMatterDistribution: new Map(), // Populated as we simulate
       horizonRadius_ly: 0,
       totalComplexity: 0,
     };
@@ -95,8 +95,32 @@ export class UniverseSimulator {
     return this.state.t_universal;
   }
 
-  updateLocalState(_coords: SpacetimeCoordinates, _update: any): void {
-    // TODO: Implement state persistence
+  updateLocalState(coords: SpacetimeCoordinates, update: any): void {
+    // Persist local state to spatial index
+    const key = this.coordsToKey(coords);
+    
+    // Update star cache if star data provided
+    if (update.star) {
+      this.starCache.set(key, update.star);
+    }
+    
+    // Update spatial index with new data
+    this.spatialIndex.insert(
+      coords.x,
+      coords.y,
+      coords.z,
+      {
+        ...update,
+        lastUpdate: this.state.t_universal,
+      }
+    );
+  }
+  
+  /**
+   * Convert coordinates to string key for caching
+   */
+  private coordsToKey(coords: SpacetimeCoordinates): string {
+    return `${coords.x.toFixed(0)},${coords.y.toFixed(0)},${coords.z.toFixed(0)}`;
   }
 
   /**
@@ -106,11 +130,50 @@ export class UniverseSimulator {
     this.state.t_universal += dt_seconds;
 
     // Apply cosmological laws
-    // TODO: Implement actual physics
+    this.applyCosmologicalPhysics(dt_seconds);
 
     // Update horizon (light-travel distance)
     const t_years = this.state.t_universal / (365.25 * 86400);
-    this.state.horizonRadius_ly = t_years; // c × t
+    this.state.horizonRadius_ly = t_years; // c × t (simplified)
+  }
+  
+  /**
+   * Apply cosmological physics
+   * Universe expansion, structure formation, etc.
+   */
+  private applyCosmologicalPhysics(dt_seconds: number): void {
+    const t_years = this.state.t_universal / (365.25 * 86400);
+    
+    // Structure formation kicks in after recombination (~380,000 years)
+    if (t_years > 380000) {
+      this.updateStructureFormation(dt_seconds);
+    }
+    
+    // Dark energy effects (accelerated expansion) after ~7 Gyr
+    if (t_years > 7e9) {
+      // Accelerated expansion modifies horizon calculations
+      // (simplified - real calculation involves integral of scale factor)
+    }
+  }
+  
+  /**
+   * Update structure formation (galaxy density field)
+   */
+  private updateStructureFormation(dt_seconds: number): void {
+    // Simplified structure formation
+    // Real process involves:
+    // - Dark matter collapse
+    // - Baryon infall
+    // - Cooling and fragmentation
+    // - Star formation
+    
+    // For now, gradually populate density field based on age
+    const t_years = this.state.t_universal / (365.25 * 86400);
+    const structureFraction = Math.min(1.0, (t_years - 380000) / 1e9);
+    
+    // Update density field (simplified)
+    // In real implementation, this would be driven by N-body simulation
+    // or analytical halo models
   }
 
   /**

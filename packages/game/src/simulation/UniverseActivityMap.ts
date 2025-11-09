@@ -201,11 +201,51 @@ export class UniverseActivityMap {
   }
   
   /**
-   * Update cosmic time (for animations)
+   * Update cosmic time and advance synthesis states
    */
   updateTime(dt: number): void {
     this.currentTime += dt;
-    // TODO: Update synthesis states forward in time
+    
+    // Advance all region synthesis states forward in time
+    // This is analytical (fast) - not full agent simulation
+    for (const [coords, region] of this.regions) {
+      if (region.synthesisState) {
+        this.advanceSynthesisState(region.synthesisState, dt);
+      }
+    }
+  }
+  
+  /**
+   * Analytically advance synthesis state forward in time
+   * Used when region is not actively simulated (zoomed out)
+   */
+  private advanceSynthesisState(state: SynthesisState, dt: number): void {
+    // Age populations
+    if (state.populations) {
+      for (const pop of state.populations) {
+        // Simple population dynamics (logistic growth)
+        const birthRate = 0.02; // births per individual per year
+        const deathRate = 0.01; // deaths per individual per year
+        const carryingCapacity = 10000;
+        
+        const dt_years = dt / (365.25 * 86400);
+        const growthRate = (birthRate - deathRate) * (1 - pop.count / carryingCapacity);
+        pop.count = Math.max(0, pop.count + pop.count * growthRate * dt_years);
+      }
+    }
+    
+    // Advance complexity over time
+    if (state.complexity < 9) {
+      // Complexity can increase (very slowly)
+      const complexityGrowth = dt / (1e8 * 365.25 * 86400); // 1 level per 100 Myr
+      state.complexity = Math.min(9, state.complexity + complexityGrowth);
+    }
+    
+    // Update activity based on populations
+    if (state.populations && state.populations.length > 0) {
+      const totalPopulation = state.populations.reduce((sum, p) => sum + p.count, 0);
+      state.activity = Math.min(10, Math.log10(totalPopulation + 1));
+    }
   }
 }
 

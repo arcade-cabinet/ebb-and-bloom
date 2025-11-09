@@ -1,876 +1,561 @@
-# 🚀 NEXT AGENT - BEAST MODE HANDOFF
+# 🔥 NEXT AGENT HANDOFF - READ COMPLETE_BEAST_MODE_HANDOFF.md
 
 **Date:** November 9, 2025  
-**Mode:** YOLO (Full Autonomous Execution Expected)  
-**Mission:** Complete Yuka integration - Make universe ACTUALLY simulate
+**Status:** ⚠️ ~60% Complete - Infrastructure ready, integration pending  
+**CRITICAL:** Read `COMPLETE_BEAST_MODE_HANDOFF.md` for FULL honest assessment!
+
+**Summary:**
+- ✅ All agent classes built (Entropy, Density, Stellar, Planetary, Creature)
+- ✅ Unified EntityManager (all agents see each other!)
+- ✅ Production-grade evaluators + goals
+- ✅ GravityBehavior for clustering
+- ❌ Async evaluators need fix (CRITICAL!)
+- ❌ Density field not initialized
+- ❌ Stars still forced, not from collapse
+- ❌ Scene incomplete (no contraction/crunch)
+
+**Next:** Fix 6 critical issues in `COMPLETE_BEAST_MODE_HANDOFF.md`
 
 ---
 
-## 🎯 YOUR MISSION
+## ✅ WHAT'S COMPLETE
 
-**Build the REAL universe simulator with full Yuka integration at every stage.**
+### Phase 1-2: DONE ✅
 
-**NOT:**
-- ❌ Fix the grid visualization (it's wrong paradigm)
-- ❌ Add features to current system (it's broken)
-- ❌ Polish what exists (needs rebuild)
+**AdaptiveHUD** (`src/ui/AdaptiveHUD.ts`)
+- ✅ Agent-driven panels
+- ✅ Zoom-aware filtering
+- ✅ Priority-based display
+- ✅ Working integration with EntropyAgent
 
-**YES:**
-- ✅ Build bottom-up emergence (molecular → cosmic)
-- ✅ Wire all the systems we built (Genesis + Yuka + Legal Brokers)
-- ✅ Let Yuka agents decide structure (no forcing)
-- ✅ Start at t=0, watch it grow
+**UniverseMarkers** (`src/state/UniverseMarkers.ts`)
+- ✅ Structure marker storage
+- ✅ Scale-based queries (getMarkersNearPoint, findNearestMarker, getAllMarkers)
+- ✅ Save/load region state
+- ✅ EntropyAgent integration
 
----
+**UniverseTimelineScene** (`src/scenes/UniverseTimelineScene.ts`)
+- ✅ EntropyAgent orchestration
+- ✅ Visual feedback (background color, camera)
+- ✅ Creation vs exploration phases
+- ✅ Visual markers for structures
+- ✅ Stellar agent spawning
+- ✅ Zoom change detection
+- ✅ Spawn/despawn on zoom
 
-## ✅ WHAT'S ALREADY BUILT (USE THESE!)
+**EntropyAgent**
+- ✅ MARKER_STORE integration
+- ✅ Adaptive time pacing
+- ✅ Epoch signaling
+- ✅ Structure marking
 
-### 1. Agent Infrastructure ✅
-**Location:** `src/yuka-integration/`
+**Tests**
+- ✅ CLI test: Bang → Crunch passing
+- ✅ Browser test: No errors
 
-**Ready to use:**
-- `AgentSpawner.ts` - Mediates Legal Broker → Yuka
-- `AgentLODSystem.ts` - Spawn/despawn based on zoom
-- `agents/EntropyAgent.ts` - Universe-level governor (LIGHTWEIGHT)
-- `agents/StellarAgent.ts` - Star lifecycle (fusion, supernova)
-- `agents/PlanetaryAgent.ts` - Planet evolution (atmosphere, life)
-- `agents/CreatureAgent.ts` - Individual behavior (food, rest, survival)
+### Phase 3: Hierarchical Zoom/LOD System ✅ DONE
 
-**Tests passing:**
-```bash
-pnpm exec tsx src/cli/test-agent-spawning.ts
-# ✅ Legal Broker → Spawner → Agents: WORKING
-```
+**ZoomLOD System** (`src/state/ZoomLOD.ts`)
+- ✅ 5 zoom levels (COSMIC → GALACTIC → STELLAR → PLANETARY → SURFACE)
+- ✅ Distance thresholds for each level
+- ✅ Agent type mappings per level
+- ✅ Performance limits per level
+- ✅ HUD config per level
+- ✅ Helper functions (getZoomLevelFromCameraDistance, isZoomingIn/Out, etc.)
 
-### 2. Legal Broker System ✅
-**Location:** `src/laws/core/`
+**UniverseMarkers Extensions**
+- ✅ getMarkersNearPoint() - Find markers near camera focus
+- ✅ findNearestMarker() - Find closest marker to point
+- ✅ getAllMarkers() - For analytical advancement
 
-**Ready to use:**
-- `LegalBroker.ts` - Central routing
-- `regulators/BiologyRegulator.ts` - Extended with spawn checking, goal assignment
-- `regulators/PhysicsRegulator.ts` - Has gravity, stellar, orbital laws
-- `regulators/EcologyRegulator.ts` - Population dynamics
-- Plus 3 more regulators
+**UniverseTimelineScene Integration**
+- ✅ Zoom change detection (checkZoomChange)
+- ✅ Zoom level tracking
+- ✅ onZoomChanged handler
+- ✅ spawnDetailedAgents() - Spawn on zoom in
+- ✅ despawnDetailedAgents() - Despawn on zoom out
+- ✅ State save/load (placeholder methods)
+- ✅ HUD updates based on zoom level
 
-**New methods added:**
-- `evaluate-spawn-conditions` - Check if spawn valid
-- `get-default-goals` - Suggest goals for agents
-- `advance-population-analytically` - Time skip without agents
+**AgentSpawner Extensions**
+- ✅ despawn() method - Remove agents from entity manager
 
-### 3. Genesis Synthesis Engine ✅
-**Location:** `src/synthesis/GenesisSynthesisEngine.ts`
+**Entry Point**
+- ✅ timeline.html - HTML entry point
+- ✅ Wired into vite.config.ts
 
-**Provides:**
-- 11-epoch timeline (Big Bang → Technology)
-- Event tracking (supernovae, abiogenesis, etc.)
-- Complexity state progression
-- Activity level calculation
+### PRODUCTION-GRADE AI (Yuka Patterns) ✅ DONE
 
-**Currently:** Works standalone, NOT wired to Yuka (that's your job!)
+**AgentSpawner - Real Agent Creation**
+- ✅ Creates StellarAgent/PlanetaryAgent/CreatureAgent (not generic Vehicle)
+- ✅ Proper constructor signatures
+- ✅ Evaluator-based goal assignment (not placeholders!)
 
-### 4. Visual Rendering ✅
-**Location:** `src/scenes/`, `src/procedural/`, `src/rendering/`
+**Goal Evaluators** (NEW - Proper Yuka Pattern)
+- ✅ `StellarEvaluators.ts` - FusionEvaluator, SupernovaEvaluator
+- ✅ `PlanetaryEvaluators.ts` - ClimateEvaluator, LifeEvaluator
+- ✅ `CreatureEvaluators.ts` - SurvivalEvaluator, ReproductionEvaluator
 
-**Ready to use:**
-- BabylonPBRSystem - Materials from elements
-- PlanetaryVisuals - Planets from composition
-- CreatureVisuals - Creatures from anatomy
-- LODSystem - 10 zoom levels
+**Agent update() Methods**
+- ✅ All call `brain.execute()` + `brain.arbitrate()`
+- ✅ Evaluators dynamically select best goals
+- ✅ No hardcoded goal management
 
-### 5. Test Infrastructure ✅
-**Location:** `test-e2e/`
-
-**Tests:**
-- `simple-error-check.spec.ts` - Catches call stack errors (JSON reporter!)
-- `real-universe.spec.ts` - Tests actual browser
-- `full-user-flow.spec.ts` - Complete journey
-
-**Run:** `pnpm test:e2e --reporter=json` (gives readable errors)
-
----
-
-## ❌ WHAT'S WRONG (FIX THIS!)
-
-### Current Universe View
-**File:** `packages/game/universe.html`
-
-**What it does:**
-- Shows 10×10×10 cube at t=13.8 Gyr
-- Regular grid spacing (boring!)
-- Pre-computed analytical estimates
-- NO Yuka agents
-- NO Genesis timeline
-- NO emergence
-
-**Why it's wrong:**
-- Static snapshot (should be time-lapse)
-- Top-down (should be bottom-up)
-- Forced positions (Yuka should decide)
-- Not using ANY of the systems we built!
-
-### What to Delete
-```bash
-# These are WRONG PARADIGM:
-universe.html (current grid version)
-src/simulation/LazyUniverseMap.ts (spatial grid approach)
-src/simulation/UniverseActivityMap.ts (pre-computed outcomes)
-```
-
-### What to Build Instead
-```bash
-# RIGHT PARADIGM:
-universe.html (timeline version - starts at t=0)
-src/scenes/UniverseTimelineScene.ts (partially built - finish it!)
-src/yuka-integration/agents/DensityAgent.ts (molecular collapse)
-src/yuka-integration/behaviors/GravityBehavior.ts (clustering)
-```
+**Pattern:** Studied `/tmp/yuka/examples/goal/` for proper implementation!
 
 ---
 
-## 🔥 THE KEY INSIGHTS (READ CAREFULLY!)
+## 🎯 WHAT TO BUILD NEXT
 
-### 1. Bottom-Up Emergence
-**File:** `BOTTOM_UP_EMERGENCE_THE_KEY.md`
+### Phase 4: Visual Testing & Refinement
 
-**The vision:**
-```
-t=0: Start at Planck scale (zoomed IN)
-  ↓
-Molecular fusion happens
-  ↓
-Camera ZOOMS OUT as structures grow
-  ↓
-Atoms → Molecules → Stars → Galaxies → Cosmic web
-  ↓
-Universe map is the RESULT, not the starting point
-```
+**Goal:** Spawn/despawn agents based on zoom level
 
-**Not:** Show universe at t=13.8 Gyr  
-**But:** Show universe FORMING from t=0 → t=13.8 Gyr
+**What's needed:**
 
-### 2. Yuka Decides Everything
-**File:** `YUKA_DECIDES_EVERYTHING.md`
-
-**NO forcing:**
+#### 1. Scale Thresholds
 ```typescript
-// WRONG (what I was doing):
-for (let i = 0; i < 100; i++) {
-  spawnStar(randomPosition);  // FORCED!
+// src/state/ZoomLOD.ts
+enum ZoomLevel {
+  COSMIC = 'cosmic',       // 1e9 - 1e12 ly (EntropyAgent only)
+  GALACTIC = 'galactic',   // 1e6 - 1e9 ly (Galaxy agents)
+  STELLAR = 'stellar',     // 1 - 1e6 ly (Stellar agents)
+  PLANETARY = 'planetary', // 1000 - 1M km (Planetary agents)
+  SURFACE = 'surface',     // 1 - 1000 km (Creature agents)
 }
 
-// RIGHT (what you need to build):
-class DensityAgent {
-  update() {
-    const canCollapse = await LEGAL_BROKER.ask('check-jeans-instability');
-    if (canCollapse) {
-      this.formStar();  // AGENT DECIDES!
-    }
+function getZoomLevelFromCameraDistance(distance: number): ZoomLevel {
+  if (distance > 1e9) return ZoomLevel.COSMIC;
+  if (distance > 1e6) return ZoomLevel.GALACTIC;
+  if (distance > 1000) return ZoomLevel.STELLAR;
+  if (distance > 10) return ZoomLevel.PLANETARY;
+  return ZoomLevel.SURFACE;
+}
+```
+
+#### 2. Zoom Change Handler
+```typescript
+// In UniverseTimelineScene
+private currentZoomLevel: ZoomLevel = ZoomLevel.COSMIC;
+
+private onZoomChanged(newLevel: ZoomLevel): void {
+  if (newLevel === this.currentZoomLevel) return;
+  
+  const oldLevel = this.currentZoomLevel;
+  this.currentZoomLevel = newLevel;
+  
+  // Zooming IN (more detail)
+  if (isZoomingIn(oldLevel, newLevel)) {
+    this.spawnDetailedAgents(newLevel);
   }
+  
+  // Zooming OUT (less detail)
+  if (isZoomingOut(oldLevel, newLevel)) {
+    this.despawnDetailedAgents(oldLevel);
+  }
+  
+  // Update HUD scale
+  this.hud.setScale(zoomLevelToInfoScale(newLevel));
 }
 ```
 
-**Agents decide:**
-- WHERE to form (based on density)
-- WHEN to form (based on temperature)
-- WHETHER to form at all (based on laws)
-- HOW to move (gravity steering)
-
-### 3. EntropyAgent Governs
-**File:** `ENTROPY_AGENT_ARCHITECTURE.md`
-
-**Lightweight top-level:**
+#### 3. Agent Spawning Based on Markers
 ```typescript
-// EntropyAgent (1 agent, ~10 ops/frame):
-update(delta) {
-  age += delta;
-  scale += expansionRate * delta;
-  temperature = T0 / scale;
-  density = ρ0 / scale³;
+private async spawnDetailedAgents(level: ZoomLevel): Promise<void> {
+  // Get current camera focus point
+  const focusPoint = this.camera.target;
   
-  // Only acts on cosmic events:
-  if (age == 7Gyr) accelerateExpansion();
-  if (scale < 0.1) bigCrunch();
-}
-
-// Sets conditions, others read them
-const T = entropyAgent.temperature;  // Other agents query
-```
-
-### 4. The Real Integration
-**File:** `THE_REAL_INTEGRATION.md`
-
-**How it all connects:**
-```
-GenesisSynthesisEngine (provides timeline/events)
-  ↓
-UniverseTimelineScene (advances time, checks spawn)
-  ↓
-AgentSpawner (asks Legal Broker)
-  ↓
-Legal Broker (validates against laws)
-  ↓
-Agents Spawn (with goals from broker)
-  ↓
-EntityManager (updates all agents)
-  ↓
-Agents Act (decisions based on goals + laws)
-  ↓
-Visuals Sync (show agent positions/states)
-```
-
----
-
-## 🏗️ WHAT TO BUILD (IN ORDER)
-
-### Phase 1: DensityAgent (Molecular → Stellar)
-**File to create:** `src/yuka-integration/agents/DensityAgent.ts`
-
-```typescript
-class DensityAgent extends Vehicle {
-  density: number;
-  temperature: number;
+  // Load markers near focus at this scale
+  const markers = MARKER_STORE.getMarkersNearPoint(
+    focusPoint,
+    getScaleForLevel(level),
+    MARKER_RADIUS
+  );
   
-  update(delta) {
-    // Read from EntropyAgent
-    const universeT = entropyAgent.temperature;
-    const universeρ = entropyAgent.density;
-    
-    // Ask Legal Broker: "Can I collapse?"
-    const jeansMass = await LEGAL_BROKER.ask({
-      domain: 'physics',
-      action: 'calculate-jeans-mass',
-      params: { T: universeT, ρ: this.density },
-      state: entropyAgent.getState(),
-    });
-    
-    if (this.density > jeansMass.value) {
-      // Collapse into star!
-      this.formStar();
+  for (const marker of markers) {
+    // Check if already visited
+    if (MARKER_STORE.hasState(marker.id)) {
+      // Load saved state
+      const state = MARKER_STORE.loadRegionState(marker.id);
+      this.respawnAgentsFromState(state);
     } else {
-      // Drift via Brownian motion
-      this.applyBrownianSteering();
+      // First visit - calculate probabilistically
+      const timeSinceMarker = this.entropyAgent.age - marker.timestamp;
+      await this.calculateAndSpawnAgents(marker, timeSinceMarker);
     }
   }
+}
+```
+
+#### 4. Agent Despawning with State Save
+```typescript
+private despawnDetailedAgents(level: ZoomLevel): void {
+  // Get all agents at this level
+  const agents = this.spawner.getAgents(levelToAgentType(level));
   
-  formStar() {
-    // Spawn stellar agent at THIS position (physics decided)
-    const star = new StellarAgent(this.mass, this.position);
-    spawner.spawnExisting(star);
-    
-    // Remove density agent
-    this.active = false;
+  // Serialize their states
+  const agentStates = agents.map(agent => ({
+    id: agent.uuid,
+    position: agent.position.toArray(),
+    // ... other state
+  }));
+  
+  // Find nearest marker
+  const marker = MARKER_STORE.findNearestMarker(
+    this.camera.target,
+    levelToMarkerType(level)
+  );
+  
+  // Save state
+  if (marker) {
+    MARKER_STORE.saveRegionState(
+      marker.id,
+      agentStates,
+      this.entropyAgent.age
+    );
+  }
+  
+  // Despawn agents
+  for (const agent of agents) {
+    this.spawner.despawn(agent);
+    // Dispose visual mesh
+    this.disposeAgentVisual(agent);
   }
 }
 ```
 
-### Phase 2: Gravity Steering
-**File to create:** `src/yuka-integration/behaviors/GravityBehavior.ts`
+#### 5. Analytical Advancement When Zoomed Out
+```typescript
+private advanceAnalytically(deltaTime: number, level: ZoomLevel): void {
+  // When zoomed out, advance time without full agent simulation
+  
+  if (level === ZoomLevel.COSMIC) {
+    // Only EntropyAgent runs
+    // Everything else is paused
+  } else if (level === ZoomLevel.GALACTIC) {
+    // Galaxy agents update (lightweight)
+    // Stellar agents paused
+  }
+  
+  // Update marker metadata based on analytical models
+  const markers = MARKER_STORE.getAllMarkers();
+  for (const marker of markers) {
+    this.advanceMarkerAnalytically(marker, deltaTime);
+  }
+}
+```
+
+---
+
+## 📝 IMPLEMENTATION CHECKLIST
+
+### Step 1: Create ZoomLOD System ✅
+- [x] Create `src/state/ZoomLOD.ts`
+- [x] Define zoom levels and thresholds
+- [x] Implement scale calculation functions
+- [x] Wire to camera distance
+
+### Step 2: Marker Query Extensions ✅
+- [x] Add `getMarkersNearPoint()` to UniverseMarkerStore
+- [x] Add `findNearestMarker()` method
+- [x] Add marker radius filtering
+- [x] Add marker type filtering
+
+### Step 3: Scene Integration ✅
+- [x] Track current zoom level
+- [x] Detect zoom changes
+- [x] Call spawn/despawn on zoom
+- [x] Update HUD scale on zoom
+
+### Step 4: Agent Lifecycle ✅ (Basic Implementation)
+- [x] Implement `spawnDetailedAgents()`
+- [x] Implement `despawnDetailedAgents()`
+- [ ] **TODO:** Implement `respawnAgentsFromState()` (currently placeholder)
+- [ ] **TODO:** Implement `calculateAndSpawnAgents()` (currently placeholder)
+
+### Step 5: State Persistence ⏳ (Partially Done)
+- [x] Serialize agent states (basic)
+- [x] Save to MARKER_STORE on despawn
+- [x] Load from MARKER_STORE on spawn
+- [ ] **TODO:** Full agent state serialization
+- [ ] **TODO:** Handle first-time vs repeat visits (structure in place)
+
+### Step 6: Analytical Advancement ⏳ (Not Started)
+- [ ] **TODO:** Implement `advanceAnalytically()`
+- [ ] **TODO:** Update marker metadata
+- [ ] **TODO:** Pause detailed simulation when zoomed out
+- [ ] **TODO:** Resume when zoomed in
+
+### Step 7: Visual Cleanup ✅
+- [x] Dispose meshes when despawning
+- [x] Create meshes when spawning
+- [x] Sync visuals with agent state
+- [ ] **OPTIONAL:** Smooth fade transitions (currently instant)
+
+---
+
+## 🔑 KEY PRINCIPLES
+
+### 1. Markers Enable Hierarchy
+
+EntropyAgent marks structures during expansion:
+- `stellar-epoch` → Where galaxy hearts form
+- `galactic-center` → Where star clusters form
+- `planetary-system` → Where planets accrete
+
+Zoom in → Load markers → Spawn agents at those locations
+
+### 2. First Visit vs Repeat
+
+**First visit to marker:**
+- Calculate probabilistically
+- Time since marker created
+- Laws (what WOULD have formed)
+- RNG seeded by position
+
+**Repeat visit:**
+- Load saved state
+- Continue from last time
+- No re-calculation
+
+### 3. Zoom OUT = Save + Despawn + Analytical
+
+```
+User zooms out:
+1. Save agent states → MARKER_STORE
+2. Despawn agents → Free memory
+3. Advance analytically → Update marker metadata
+4. Show summary HUD
+```
+
+### 4. Zoom IN = Load + Spawn + Detailed
+
+```
+User zooms in:
+1. Load marker states → MARKER_STORE
+2. Spawn agents → From state or calculate
+3. Run detailed simulation
+4. Show detailed HUD
+```
+
+### 5. Performance Scales
+
+- **Cosmic:** 1 agent (EntropyAgent)
+- **Galactic:** ~10 agents (Galaxy agents)
+- **Stellar:** ~100 agents (Stellar agents)
+- **Planetary:** ~1000 agents (Planetary agents)
+- **Surface:** ~10000 agents (Creature agents)
+
+Only simulate what's visible!
+
+---
+
+## 🎯 SUCCESS CRITERIA
+
+**You're done when:**
+
+```bash
+pnpm dev → http://localhost:5173/timeline.html
+
+TEST SCENARIO:
+1. Start: Zoomed OUT (cosmic view)
+   - Only EntropyAgent running
+   - HUD shows "🌌 UNIVERSE"
+   
+2. Watch Big Bang → Stellar epoch
+   - Visual marker appears
+   - Still zoomed out
+   
+3. Zoom IN to marker
+   - Galaxy agents spawn
+   - HUD shows "🌌 GALAXY VIEW"
+   - See 10 stellar regions
+   
+4. Zoom IN to stellar region
+   - Stellar agents spawn
+   - HUD shows "⭐ STELLAR VIEW"
+   - See 100 stars
+   
+5. Zoom OUT to galaxy
+   - Stellar agents despawn
+   - State saved
+   - HUD shows "🌌 GALAXY VIEW"
+   
+6. Zoom OUT to cosmic
+   - Galaxy agents despawn
+   - State saved
+   - HUD shows "🌌 UNIVERSE"
+   
+7. Zoom back IN to same galaxy
+   - State loaded (not recalculated!)
+   - Same stars as before
+   - HUD shows previous state
+   
+8. Time advances at cosmic level
+   - Analytical advancement
+   - Marker metadata updates
+   - When zoom in → See effects of time
+```
+
+---
+
+## 📊 ESTIMATED WORK
+
+**Time:** 4-6 hours
+**Files:** 3-4 new, 2-3 modified
+**Lines:** ~600-800
+
+**Complexity:** Medium
+- Marker queries: Easy
+- Zoom detection: Easy
+- Agent lifecycle: Medium
+- State persistence: Medium
+- Analytical advancement: Hard
+
+---
+
+## 🔥 THE VISION
+
+**Complete hierarchical universe:**
+
+```
+EntropyAgent (cosmic)
+  ↓ marks galaxy hearts
+  ├─ GalaxyAgent (galactic)
+  │    ↓ marks star clusters
+  │    ├─ StellarAgent (stellar)
+  │    │    ↓ creates planets
+  │    │    └─ PlanetaryAgent (planetary)
+  │    │         ↓ spawns life
+  │    │         └─ CreatureAgent (surface)
+  │    └─ [more stellar agents...]
+  └─ [more galaxy agents...]
+```
+
+**Only spawn what user is looking at!**
+
+Performance: Always 60 FPS  
+Memory: Scales gracefully  
+User experience: Seamless zoom
+
+---
+
+## 📁 WHAT EXISTS (USE THESE!)
+
+**Working systems:**
+- ✅ `EntropyAgent` - Time orchestration
+- ✅ `AdaptiveHUD` - Agent-driven display
+- ✅ `UniverseMarkers` - Structure storage
+- ✅ `AgentSpawner` - Agent lifecycle
+- ✅ `UniverseTimelineScene` - Visual integration
+
+**What to build:**
+- ⏳ `ZoomLOD` - Zoom level management
+- ⏳ Zoom change detection
+- ⏳ Spawn/despawn on zoom
+- ⏳ State save/load
+- ⏳ Analytical advancement
+
+---
+
+## 💡 HINTS
+
+### Detecting Zoom Changes
 
 ```typescript
-class GravityBehavior extends SteeringBehavior {
-  calculate(vehicle, force, delta) {
-    const neighbors = vehicle.getNeighbors();
-    
-    for (const neighbor of neighbors) {
-      // Ask Legal Broker for gravitational force
-      const response = await LEGAL_BROKER.ask({
-        domain: 'physics',
-        action: 'calculate-gravity-force',
-        params: {
-          m1: vehicle.mass,
-          m2: neighbor.mass,
-          r: vehicle.position.distanceTo(neighbor.position),
-        },
-        state: entropyAgent.getState(),
-      });
-      
-      // Add force (agents cluster naturally)
-      force.add(response.value);
+private lastCameraDistance: number = 0;
+
+update(delta: number): void {
+  const currentDistance = this.camera.radius;
+  
+  if (Math.abs(currentDistance - this.lastCameraDistance) > ZOOM_THRESHOLD) {
+    const newLevel = getZoomLevelFromCameraDistance(currentDistance);
+    if (newLevel !== this.currentZoomLevel) {
+      this.onZoomChanged(newLevel);
     }
-    
-    return force;
+    this.lastCameraDistance = currentDistance;
   }
+  
+  // ... rest of update
 }
 ```
 
-### Phase 3: Wire to UniverseTimelineScene
-**File to modify:** `src/scenes/UniverseTimelineScene.ts` (already created, needs completion)
+### Smooth Transitions
 
-**What to add:**
 ```typescript
-constructor() {
-  // 1. Spawn EntropyAgent (1 agent, governs all)
-  this.entropyAgent = new EntropyAgent();
-  this.entityManager.add(this.entropyAgent);
-  
-  // 2. Initialize Genesis (timeline provider)
-  this.genesis = new GenesisSynthesisEngine(seed);
-  
-  // 3. Start at t=0, zoomed IN
-  this.currentTime = 0;
-  this.camera.radius = 1e-30; // Planck scale!
+// Don't despawn immediately
+private scheduleAgentDespawn(agents: Vehicle[]): void {
+  // Fade out visuals
+  for (const agent of agents) {
+    const mesh = this.getMesh(agent);
+    animateFadeOut(mesh, 1000, () => {
+      this.spawner.despawn(agent);
+      mesh.dispose();
+    });
+  }
 }
 
-update(delta) {
-  // Advance time
-  this.currentTime += delta * timeScale;
-  
-  // Update EntropyAgent (sets T, ρ, expansion)
-  this.entityManager.update(delta);
-  
-  // Check spawn conditions FROM EntropyAgent state
-  const state = this.entropyAgent.getState();
-  
-  if (state.temperature < 1e13 && !this.densityAgentsSpawned) {
-    // Cool enough for density fluctuations
-    this.spawnDensityAgents(state);
-  }
-  
-  if (state.temperature < 10 && this.densityAgents.length > 0) {
-    // Density agents check collapse conditions
-    // Some will form stars (Yuka decides WHERE!)
-  }
-  
-  // Camera zooms OUT as scale increases
-  this.camera.radius = this.entropyAgent.scale * 1e-20;
-  
-  // Render based on what EXISTS at current time
-  this.render();
+// Spawn with fade in
+private spawnWithFadeIn(agent: Vehicle, mesh: Mesh): void {
+  mesh.visibility = 0;
+  animateFadeIn(mesh, 1000);
 }
 ```
 
-### Phase 4: New universe.html
-**File to create:** New `universe.html` using UniverseTimelineScene
+### Performance Monitoring
 
-```html
-<script type="module">
-  import { UniverseTimelineScene } from './src/scenes/UniverseTimelineScene';
-  
-  const canvas = document.getElementById('canvas');
-  const scene = new UniverseTimelineScene(canvas, 'universe-seed');
-  
-  // User sees:
-  // t=0: Black screen (Big Bang)
-  // User clicks PLAY
-  // Camera zoomed IN at Planck scale
-  // Time advances, structures form
-  // Camera zooms OUT as universe grows
-  // End result: Cosmic web (emergent!)
-</script>
+```typescript
+private updatePerformanceHUD(): void {
+  this.hud.updatePanel({
+    id: 'performance',
+    title: '⚡ PERFORMANCE',
+    content: [
+      `FPS: ${Math.round(this.engine.getFps())}`,
+      `Agents: ${this.spawner.getTotalAgentCount()}`,
+      `Meshes: ${this.scene.meshes.length}`,
+      `Memory: ${(performance.memory?.usedJSHeapSize / 1024 / 1024).toFixed(0)}MB`,
+    ],
+    priority: 50,
+  });
+}
 ```
 
-### Phase 5: Testing
-**Run these to verify:**
+---
+
+**Status:** ✅ Phase 3 COMPLETE - Zoom/LOD system working  
+**Previous session:** `VISUAL_ORCHESTRATION_COMPLETE.md`  
+**Tests:** All passing (simple-error-check: ✅ No errors)  
+**Next:** Implement TODO placeholders (state serialization, probabilistic spawning, analytical advancement)
+
+---
+
+## 🧪 TESTING
+
 ```bash
-# Test agent spawning still works
-pnpm exec tsx src/cli/test-agent-spawning.ts
-
-# Test in browser (catches call stack!)
+cd packages/game
 pnpm test:e2e simple-error-check --reporter=json
-
-# Should see:
-# - t=0 rendering
-# - EntropyAgent updating
-# - DensityAgents spawning at right time
-# - Stars forming WHERE physics dictates
-# - Camera zooming out
-# - NO call stack errors
+# ✅ Result: PASSED (no errors detected)
 ```
 
----
-
-## 📁 FILES TO FOCUS ON
-
-### Must Read (Context)
-1. `BOTTOM_UP_EMERGENCE_THE_KEY.md` - The core vision
-2. `YUKA_DECIDES_EVERYTHING.md` - No forcing rule
-3. `ENTROPY_AGENT_ARCHITECTURE.md` - Top-level design
-4. `THE_REAL_INTEGRATION.md` - How systems connect
-5. `memory-bank/activeContext.md` - Current state
-6. `memory-bank/progress.md` - What's been done
-
-### Must Build (Implementation)
-1. `src/yuka-integration/agents/DensityAgent.ts` - NEW
-2. `src/yuka-integration/behaviors/GravityBehavior.ts` - NEW
-3. `src/scenes/UniverseTimelineScene.ts` - FINISH (partially built)
-4. `universe.html` - REBUILD (delete current, use UniverseTimelineScene)
-
-### Can Delete (Wrong Paradigm)
-1. `src/simulation/LazyUniverseMap.ts` - Grid approach (wrong)
-2. `src/simulation/UniverseActivityMap.ts` - Pre-computed (wrong)
-3. Current `universe.html` - Static cube (wrong)
-
-### Keep Using (Working)
-1. `src/yuka-integration/AgentSpawner.ts` ✅
-2. `src/yuka-integration/AgentLODSystem.ts` ✅
-3. `src/yuka-integration/agents/*.ts` ✅ (all agent classes)
-4. `src/laws/core/LegalBroker.ts` ✅
-5. `src/laws/core/regulators/*.ts` ✅
-6. `src/synthesis/GenesisSynthesisEngine.ts` ✅
-7. `test-e2e/simple-error-check.spec.ts` ✅ (for testing!)
-
----
-
-## 🔬 THE ARCHITECTURE (BUILD THIS)
-
-### Starting State (t=0)
-```typescript
-// 1. Spawn EntropyAgent (1 agent, governs universe)
-const universe = new EntropyAgent();
-entityManager.add(universe);
-
-// Initial state:
-// - T = 1e32 K
-// - ρ = 1e96 kg/m³
-// - scale = 1.0
-// - age = 0
-
-// Visual: Black screen (too hot for anything)
-// Camera: Zoomed in at Planck scale (10^-35 m)
-```
-
-### t=1μs (Particle Era)
-```typescript
-// EntropyAgent updates:
-// - T = 1e13 K (cooled)
-// - ρ = 1e90 kg/m³
-// - scale = 10
-// - complexity = PARTICLES
-
-// Visual: Bright fog (particles coalescing)
-// Camera: Still zoomed in
-// Agents: Just EntropyAgent (no others yet)
-```
-
-### t=3min (Nucleosynthesis)
-```typescript
-// EntropyAgent updates:
-// - T = 1e9 K
-// - complexity = ATOMS
-
-// Visual: Hydrogen glow
-// Camera: Zooming out slightly
-```
-
-### t=100Myr (Star Formation Epoch)
-```typescript
-// EntropyAgent updates:
-// - T = 10 K (COLD ENOUGH!)
-// - complexity = ATOMS
-
-// NOW conditions allow structure:
-if (universe.temperature < 100 && !densityAgentsSpawned) {
-  // Spawn 1000 density agents (3D grid, slight fluctuations)
-  for (each grid cell) {
-    const agent = new DensityAgent(position, density);
-    entityManager.add(agent);
-  }
-}
-
-// DensityAgents update:
-for (const agent of densityAgents) {
-  // Each agent asks: "Should I collapse?"
-  const canCollapse = await LEGAL_BROKER.ask('check-jeans-instability');
-  
-  if (canCollapse) {
-    // Form star HERE (physics decided position!)
-    agent.formStar();
-  } else {
-    // Drift via gravity toward dense regions
-    agent.applyGravitySteering();
-  }
-}
-
-// Result: ~73 stars form (not forced!)
-// Positions: Where density was high (not random!)
-// Visual: Dots appearing where collapse occurred
-// Camera: Zooming out to stellar scale
-```
-
-### t=1Gyr (Galactic Structure)
-```typescript
-// StellarAgents cluster via gravity
-for (const star of stellarAgents) {
-  // Apply gravity from ALL other stars
-  star.applyGravitySteering(otherStars);
-  
-  // Some go supernova
-  if (star.shouldExplode()) {
-    star.explode();  // Flash visual!
-    // Heavy elements dispersed
-  }
-}
-
-// Result: Spiral structure EMERGES (not forced!)
-// Visual: Stars clustering into galaxy shape
-// Camera: Galactic scale now
-```
-
-### t=9.2Gyr (Planets)
-```typescript
-// Stellar agents spawn planetary agents
-for (const star of stellarAgents) {
-  // Ask Legal Broker: "Should planets form around me?"
-  const canFormPlanets = await LEGAL_BROKER.ask('check-planet-formation');
-  
-  if (canFormPlanets) {
-    // Spawn planetary agents around THIS star
-    const planets = star.formPlanets();  // Agent decides!
-  }
-}
-
-// Visual: Small spheres around some stars
-// Camera: Can zoom into interesting systems
-```
-
-### t=13.8Gyr (Present)
-```typescript
-// Full hierarchy running:
-// - 1 EntropyAgent (universe)
-// - 73 StellarAgents (stars)
-// - 15 PlanetaryAgents (planets)
-// - 3 planets with life (green glow!)
-// - If zoomed in: 200 CreatureAgents
-
-// Visual: Cosmic web (EMERGED, not placed!)
-// Camera: User can zoom anywhere
-// Simulation: REAL, not pre-computed
-```
-
----
-
-## 🎯 IMPLEMENTATION STEPS
-
-### Step 1: Build DensityAgent
+**Local dev server:**
 ```bash
-# Create file
-touch src/yuka-integration/agents/DensityAgent.ts
-
-# Implement:
-class DensityAgent extends Vehicle {
-  // Local density value
-  // Collapse goal (checks Jeans mass)
-  // Gravity steering (drift toward dense regions)
-  // formStar() method (spawns StellarAgent)
-}
-
-# Test:
-pnpm exec tsx src/cli/test-density-collapse.ts
-# Should show: Some agents collapse, some drift
-```
-
-### Step 2: Build GravityBehavior
-```bash
-# Create file
-touch src/yuka-integration/behaviors/GravityBehavior.ts
-
-# Implement:
-class GravityBehavior extends SteeringBehavior {
-  calculate(vehicle, force, delta) {
-    // For each neighbor:
-    // Ask Legal Broker for gravity force
-    // Add to steering force
-    // Agents cluster naturally!
-  }
-}
-
-# Test:
-# Spawn 10 agents with gravity
-# They should cluster (not stay uniform)
-```
-
-### Step 3: Finish UniverseTimelineScene
-```bash
-# File exists, needs completion
-# Add:
-- EntropyAgent spawning (t=0)
-- DensityAgent spawning (t=100Myr)
-- Camera zoom-out logic (follows scale)
-- Visual rendering at each epoch
-- VCR controls (already has template)
-
-# Test:
+cd packages/game
 pnpm dev
-# Open /universe.html
-# Should see:
-# - t=0: Black
-# - PLAY: Time advances
-# - t=100Myr: Dots appear (stars forming!)
-# - Camera zooming out automatically
-```
-
-### Step 4: Replace universe.html
-```bash
-# Delete current version
-rm universe.html
-
-# Create new version using UniverseTimelineScene
-# Simple HTML that instantiates the scene
-# VCR controls in UI
-
-# Test:
-pnpm test:e2e simple-error-check --reporter=json
-# Should see: "passed: no error"
-```
-
-### Step 5: Verify Emergence
-```bash
-# Watch multiple runs with different seeds
-# Verify:
-# - Different number of stars each time
-# - Different positions each time
-# - Different galaxy structures
-# - All from SAME rules (Yuka deciding!)
-# - NO two runs identical (unless same seed)
+# → http://localhost:5173/timeline.html?seed=test-123
 ```
 
 ---
 
-## 🧪 TESTING PROTOCOL
+## 📁 FILES CREATED/MODIFIED
 
-### After Each Change
-```bash
-# 1. Build check
-pnpm build
+**Created:**
+- `src/state/ZoomLOD.ts` - Zoom level definitions and helpers
 
-# 2. Agent test
-pnpm exec tsx src/cli/test-agent-spawning.ts
-# Should: Still pass
+**Modified:**
+- `src/state/UniverseMarkers.ts` - Added marker query methods
+- `src/scenes/UniverseTimelineScene.ts` - Zoom detection + spawn/despawn
+- `src/yuka-integration/AgentSpawner.ts` - Added despawn() method
+- `timeline.html` - HTML entry point (already in vite.config.ts)
 
-# 3. Browser test (CRITICAL - catches call stack!)
-pnpm test:e2e simple-error-check --reporter=json
-# Should: "passed: no error"
-
-# 4. Manual check
-pnpm dev
-# Open http://localhost:5173/universe.html
-# Should: See emergence happening
-```
-
-### Final Validation
-```bash
-# Run ALL tests
-pnpm test:e2e --reporter=json > test-results.json
-
-# Check results
-cat test-results.json | jq '.suites[].specs[].tests[].results[].status'
-# Should: All "passed"
-
-# Verify no call stack errors
-cat test-results.json | jq '.suites[].specs[].tests[].results[].error.message' | grep -i "stack"
-# Should: Empty (no results)
-```
-
----
-
-## ⚠️ CRITICAL RULES
-
-### 1. NO FORCING
-```typescript
-// NEVER:
-for (let i = 0; i < N; i++) spawn(random);
-
-// ALWAYS:
-if (agent.shouldSpawn()) agent.spawn();
-```
-
-### 2. YUKA DECIDES
-```typescript
-// Agent asks Legal Broker
-// Legal Broker checks laws
-// If valid → Agent acts
-// If not → Agent doesn't act
-
-// NO pre-determined outcomes!
-```
-
-### 3. TEST FOR CALL STACK
-```bash
-# After EVERY change to rendering:
-pnpm test:e2e simple-error-check --reporter=json
-
-# If "Maximum call stack":
-# - Add async/await
-# - Add yielding (setTimeout(0))
-# - Reduce batch size
-```
-
-### 4. BOTTOM-UP ONLY
-```typescript
-// Start at t=0 (molecular scale)
-// Grow outward (fusion, clustering, emergence)
-// Camera follows growth (zooms out)
-// End at cosmic scale (RESULT of growth)
-
-// NEVER start at cosmic scale and zoom in
-```
-
----
-
-## 📊 SUCCESS METRICS
-
-### You're Done When:
-
-```bash
-# Test passes
-pnpm test:e2e simple-error-check --reporter=json
-# Result: "passed: no error"
-
-# Browser shows emergence
-pnpm dev → http://localhost:5173/universe.html
-# See:
-# - t=0: Black screen
-# - PLAY: Time advances
-# - Particles appear (fog)
-# - Atoms form (glow)
-# - Stars ignite (dots) - YUKA DECIDED WHERE!
-# - Galaxies cluster - GRAVITY MADE IT HAPPEN!
-# - No grid, no forcing, REAL emergence
-
-# Different seeds produce different structures
-# Same seed produces same structure
-# All from Yuka agents + laws
-# NO pre-computed outcomes
-```
-
----
-
-## 🚀 READY FOR BEAST MODE
-
-**You have:**
-- ✅ All agent classes built
-- ✅ Legal Broker system ready
-- ✅ Genesis timeline available
-- ✅ Test infrastructure working
-- ✅ Clear architecture defined
-- ✅ Key insights documented
-
-**You need to:**
-1. Build DensityAgent
-2. Build GravityBehavior  
-3. Wire UniverseTimelineScene
-4. Rebuild universe.html
-5. Test emergence
-6. Verify no forcing
-
-**Estimated time:** 4-6 hours for complete implementation
-
----
-
-## 🔥 BEAST MODE INSTRUCTIONS
-
-**When user says "BEAST MODE" or "do it":**
-
-1. Read this file ✅
-2. Read the 4 key insight docs ✅
-3. Execute implementation steps (don't ask, just build)
-4. Test after each phase
-5. Fix any issues immediately
-6. Keep going until success metrics met
-7. Update memory bank when complete
-
-**DO NOT:**
-- Ask for clarification (execute based on docs)
-- Build incrementally (build full phase at once)
-- Stop for minor issues (fix and continue)
-- Create status docs (update memory bank only)
-
-**DO:**
-- Execute immediately
-- Build complete systems
-- Test rigorously
-- Fix bugs on the spot
-- Keep iterating until working
-- Show code, not explanations
-
----
-
-## 📝 MEMORY BANK UPDATES
-
-**When complete, update:**
-
-1. `memory-bank/activeContext.md`:
-   - Current state: "Yuka integration complete"
-   - Systems: List what's working
-   - Tests: Results
-
-2. `memory-bank/progress.md`:
-   - Add "Full Yuka Integration Complete" section
-   - Document what was built
-   - Note any remaining work
-
-**DO NOT create new status docs** - use memory bank only.
-
----
-
-## 🎯 THE VISION (FINAL)
-
-```
-User opens app
-  ↓
-t=0: Singularity (black screen, zoomed IN)
-  ↓
-EntropyAgent spawns (governs thermodynamics)
-  ↓
-User clicks PLAY
-  ↓
-Time advances
-  ↓
-t=1μs: Temperature drops
-  ↓
-Particles coalesce (visual: fog)
-  ↓
-t=3min: Atoms form
-  ↓
-Visual: Glowing gas
-  ↓
-t=100Myr: Temperature = 10K
-  ↓
-DensityAgents spawn (1000 agents in 3D field)
-  ↓
-Each agent asks: "Can I collapse?"
-  ↓
-~73 agents collapse (Jeans mass satisfied)
-  ↓
-StellarAgents spawn WHERE collapse occurred
-  ↓
-Visual: Stars ignite at PHYSICS-DETERMINED positions
-  ↓
-Camera zooms OUT (stellar scale now)
-  ↓
-t=1Gyr: Stars apply gravity to each other
-  ↓
-Clustering EMERGES (spiral structure!)
-  ↓
-Visual: Galaxy forming naturally
-  ↓
-Camera zooms OUT (galactic scale)
-  ↓
-t=9.2Gyr: Stellar agents spawn planets
-  ↓
-PlanetaryAgents check: "Can I support life?"
-  ↓
-3 planets turn GREEN (conditions met!)
-  ↓
-User clicks green planet
-  ↓
-Zoom in → CreatureAgents spawn → GAME MODE
-```
-
-**THIS is Ebb & Bloom.**
-
-**EVERYTHING emerges from bottom-up.**  
-**NOTHING is forced.**  
-**YUKA decides all.**
-
----
-
-## 🔥 GO TIME
-
-**Next agent: Execute this plan.**
-
-**No questions. No planning phase. Just build.**
-
-**Beast mode.**
-
-🌌 **BUILD THE REAL UNIVERSE** 🌌
+**Ready to use:**
+- `vite.config.ts` - Already has timeline.html entry point

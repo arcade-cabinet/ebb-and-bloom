@@ -14,7 +14,6 @@
  * From Big Bang → Present → Heat Death
  */
 
-import { EntityManager } from 'yuka';
 import { AgentSpawner, AgentType } from '../yuka-integration/AgentSpawner';
 import { EntropyAgent } from '../yuka-integration/agents/EntropyAgent';
 import { StellarAgent } from '../yuka-integration/agents/StellarAgent';
@@ -22,6 +21,7 @@ import { PlanetaryAgent } from '../yuka-integration/agents/PlanetaryAgent';
 import { CreatureAgent } from '../yuka-integration/agents/CreatureAgent';
 import { LEGAL_BROKER } from '../laws/core/LegalBroker';
 import { ComplexityLevel } from '../laws/core/UniversalLawCoordinator';
+import { Vector3 } from 'yuka';
 
 const YEAR = 365.25 * 86400;
 
@@ -29,7 +29,6 @@ async function runSimulation() {
   console.log('🌌 YUKA BANG-TO-CRUNCH SIMULATION');
   console.log('Pure algorithmic - NO rendering\n');
   
-  const entityManager = new EntityManager();
   const spawner = new AgentSpawner();
   
   // Track spawned agents
@@ -38,14 +37,13 @@ async function runSimulation() {
   // === PHASE 1: BIG BANG (t=0) ===
   console.log('=== PHASE 1: BIG BANG (t=0) ===\n');
   
-  const entropyAgent = new EntropyAgent();
-  entityManager.add(entropyAgent);
+  const entropyAgent = new EntropyAgent(spawner);
   
   console.log(`Initial state:`);
   console.log(`  T = ${entropyAgent.temperature.toExponential(2)} K`);
   console.log(`  ρ = ${entropyAgent.density.toExponential(2)} kg/m³`);
   console.log(`  Scale = ${entropyAgent.scale}`);
-  console.log(`  Agents = ${entityManager.entities.length}\n`);
+  console.log(`  Agents = ${spawner.getTotalAgentCount()}\n`);
   
   // === PHASE 2: ADVANCE TIME (fast forward) ===
   console.log('=== PHASE 2: ADVANCING TIME ===');
@@ -56,7 +54,13 @@ async function runSimulation() {
   
   while (frameCount < maxFrames) {
     const delta = 0.016; // 60 FPS
-    entityManager.update(delta);
+    
+    // Update entropy agent directly (not via EntityManager)
+    entropyAgent.update(delta);
+    
+    // Update spawner (updates all spawned agents)
+    spawner.update(delta);
+    
     frameCount++;
     
     //  Log every 1000 frames
@@ -65,12 +69,15 @@ async function runSimulation() {
       console.log(`  Age = ${(entropyAgent.age / YEAR).toExponential(2)} years`);
       console.log(`  T = ${entropyAgent.temperature.toExponential(2)} K`);
       console.log(`  Scale = ${entropyAgent.scale.toFixed(2)}x`);
-      console.log(`  Agents = ${entityManager.entities.length}`);
+      console.log(`  Agents = ${spawner.getTotalAgentCount()}`);
     }
     
-    // Check if EntropyAgent says it's stellar epoch
-    if (entropyAgent.spawnedStellarAgents) {
-      console.log(`\n✨ ENTROPY AGENT SIGNALS: STELLAR EPOCH REACHED!`);
+    // Check if EntropyAgent reached stellar epoch
+    // (it will have triggered spawner callback)
+    const stellarAgents = spawner.getAgents(AgentType.STELLAR);
+    if (stellarAgents.length > 0 && stellarAgentsTracked.length === 0) {
+      console.log(`\n✨ STELLAR EPOCH REACHED! ${stellarAgents.length} stars spawned`);
+      stellarAgentsTracked.push(...stellarAgents as StellarAgent[]);
       break;
     }
   }
@@ -82,21 +89,12 @@ async function runSimulation() {
   
   const state = entropyAgent.getState();
   
-  for (let i = 0; i < 10; i++) {
-    const result = await spawner.spawn({
-      type: AgentType.STELLAR,
-      position: { x: i * 100, y: 0, z: 0 },
-      reason: 'Stellar epoch',
-      state,
-      params: { mass: 0.5 + Math.random() * 2 },
-    });
-    
-    if (result.success && result.agent) {
-      stellarAgentsTracked.push(result.agent as any);
-    }
-  }
+  // Stars already spawned by EntropyAgent via spawner callback
+  // Just get the list
+  const stellarAgents = spawner.getAgents(AgentType.STELLAR);
+  stellarAgentsTracked.push(...stellarAgents as StellarAgent[]);
   
-  console.log(`Stars spawned: ${stellarAgentsTracked.length}`);
+  console.log(`Stars spawned by EntropyAgent: ${stellarAgentsTracked.length}`);
   
   // === PHASE 4: STELLAR EVOLUTION ===
   console.log('=== PHASE 4: STELLAR EVOLUTION ===');
@@ -105,12 +103,12 @@ async function runSimulation() {
   for (let i = 0; i < 1000; i++) {
     const delta = 0.016;
     
-    // Update BOTH managers
-    entityManager.update(delta);
+    // Update entropy agent + all spawned agents
+    entropyAgent.update(delta);
     spawner.update(delta);
     
     if (i % 200 === 0) {
-      const activeStar = stellarAgentsTracked.filter(s => s.active).length;
+      const activeStar = stellarAgentsTracked.filter(s => !s.hasExploded).length;
       const exploded = stellarAgentsTracked.filter(s => s.hasExploded).length;
       console.log(`Frame ${i}: Active stars: ${activeStar}, Exploded: ${exploded}`);
     }
@@ -123,7 +121,7 @@ async function runSimulation() {
   console.log('='.repeat(60));
   
   const finalAge = entropyAgent.age / (1e9 * YEAR);
-  const activeStellar = stellarAgentsTracked.filter(s => s.active).length;
+  const activeStellar = stellarAgentsTracked.filter(s => !s.hasExploded).length;
   const exploded = stellarAgentsTracked.filter(s => s.hasExploded).length;
   
   console.log(`\nUniverse:`);
