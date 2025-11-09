@@ -8,19 +8,16 @@ export default defineConfig({
     },
   },
   server: {
-    host: '0.0.0.0', // Bind to all interfaces for cross-platform access
+    host: '0.0.0.0',
     port: 5173,
-    // No proxy needed - all internal function calls
   },
   publicDir: 'public',
   build: {
     outDir: 'dist',
     emptyOutDir: true,
-    // Build SIMULATION mode (text reports, no 3D)
+    // Build simulation.html as the main entry point
     rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'simulation.html'),
-      },
+      input: resolve(__dirname, 'simulation.html'),
     },
   },
 });
