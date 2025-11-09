@@ -65,13 +65,17 @@ const SEED_PATTERN = /^v\d+-[a-z]+-[a-z]+-[a-z]+$/;
 /**
  * Generate a random three-word seed
  * Examples: "red-blue-green", "ancient-star-dance", "wild-ocean-glow"
+ * 
+ * Uses Mersenne Twister for high-quality randomness
  */
 export function generateSeed(): string {
-  // Use Math.random() for non-deterministic seed generation
-  // (This is for NEW seeds, not for world generation)
-  const adjective = WORD_LISTS.adjectives[Math.floor(Math.random() * WORD_LISTS.adjectives.length)];
-  const noun = WORD_LISTS.nouns[Math.floor(Math.random() * WORD_LISTS.nouns.length)];
-  const verb = WORD_LISTS.verbs[Math.floor(Math.random() * WORD_LISTS.verbs.length)];
+  // Use timestamp as entropy source, but with Mersenne Twister for quality
+  const entropy = `${Date.now()}-${performance.now()}`;
+  const rng = new EnhancedRNG(entropy);
+  
+  const adjective = WORD_LISTS.adjectives[Math.floor(rng.uniform(0, 1) * WORD_LISTS.adjectives.length)];
+  const noun = WORD_LISTS.nouns[Math.floor(rng.uniform(0, 1) * WORD_LISTS.nouns.length)];
+  const verb = WORD_LISTS.verbs[Math.floor(rng.uniform(0, 1) * WORD_LISTS.verbs.length)];
   
   return `${SEED_VERSION}-${adjective}-${noun}-${verb}`;
 }
