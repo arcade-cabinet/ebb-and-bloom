@@ -33,7 +33,7 @@ export class UniverseEvolutionGoal extends Goal {
     // Fast when universe is homogeneous, slow when structure forms
     const activityLevel = universe.calculateActivityLevel();
     const timeScale = universe.calculateTimeScale(activityLevel);
-    
+
     // Store for external use (scene needs this!)
     universe.timeScale = timeScale;
 
@@ -403,7 +403,7 @@ export class EntropyAgent extends Vehicle {
         if (spawnRate > 0) activity += 0.8; // SLOW DOWN - stars forming!
       } else {
         // Normal spawn rate activity
-        if (spawnRate > 10) activity += 0.5;
+      if (spawnRate > 10) activity += 0.5;
         else if (spawnRate > 0) activity += 0.3;
       }
     }
@@ -505,8 +505,8 @@ export class EntropyAgent extends Vehicle {
       // When some activity (clouds collapsing) = SLOW
       if (activity > 0.1) {
         return 1e6 * YEAR; // 1 million years/second
-      }
-      
+    }
+
       // Otherwise still slower than later universe
       return 5e6 * YEAR; // 5 million years/second
     }

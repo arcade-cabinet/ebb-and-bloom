@@ -38,6 +38,8 @@ import { DensityAgent } from '../yuka-integration/agents/DensityAgent';
 import { AdaptiveHUD } from '../ui/AdaptiveHUD';
 import { MARKER_STORE } from '../state/UniverseMarkers';
 import { ZoomLevel, getZoomLevelFromCameraDistance } from '../state/ZoomLOD';
+import { MolecularVisuals } from '../renderers/MolecularVisuals';
+import { StellarVisuals } from '../renderers/StellarVisuals';
 
 const YEAR = 365.25 * 86400;
 
@@ -93,6 +95,7 @@ export class CompleteBottomUpScene {
   private atomsCloud?: PointsCloudSystem;
   private moleculesCloud?: PointsCloudSystem;
   private molecularCloudParticles: ParticleSystem[] = []; // Track molecular cloud particles
+  private molecularMeshes: Mesh[] = []; // ACTUAL 3D molecules!
   private densityCloud?: PointsCloudSystem;
   private starMeshes: Map<StellarAgent, Mesh> = new Map();
   private planetMeshes: Map<PlanetaryAgent, Mesh> = new Map();
@@ -557,7 +560,7 @@ export class CompleteBottomUpScene {
     
     this.particleSystem.minSize = 0.5;
     this.particleSystem.maxSize = 2;
-    
+      
     // Hydrogen (75%) = pale blue/white, Helium (25%) = yellow
     this.particleSystem.color1 = new Color4(0.9, 0.9, 1, 0.8); // Hydrogen
     this.particleSystem.color2 = new Color4(1, 1, 0.7, 0.8); // Helium
@@ -585,9 +588,18 @@ export class CompleteBottomUpScene {
       this.particleSystem = undefined;
     }
     
-    // Create 10 SEPARATE particle systems (one per molecular cloud)
-    // This is more efficient than 50k individual points!
+    // ═══════════════════════════════════════════════════════════════
+    // SCIENTIFICALLY ACCURATE MOLECULAR VISUALIZATION
+    // ═══════════════════════════════════════════════════════════════
+    // Show ACTUAL molecular structures (H2, H2O, CO2, CH4, NH3)
+    // Each molecule has proper geometry and tumbles in space!
+    // ═══════════════════════════════════════════════════════════════
+    
     const clusterCount = 10;
+    const moleculesPerCloud = 20; // Fewer molecules (they're detailed 3D structures!)
+    
+    // Common molecules in molecular clouds
+    const moleculeTypes = ['H2', 'H2O', 'CO2', 'CH4', 'NH3', 'O2'];
     
     for (let c = 0; c < clusterCount; c++) {
       const clusterCenter = new BabylonVector3(
@@ -596,42 +608,51 @@ export class CompleteBottomUpScene {
         (Math.random() - 0.5) * 500
       );
       
-      // Each cloud is a GPU particle system (1000 particles each)
-      const cloud = new ParticleSystem(`cloud-${c}`, 1000, this.scene);
+      // Create ACTUAL 3D molecules in this cloud!
+      const cloudMolecules = MolecularVisuals.createMolecularCloud(
+        clusterCenter,
+        50, // Cloud radius
+        moleculeTypes,
+        moleculesPerCloud,
+        this.scene
+      );
+      
+      // Track for animation and disposal
+      this.molecularMeshes.push(...cloudMolecules);
+      
+      // Also add particle system for visual density (fog effect)
+      const cloud = new ParticleSystem(`cloud-fog-${c}`, 500, this.scene);
       cloud.particleTexture = new Texture(
         'https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/packages/tools/playground/public/textures/flare.png',
         this.scene
       );
       
-      // Emit from cluster center
       cloud.emitter = clusterCenter;
-      cloud.minEmitBox = new BabylonVector3(-30, -30, -30);
-      cloud.maxEmitBox = new BabylonVector3(30, 30, 30);
+      cloud.minEmitBox = new BabylonVector3(-40, -40, -40);
+      cloud.maxEmitBox = new BabylonVector3(40, 40, 40);
       
-      // Molecules are denser, slower
-      cloud.minLifeTime = 10;
-      cloud.maxLifeTime = 20;
-      cloud.emitRate = 100;
+      cloud.minLifeTime = 15;
+      cloud.maxLifeTime = 30;
+      cloud.emitRate = 50;
+      cloud.minSize = 2;
+      cloud.maxSize = 5;
       
-      cloud.minSize = 1;
-      cloud.maxSize = 3;
+      // Faint blue fog
+      cloud.color1 = new Color4(0.3, 0.5, 0.8, 0.3);
+      cloud.color2 = new Color4(0.4, 0.6, 0.9, 0.4);
+      cloud.colorDead = new Color4(0.2, 0.4, 0.7, 0.1);
       
-      // Blue molecular clouds
-      cloud.color1 = new Color4(0.4, 0.7, 1, 0.6);
-      cloud.color2 = new Color4(0.5, 0.8, 1, 0.8);
-      cloud.colorDead = new Color4(0.3, 0.6, 0.9, 0.2);
-      
-      // Very slow drift
       cloud.minEmitPower = 0.1;
-      cloud.maxEmitPower = 0.5;
+      cloud.maxEmitPower = 0.3;
       
       cloud.start();
-      
-      // Track for disposal later
       this.molecularCloudParticles.push(cloud);
     }
     
-    console.log('  🧬 Molecular clouds created (10 GPU particle systems)');
+    console.log(`  🧬 Molecular clouds created:`);
+    console.log(`     - ${clusterCount * moleculesPerCloud} ACTUAL 3D molecules (H2, H2O, CO2, CH4, NH3)`);
+    console.log(`     - 10 particle fog systems for density`);
+    console.log(`     - Molecules tumble and rotate in 3D!`);
   }
   
   /**
@@ -793,6 +814,11 @@ export class CompleteBottomUpScene {
     // Update zoom level
     this.currentZoomLevel = getZoomLevelFromCameraDistance(this.camera.radius);
     
+    // Animate molecules (tumbling in space!) - GIVES SCIENCE MEANING!
+    for (const molecule of this.molecularMeshes) {
+      MolecularVisuals.animateMolecule(molecule, delta);
+    }
+    
     // Render based on zoom level
     this.updateStarVisuals(); // STELLAR zoom and closer
     this.updateGalaxyMarkers(); // COSMIC zoom
@@ -834,30 +860,32 @@ export class CompleteBottomUpScene {
         cloud.dispose();
       }
       this.molecularCloudParticles = [];
+      
+      // Dispose 3D molecular meshes (they collapsed into stars!)
+      for (const molecule of this.molecularMeshes) {
+        molecule.dispose();
+      }
+      this.molecularMeshes = [];
+      
+      console.log('  🌟 Molecules collapsed into stars - cleaning up visualizations');
     }
     
     for (const star of stellarAgents) {
       if (!this.starMeshes.has(star)) {
-        // Create visual mesh for new star
-        const sphere = MeshBuilder.CreateSphere(
-          `star-${star.uuid}`,
-          { diameter: 2 + Math.random() * 3 }, // Varying sizes
-          this.scene
+        // Create SCIENTIFICALLY ACCURATE stellar visual!
+        // Uses mass → temperature → spectral type → color
+        const blueprint = StellarVisuals.createBlueprint(star.mass / 1.989e30); // Convert to solar masses
+        
+        const starMesh = StellarVisuals.renderStar(
+          blueprint,
+          new BabylonVector3(star.position.x, star.position.y, star.position.z),
+          this.scene,
+          star.uuid
         );
         
-        sphere.position.set(
-          star.position.x,
-          star.position.y,
-          star.position.z
-        );
+        this.starMeshes.set(star, starMesh);
         
-        // Glowing material
-        const mat = new StandardMaterial(`star-mat-${star.uuid}`, this.scene);
-        mat.emissiveColor = new Color3(1, 0.9, 0.7); // Yellowish glow
-        mat.diffuseColor = new Color3(1, 1, 0.8);
-        sphere.material = mat;
-        
-        this.starMeshes.set(star, sphere);
+        console.log(`  🌟 Star formed: ${blueprint.spectralType}-type (${blueprint.temperature.toFixed(0)}K)`);
       } else {
         // Update position (stars move via GravityBehavior)
         const mesh = this.starMeshes.get(star)!;
@@ -866,6 +894,9 @@ export class CompleteBottomUpScene {
           star.position.y,
           star.position.z
         );
+        
+        // Animate rotation
+        StellarVisuals.animateStar(mesh, this.scene.getEngine().getDeltaTime() / 1000);
       }
     }
   }
