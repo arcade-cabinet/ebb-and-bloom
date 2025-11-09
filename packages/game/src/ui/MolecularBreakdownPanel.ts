@@ -56,7 +56,7 @@ export class MolecularBreakdownPanel {
   constructor(mainScene: Scene, engine: any) {
     // Create separate scene for molecular view
     this.scene = new Scene(engine);
-    this.scene.clearColor = new Color3(0.05, 0.05, 0.1).toColor4();
+    this.scene.clearColor = new Color3(0.02, 0.02, 0.05).toColor4(); // Very dark blue
     
     // Camera for molecular view (close-up on molecules)
     this.camera = new ArcRotateCamera(
@@ -68,10 +68,10 @@ export class MolecularBreakdownPanel {
       this.scene
     );
     
-    // BRIGHT light (molecules must glow!)
+    // VERY BRIGHT light (molecules MUST be visible!)
     const light = new HemisphericLight('mol-light', new Vector3(0, 1, 0), this.scene);
-    light.intensity = 1.5; // Extra bright
-    light.groundColor = new Color3(0.3, 0.3, 0.3);
+    light.intensity = 2.0; // Very bright
+    light.groundColor = new Color3(0.5, 0.5, 0.5); // Brighter ground
     
     // Set viewport (RIGHT 20%, MIDDLE 50%)
     // Position: x=0.8 (right panel starts), y=0.25 (below HUD), height=0.50 (middle section)
@@ -85,9 +85,9 @@ export class MolecularBreakdownPanel {
     // Active camera for this scene
     this.scene.activeCamera = this.camera;
     
-    // Enable glow for molecules
+    // STRONG glow for molecules
     const glow = new GlowLayer('mol-glow', this.scene);
-    glow.intensity = 1.5;
+    glow.intensity = 2.0; // Maximum visibility
     
     console.log('[MolecularBreakdownPanel] Initialized - RIGHT 20%, MIDDLE 50% viewport');
   }
@@ -109,16 +109,16 @@ export class MolecularBreakdownPanel {
     this.moleculeMeshes = [];
     
     // Create new molecules for this context
-    const moleculeCount = Math.min(20, context.molecules.length * 4); // 20 max
+    const moleculeCount = Math.min(15, context.molecules.length * 3); // 15 max for performance
     
     for (let i = 0; i < moleculeCount; i++) {
       const formula = context.molecules[Math.floor(Math.random() * context.molecules.length)];
       const blueprint = MolecularVisuals.createBlueprint(formula);
       
-      // Random position in view sphere
+      // Random position in view sphere (closer to camera)
       const angle1 = Math.random() * Math.PI * 2;
       const angle2 = Math.random() * Math.PI * 2;
-      const radius = 3 + Math.random() * 5;
+      const radius = 5 + Math.random() * 10; // Closer spread (5-15 units)
       
       const pos = new Vector3(
         radius * Math.sin(angle1) * Math.cos(angle2),
@@ -126,7 +126,7 @@ export class MolecularBreakdownPanel {
         radius * Math.cos(angle1)
       );
       
-      const molecule = MolecularVisuals.renderMolecule(blueprint, pos, this.scene, `${i}`);
+      const molecule = MolecularVisuals.renderMolecule(blueprint, pos, this.scene, `panel-${i}`);
       this.moleculeMeshes.push(molecule);
     }
     

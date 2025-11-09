@@ -159,16 +159,19 @@ export class AdaptiveHUD {
       this.visualElements.set(panel.id, container);
     }
     
-    // Position (stacked vertically on right side)
-    // Mobile: Smaller panels, more top margin (avoid notch/status bar)
-    const panelHeight = this.isMobile ? 90 : 100;
-    const panelSpacing = this.isMobile ? 100 : 120;
-    const topMargin = this.isMobile ? 60 : 20; // Extra space on mobile for notch
+    // Position in TOP-RIGHT 20% area (above molecular panel)
+    // Viewport layout: 80% left main, 20% right for panels
+    const panelHeight = this.isMobile ? 80 : 90;
+    const panelSpacing = this.isMobile ? 90 : 100;
+    const topMargin = this.isMobile ? 10 : 10;
     
     const yOffset = topMargin + index * panelSpacing;
+    
+    // Position within RIGHT 20% viewport area
     container.top = `${yOffset}px`;
     container.left = `-${this.PANEL_MARGIN}px`;
     container.height = `${panelHeight}px`;
+    container.width = `${this.PANEL_WIDTH}px`;
     container.horizontalAlignment = Rectangle.HORIZONTAL_ALIGNMENT_RIGHT;
     container.verticalAlignment = Rectangle.VERTICAL_ALIGNMENT_TOP;
     
