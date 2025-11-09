@@ -76,7 +76,7 @@ export class ToolSystem {
       // Smarter creatures discover more easily
       const discoveryChance = intelligence * 0.1; // 5-10% per frame
 
-      for (const [toolId, tool] of this.tools) {
+      for (const tool of this.tools.values()) {
         // Already discovered?
         if (tool.discoveredBy.has(creatureId)) continue;
 
@@ -125,13 +125,19 @@ export class ToolSystem {
   private degradeTools(deltaTime: number): void {
     const DEGRADATION_RATE = 0.001; // 1% per second
 
+    const toDelete: string[] = [];
     for (const [toolId, tool] of this.tools) {
       tool.durability -= DEGRADATION_RATE * deltaTime;
 
-      // Remove broken tools
+      // Mark broken tools for removal
       if (tool.durability <= 0) {
-        this.tools.delete(toolId);
+        toDelete.push(toolId);
       }
+    }
+
+    // Remove broken tools
+    for (const toolId of toDelete) {
+      this.tools.delete(toolId);
     }
   }
 

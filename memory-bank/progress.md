@@ -1,68 +1,60 @@
 # Project Progress
 
 **Last Updated**: 2025-11-08  
-**Current Sprint**: Gen2 Social Dynamics  
-**Phase**: Pack Formation & Interactions Implementation Complete ✨
+**Current Sprint**: Gen3 Tools & Structures  
+**Phase**: Technological Emergence Implementation Complete ✨
 
 ---
 
-## Latest Achievement: Gen2 Pack Formation & Creature Interactions ✨
+## Latest Achievement: Gen3 Tools & Structures ✨
 
-Built a complete social dynamics system enabling emergent pack behaviors and creature interactions:
+Built a complete technological emergence system where tools and structures arise from intelligence + social learning:
 
 **Core Features**:
-- **Pack Formation**: Automatic proximity-based clustering of creatures with 'pack' social trait
-- **Leader Selection**: Strongest/smartest members become pack leaders
-- **Cohesion Tracking**: Real-time measurement of pack tightness
-- **Creature Interactions**: Territorial disputes, social bonds, predation, pack coordination
-- **Visual Indicators**: Colored wireframe auras and connection lines
+- **Tool System**: Discovery, creation, and cultural transmission of 4 archetype-specific tools
+- **Structure Building**: Collaborative construction of 4 archetype-specific structures
+- **Cultural Learning**: Knowledge spreads through social networks (pack creatures teach)
+- **Degradation**: Tools and structures wear over time, forcing renewal
 
 **What Players See**:
-- Wireframe pack auras (colored by pack, pulsing based on cohesion)
-- Interaction lines between creatures:
-  - **Red** = Territorial disputes (aggressive encounters)
-  - **Green** = Social bonds (pack creatures connecting)
-  - **Orange** = Predation (hunting/fleeing)
-  - **Cyan** = Pack coordination (organized movement)
-- Dynamic pack formation and dissolution
-- Coordinated group movement
+- **Tools** (4 types):
+  - Digging sticks (brown, Burrow Engineers)
+  - Gathering poles (green, Arboreal Opportunists)
+  - Wading spears (blue, Littoral Harvesters)
+  - Striking stones (gray, Cursorial Foragers)
+- **Structures** (4 types):
+  - Burrows (underground entrance + mound)
+  - Platforms (elevated tree nests)
+  - Stiltworks (water platforms on stilts)
+  - Windbreaks (angled shelter walls)
+- **Social Learning**: Yellow rings above creatures actively teaching
+- **Building Projects**: Ghosted yellow wireframes showing construction in progress
+- **Occupancy**: Warm glow around structures being used
 
 **Files Created**:
-- `packages/game/src/systems/PackFormationSystem.ts` (245 lines)
-- `packages/game/src/systems/CreatureInteractionSystem.ts` (230 lines)
-- `packages/game/src/renderers/gen2/PackFormationRenderer.ts` (220 lines)
-- `packages/game/src/renderers/gen2/InteractionVisualizer.ts` (230 lines)
-- `docs/GEN2_PACK_INTERACTIONS.md` (complete documentation)
+- `packages/game/src/systems/ToolSystem.ts` (330 lines)
+- `packages/game/src/systems/StructureBuildingSystem.ts` (350 lines)
+- `packages/game/src/renderers/gen3/ToolRenderer.ts` (240 lines)
+- `packages/game/src/renderers/gen3/StructureRenderer.ts` (400 lines)
+- `docs/GEN3_TOOLS_STRUCTURES.md` (complete documentation)
 
 **Files Modified**:
-- `packages/game/src/scenes/GameScene.ts` - Integrated pack and interaction systems
+- `packages/game/src/scenes/GameScene.ts` - Integrated tool and structure systems
 
-**Player Impact**: The simulation now exhibits authentic social dynamics. Creatures aren't just autonomous individuals—they form relationships, compete for territory, hunt together, and coordinate as packs. Every playthrough generates unique emergent social structures.
+**Player Impact**: Creatures are now technological beings! Smart creatures invent tools, teach each other, and collaborate to build structures. Technology emerges organically from intelligence and social learning, creating unique cultural development paths every playthrough.
 
 ---
 
 ## Recent Achievements
 
-### Living Creature Ecosystem (Gen1+)
-Built autonomous AI-driven creature behaviors with visual feedback:
-- **Movement System**: Spherical pathfinding on planet surface
-- **Behavior AI**: Foraging, fleeing, resting (goal-driven decision making)
-- **Walking Animations**: Leg-based walk cycles that sync with movement
-- **Resource System**: Food nodes that creatures seek and consume
+### Gen2: Pack Formation & Creature Interactions
+Built complete social dynamics with pack formation and four interaction types (territorial, social, predation, coordination).
 
-### Full 3D Creature Rendering (Gen1)
-Completed the transition from points of light to fully rendered 3D creatures:
-- **Four Archetype Bodies**: Cursorial, Burrowing, Arboreal, Littoral
-- **Procedural Meshes**: Body parts assembled based on locomotion traits
-- **Animations**: Idle breathing and walk cycles
-- **Materials**: PBR materials with lineage colors
+### Gen1+: Living Creature Ecosystem
+Built autonomous AI-driven creature behaviors with walking animations and resource seeking.
 
-### Celestial View System (Multi-Scale Experience)
-Completed the multi-scale camera and LOD system:
-- **Camera**: Extended range (5-500 units) enabling zoom from planet surface to full solar system
-- **LOD System**: Point lights at distance, full 3D meshes up close
-- **Smooth Transitions**: Automatic switching based on camera distance
-- **Visual Progression**: "Points of light" become living creatures as you zoom in
+### Multi-Scale Celestial View
+Completed zoom system from space to surface with LOD transitions.
 
 ---
 

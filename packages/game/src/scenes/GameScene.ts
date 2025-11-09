@@ -25,9 +25,12 @@ import { NarrativeDisplay } from '../ui/NarrativeDisplay';
 import { PlanetRenderer, MoonRenderer } from '../renderers/gen0';
 import { CreatureRenderer, ResourceNodeRenderer } from '../renderers/gen1';
 import { PackFormationRenderer, InteractionVisualizer } from '../renderers/gen2';
+import { ToolRenderer, StructureRenderer } from '../renderers/gen3';
 import { CreatureBehaviorSystem, type CreatureBehaviorState, type ResourceNode } from '../systems/CreatureBehaviorSystem';
 import { PackFormationSystem, type PackFormation } from '../systems/PackFormationSystem';
 import { CreatureInteractionSystem, type Interaction } from '../systems/CreatureInteractionSystem';
+import { ToolSystem, type Tool, type ToolKnowledge } from '../systems/ToolSystem';
+import { StructureBuildingSystem, type Structure, type BuildingProject } from '../systems/StructureBuildingSystem';
 
 // Render data from game engine (supports all generations)
 interface GameRenderData {
@@ -78,15 +81,22 @@ export class GameScene {
   private resourceRenderer: ResourceNodeRenderer | null = null;
   private packRenderer: PackFormationRenderer | null = null;
   private interactionVisualizer: InteractionVisualizer | null = null;
+  private toolRenderer: ToolRenderer | null = null;
+  private structureRenderer: StructureRenderer | null = null;
   
   // Systems
   private behaviorSystem: CreatureBehaviorSystem | null = null;
   private packSystem: PackFormationSystem | null = null;
   private interactionSystem: CreatureInteractionSystem | null = null;
+  private toolSystem: ToolSystem | null = null;
+  private structureSystem: StructureBuildingSystem | null = null;
   private creatureBehaviors: Map<string, CreatureBehaviorState> = new Map();
   private resources: ResourceNode[] = [];
   private packs: PackFormation[] = [];
   private interactions: Interaction[] = [];
+  private tools: Tool[] = [];
+  private structures: Structure[] = [];
+  private projects: BuildingProject[] = [];
 
   constructor(scene: Scene, engine: Engine, gameId: string | null) {
     this.scene = scene;
@@ -169,11 +179,15 @@ export class GameScene {
     this.resourceRenderer = new ResourceNodeRenderer(this.scene);
     this.packRenderer = new PackFormationRenderer(this.scene);
     this.interactionVisualizer = new InteractionVisualizer(this.scene);
+    this.toolRenderer = new ToolRenderer(this.scene);
+    this.structureRenderer = new StructureRenderer(this.scene);
     
     // Initialize systems
     this.behaviorSystem = new CreatureBehaviorSystem(5); // Planet radius = 5
     this.packSystem = new PackFormationSystem();
     this.interactionSystem = new CreatureInteractionSystem();
+    this.toolSystem = new ToolSystem();
+    this.structureSystem = new StructureBuildingSystem();
     
     // Spawn some initial resources for testing
     this.spawnTestResources();
@@ -357,6 +371,16 @@ export class GameScene {
         if (this.interactionSystem) {
           this.updateCreatureInteractions();
         }
+        
+        // Update tools (Gen3)
+        if (this.toolSystem) {
+          this.updateTools(deltaTime);
+        }
+        
+        // Update structures (Gen3)
+        if (this.structureSystem && this.toolSystem) {
+          this.updateStructures(deltaTime);
+        }
       }
       
       // Update creature LOD based on camera distance
@@ -404,6 +428,25 @@ export class GameScene {
         }
         this.interactionVisualizer.render(this.interactions, creaturePositions);
       }
+      
+      // Update tool rendering (Gen3)
+      if (this.toolRenderer && this.toolSystem && this.tools.length > 0) {
+        const creaturePositions = new Map<string, { lat: number; lon: number }>();
+        for (const [id, behavior] of this.creatureBehaviors) {
+          creaturePositions.set(id, { lat: behavior.position.lat, lon: behavior.position.lon });
+        }
+        const knowledge = new Map<string, ToolKnowledge>();
+        for (const creatureId of this.toolSystem.getKnowledgeableCreatures()) {
+          const k = this.toolSystem.getKnowledge(creatureId);
+          if (k) knowledge.set(creatureId, k);
+        }
+        this.toolRenderer.render(this.tools, knowledge, creaturePositions);
+      }
+      
+      // Update structure rendering (Gen3)
+      if (this.structureRenderer && (this.structures.length > 0 || this.projects.length > 0)) {
+        this.structureRenderer.render(this.structures, this.projects);
+      }
     });
   }
 
@@ -440,6 +483,8 @@ export class GameScene {
     this.resourceRenderer?.dispose();
     this.packRenderer?.dispose();
     this.interactionVisualizer?.dispose();
+    this.toolRenderer?.dispose();
+    this.structureRenderer?.dispose();
     this.hud?.dispose();
     this.narrative?.dispose();
   }
@@ -547,6 +592,60 @@ export class GameScene {
     // Update interaction system
     const interactions = this.interactionSystem.update(creatureStates);
     this.interactions = Array.from(interactions.values());
+  }
+
+  /**
+   * Update tools (Gen3)
+   */
+  private updateTools(deltaTime: number): void {
+    if (!this.toolSystem || !this.renderData?.creatures) return;
+    
+    // Build creature map with traits
+    const creatures = new Map();
+    for (const [id, behavior] of this.creatureBehaviors) {
+      const creature = this.renderData.creatures.find(c => c.id === id);
+      if (creature) {
+        creatures.set(id, {
+          position: behavior.position,
+          traits: creature.traits
+        });
+      }
+    }
+    
+    // Update tool system
+    this.toolSystem.update(creatures, deltaTime);
+    this.tools = this.toolSystem.getTools();
+  }
+
+  /**
+   * Update structures (Gen3)
+   */
+  private updateStructures(deltaTime: number): void {
+    if (!this.structureSystem || !this.toolSystem || !this.renderData?.creatures) return;
+    
+    // Build creature map with traits and energy
+    const creatures = new Map();
+    for (const [id, behavior] of this.creatureBehaviors) {
+      const creature = this.renderData.creatures.find(c => c.id === id);
+      if (creature) {
+        creatures.set(id, {
+          position: behavior.position,
+          traits: creature.traits,
+          energy: behavior.energy
+        });
+      }
+    }
+    
+    // Build tool knowledge map
+    const toolKnowledge = new Map<string, boolean>();
+    for (const creatureId of this.toolSystem.getKnowledgeableCreatures()) {
+      toolKnowledge.set(creatureId, true);
+    }
+    
+    // Update structure system
+    this.structureSystem.update(creatures, toolKnowledge, deltaTime);
+    this.structures = this.structureSystem.getStructures();
+    this.projects = this.structureSystem.getProjects();
   }
 
   /**

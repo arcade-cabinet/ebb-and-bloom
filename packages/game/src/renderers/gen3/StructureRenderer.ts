@@ -87,8 +87,6 @@ export class StructureRenderer {
 
     // Orient to surface
     const normal = pos.normalize();
-    const tangent = Vector3.Cross(normal, Vector3.Up()).normalize();
-    const bitangent = Vector3.Cross(normal, tangent).normalize();
     
     // Align to surface normal
     node.lookAt(normal.add(pos));

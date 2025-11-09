@@ -110,29 +110,6 @@ export class StructureBuildingSystem {
   }
 
   /**
-   * Start a new building project
-   */
-  private startProject(
-    type: Structure['type'],
-    location: { lat: number; lon: number },
-    initiatorId: string
-  ): BuildingProject {
-    const projectId = `project-${this.nextProjectId++}`;
-    const structureId = `structure-${this.nextStructureId++}`;
-
-    const project: BuildingProject = {
-      structureId,
-      targetType: type,
-      location: { ...location },
-      contributors: new Map([[initiatorId, 0]]),
-      startTime: Date.now()
-    };
-
-    this.projects.set(projectId, project);
-    return project;
-  }
-
-  /**
    * Creatures work on nearby projects
    */
   private workOnProjects(
@@ -184,27 +161,35 @@ export class StructureBuildingSystem {
   private completeProjects(): void {
     const COMPLETION_THRESHOLD = 1.0; // 100% work needed
 
-    for (const [projectId, project] of this.projects) {
+    const toComplete: string[] = [];
+    for (const [projId, project] of this.projects) {
       // Calculate total progress
       const totalWork = Array.from(project.contributors.values()).reduce((sum, work) => sum + work, 0);
 
       if (totalWork >= COMPLETION_THRESHOLD) {
-        // Create structure
-        const structure: Structure = {
-          id: project.structureId,
-          type: project.targetType,
-          position: project.location,
-          builders: Array.from(project.contributors.keys()),
-          completionProgress: 1.0,
-          durability: 1.0,
-          capacity: this.getCapacityForType(project.targetType),
-          occupants: new Set(),
-          foodStorage: 0
-        };
-
-        this.structures.set(structure.id, structure);
-        this.projects.delete(projectId);
+        toComplete.push(projId);
       }
+    }
+
+    // Complete projects
+    for (const projId of toComplete) {
+      const project = this.projects.get(projId)!;
+      
+      // Create structure
+      const structure: Structure = {
+        id: project.structureId,
+        type: project.targetType,
+        position: project.location,
+        builders: Array.from(project.contributors.keys()),
+        completionProgress: 1.0,
+        durability: 1.0,
+        capacity: this.getCapacityForType(project.targetType),
+        occupants: new Set(),
+        foodStorage: 0
+      };
+
+      this.structures.set(structure.id, structure);
+      this.projects.delete(projId);
     }
   }
 

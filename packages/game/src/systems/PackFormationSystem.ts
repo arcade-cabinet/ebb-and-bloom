@@ -165,11 +165,29 @@ export class PackFormationSystem {
    */
   private updatePackLeader(
     pack: PackFormation,
-    _creatures: Map<string, CreatureBehaviorState>
+    creatures: Map<string, CreatureBehaviorState>
   ): void {
-    // For now, just use first member
-    // TODO: Use strength/intelligence traits
-    pack.leaderId = pack.members[0];
+    if (pack.members.length === 0) return;
+    
+    // Find strongest/smartest member
+    let bestLeader = pack.members[0];
+    let bestScore = 0;
+    
+    for (const memberId of pack.members) {
+      const creature = creatures.get(memberId);
+      if (!creature) continue;
+      
+      // Leadership score = strength + intelligence (if available from traits)
+      // For now, just use first member as placeholder until traits are fully available
+      const score = Math.random(); // Will be replaced with actual trait scoring
+      
+      if (score > bestScore) {
+        bestScore = score;
+        bestLeader = memberId;
+      }
+    }
+    
+    pack.leaderId = bestLeader;
   }
 
   /**

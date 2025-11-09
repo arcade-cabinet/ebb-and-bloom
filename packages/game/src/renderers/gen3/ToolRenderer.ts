@@ -184,7 +184,7 @@ export class ToolRenderer {
     creatures: Map<string, { lat: number; lon: number }>
   ): void {
     // Clear old indicators
-    for (const [id, mesh] of this.knowledgeIndicators) {
+    for (const mesh of this.knowledgeIndicators.values()) {
       mesh.dispose();
     }
     this.knowledgeIndicators.clear();
