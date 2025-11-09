@@ -95,6 +95,7 @@ export class CompleteBottomUpScene {
   private densityCloud?: PointsCloudSystem;
   private starMeshes: Map<StellarAgent, Mesh> = new Map();
   private planetMeshes: Map<PlanetaryAgent, Mesh> = new Map();
+  private galaxyMarkerMeshes: Map<string, Mesh> = new Map();
   
   // HUD
   private hud: AdaptiveHUD;
@@ -750,8 +751,12 @@ export class CompleteBottomUpScene {
     // Update visuals for current phase
     this.updateVisualsForPhase();
     
-    // Sync star visuals with agents
-    this.updateStarVisuals();
+    // Update zoom level
+    this.currentZoomLevel = getZoomLevelFromCameraDistance(this.camera.radius);
+    
+    // Render based on zoom level
+    this.updateStarVisuals(); // STELLAR zoom and closer
+    this.updateGalaxyMarkers(); // COSMIC zoom
     
     // Auto-zoom camera (follows growth!)
     this.autoZoomCamera();
@@ -812,6 +817,50 @@ export class CompleteBottomUpScene {
           star.position.y,
           star.position.z
         );
+      }
+    }
+  }
+  
+  /**
+   * Update galaxy markers - visible at COSMIC zoom
+   */
+  private updateGalaxyMarkers(): void {
+    // Only at COSMIC zoom
+    if (this.currentZoomLevel !== ZoomLevel.COSMIC && this.currentZoomLevel !== ZoomLevel.GALACTIC) {
+      // Clear galaxy markers when zoomed in
+      for (const mesh of this.galaxyMarkerMeshes.values()) {
+        mesh.dispose();
+      }
+      this.galaxyMarkerMeshes.clear();
+      return;
+    }
+    
+    // Get markers from marker store
+    const markers = MARKER_STORE.getAllMarkers();
+    const galaxyMarkers = markers.filter(m => m.type === 'stellar-epoch' || m.type === 'galactic-center');
+    
+    for (const marker of galaxyMarkers) {
+      if (!this.galaxyMarkerMeshes.has(marker.id)) {
+        // Create marker visual (simple sphere)
+        const sphere = MeshBuilder.CreateSphere(
+          `galaxy-${marker.id}`,
+          { diameter: 50 }, // Large for visibility at cosmic scale
+          this.scene
+        );
+        
+        sphere.position.set(
+          marker.position.x,
+          marker.position.y,
+          marker.position.z
+        );
+        
+        // Glowing material
+        const mat = new StandardMaterial(`galaxy-mat-${marker.id}`, this.scene);
+        mat.emissiveColor = new Color3(0.5, 0.7, 1); // Blue glow (galaxy)
+        mat.alpha = 0.7;
+        sphere.material = mat;
+        
+        this.galaxyMarkerMeshes.set(marker.id, sphere);
       }
     }
   }
