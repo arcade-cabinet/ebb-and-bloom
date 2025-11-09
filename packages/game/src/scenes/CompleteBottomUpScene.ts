@@ -92,6 +92,7 @@ export class CompleteBottomUpScene {
   private particleSystem?: ParticleSystem;
   private atomsCloud?: PointsCloudSystem;
   private moleculesCloud?: PointsCloudSystem;
+  private molecularCloudParticles: ParticleSystem[] = []; // Track molecular cloud particles
   private densityCloud?: PointsCloudSystem;
   private starMeshes: Map<StellarAgent, Mesh> = new Map();
   private planetMeshes: Map<PlanetaryAgent, Mesh> = new Map();
@@ -505,73 +506,68 @@ export class CompleteBottomUpScene {
   }
   
   /**
-   * Create atoms visualization (point cloud)
+   * Create atoms visualization (GPU-optimized particle system)
    */
   private createAtomsVisualization(): void {
     if (this.atomsCloud) return; // Already created
     
-    // Stop particle system
+    // Stop quantum foam particles
     if (this.particleSystem) {
       this.particleSystem.stop();
     }
     
-    // Create point cloud for atoms
-    this.atomsCloud = new PointsCloudSystem('atoms', 100000, this.scene);
+    // Use PARTICLE SYSTEM for atoms (GPU-optimized, not individual meshes!)
+    // This renders 10k particles efficiently on GPU
+    this.particleSystem = new ParticleSystem('atoms', 10000, this.scene);
+    this.particleSystem.particleTexture = new Texture(
+      'https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/packages/tools/playground/public/textures/flare.png',
+      this.scene
+    );
     
-    const atomPositions: BabylonVector3[] = [];
-    const atomColors: Color4[] = [];
+    // Emit from expanding sphere (atoms filling space)
+    this.particleSystem.emitter = BabylonVector3.Zero();
+    this.particleSystem.minEmitBox = new BabylonVector3(-300, -300, -300);
+    this.particleSystem.maxEmitBox = new BabylonVector3(300, 300, 300);
     
-    // Distribute atoms randomly (hydrogen and helium)
-    for (let i = 0; i < 100000; i++) {
-      const angle1 = Math.random() * Math.PI * 2;
-      const angle2 = Math.random() * Math.PI * 2;
-      const radius = 50 + Math.random() * 200;
-      
-      const x = radius * Math.sin(angle1) * Math.cos(angle2);
-      const y = radius * Math.sin(angle1) * Math.sin(angle2);
-      const z = radius * Math.cos(angle1);
-      
-      atomPositions.push(new BabylonVector3(x, y, z));
-      
-      // 75% hydrogen (white), 25% helium (yellow)
-      if (Math.random() < 0.75) {
-        atomColors.push(new Color4(0.8, 0.8, 1, 1)); // Hydrogen
-      } else {
-        atomColors.push(new Color4(1, 1, 0.5, 1)); // Helium
-      }
-    }
+    // Atoms drift slowly (Brownian motion)
+    this.particleSystem.minLifeTime = 5;
+    this.particleSystem.maxLifeTime = 10;
+    this.particleSystem.emitRate = 2000;
     
-    this.atomsCloud.addPoints(atomPositions.length, (particle, i) => {
-      particle.position = atomPositions[i];
-      particle.color = atomColors[i];
-    });
+    this.particleSystem.minSize = 0.5;
+    this.particleSystem.maxSize = 2;
     
-    this.atomsCloud.buildMeshAsync();
+    // Hydrogen (75%) = pale blue/white, Helium (25%) = yellow
+    this.particleSystem.color1 = new Color4(0.9, 0.9, 1, 0.8); // Hydrogen
+    this.particleSystem.color2 = new Color4(1, 1, 0.7, 0.8); // Helium
+    this.particleSystem.colorDead = new Color4(0.9, 0.9, 1, 0.3);
     
-    console.log('  ⚛️  Atoms visualization created (100k points)');
+    // Slow drift
+    this.particleSystem.minEmitPower = 0.5;
+    this.particleSystem.maxEmitPower = 2;
+    
+    this.particleSystem.start();
+    
+    console.log('  ⚛️  Atoms visualization created (GPU particle system)');
   }
   
   /**
-   * Create molecules visualization
+   * Create molecules visualization (10 distinct cloud clusters)
    */
   private createMoleculesVisualization(): void {
     if (this.moleculesCloud) return;
     
-    // Fade out atoms
-    if (this.atomsCloud) {
-      // Gradually reduce atom count or dispose
-      this.atomsCloud.dispose();
-      this.atomsCloud = undefined;
+    // Fade out atoms particle system
+    if (this.particleSystem) {
+      this.particleSystem.stop();
+      this.particleSystem.dispose();
+      this.particleSystem = undefined;
     }
     
-    // Create molecular clouds (clusters)
-    this.moleculesCloud = new PointsCloudSystem('molecules', 50000, this.scene);
-    
-    const moleculePositions: BabylonVector3[] = [];
-    const moleculeColors: Color4[] = [];
-    
-    // Create clustered distribution (molecular clouds)
+    // Create 10 SEPARATE particle systems (one per molecular cloud)
+    // This is more efficient than 50k individual points!
     const clusterCount = 10;
+    
     for (let c = 0; c < clusterCount; c++) {
       const clusterCenter = new BabylonVector3(
         (Math.random() - 0.5) * 500,
@@ -579,28 +575,42 @@ export class CompleteBottomUpScene {
         (Math.random() - 0.5) * 500
       );
       
-      // Add molecules around cluster
-      const moleculesPerCluster = 5000;
-      for (let i = 0; i < moleculesPerCluster; i++) {
-        const offset = new BabylonVector3(
-          (Math.random() - 0.5) * 50,
-          (Math.random() - 0.5) * 50,
-          (Math.random() - 0.5) * 50
-        );
-        
-        moleculePositions.push(clusterCenter.add(offset));
-        moleculeColors.push(new Color4(0.5, 0.8, 1, 0.8)); // Blue (molecular clouds)
-      }
+      // Each cloud is a GPU particle system (1000 particles each)
+      const cloud = new ParticleSystem(`cloud-${c}`, 1000, this.scene);
+      cloud.particleTexture = new Texture(
+        'https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/packages/tools/playground/public/textures/flare.png',
+        this.scene
+      );
+      
+      // Emit from cluster center
+      cloud.emitter = clusterCenter;
+      cloud.minEmitBox = new BabylonVector3(-30, -30, -30);
+      cloud.maxEmitBox = new BabylonVector3(30, 30, 30);
+      
+      // Molecules are denser, slower
+      cloud.minLifeTime = 10;
+      cloud.maxLifeTime = 20;
+      cloud.emitRate = 100;
+      
+      cloud.minSize = 1;
+      cloud.maxSize = 3;
+      
+      // Blue molecular clouds
+      cloud.color1 = new Color4(0.4, 0.7, 1, 0.6);
+      cloud.color2 = new Color4(0.5, 0.8, 1, 0.8);
+      cloud.colorDead = new Color4(0.3, 0.6, 0.9, 0.2);
+      
+      // Very slow drift
+      cloud.minEmitPower = 0.1;
+      cloud.maxEmitPower = 0.5;
+      
+      cloud.start();
+      
+      // Track for disposal later
+      this.molecularCloudParticles.push(cloud);
     }
     
-    this.moleculesCloud.addPoints(moleculePositions.length, (particle, i) => {
-      particle.position = moleculePositions[i];
-      particle.color = moleculeColors[i];
-    });
-    
-    this.moleculesCloud.buildMeshAsync();
-    
-    console.log('  🧬 Molecular clouds created (50k points, 10 clusters)');
+    console.log('  🧬 Molecular clouds created (10 GPU particle systems)');
   }
   
   /**
@@ -705,24 +715,29 @@ export class CompleteBottomUpScene {
     } else {
       // Normal expansion - zoom OUT as age increases
     if (age < 1) {
-      // Quantum foam (t < 1 second)
+      // Quantum foam (t < 1 second) - ZOOMED IN to Planck scale
       targetRadius = 0.1;
     } else if (age < 180) {
-      // Nucleosynthesis (t < 3 minutes)
-      targetRadius = 1;
-    } else if (age < 380000 * YEAR) {
-      // Dark ages (t < 380k years)
+      // Nucleosynthesis (t < 3 minutes) - See particle soup
       targetRadius = 10;
-    } else if (age < 100e6 * YEAR) {
-      // Molecular era (t < 100 Myr)
-      targetRadius = 100;
-    } else if (age < 1e9 * YEAR) {
-      // Stellar era (t < 1 Gyr)
+    } else if (age < 380000 * YEAR) {
+      // Dark ages (t < 380k years) - Atoms filling space
       targetRadius = 500;
+    } else if (age < 100e6 * YEAR) {
+      // Molecular era (t < 100 Myr) - See molecular CLOUDS as distinct clusters
+      // Clouds span ±250 units, so camera needs to be at ~800 to see all 10 clusters
+      targetRadius = 800;
+    } else if (age < 500e6 * YEAR) {
+      // Stellar era (t < 500 Myr) - See stars forming and clustering
+      // Stars spawn in same positions as density agents (±500 units)
+      targetRadius = 1000;
+    } else if (age < 1e9 * YEAR) {
+      // Galaxy assembly (t < 1 Gyr) - See galaxies forming
+      targetRadius = 1500;
     } else {
-      // Galactic era (t > 1 Gyr)
+      // Galactic era (t > 1 Gyr) - Full cosmic web
       const ageGyr = age / (1e9 * YEAR);
-      targetRadius = 1000 + (ageGyr * 1000); // Zoom out as universe ages
+      targetRadius = 2000 + (ageGyr * 500); // Slowly zoom out more
       }
     }
     
@@ -784,10 +799,20 @@ export class CompleteBottomUpScene {
     
     const stellarAgents = this.spawner.getAgents(AgentType.STELLAR) as StellarAgent[];
     
-    // When first star forms, fade out density cloud
-    if (stellarAgents.length > 0 && this.densityCloud) {
-      this.densityCloud.dispose();
-      this.densityCloud = undefined;
+    // When first star forms, clean up pre-stellar visualizations
+    if (stellarAgents.length > 0) {
+      // Dispose density cloud
+      if (this.densityCloud) {
+        this.densityCloud.dispose();
+        this.densityCloud = undefined;
+      }
+      
+      // Dispose molecular cloud particles (GPU performance!)
+      for (const cloud of this.molecularCloudParticles) {
+        cloud.stop();
+        cloud.dispose();
+      }
+      this.molecularCloudParticles = [];
     }
     
     for (const star of stellarAgents) {
