@@ -46,7 +46,11 @@
 - ScaleFactor synced with timeScale (no NaN)
 - Realistic physics (omega parameters)
 
-**Continuing:** Multi-scale rendering, proper zoom transitions
+**Investigating (Nov 9, BEAST MODE):**
+- ✅ Fixed mass too small (1e24 → 1e34 kg)  
+- ✅ Fixed timeScale not applied to spawner  
+- 🔍 Testing browser to verify stars actually form
+- Next: Manual browser test + console inspection
 
 ## 🎯 CURRENT STATE (Nov 9, 2025 - SYSTEMS WORKING, VISUALIZATION WRONG)
 
