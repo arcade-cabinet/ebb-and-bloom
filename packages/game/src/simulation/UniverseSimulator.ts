@@ -12,6 +12,8 @@
 
 import { CosmologyLaws } from '../laws/00-universal/cosmology';
 import { PHYSICS_CONSTANTS } from '../tables/physics-constants';
+import { SpatialIndex } from './SpatialIndex';
+import { StellarLaws } from '../laws/stellar';
 
 /**
  * Spacetime Coordinates
@@ -71,6 +73,8 @@ export interface LocalState {
  */
 export class UniverseSimulator {
   private state: UniverseState;
+  private spatialIndex: SpatialIndex;
+  private starCache: Map<string, any> = new Map();
   
   /**
    * Initialize at Big Bang
@@ -84,6 +88,15 @@ export class UniverseSimulator {
       horizonRadius_ly: 0,
       totalComplexity: 0,
     };
+    this.spatialIndex = new SpatialIndex(1000); // 1000 ly cells
+  }
+  
+  getCurrentTime(): number {
+    return this.state.t_universal;
+  }
+  
+  updateLocalState(_coords: SpacetimeCoordinates, _update: any): void {
+    // TODO: Implement state persistence
   }
   
   /**
