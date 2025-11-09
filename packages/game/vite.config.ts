@@ -16,6 +16,12 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
+    // Build SIMULATION mode (text reports, no 3D)
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'simulation.html'),
+      },
+    },
   },
 });
 
