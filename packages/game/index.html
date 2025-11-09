@@ -6,7 +6,11 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Ebb & Bloom - Complete Bottom-Up Universe</title>
+    <title>Ebb & Bloom - Universe Simulator</title>
+    
+    <!-- PROFESSIONAL FONTS -->
+    <link rel="stylesheet" href="/fonts/fonts.css">
+    
     <style>
         * {
             -webkit-tap-highlight-color: transparent;
@@ -19,7 +23,7 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
-            font-family: 'Courier New', monospace;
+            font-family: 'Work Sans', sans-serif; /* PROFESSIONAL FONT! */
             background: black;
             /* Mobile safe areas */
             padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
@@ -37,27 +41,62 @@
         
         #loading {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #00ff88;
-            font-size: 24px;
-            text-align: center;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
             z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: black;
+            
+            /* PROFESSIONAL SPLASH BACKGROUND */
+            background-image: url('/splash/splash-8ee36901.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
         
         #loading.hidden {
-            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-out;
+            pointer-events: none;
+        }
+        
+        .loading-content {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 40px 60px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+        }
+        
+        .title {
+            font-family: 'Playfair Display', serif; /* ELEGANT TITLE FONT! */
+            font-size: 48px;
+            font-weight: 700;
+            color: #00ff88;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            font-family: 'Work Sans', sans-serif;
+            font-size: 18px;
+            color: #88ccff;
+            margin-bottom: 30px;
         }
         
         .spinner {
             margin: 20px auto;
-            width: 50px;
-            height: 50px;
-            border: 3px solid rgba(0, 255, 136, 0.3);
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(0, 255, 136, 0.2);
             border-top-color: #00ff88;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: spin 1s ease-in-out infinite;
         }
         
         @keyframes spin {
@@ -65,28 +104,43 @@
         }
         
         .vision {
+            font-family: 'Work Sans', sans-serif;
+            font-size: 14px;
+            color: #aaccee;
+            max-width: 500px;
+            line-height: 1.8;
             margin-top: 20px;
+        }
+        
+        .seed-display {
+            font-family: 'JetBrains Mono', monospace; /* CODE FONT! */
             font-size: 12px;
-            color: #88ccff;
-            max-width: 400px;
-            line-height: 1.6;
+            color: #00ff88;
+            margin-top: 15px;
+            padding: 8px 16px;
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 5px;
+            border: 1px solid rgba(0, 255, 136, 0.3);
         }
     </style>
 </head>
 <body>
     <div id="loading">
-        <div>🌌 EBB & BLOOM</div>
-        <div class="spinner"></div>
-        <div style="font-size: 14px; margin-top: 10px;">Loading Complete System...</div>
-        <div class="vision">
-            <strong>The Vision:</strong><br>
-            Quantum Foam (t=0, Planck scale)<br>
-            → Particles → Atoms → Molecules<br>
-            → Stars → Galaxies → Cosmic Web<br>
-            → Maximum Expansion<br>
-            → Contraction → Big Crunch<br>
-            <br>
-            <em>Bottom-up emergence driven by Yuka agents + Legal Broker</em>
+        <div class="loading-content">
+            <div class="title">EBB & BLOOM</div>
+            <div class="subtitle">Universe Simulator</div>
+            <div class="spinner"></div>
+            <div class="vision">
+                <strong>From Quantum Foam to Cosmic Web</strong><br>
+                Watch the universe form from nothing.<br>
+                <br>
+                • Atoms → Molecules → Stars → Galaxies<br>
+                • Real chemistry, real physics<br>
+                • Bottom-up emergence<br>
+                <br>
+                <em>Science has visual meaning.</em>
+            </div>
+            <div class="seed-display" id="seed-display"></div>
         </div>
     </div>
     
@@ -102,10 +156,14 @@
         // Get canvas
         const canvas = document.getElementById('renderCanvas');
         
-        // Hide loading screen
+        // Show seed in loading screen
+        document.getElementById('seed-display').textContent = `SEED: ${seed}`;
+        
+        // Hide loading screen after scene loads
         const loading = document.getElementById('loading');
         setTimeout(() => {
             loading.classList.add('hidden');
+            setTimeout(() => loading.remove(), 500); // Remove after fade
         }, 2000);
         
         // Create THE scene
