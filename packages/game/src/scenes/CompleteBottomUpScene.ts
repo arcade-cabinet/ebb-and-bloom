@@ -764,6 +764,12 @@ export class CompleteBottomUpScene {
   private updateStarVisuals(): void {
     const stellarAgents = this.spawner.getAgents(AgentType.STELLAR) as StellarAgent[];
     
+    // When first star forms, fade out density cloud
+    if (stellarAgents.length > 0 && this.densityCloud) {
+      this.densityCloud.dispose();
+      this.densityCloud = undefined;
+    }
+    
     for (const star of stellarAgents) {
       if (!this.starMeshes.has(star)) {
         // Create visual mesh for new star
