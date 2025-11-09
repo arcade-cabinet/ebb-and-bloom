@@ -1,56 +1,56 @@
 # Project Progress
 
 **Last Updated**: 2025-11-08  
-**Current Sprint**: Gen3 Tools & Structures  
-**Phase**: Technological Emergence Implementation Complete ✨
+**Current Sprint**: Gen4 Advanced Civilization  
+**Phase**: Complex Social Structures Complete ✨
 
 ---
 
-## Latest Achievement: Gen3 Tools & Structures ✨
+## Latest Achievement: Gen4 Advanced Civilization ✨
 
-Built a complete technological emergence system where tools and structures arise from intelligence + social learning:
+Built a complete economic and social system where civilization emerges from specialization, trade, and collaborative crafting:
 
 **Core Features**:
-- **Tool System**: Discovery, creation, and cultural transmission of 4 archetype-specific tools
-- **Structure Building**: Collaborative construction of 4 archetype-specific structures
-- **Cultural Learning**: Knowledge spreads through social networks (pack creatures teach)
-- **Degradation**: Tools and structures wear over time, forcing renewal
+- **Trade System**: Barter economy with inventories, offers, social credit, and pack-level sharing
+- **Specialization System**: 5 roles (hunter, builder, crafter, scout, leader) emerging from action patterns
+- **Workshop System**: 4 workshop types (smithy, carpentry, weaving, assembly) for advanced tool crafting
+- **Advanced Tools**: 3x durability, 2x efficiency, quality-scaled
 
 **What Players See**:
-- **Tools** (4 types):
-  - Digging sticks (brown, Burrow Engineers)
-  - Gathering poles (green, Arboreal Opportunists)
-  - Wading spears (blue, Littoral Harvesters)
-  - Striking stones (gray, Cursorial Foragers)
-- **Structures** (4 types):
-  - Burrows (underground entrance + mound)
-  - Platforms (elevated tree nests)
-  - Stiltworks (water platforms on stilts)
-  - Windbreaks (angled shelter walls)
-- **Social Learning**: Yellow rings above creatures actively teaching
-- **Building Projects**: Ghosted yellow wireframes showing construction in progress
-- **Occupancy**: Warm glow around structures being used
+- **Trade networks**: Colored lines connecting traders (yellow=tools, green=food, brown=materials)
+- **Specialization badges**: 3D icons above specialized creatures
+  - 🔺 Triangle (red) = Hunter
+  - ⬛ Cube (brown) = Builder
+  - ⭕ Torus (yellow) = Crafter
+  - 🟦 Sphere (cyan) = Scout
+  - ⬟ Star (purple) = Leader
+- **Workshops**: Glowing cylinders (orange=smithy, brown=carpentry, blue=weaving, yellow=assembly)
+- **Economic hubs**: Dense clusters where trade and production concentrate
+- **Division of labor**: Complementary specialists forming interdependent communities
 
 **Files Created**:
-- `packages/game/src/systems/ToolSystem.ts` (330 lines)
-- `packages/game/src/systems/StructureBuildingSystem.ts` (350 lines)
-- `packages/game/src/renderers/gen3/ToolRenderer.ts` (240 lines)
-- `packages/game/src/renderers/gen3/StructureRenderer.ts` (400 lines)
-- `docs/GEN3_TOOLS_STRUCTURES.md` (complete documentation)
+- `packages/game/src/systems/TradeSystem.ts` (380 lines)
+- `packages/game/src/systems/SpecializationSystem.ts` (260 lines)
+- `packages/game/src/systems/WorkshopSystem.ts` (350 lines)
+- `packages/game/src/renderers/gen4/CivilizationRenderer.ts` (380 lines)
+- `docs/GEN4_ADVANCED_CIVILIZATION.md` (complete documentation)
 
 **Files Modified**:
-- `packages/game/src/scenes/GameScene.ts` - Integrated tool and structure systems
+- `packages/game/src/systems/index.ts` - Exported Gen4 systems
 
-**Player Impact**: Creatures are now technological beings! Smart creatures invent tools, teach each other, and collaborate to build structures. Technology emerges organically from intelligence and social learning, creating unique cultural development paths every playthrough.
+**Player Impact**: Creatures are now economic beings in an interdependent civilization! Intelligent creatures specialize, trade emerges from surplus, workshops create advanced tools, and complex social structures form naturally. Every playthrough generates unique economic and social patterns.
 
 ---
 
 ## Recent Achievements
 
-### Gen2: Pack Formation & Creature Interactions
-Built complete social dynamics with pack formation and four interaction types (territorial, social, predation, coordination).
+### Gen3: Tools & Structures (Technological Emergence)
+Built tool discovery, cultural transmission, and collaborative building with 4 tool types and 4 structure types.
 
-### Gen1+: Living Creature Ecosystem
+### Gen2: Pack Formation & Creature Interactions
+Built complete social dynamics with pack formation and four interaction types.
+
+### Gen1: Living Creature Ecosystem
 Built autonomous AI-driven creature behaviors with walking animations and resource seeking.
 
 ### Multi-Scale Celestial View
