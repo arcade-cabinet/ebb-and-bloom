@@ -659,26 +659,26 @@ export class CompleteBottomUpScene {
       this.molecularMeshes.push(...cloudMolecules);
       
       // Also add particle system for visual density (fog effect)
-      const cloud = new ParticleSystem(`cloud-fog-${c}`, 500, this.scene);
+      const cloud = new ParticleSystem(`cloud-fog-${c}`, 1000, this.scene);
       cloud.particleTexture = new Texture(
         'https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/packages/tools/playground/public/textures/flare.png',
         this.scene
       );
       
       cloud.emitter = clusterCenter;
-      cloud.minEmitBox = new BabylonVector3(-40, -40, -40);
-      cloud.maxEmitBox = new BabylonVector3(40, 40, 40);
+      cloud.minEmitBox = new BabylonVector3(-60, -60, -60);
+      cloud.maxEmitBox = new BabylonVector3(60, 60, 60);
       
-      cloud.minLifeTime = 15;
-      cloud.maxLifeTime = 30;
-      cloud.emitRate = 50;
-      cloud.minSize = 2;
-      cloud.maxSize = 5;
+      cloud.minLifeTime = 25;
+      cloud.maxLifeTime = 50;
+      cloud.emitRate = 100;
+      cloud.minSize = 4;
+      cloud.maxSize = 10; // Much larger fog
       
-      // Faint blue fog
-      cloud.color1 = new Color4(0.3, 0.5, 0.8, 0.3);
-      cloud.color2 = new Color4(0.4, 0.6, 0.9, 0.4);
-      cloud.colorDead = new Color4(0.2, 0.4, 0.7, 0.1);
+      // BRIGHT blue fog (visible!)
+      cloud.color1 = new Color4(0.6, 0.8, 1, 0.7);
+      cloud.color2 = new Color4(0.7, 0.9, 1, 0.8);
+      cloud.colorDead = new Color4(0.5, 0.7, 0.9, 0.3);
       
       cloud.minEmitPower = 0.1;
       cloud.maxEmitPower = 0.3;
