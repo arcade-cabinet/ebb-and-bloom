@@ -139,12 +139,14 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 # Capacitor/Android build files
-android/
-ios/
+# TEMPORARILY ALLOW android/ and APKs for development viability proof
+# android/
+# ios/
 .capacitor/
 
 # Build outputs
-build/
+# TEMPORARILY ALLOW build/ for APK (development viability proof)
+# build/
 
 # Generated assets (AI-generated or built)
 public/splash/
@@ -164,9 +166,13 @@ public/creatures/
 playwright-results/
 playwright-report/
 test-results/
-*.png
-*.mp4
-*.webm
+
+# Screenshots - ALLOW for viability proof during development
+# (Re-enable blocking after we've proven the build works)
+# *.png
+# *.mp4
+# *.webm
+
 # But keep config files
 !playwright.config.ts
 !vite.config.ts
