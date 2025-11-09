@@ -6,6 +6,7 @@
 
 import { PERIODIC_TABLE } from '../tables/periodic-table';
 import { Color3, StandardMaterial, PBRMaterial } from '@babylonjs/core';
+import { RadiationLaws } from '../laws/02-planetary/radiation';
 
 export class PlanetaryVisuals {
   /**
@@ -24,12 +25,36 @@ export class PlanetaryVisuals {
     // Atmosphere adds haze
     const atmosphericScatter = hasAtmosphere ? 0.3 : 0;
     
+    // Check for radioactive elements (glow!)
+    const U_content = crust.U || 0;
+    const Th_content = crust.Th || 0;
+    const isRadioactive = U_content > 0.001 || Th_content > 0.001;
+    
+    // Thermal glow from temperature
+    const thermalGlow = temp_K > 800 ? RadiationLaws.thermal.glowColor(temp_K) : null;
+    
+    // Radioactive glow (greenish tint)
+    const radioactiveGlow = isRadioactive ? new Color3(0.2, 1, 0.3) : null;
+    
+    // Combine glows
+    let emissive = null;
+    if (thermalGlow) {
+      emissive = new Color3(thermalGlow.r, thermalGlow.g, thermalGlow.b);
+    }
+    if (radioactiveGlow && isRadioactive) {
+      emissive = emissive 
+        ? Color3.Lerp(emissive, radioactiveGlow, 0.3)
+        : radioactiveGlow;
+    }
+    
     return {
       baseColor: color,
       roughness,
       metallic,
       atmosphericHaze: atmosphericScatter,
-      emissive: temp_K > 1000 ? this.blackbodyGlow(temp_K) : null,
+      emissive,
+      isRadioactive,
+      radiationDose_mSv: isRadioactive ? U_content * 1000 + Th_content * 500 : 0,
     };
   }
   
