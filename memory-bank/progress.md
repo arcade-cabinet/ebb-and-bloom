@@ -3,10 +3,10 @@
 
 ---
 
-## CURRENT: Engine v1.0 + LAWS FULLY PORTED
+## CURRENT: Planetary Exploration Engine v1.1
 
 **Status:** ✅ PRODUCTION READY  
-**Focus:** 100% Yuka-native governors, laws directory eliminated
+**Focus:** World exploration powered by 15 governors
 
 ---
 
@@ -17,15 +17,14 @@
 - ✅ Engine refactor (flattened monorepo)
 - ✅ React Three Fiber integration
 - ✅ BabylonJS removal
-- ✅ Demo package with 4 working demos
-- ✅ Zustand state management
-- ✅ **17 Yuka-native governors across 4 domains**
-- ✅ **COMPLETE port: engine/laws → engine/governors**
-- ✅ **Laws directory DELETED (8,755 lines eliminated)**
-- ✅ **3 new constant tables created**
-- ✅ Comprehensive documentation (5,000+ lines)
-- ✅ Documentation cleanup (removed 20+ obsolete docs)
-- ✅ Clean directory structure (only README.md in root)
+- ✅ **Laws → Governors port (8,755 lines eliminated)**
+- ✅ **Universe/stellar removal (4,664 lines eliminated)**
+- ✅ **Total code reduction: 13,419 lines (71%)**
+- ✅ **15 planetary governors operational**
+- ✅ **3 constant tables**
+- ✅ Focus: ONE world exploration
+- ✅ Documentation updated
+- ✅ Clean structure (only README.md in root)
 
 ### Git History:
 - `65484c0` - DFU foundation checkpoint
