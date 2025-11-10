@@ -180,8 +180,10 @@ export class SettlementPlacer {
     const householdSize = 5; // Average household
     const houseCount = Math.ceil(population / householdSize);
     
-    // LAW-BASED: Use ServiceTypology to determine governance
-    const governanceType = ServiceTypology.classify(population, 1.0, 0.3);
+    // GOVERNOR-BASED: Classify settlement by population
+    const governanceType = population < 50 ? 'band' :
+                          population < 500 ? 'tribe' :
+                          population < 5000 ? 'chiefdom' : 'state';
     
     console.log(`[Settlement] ${settlement.name}: ${governanceType}, pop ${population}`);
     
