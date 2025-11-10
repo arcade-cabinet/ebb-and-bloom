@@ -20,6 +20,6 @@
       "@engine/*": ["../engine/*"]
     }
   },
-  "include": ["src"]
+  "include": ["."]
 }
 

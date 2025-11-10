@@ -29,13 +29,13 @@ world.update(delta);
 
 ```
 game/
-├── src/
-│   ├── main.tsx      # Entry point
-│   └── Game.tsx      # Main game component
+├── main.tsx          # Entry point
+├── Game.tsx          # Main game component
 ├── index.html        # HTML shell
 ├── package.json      # Dependencies
 ├── vite.config.ts    # Build config
-└── tsconfig.json     # TypeScript config
+├── tsconfig.json     # TypeScript config
+└── README.md         # This file
 ```
 
 **Total:** ~100 lines. Clean and simple.
