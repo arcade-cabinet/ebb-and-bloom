@@ -253,11 +253,23 @@
         import { StellarVisuals } from './src/renderers/StellarVisuals.ts';
         import { MolecularVisuals } from './src/renderers/MolecularVisuals.ts';
         
-        // Canvas setup
-        const universeCanvas = document.getElementById('universe-canvas');
-        const molecularCanvas = document.getElementById('molecular-canvas');
-        const universeCtx = universeCanvas.getContext('2d');
-        const molecularCtx = molecularCanvas.getContext('2d');
+        console.log('✅ Module loaded - waiting for DOM...');
+        
+        // Wait for DOM to be ready before accessing elements
+        function initializeSimulation() {
+            console.log('🎬 Initializing simulation...');
+            
+            // Canvas setup
+            const universeCanvas = document.getElementById('universe-canvas');
+            const molecularCanvas = document.getElementById('molecular-canvas');
+            
+            if (!universeCanvas || !molecularCanvas) {
+                console.error('❌ Canvas elements not found!', { universeCanvas, molecularCanvas });
+                return;
+            }
+            
+            const universeCtx = universeCanvas.getContext('2d');
+            const molecularCtx = molecularCanvas.getContext('2d');
         
         // Set canvas sizes
         function resizeCanvases() {
@@ -668,28 +680,36 @@
             };
         }
         
-        // Start immediately when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                console.log('DOM loaded, starting simulation...');
+            // Start immediately when DOM is ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => {
+                    console.log('DOM loaded, starting simulation...');
+                    setTimeout(startSimulation, 100);
+                });
+            } else {
+                console.log('DOM already loaded, starting simulation...');
                 setTimeout(startSimulation, 100);
-            });
-        } else {
-            console.log('DOM already loaded, starting simulation...');
-            setTimeout(startSimulation, 100);
-        }
-        
-        // Fallback: force hide splash after 3 seconds
-        setTimeout(() => {
-            const splash = document.getElementById('splash');
-            if (splash && !splash.classList.contains('hidden')) {
-                console.warn('⚠️ Splash still visible after 3s - force hiding');
-                splash.classList.add('hidden');
-                if (!window.universe) {
-                    console.error('❌ window.universe not initialized!');
-                }
             }
-        }, 3000);
+            
+            // Fallback: force hide splash after 3 seconds
+            setTimeout(() => {
+                const splash = document.getElementById('splash');
+                if (splash && !splash.classList.contains('hidden')) {
+                    console.warn('⚠️ Splash still visible after 3s - force hiding');
+                    splash.classList.add('hidden');
+                    if (!window.universe) {
+                        console.error('❌ window.universe not initialized!');
+                    }
+                }
+            }, 3000);
+        } // end initializeSimulation
+        
+        // Call init when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeSimulation);
+        } else {
+            initializeSimulation();
+        }
     </script>
 </body>
 </html>
