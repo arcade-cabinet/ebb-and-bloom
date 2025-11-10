@@ -3,6 +3,31 @@ import { test, expect } from '@playwright/test';
 test.setTimeout(60000); // 60 seconds
 
 test('ACTUAL USER FLOW - click menu, see stars', async ({ page }) => {
+  // Set up error/log listeners BEFORE any navigation
+  const errors: string[] = [];
+  const logs: string[] = [];
+  
+  page.on('pageerror', err => {
+    const errMsg = `PAGEERROR: ${err.message}`;
+    console.log('❌', errMsg);
+    errors.push(errMsg);
+  });
+  
+  page.on('console', msg => {
+    const text = `[${msg.type()}] ${msg.text()}`;
+    console.log(text);
+    logs.push(text);
+    if (msg.type() === 'error') {
+      errors.push(text);
+    }
+  });
+  
+  page.on('requestfailed', req => {
+    const msg = `REQUEST FAILED: ${req.url()}`;
+    console.log('❌', msg);
+    errors.push(msg);
+  });
+  
   console.log('\n=== STEP 1: Go to menu ===');
   await page.goto('http://localhost:5173/');
   await page.waitForLoadState('networkidle');
@@ -33,21 +58,8 @@ test('ACTUAL USER FLOW - click menu, see stars', async ({ page }) => {
   });
   console.log('Splash visible:', splashVisible);
   
-  console.log('\n=== STEP 5: Check console for errors ===');
-  const errors: string[] = [];
-  page.on('pageerror', err => {
-    errors.push(err.message);
-  });
-  
-  const logs: string[] = [];
-  page.on('console', msg => {
-    if (msg.type() === 'error') {
-      errors.push(msg.text());
-    }
-    logs.push(`[${msg.type()}] ${msg.text()}`);
-  });
-  
-  await page.waitForTimeout(3000);
+  console.log('\n=== STEP 5: Wait and collect logs ===');
+  await page.waitForTimeout(5000);
   
   console.log('\n=== CONSOLE LOGS (last 20) ===');
   logs.slice(-20).forEach(log => console.log(log));

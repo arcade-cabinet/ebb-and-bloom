@@ -275,12 +275,12 @@
         
         // Set canvas sizes
         function resizeCanvases() {
+            if (!universeCanvas || !molecularCtx) return; // Guard against undefined
             universeCanvas.width = window.innerWidth;
             universeCanvas.height = window.innerHeight * 0.85;
             molecularCanvas.width = window.innerWidth;
             molecularCanvas.height = window.innerHeight * 0.15;
         }
-        resizeCanvases();
         window.addEventListener('resize', resizeCanvases);
         
         // Simulation state
