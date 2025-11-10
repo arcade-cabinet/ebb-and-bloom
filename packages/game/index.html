@@ -2,136 +2,148 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Ebb & Bloom - Universe Simulator</title>
-    
-    <!-- PROFESSIONAL FONTS -->
-    <link rel="stylesheet" href="/fonts/fonts.css">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ebb & Bloom - Universe Formation</title>
     <style>
         * {
-            -webkit-tap-highlight-color: transparent;
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            user-select: none;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
         body {
-            margin: 0;
-            padding: 0;
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #000;
             overflow: hidden;
-            font-family: 'Work Sans', sans-serif; /* PROFESSIONAL FONT! */
-            background: black;
-            /* Mobile safe areas */
-            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         }
         
-        #renderCanvas {
-            width: 100%;
-            height: 100%;
-            touch-action: none;
+        /* Main canvas - full screen */
+        #universe-canvas {
             display: block;
+            width: 100vw;
+            height: 85vh;
+            cursor: crosshair;
+        }
+        
+        /* Molecular ticker tape - bottom 15% */
+        #molecular-canvas {
+            display: block;
+            width: 100vw;
+            height: 15vh;
+            background: linear-gradient(180deg, #1a1f2e 0%, #2d3748 100%);
+            border-top: 2px solid #38A169;
+        }
+        
+        /* HUD - top right */
+        #hud {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            min-width: 100vw;
-            min-height: 100vh;
-        }
-        
-        /* ═══════════════════════════════════════════════ */
-        /* NEW LAYOUT: Full screen + bottom molecular strip */
-        /* ═══════════════════════════════════════════════ */
-        
-        /* MOLECULAR STRIP - bottom horizontal panel */
-        .molecular-strip {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 15%;
-            background: linear-gradient(180deg, rgba(74, 85, 104, 0.98), rgba(42, 67, 101, 0.98));
-            backdrop-filter: blur(15px);
-            border-top: 3px solid #38A169; /* Bloom Emerald */
-            z-index: 10;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 10px;
-        }
-        
-        /* VCR button group - LEFT side */
-        .vcr-controls {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-        
-        .vcr-btn {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #38A169, #2F855A);
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, rgba(74, 85, 104, 0.95), rgba(74, 85, 104, 0.85));
             border: 2px solid #38A169;
             border-radius: 8px;
-            color: white;
-            font-size: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            pointer-events: all;
+            padding: 20px;
+            color: #E2E8F0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            min-width: 280px;
+            backdrop-filter: blur(10px);
         }
         
-        .vcr-btn:hover {
-            transform: scale(1.05);
+        #hud h3 {
+            font-family: 'Playfair Display', serif;
+            color: #38A169;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        #hud .metric {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(56, 161, 105, 0.2);
+        }
+        
+        #hud .label {
+            color: #A0AEC0;
+        }
+        
+        #hud .value {
+            color: #F7FAFC;
+            font-weight: bold;
+        }
+        
+        /* VCR Controls - bottom left */
+        #vcr-controls {
+            position: fixed;
+            bottom: calc(15vh + 20px);
+            left: 20px;
+            background: linear-gradient(135deg, rgba(74, 85, 104, 0.95), rgba(74, 85, 104, 0.85));
+            border: 2px solid #38A169;
+            border-radius: 8px;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        #vcr-controls button {
+            background: linear-gradient(135deg, #38A169, #2F855A);
+            border: none;
+            color: white;
+            font-size: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: monospace;
+        }
+        
+        #vcr-controls button:hover {
+            transform: scale(1.1);
             box-shadow: 0 0 20px rgba(56, 161, 105, 0.6);
         }
         
-        /* Molecular viewport - CENTER */
-        .molecular-viewport {
-            flex: 1;
-            height: 100%;
-            position: relative;
-            margin: 0 10px;
+        #vcr-controls button:active {
+            transform: scale(0.95);
         }
         
-        .molecular-label {
-            position: absolute;
-            top: 5px;
-            left: 10px;
-            font-family: 'Work Sans', sans-serif;
-            font-size: 10px;
-            font-weight: 600;
-            color: #38A169;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            z-index: 11;
-            pointer-events: none;
-        }
-        
-        /* Free-floating event notifications (agent-spawned) */
-        .event-notification {
-            position: fixed;
-            padding: 12px 20px;
-            background: linear-gradient(135deg, rgba(74, 85, 104, 0.95), rgba(42, 67, 101, 0.95));
-            border: 2px solid #D69E2E; /* Trait Gold */
-            border-radius: 8px;
-            color: #F7FAFC;
-            font-family: 'Work Sans', sans-serif;
+        #vcr-controls .speed {
+            color: #E2E8F0;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 14px;
-            backdrop-filter: blur(10px);
-            animation: float-in 0.5s ease-out;
-            pointer-events: none;
-            z-index: 20;
+            padding: 0 10px;
         }
         
-        @keyframes float-in {
+        /* Event notifications */
+        #events-container {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        .event-notification {
+            background: linear-gradient(135deg, rgba(56, 161, 105, 0.95), rgba(47, 133, 90, 0.95));
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 18px;
+            animation: slideIn 0.5s ease-out, fadeOut 0.5s ease-in 4.5s;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(-20px);
             }
             to {
                 opacity: 1;
@@ -139,202 +151,400 @@
             }
         }
         
-        #loading {
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+        
+        /* Loading splash */
+        #splash {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: 1000;
+            background: linear-gradient(180deg, #0a0a1a 0%, #1a1a2e 100%);
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
-            background: black;
-            
-            /* PROFESSIONAL SPLASH BACKGROUND */
-            background: linear-gradient(135deg, #001122 0%, #002244 50%, #001133 100%);
-            /* Fallback gradient (splash images don't load in dev) */
+            align-items: center;
+            z-index: 2000;
+            transition: opacity 0.5s;
         }
         
-        #loading.hidden {
-            opacity: 0;
-            transition: opacity 0.5s ease-out;
-            pointer-events: none;
-        }
-        
-        .loading-content {
-            background: rgba(0, 0, 0, 0.8);
-            padding: 40px 60px;
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(0, 255, 136, 0.3);
-        }
-        
-        .title {
-            font-family: 'Playfair Display', serif; /* ELEGANT TITLE FONT! */
+        #splash h1 {
+            font-family: 'Playfair Display', serif;
+            color: #38A169;
             font-size: 48px;
-            font-weight: 700;
-            color: #00ff88;
             margin-bottom: 20px;
-            letter-spacing: 2px;
         }
         
-        .subtitle {
+        #splash p {
             font-family: 'Work Sans', sans-serif;
+            color: #A0AEC0;
             font-size: 18px;
-            color: #88ccff;
-            margin-bottom: 30px;
         }
         
-        .spinner {
-            margin: 20px auto;
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(0, 255, 136, 0.2);
-            border-top-color: #00ff88;
-            border-radius: 50%;
-            animation: spin 1s ease-in-out infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .vision {
-            font-family: 'Work Sans', sans-serif;
-            font-size: 14px;
-            color: #aaccee;
-            max-width: 500px;
-            line-height: 1.8;
-            margin-top: 20px;
-        }
-        
-        .seed-display {
-            font-family: 'JetBrains Mono', monospace; /* CODE FONT! */
-            font-size: 12px;
-            color: #00ff88;
-            margin-top: 15px;
-            padding: 8px 16px;
-            background: rgba(0, 255, 136, 0.1);
-            border-radius: 5px;
-            border: 1px solid rgba(0, 255, 136, 0.3);
+        #splash.hidden {
+            opacity: 0;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
-    <div id="loading">
-        <div class="loading-content">
-            <div class="title">EBB & BLOOM</div>
-            <div class="subtitle">Universe Simulator</div>
-            <div class="spinner"></div>
-            <div class="vision">
-                <strong>From Quantum Foam to Cosmic Web</strong><br>
-                Watch the universe form from nothing.<br>
-                <br>
-                • Atoms → Molecules → Stars → Galaxies<br>
-                • Real chemistry, real physics<br>
-                • Bottom-up emergence<br>
-                <br>
-                <em>Science has visual meaning.</em>
-            </div>
-            <div class="seed-display" id="seed-display"></div>
+    <!-- Loading splash -->
+    <div id="splash">
+        <h1>Ebb & Bloom</h1>
+        <p>Initializing universe...</p>
+    </div>
+    
+    <!-- Main universe canvas -->
+    <canvas id="universe-canvas"></canvas>
+    
+    <!-- Molecular ticker tape -->
+    <canvas id="molecular-canvas"></canvas>
+    
+    <!-- HUD -->
+    <div id="hud">
+        <h3>Universe State</h3>
+        <div class="metric">
+            <span class="label">Age:</span>
+            <span class="value" id="age">0 yr</span>
+        </div>
+        <div class="metric">
+            <span class="label">Temperature:</span>
+            <span class="value" id="temperature">0 K</span>
+        </div>
+        <div class="metric">
+            <span class="label">Phase:</span>
+            <span class="value" id="phase">void</span>
+        </div>
+        <div class="metric">
+            <span class="label">Stars:</span>
+            <span class="value" id="star-count">0</span>
+        </div>
+        <div class="metric">
+            <span class="label">Time Scale:</span>
+            <span class="value" id="time-scale">1.0x</span>
         </div>
     </div>
     
-    <canvas id="renderCanvas"></canvas>
-    
-    <!-- MOLECULAR STRIP - bottom panel with VCR controls -->
-    <div class="molecular-strip">
-        <!-- VCR Controls - LEFT -->
-        <div class="vcr-controls">
-            <button class="vcr-btn" id="btn-rewind" title="Rewind">◀◀</button>
-            <button class="vcr-btn" id="btn-back" title="Step Back">◀</button>
-            <button class="vcr-btn" id="btn-play" title="Play/Pause">▶</button>
-            <button class="vcr-btn" id="btn-forward" title="Step Forward">▶</button>
-            <button class="vcr-btn" id="btn-fastforward" title="Fast Forward">▶▶</button>
+    <!-- VCR Controls -->
+    <div id="vcr-controls">
+        <button id="btn-slowdown" title="Slow Down">◀◀</button>
+        <button id="btn-pause" title="Play/Pause">▶</button>
+        <button id="btn-speedup" title="Speed Up">▶▶</button>
+        <div class="speed">
+            Speed: <span id="speed-display">1x</span>
         </div>
-        
-        <!-- Molecular Viewport - CENTER (Babylon renders here) -->
-        <div class="molecular-viewport">
-            <div class="molecular-label">MOLECULAR BREAKDOWN</div>
-        </div>
-        
-        <!-- Future: Speed/settings on right side -->
     </div>
     
-    <!-- Free-floating event notifications container -->
+    <!-- Event notifications -->
     <div id="events-container"></div>
     
     <script type="module">
-        import { CompleteBottomUpScene } from './src/scenes/CompleteBottomUpScene.ts';
+        import { EntropyAgent } from './src/yuka-integration/agents/EntropyAgent.ts';
+        import { AgentSpawner, AgentType } from './src/yuka-integration/AgentSpawner.ts';
+        import { StellarVisuals } from './src/renderers/StellarVisuals.ts';
+        import { MolecularVisuals } from './src/renderers/MolecularVisuals.ts';
         
-        // Get canvas
-        const canvas = document.getElementById('renderCanvas');
+        // Canvas setup
+        const universeCanvas = document.getElementById('universe-canvas');
+        const molecularCanvas = document.getElementById('molecular-canvas');
+        const universeCtx = universeCanvas.getContext('2d');
+        const molecularCtx = molecularCanvas.getContext('2d');
         
-        // NO SEED for universe - seeds are for PLANETS!
-        // Universe is just "the universe" - deterministic Big Bang
-        document.getElementById('seed-display').textContent = 'THE UNIVERSE';
+        // Set canvas sizes
+        function resizeCanvases() {
+            universeCanvas.width = window.innerWidth;
+            universeCanvas.height = window.innerHeight * 0.85;
+            molecularCanvas.width = window.innerWidth;
+            molecularCanvas.height = window.innerHeight * 0.15;
+        }
+        resizeCanvases();
+        window.addEventListener('resize', resizeCanvases);
         
-        // CRITICAL: Only hide loading when canvas is READY and rendering
-        const loading = document.getElementById('loading');
-        let sceneReady = false;
+        // Simulation state
+        let paused = false;
+        let speedMultiplier = 1.0;
+        let time = 0;
+        let lastTime = performance.now();
         
-        // Check if scene is rendering (wait for first render)
-        const checkReady = setInterval(() => {
-            if (window.universe && window.universe.scene) {
-                const meshCount = window.universe.scene.meshes.length;
-                if (meshCount > 0 || sceneReady) {
-                    clearInterval(checkReady);
-                    loading.classList.add('hidden');
-                    setTimeout(() => loading.remove(), 500);
-                    console.log('✅ Scene ready - hiding splash');
-                }
-            }
-        }, 500);
+        // Initialize Yuka agents
+        const spawner = new AgentSpawner();
+        const entropyAgent = new EntropyAgent();
         
-        // Fallback: Hide after 5s even if not ready (prevent infinite splash)
-        setTimeout(() => {
-            clearInterval(checkReady);
-            if (!loading.classList.contains('hidden')) {
-                loading.classList.add('hidden');
-                setTimeout(() => loading.remove(), 500);
-                console.log('⚠️  Splash timeout - hiding anyway');
-            }
-        }, 5000);
+        // Add entropy agent to spawner's entity manager
+        spawner.getEntityManager().add(entropyAgent);
+        entropyAgent.start();
         
-        // Create THE universe (no seed - this is THE universe!)
-        const universe = new CompleteBottomUpScene(canvas);
-        
-        // Expose to window for debugging
-        window.universe = universe;
-        
-        // Seeds will be assigned when zooming to planets (game mode)
-        window.assignPlanetSeed = (planetId) => {
-            const seed = `v1-planet-${planetId}-${Date.now()}`;
-            console.log(`🌍 Entering planet ${planetId} with seed: ${seed}`);
-            return seed;
+        // Camera state (for universe view)
+        const camera = {
+            x: 0,
+            y: 0,
+            zoom: 0.5, // Fit ±500 unit grid into canvas
+            targetZoom: 0.5
         };
         
-        console.log('');
-        console.log('🌌 COMPLETE BOTTOM-UP UNIVERSE SIMULATOR');
-        console.log('');
-        console.log('THE VISION:');
-        console.log('  1. Big Bang (t=0) - Quantum foam at Planck scale');
-        console.log('  2. Particles → Atoms → Molecules');
-        console.log('  3. Camera ZOOMS OUT as complexity grows');
-        console.log('  4. Molecules → Stars → Galaxies → Cosmic web');
-        console.log('  5. Maximum expansion → Contraction → Big Crunch');
-        console.log('');
-        console.log('CONTROLS:');
-        console.log('  ▶ PLAY - Start/pause simulation');
-        console.log('  Mouse - Rotate camera');
-        console.log('  Zoom to planet → Assigns seed → Enter game mode');
-        console.log('');
-        console.log('THIS IS THE UNIVERSE (no seed)');
-        console.log('Seeds assigned per-planet when entering game mode');
-        console.log('');
-        console.log('🎬 Press PLAY to begin Big Bang...');
+        // Molecular ticker state
+        const molecules = [];
+        const molecularTypes = ['H2', 'H2O', 'CO2', 'CH4', 'NH3', 'O2'];
+        let molecularRotation = 0;
+        
+        // Initialize molecular ticker
+        function initMolecularTicker() {
+            for (let i = 0; i < 20; i++) {
+                const type = molecularTypes[Math.floor(Math.random() * molecularTypes.length)];
+                molecules.push({
+                    type,
+                    x: Math.random() * molecularCanvas.width,
+                    rotation: Math.random() * Math.PI * 2,
+                    rotationSpeed: 0.01 + Math.random() * 0.02,
+                    scrollSpeed: 0.5 + Math.random() * 1.0,
+                    blueprint: MolecularVisuals.getMolecularGeometry(type)
+                });
+            }
+        }
+        initMolecularTicker();
+        
+        // 3D to 2D projection (orthographic)
+        function project(x, y, z) {
+            const screenX = universeCanvas.width / 2 + (x - camera.x) * camera.zoom;
+            const screenY = universeCanvas.height / 2 + (y - camera.y) * camera.zoom;
+            return { x: screenX, y: screenY };
+        }
+        
+        // Color from temperature (Wien's Law)
+        function temperatureToColor(temp) {
+            // Simplified Wien's Law color mapping
+            if (temp > 30000) return { r: 155, g: 176, b: 255 }; // O-type blue
+            if (temp > 10000) return { r: 170, g: 191, b: 255 }; // B-type blue-white
+            if (temp > 7500) return { r: 202, g: 215, b: 255 };  // A-type white
+            if (temp > 6000) return { r: 248, g: 247, b: 255 };  // F-type yellow-white
+            if (temp > 5200) return { r: 255, g: 244, b: 234 };  // G-type yellow (Sun)
+            if (temp > 3700) return { r: 255, g: 210, b: 161 };  // K-type orange
+            return { r: 255, g: 204, b: 111 };                   // M-type red
+        }
+        
+        // Render universe (stars from agents)
+        function renderUniverse() {
+            // Clear
+            universeCtx.fillStyle = entropyAgent.phase === 'void' ? '#000000' : '#0a0a1a';
+            universeCtx.fillRect(0, 0, universeCanvas.width, universeCanvas.height);
+            
+            // Get stellar agents from spawner
+            const stellarAgents = spawner.getAgents(AgentType.STELLAR);
+            
+            if (stellarAgents.length === 0) {
+                // No stars yet - show cosmic background or early universe effects
+                if (entropyAgent.phase === 'big-bang') {
+                    // White flash
+                    const alpha = Math.min(1.0, (3.8e13 - entropyAgent.age) / 1e13);
+                    universeCtx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.8})`;
+                    universeCtx.fillRect(0, 0, universeCanvas.width, universeCanvas.height);
+                }
+                return;
+            }
+            
+            // Render stars as glowing points
+            for (const agent of stellarAgents) {
+                const pos = project(agent.position.x, agent.position.y, agent.position.z);
+                
+                // Skip if off-screen
+                if (pos.x < -50 || pos.x > universeCanvas.width + 50 ||
+                    pos.y < -50 || pos.y > universeCanvas.height + 50) {
+                    continue;
+                }
+                
+                // Get star properties
+                const mass = agent.mass || 1.0;
+                const blueprint = StellarVisuals.createBlueprint(mass);
+                const color = blueprint.color;
+                const size = 2 + Math.log10(mass + 1) * 3;
+                
+                // Glow gradient
+                const gradient = universeCtx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, size * 3);
+                gradient.addColorStop(0, `rgba(${color.r * 255}, ${color.g * 255}, ${color.b * 255}, 1.0)`);
+                gradient.addColorStop(0.3, `rgba(${color.r * 255}, ${color.g * 255}, ${color.b * 255}, 0.6)`);
+                gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                
+                universeCtx.fillStyle = gradient;
+                universeCtx.beginPath();
+                universeCtx.arc(pos.x, pos.y, size * 3, 0, Math.PI * 2);
+                universeCtx.fill();
+                
+                // Core
+                universeCtx.fillStyle = `rgb(${color.r * 255}, ${color.g * 255}, ${color.b * 255})`;
+                universeCtx.beginPath();
+                universeCtx.arc(pos.x, pos.y, size, 0, Math.PI * 2);
+                universeCtx.fill();
+            }
+        }
+        
+        // Render molecular ticker tape
+        function renderMolecularTicker() {
+            molecularCtx.fillStyle = '#2d3748';
+            molecularCtx.fillRect(0, 0, molecularCanvas.width, molecularCanvas.height);
+            
+            const centerY = molecularCanvas.height / 2;
+            const scale = 0.3;
+            
+            for (const mol of molecules) {
+                // Update position
+                mol.x -= mol.scrollSpeed;
+                if (mol.x < -100) {
+                    mol.x = molecularCanvas.width + 100;
+                }
+                
+                // Update rotation
+                mol.rotation += mol.rotationSpeed;
+                
+                // Render molecule (simplified)
+                const atoms = mol.blueprint.atoms || [];
+                
+                for (let i = 0; i < atoms.length; i++) {
+                    const atom = atoms[i];
+                    
+                    // Rotate around Y axis
+                    const cosY = Math.cos(mol.rotation);
+                    const sinY = Math.sin(mol.rotation);
+                    const x2 = atom.position.x * cosY - atom.position.z * sinY;
+                    const z2 = atom.position.x * sinY + atom.position.z * cosY;
+                    
+                    const screenX = mol.x + x2 * scale * 100;
+                    const screenY = centerY + atom.position.y * scale * 100;
+                    const radius = atom.radius * scale / 2;
+                    
+                    // Gradient for 3D effect
+                    const gradient = molecularCtx.createRadialGradient(
+                        screenX - radius * 0.3,
+                        screenY - radius * 0.3,
+                        radius * 0.1,
+                        screenX,
+                        screenY,
+                        radius
+                    );
+                    gradient.addColorStop(0, '#ffffff');
+                    gradient.addColorStop(0.3, atom.color);
+                    gradient.addColorStop(1, '#000000');
+                    
+                    molecularCtx.fillStyle = gradient;
+                    molecularCtx.beginPath();
+                    molecularCtx.arc(screenX, screenY, radius, 0, Math.PI * 2);
+                    molecularCtx.fill();
+                }
+            }
+        }
+        
+        // Update HUD
+        function updateHUD() {
+            const YEAR = 365.25 * 86400;
+            const age = entropyAgent.age;
+            
+            // Format age
+            let ageStr;
+            if (age < 1e3) {
+                ageStr = `${age.toFixed(2)} s`;
+            } else if (age < YEAR) {
+                ageStr = `${(age / 86400).toFixed(2)} days`;
+            } else if (age < 1e6 * YEAR) {
+                ageStr = `${(age / YEAR).toFixed(0)} yr`;
+            } else if (age < 1e9 * YEAR) {
+                ageStr = `${(age / (1e6 * YEAR)).toFixed(2)} Myr`;
+            } else {
+                ageStr = `${(age / (1e9 * YEAR)).toFixed(2)} Gyr`;
+            }
+            
+            document.getElementById('age').textContent = ageStr;
+            document.getElementById('temperature').textContent = `${entropyAgent.temperature.toExponential(2)} K`;
+            document.getElementById('phase').textContent = entropyAgent.phase;
+            document.getElementById('star-count').textContent = spawner.getAgents(AgentType.STELLAR).length;
+            document.getElementById('time-scale').textContent = `${(entropyAgent.timeScale || 1).toExponential(1)}`;
+        }
+        
+        // Spawn event notification
+        function spawnEventNotification(text) {
+            const div = document.createElement('div');
+            div.className = 'event-notification';
+            div.textContent = text;
+            document.getElementById('events-container').appendChild(div);
+            
+            setTimeout(() => div.remove(), 5000);
+        }
+        
+        // VCR button handlers
+        document.getElementById('btn-pause').onclick = () => {
+            paused = !paused;
+            document.getElementById('btn-pause').textContent = paused ? '▶' : '⏸';
+        };
+        
+        document.getElementById('btn-slowdown').onclick = () => {
+            speedMultiplier = Math.max(0.1, speedMultiplier / 2);
+            document.getElementById('speed-display').textContent = `${speedMultiplier.toFixed(1)}x`;
+        };
+        
+        document.getElementById('btn-speedup').onclick = () => {
+            speedMultiplier = Math.min(1000, speedMultiplier * 2);
+            document.getElementById('speed-display').textContent = `${speedMultiplier.toFixed(1)}x`;
+        };
+        
+        // Raycasting for star clicks (Phase 3 - not yet implemented)
+        universeCanvas.addEventListener('click', (e) => {
+            const rect = universeCanvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            
+            // TODO: Find nearest star, zoom to it, spawn planets
+            console.log('Click at', mouseX, mouseY, '- raycasting not yet implemented');
+        });
+        
+        // Main update loop
+        function update() {
+            const now = performance.now();
+            const deltaTime = Math.min((now - lastTime) / 1000, 0.1); // Cap at 100ms
+            lastTime = now;
+            
+            if (!paused) {
+                // Update entropy agent (advances universe time)
+                entropyAgent.deltaTime = deltaTime * speedMultiplier;
+                entropyAgent.update(deltaTime * speedMultiplier);
+                
+                // Update spawner
+                spawner.update(deltaTime * speedMultiplier);
+                
+                time += deltaTime;
+            }
+            
+            // Render
+            renderUniverse();
+            renderMolecularTicker();
+            updateHUD();
+            
+            requestAnimationFrame(update);
+        }
+        
+        // Hide splash and start
+        setTimeout(() => {
+            document.getElementById('splash').classList.add('hidden');
+            update();
+            console.log('✅ Ebb & Bloom - Canvas 2D Universe');
+            console.log('✅ EntropyAgent initialized');
+            console.log('✅ AgentSpawner ready');
+            console.log('Press PLAY to start the universe!');
+            
+            // Expose to window for debugging
+            window.universe = {
+                entropyAgent,
+                spawner,
+                camera,
+                paused,
+                speedMultiplier
+            };
+        }, 1000);
     </script>
 </body>
 </html>
