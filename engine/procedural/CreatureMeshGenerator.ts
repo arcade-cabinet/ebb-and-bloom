@@ -1,86 +1,220 @@
 /**
  * CREATURE MESH GENERATOR
  * 
- * Generates THREE.js meshes for creatures based on governor-driven traits.
- * Simple composites: spheres, cylinders, boxes.
+ * Synthesizes creature visuals from governors' decisions.
+ * 
+ * Pipeline:
+ * 1. Governors decide traits (mass, diet, locomotion)
+ * 2. MolecularSynthesis determines composition from traits
+ * 3. Generate geometry from molecular structure
+ * 4. PigmentationSynthesis determines coloring from diet/environment
+ * 5. Apply patterns based on genetics
+ * 
+ * NO PREFABS. Everything composed from simple forms.
  */
 
 import * as THREE from 'three';
-import { BIOLOGICAL_CONSTANTS } from '../tables/biological-constants';
+import { MolecularSynthesis, MolecularComposition, BodyPlan } from './MolecularSynthesis';
+import { PigmentationSynthesis, DietaryInput, Environment } from './PigmentationSynthesis';
 
 export interface CreatureTraits {
-    mass: number;           // kg
+    mass: number;           // kg (from MetabolismGovernor)
     locomotion: 'cursorial' | 'arboreal' | 'burrowing' | 'littoral';
     diet: 'herbivore' | 'carnivore' | 'omnivore';
     socialBehavior: 'solitary' | 'pack';
+    age: number;            // years (from LifecycleStates)
+    genetics: number;       // 0-1 (from GeneticsSystem)
+}
+
+export interface BiomeContext {
+    vegetation: number;     // 0-1
+    rockColor: number;      // 0-1
+    uvIntensity: number;    // 0-1
+    temperature: number;    // K
 }
 
 export class CreatureMeshGenerator {
+    private molecularSynthesis: MolecularSynthesis;
+    private pigmentationSynthesis: PigmentationSynthesis;
+
+    constructor() {
+        this.molecularSynthesis = new MolecularSynthesis();
+        this.pigmentationSynthesis = new PigmentationSynthesis();
+    }
+
     /**
-     * Generate creature mesh from traits (decided by governors)
+     * Generate creature mesh from governor-decided traits
      */
-    generate(traits: CreatureTraits): THREE.Group {
-        const group = new THREE.Group();
+    generate(traits: CreatureTraits, biome: BiomeContext): THREE.Group {
+        // Step 1: Determine molecular composition from traits
+        const composition = this.traitsToComposition(traits);
 
-        // Body size from mass (cube root scaling)
-        const bodyLength = Math.cbrt(traits.mass / 50);
-        const bodyRadius = bodyLength * 0.3;
+        // Step 2: Determine body plan from locomotion
+        const bodyPlan = this.locomotionToBodyPlan(traits.locomotion);
 
-        // Body (main sphere)
-        const bodyGeometry = new THREE.SphereGeometry(bodyRadius, 8, 8);
-        const bodyMaterial = new THREE.MeshStandardMaterial({
-            color: this.getColorForDiet(traits.diet),
-            roughness: 0.8,
-            metalness: 0.2
+        // Step 3: Generate geometry from molecules
+        const geometry = this.molecularSynthesis.generateFromComposition(
+            composition,
+            traits.mass,
+            bodyPlan
+        );
+
+        // Step 4: Determine coloring from diet and environment
+        const dietaryInput: DietaryInput = {
+            plantMatter: traits.diet === 'herbivore' ? 1.0 : traits.diet === 'omnivore' ? 0.5 : 0.1,
+            animalMatter: traits.diet === 'carnivore' ? 1.0 : traits.diet === 'omnivore' ? 0.5 : 0.1,
+            minerals: 0.1
+        };
+
+        const environment: Environment = {
+            vegetation: biome.vegetation,
+            rockColor: biome.rockColor,
+            uvIntensity: biome.uvIntensity,
+            temperature: biome.temperature
+        };
+
+        const color = this.pigmentationSynthesis.generateColor(
+            dietaryInput,
+            environment,
+            traits.genetics
+        );
+
+        // Step 5: Apply coloring to all meshes
+        geometry.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+                (child.material as THREE.MeshStandardMaterial).color = color;
+
+                // Add pattern if genetics support it
+                if (traits.genetics > 0.4) {
+                    const pattern = this.pigmentationSynthesis.generatePattern(
+                        environment,
+                        traits.genetics
+                    );
+                    (child.material as THREE.MeshStandardMaterial).map = pattern;
+                }
+            }
         });
-        const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
-        group.add(body);
 
-        // Head (smaller sphere in front)
-        const headRadius = bodyRadius * 0.6;
-        const headGeometry = new THREE.SphereGeometry(headRadius, 6, 6);
-        const head = new THREE.Mesh(headGeometry, bodyMaterial);
-        head.position.set(bodyRadius + headRadius * 0.5, 0, 0);
-        group.add(head);
-
-        // Limbs based on locomotion
-        const limbCount = this.getLimbCount(traits.locomotion);
-        const limbLength = bodyLength * 0.8;
-        const limbRadius = bodyRadius * 0.15;
-
-        for (let i = 0; i < limbCount; i++) {
-            const angle = (i / limbCount) * Math.PI * 2;
-            const limb = new THREE.Mesh(
-                new THREE.CylinderGeometry(limbRadius, limbRadius * 0.5, limbLength, 4),
-                bodyMaterial
-            );
-            limb.position.set(
-                Math.cos(angle) * bodyRadius * 0.7,
-                -limbLength / 2,
-                Math.sin(angle) * bodyRadius * 0.7
-            );
-            group.add(limb);
+        // Step 6: Age affects appearance
+        if (traits.age > 0) {
+            this.applyAgeEffects(geometry, traits.age, composition);
         }
 
-        return group;
+        return geometry;
     }
 
-    private getColorForDiet(diet: string): number {
-        switch (diet) {
-            case 'herbivore': return 0x88cc88; // Green
-            case 'carnivore': return 0xcc8888; // Red
-            case 'omnivore': return 0xccaa88; // Brown
-            default: return 0xaaaaaa;
+    /**
+     * Convert traits to molecular composition
+     */
+    private traitsToComposition(traits: CreatureTraits): MolecularComposition {
+        // Carnivores: High protein (muscle)
+        // Herbivores: Moderate protein, higher minerals (from plants)
+        // Burrowers: Higher calcium (strong bones/claws)
+        // Arboreal: Higher protein (climbing muscle)
+
+        let protein = 0.45;
+        let calcium = 0.15;
+        let lipid = 0.15;
+
+        if (traits.diet === 'carnivore') {
+            protein += 0.15; // More muscle
+            calcium += 0.05; // Stronger bones for predation
+        } else if (traits.diet === 'herbivore') {
+            lipid += 0.10; // Fat storage
+            calcium -= 0.05; // Less dense bones
         }
+
+        if (traits.locomotion === 'burrowing') {
+            calcium += 0.15; // Strong claws
+            protein += 0.05; // Digging muscles
+        } else if (traits.locomotion === 'arboreal') {
+            protein += 0.10; // Climbing muscles
+            lipid -= 0.05; // Leaner
+        }
+
+        // Normalize
+        const total = protein + calcium + lipid;
+        protein /= total;
+        calcium /= total;
+        lipid /= total;
+
+        return {
+            protein,
+            calcium,
+            lipid,
+            chitin: 0.0,    // Vertebrates
+            keratin: 0.08,  // Hair/claws
+            water: 1.0 - (protein + calcium + lipid + 0.08), // Remainder
+            minerals: 0.02
+        };
     }
 
-    private getLimbCount(locomotion: string): number {
+    /**
+     * Convert locomotion to body plan
+     */
+    private locomotionToBodyPlan(locomotion: string): BodyPlan {
         switch (locomotion) {
-            case 'cursorial': return 4; // Quadruped
-            case 'arboreal': return 4;  // Quadruped climber
-            case 'burrowing': return 4; // Digger
-            case 'littoral': return 2;  // Wader
-            default: return 4;
+            case 'cursorial':
+                return {
+                    segments: 3,
+                    symmetry: 'bilateral',
+                    appendages: 4,
+                    spine: true
+                };
+            case 'arboreal':
+                return {
+                    segments: 3,
+                    symmetry: 'bilateral',
+                    appendages: 4,
+                    spine: true
+                };
+            case 'burrowing':
+                return {
+                    segments: 4,
+                    symmetry: 'bilateral',
+                    appendages: 4,
+                    spine: true
+                };
+            case 'littoral':
+                return {
+                    segments: 2,
+                    symmetry: 'bilateral',
+                    appendages: 2,
+                    spine: true
+                };
+            default:
+                return {
+                    segments: 3,
+                    symmetry: 'bilateral',
+                    appendages: 4,
+                    spine: true
+                };
+        }
+    }
+
+    /**
+     * Apply age effects to mesh
+     */
+    private applyAgeEffects(
+        mesh: THREE.Group,
+        age: number,
+        composition: MolecularComposition
+    ): void {
+        // Young: Smaller, brighter
+        // Adult: Normal
+        // Elder: Grayer, slightly smaller
+
+        const ageFactor = age < 2 ? 0.7 : age > 10 ? 0.9 : 1.0;
+        mesh.scale.multiplyScalar(ageFactor);
+
+        // Elder = grayer (melanin accumulation)
+        if (age > 10) {
+            mesh.traverse((child) => {
+                if (child instanceof THREE.Mesh) {
+                    const mat = child.material as THREE.MeshStandardMaterial;
+                    mat.color.lerp(new THREE.Color(0.5, 0.5, 0.5), 0.3);
+                }
+            });
         }
     }
 }

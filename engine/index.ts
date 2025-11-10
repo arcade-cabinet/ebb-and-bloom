@@ -50,11 +50,17 @@ export { GameEngine } from './core/GameEngine';
 export { GameEngineBackend } from './core/GameEngineBackend';
 
 // ============================================================================
-// PROCEDURAL (Governor-Driven Mesh Generation)
+// PROCEDURAL (Governor-Driven Synthesis)
 // ============================================================================
 
 export { CreatureMeshGenerator } from './procedural/CreatureMeshGenerator';
-export type { CreatureTraits } from './procedural/CreatureMeshGenerator';
+export type { CreatureTraits, BiomeContext } from './procedural/CreatureMeshGenerator';
+export { MolecularSynthesis } from './procedural/MolecularSynthesis';
+export type { MolecularComposition, BodyPlan } from './procedural/MolecularSynthesis';
+export { PigmentationSynthesis } from './procedural/PigmentationSynthesis';
+export type { DietaryInput, Environment } from './procedural/PigmentationSynthesis';
+export { StructureSynthesis } from './procedural/StructureSynthesis';
+export type { MaterialAvailability } from './procedural/StructureSynthesis';
 
 // ============================================================================
 // SYSTEMS
