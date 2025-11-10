@@ -668,10 +668,28 @@
             };
         }
         
-        // Start after brief delay to ensure canvas is ready
-        requestAnimationFrame(() => {
-            requestAnimationFrame(startSimulation);
-        });
+        // Start immediately when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                console.log('DOM loaded, starting simulation...');
+                setTimeout(startSimulation, 100);
+            });
+        } else {
+            console.log('DOM already loaded, starting simulation...');
+            setTimeout(startSimulation, 100);
+        }
+        
+        // Fallback: force hide splash after 3 seconds
+        setTimeout(() => {
+            const splash = document.getElementById('splash');
+            if (splash && !splash.classList.contains('hidden')) {
+                console.warn('⚠️ Splash still visible after 3s - force hiding');
+                splash.classList.add('hidden');
+                if (!window.universe) {
+                    console.error('❌ window.universe not initialized!');
+                }
+            }
+        }, 3000);
     </script>
 </body>
 </html>
