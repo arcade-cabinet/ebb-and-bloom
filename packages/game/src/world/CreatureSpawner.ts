@@ -68,6 +68,9 @@ export class CreatureSpawner {
       agent.position.set(x, 1, z); // y=1 to stand on terrain
       agent.name = `creature-${chunkX}-${chunkZ}-${i}`;
       
+      // Disable brain (causes errors without evaluators)
+      agent.brain = null;
+      
       // Simple wander behavior (no complex brain for now)
       const wanderBehavior = new WanderBehavior();
       wanderBehavior.radius = 10;
