@@ -275,6 +275,11 @@
         let time = 0;
         let lastTime = performance.now();
         
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const startMode = urlParams.get('start') || 'big-bang';
+        const initialSpeed = parseInt(urlParams.get('speed')) || 1;
+        
         // Initialize Yuka agents
         const spawner = new AgentSpawner();
         const entropyAgent = new EntropyAgent();
@@ -284,7 +289,32 @@
         
         // Add entropy agent to spawner's entity manager
         spawner.getEntityManager().add(entropyAgent);
+        
+        // Skip to requested epoch
+        const YEAR = 365.25 * 86400;
+        switch(startMode) {
+            case 'stellar-epoch':
+                entropyAgent.age = 100.1e6 * YEAR; // Just past stellar epoch
+                entropyAgent.spawnedStellarAgents = false; // Allow spawning
+                console.log('⏩ Skipped to stellar epoch');
+                break;
+            case 'galaxy':
+                entropyAgent.age = 1e9 * YEAR; // 1 Gyr
+                entropyAgent.spawnedStellarAgents = true;
+                console.log('⏩ Skipped to galaxy assembly');
+                break;
+            case 'planetary':
+                entropyAgent.age = 4.5e9 * YEAR; // 4.5 Gyr
+                entropyAgent.spawnedStellarAgents = true;
+                console.log('⏩ Skipped to planetary era');
+                break;
+            default:
+                // Start from Big Bang (t=0)
+                break;
+        }
+        
         entropyAgent.start();
+        speedMultiplier = initialSpeed;
         
         // Register spawn callbacks
         spawner.onStellarEpoch = async (state) => {
