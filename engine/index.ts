@@ -50,19 +50,11 @@ export { GameEngine } from './core/GameEngine';
 export { GameEngineBackend } from './core/GameEngineBackend';
 
 // ============================================================================
-// PLANETARY
+// PROCEDURAL (Governor-Driven Mesh Generation)
 // ============================================================================
 
-export * from './planetary/composition';
-export * from './planetary/layers';
-export * from './planetary/noise';
-
-// ============================================================================
-// PROCEDURAL
-// ============================================================================
-
-export { YukaGuidedGeneration } from './procedural/YukaGuidedGeneration';
 export { CreatureMeshGenerator } from './procedural/CreatureMeshGenerator';
+export type { CreatureTraits } from './procedural/CreatureMeshGenerator';
 
 // ============================================================================
 // SYSTEMS
@@ -75,14 +67,10 @@ export { TradeSystem } from './systems/TradeSystem';
 export { StructureBuildingSystem } from './systems/StructureBuildingSystem';
 
 // ============================================================================
-// AGENTS (Yuka Integration)
+// AGENTS (Creature AI)
 // ============================================================================
 
-export { AgentSpawner } from './agents/AgentSpawner';
-export { AgentLODSystem } from './agents/AgentLODSystem';
 export { CreatureAgent } from './agents/CreatureAgent';
-export { PlanetaryAgent } from './agents/PlanetaryAgent';
-export { GravityBehavior } from './agents/behaviors/GravityBehavior';
 
 // ============================================================================
 // GOVERNORS (Yuka-Native Law Implementation)
