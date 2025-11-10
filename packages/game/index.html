@@ -247,6 +247,7 @@
     <div id="events-container"></div>
     
     <script type="module">
+        import { Vector3 } from 'yuka';
         import { EntropyAgent } from './src/yuka-integration/agents/EntropyAgent.ts';
         import { AgentSpawner, AgentType } from './src/yuka-integration/AgentSpawner.ts';
         import { StellarVisuals } from './src/renderers/StellarVisuals.ts';
@@ -278,9 +279,51 @@
         const spawner = new AgentSpawner();
         const entropyAgent = new EntropyAgent();
         
+        // Register spawner with EntropyAgent
+        entropyAgent.setSpawner(spawner);
+        
         // Add entropy agent to spawner's entity manager
         spawner.getEntityManager().add(entropyAgent);
         entropyAgent.start();
+        
+        // Register spawn callbacks
+        spawner.onStellarEpoch = async (state) => {
+            console.log('[Spawner] Stellar epoch triggered - spawning stars!');
+            
+            // Spawn 1000 stellar agents in a grid pattern (like original tests)
+            const gridSize = 10;
+            const spacing = 100;
+            let spawnedCount = 0;
+            
+            for (let x = 0; x < gridSize; x++) {
+                for (let y = 0; y < gridSize; y++) {
+                    for (let z = 0; z < gridSize; z++) {
+                        const position = new Vector3(
+                            (x - gridSize/2) * spacing,
+                            (y - gridSize/2) * spacing,
+                            (z - gridSize/2) * spacing
+                        );
+                        
+                        const mass = 0.1 + Math.random() * 99.9; // 0.1 to 100 solar masses
+                        
+                        const result = await spawner.spawn({
+                            type: AgentType.STELLAR,
+                            position: position,
+                            reason: 'stellar-epoch',
+                            state,
+                            params: { mass, temperature: 5778 }
+                        });
+                        
+                        if (result.success) {
+                            spawnedCount++;
+                        }
+                    }
+                }
+            }
+            
+            console.log(`[Spawner] Spawned ${spawnedCount} stellar agents`);
+            spawnEventNotification(`🌟 ${spawnedCount} Stars Formed!`);
+        };
         
         // Camera state (for universe view)
         const camera = {
