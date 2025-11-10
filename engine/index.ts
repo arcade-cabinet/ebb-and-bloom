@@ -43,9 +43,17 @@ export { CreatureSpawner } from './spawners/CreatureSpawner';
 export { WaterSystem } from './spawners/WaterSystem';
 
 // ============================================================================
-// CORE ENGINE
+// CORE ENGINE (DFU-Based Architecture)
 // ============================================================================
 
+export { WorldManager } from './core/WorldManager';
+export type { WorldConfig } from './core/WorldManager';
+export { TerrainSystem } from './core/TerrainSystem';
+export type { RaycastHit } from './core/TerrainSystem';
+export { PlayerController } from './core/PlayerController';
+export { CreatureManager } from './core/CreatureManager';
+export { CityPlanner } from './core/CityPlanner';
+export type { CityLayout, District } from './core/CityPlanner';
 export { GameEngine } from './core/GameEngine';
 export { GameEngineBackend } from './core/GameEngineBackend';
 
@@ -61,6 +69,12 @@ export { PigmentationSynthesis } from './procedural/PigmentationSynthesis';
 export type { DietaryInput, Environment } from './procedural/PigmentationSynthesis';
 export { StructureSynthesis } from './procedural/StructureSynthesis';
 export type { MaterialAvailability } from './procedural/StructureSynthesis';
+export { BuildingArchitect } from './procedural/BuildingArchitect';
+export type { BuildingSpec, MaterialSet, BuildingLayout } from './procedural/BuildingArchitect';
+export { InteriorGenerator } from './procedural/InteriorGenerator';
+export type { InteriorLayout } from './procedural/InteriorGenerator';
+export { WeaponSynthesis } from './procedural/WeaponSynthesis';
+export type { WeaponType, WeaponMaterials, WeaponStats } from './procedural/WeaponSynthesis';
 
 // ============================================================================
 // SYSTEMS

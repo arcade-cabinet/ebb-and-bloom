@@ -1,7 +1,13 @@
 /**
- * Engine Module Exports
- * Unified game engine for internal use
+ * Core Engine Systems
+ * 
+ * DFU-based architecture for world management.
  */
 
-export { GameEngine, type GameState, type Gen0RenderData } from './GameEngineBackend';
-export type { GameRenderData } from './GameEngine';
+export { WorldManager } from './WorldManager';
+export { TerrainSystem } from './TerrainSystem';
+export { PlayerController } from './PlayerController';
+export { CreatureManager } from './CreatureManager';
+export { CityPlanner } from './CityPlanner';
+export { GameEngine } from './GameEngine';
+export { GameEngineBackend } from './GameEngineBackend';
