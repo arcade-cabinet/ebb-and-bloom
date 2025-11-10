@@ -56,14 +56,19 @@
     
     <script type="module">
         import * as THREE from 'three';
-        import { EnhancedRNG } from './src/utils/EnhancedRNG.ts';
+        import { ChunkManager } from './src/world/ChunkManager.ts';
         
         console.log('🎮 Ebb & Bloom - Starting...');
+        
+        // Get seed from URL or use default
+        const urlParams = new URLSearchParams(window.location.search);
+        const seed = urlParams.get('seed') || 'v1-green-valley-breeze';
+        console.log('🌱 Seed:', seed);
         
         // Scene setup
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x87CEEB); // Sky blue
-        scene.fog = new THREE.Fog(0x87CEEB, 50, 200);
+        scene.fog = new THREE.Fog(0x87CEEB, 100, 500);
         
         // Camera (first-person)
         const camera = new THREE.PerspectiveCamera(
@@ -89,57 +94,11 @@
         const ambient = new THREE.AmbientLight(0x404040, 0.5);
         scene.add(ambient);
         
-        // Terrain generation
-        const seed = 'v1-green-valley-breeze';
-        const rng = new EnhancedRNG(seed);
+        // Chunk streaming (Daggerfall approach)
+        const chunkManager = new ChunkManager(scene, seed);
+        chunkManager.update(0, 0); // Load initial chunks
         
-        function generateTerrain(chunkX, chunkZ) {
-            const geometry = new THREE.PlaneGeometry(100, 100, 50, 50);
-            const vertices = geometry.attributes.position.array;
-            
-            // Perlin-like noise (simplified)
-            for (let i = 0; i < vertices.length; i += 3) {
-                const x = vertices[i] + chunkX * 100;
-                const z = vertices[i + 1] + chunkZ * 100;
-                
-                // Multi-octave noise
-                const height = 
-                    rng.uniform(-1, 1) * 2 +
-                    Math.sin(x * 0.05) * 3 +
-                    Math.cos(z * 0.05) * 3 +
-                    Math.sin(x * 0.01) * 8;
-                
-                vertices[i + 2] = height;
-            }
-            
-            geometry.computeVertexNormals();
-            
-            // Material (grass)
-            const material = new THREE.MeshStandardMaterial({
-                color: 0x228B22,
-                flatShading: false,
-            });
-            
-            const mesh = new THREE.Mesh(geometry, material);
-            mesh.rotation.x = -Math.PI / 2;
-            mesh.position.x = chunkX * 100;
-            mesh.position.z = chunkZ * 100;
-            mesh.receiveShadow = true;
-            
-            return mesh;
-        }
-        
-        // Generate 3x3 chunks
-        const chunks = [];
-        for (let x = -1; x <= 1; x++) {
-            for (let z = -1; z <= 1; z++) {
-                const chunk = generateTerrain(x, z);
-                scene.add(chunk);
-                chunks.push(chunk);
-            }
-        }
-        
-        console.log('✅ Terrain generated');
+        console.log('✅ Terrain system ready');
         
         // Player movement
         const moveSpeed = 0.2;
@@ -205,10 +164,16 @@
             camera.rotation.y = yaw;
             camera.rotation.x = pitch;
             
+            // Update chunks based on player position
+            chunkManager.update(camera.position.x, camera.position.z);
+            
             // Update HUD
             const pos = camera.position;
             document.getElementById('pos').textContent = 
                 `${pos.x.toFixed(1)}, ${pos.y.toFixed(1)}, ${pos.z.toFixed(1)}`;
+            
+            document.getElementById('biome').textContent = 
+                `Chunks: ${chunkManager.getActiveChunkCount()}/${chunkManager.getChunkCount()}`;
             
             // Render
             renderer.render(scene, camera);
