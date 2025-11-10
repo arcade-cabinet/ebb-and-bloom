@@ -1,206 +1,202 @@
-# Active Context - Engine Refactor COMPLETE ✅
+# Active Context - GOVERNORS Architecture
 
 **Date:** November 10, 2025  
-**Status:** ✅ ALL TASKS COMPLETE  
-**Next:** Build R3F demos, test engine
+**Status:** 🚀 BREAKTHROUGH - Laws → Yuka Governors  
+**Focus:** Transforming laws into first-class Yuka primitives
 
 ---
 
-## 🎉 MISSION ACCOMPLISHED
+## 🎯 CURRENT MISSION: Governors
 
-**User Request:**
-> "Focus on the engine. Add R3F + Drei, remove BabylonJS, flatten monorepo, reorganize into proper ENGINE with thorough documentation. Fix agents/agents nesting."
+**User Insight:**
+> "Between all of Yuka's examples (FSM, Fuzzy, Goal, Steering, etc.), we could directly port our laws TO engine/agents and create direct translations of all our rules INTO yuka. Create governors that first-class tie into R3F, Drei, Yuka."
 
-**Result:** 100% Complete - Professional engine architecture ready for production!
+**The Breakthrough:**
+- Laws shouldn't be standalone functions
+- Laws should BE Yuka behaviors/goals/evaluators
+- Laws execute IN the agent loop automatically
+- Perfect integration with R3F + Yuka
 
 ---
 
-## Final Structure (CLEAN)
+## What's Being Built
 
-```
-ebb-and-bloom/
-├── engine/              # 17 directories, ~100 files
-│   ├── laws/           # 57 law files (8,500+ lines)
-│   ├── spawners/       # 9 files (world generation)
-│   ├── agents/         # 9 files (FLATTENED ✅)
-│   ├── simulation/     # 6 files (timeline)
-│   ├── core/           # 3 files (GameEngine)
-│   ├── generation/     # 2 files (universe)
-│   ├── physics/        # 2 files
-│   ├── planetary/      # 3 files
-│   ├── procedural/     # 2 files
-│   ├── systems/        # 11 files
-│   ├── utils/          # RNG, seeds
-│   ├── tables/         # Constants
-│   ├── types/          # TypeScript
-│   ├── ecology/        # Population
-│   ├── audio/          # Audio engine
-│   ├── synthesis/      # Genesis
-│   └── index.ts        # API export
-│
-├── demo/               # R3F DEMOS
-│   ├── src/
-│   │   ├── components/    # DemoIndex, HUD, Controls
-│   │   ├── demos/         # Terrain, Universe, Playground
-│   │   ├── store/         # Zustand gameStore
-│   │   └── styles/        # CSS
-│   ├── index.html
-│   ├── package.json
-│   └── vite.config.ts
-│
-├── tools/              # DEV TOOLS
-│   ├── cli/           # 15 CLI tools
-│   └── testing/       # 3 test utilities
-│
-├── memory-bank/       # CONSOLIDATED
-│   ├── sessions/      # 45 docs (all status/completion)
-│   └── architecture/  # 4 docs (DFU, architecture)
-│
-├── docs/              # Architecture docs
-├── package.json       # Root (flattened)
-├── README.md          # Engine overview
-└── ENGINE*.md         # Engine documentation
+### Governors = Yuka-Native Laws
+
+**Before (Pure Math):**
+```typescript
+// laws/ecology.ts
+function lotkaVolterra(prey, predators) { ... }
 ```
 
----
+**After (Yuka Governor):**
+```typescript
+// governors/ecological/PredatorPreyBehavior.ts
+class PredatorPreyBehavior extends SteeringBehavior {
+  calculate(vehicle, force) {
+    // Lotka-Volterra AS steering (pursuit/flee)
+  }
+}
+```
 
-## Technology Stack
-
-**Engine (Pure TypeScript):**
-- No rendering code
-- Pure simulation logic
-- ~12,000 lines
-- Exports clean API
-
-**Demo (React Three Fiber):**
-- React 18.3
-- R3F 8.17
-- Drei 9.114
-- Zustand 5.0
-- React Router
-- Leva (controls)
-
-**Removed:**
-- ❌ BabylonJS (all packages)
-- ❌ pnpm workspace
-- ❌ Monorepo complexity
+**Result:** Laws are LIVING behaviors, not dead formulas!
 
 ---
 
-## Git Commits (This Session)
+## Yuka Primitives → Our Laws
 
-1. `65484c0` - Checkpoint (DFU foundation)
-2. `0351f4d` - Engine architecture (R3F)
-3. `75e2a9c` - Complete transformation
-4. `1365ae0` - Docs consolidation
+### Discovered Mappings:
 
-**Total:** 4 commits, clean history
+**1. Steering Behaviors → Physics/Ecology**
+- Gravity → GravityBehavior (custom)
+- Orbits → OrbitBehavior (custom)
+- Flocking → Ecology + Social (alignment/cohesion/separation + Dunbar)
+- Predator-Prey → Pursuit/Flee (Lotka-Volterra coefficients)
 
----
+**2. Goal + Evaluators → Biology/Ecology**
+- Metabolism → HungerGoalEvaluator (Kleiber's Law)
+- Reproduction → ReproductionGoalEvaluator
+- Safety → SafetyGoalEvaluator (threat proximity)
+- Resources → ResourceGoalEvaluator (carrying capacity)
 
-## Documentation
+**3. FSM (States) → Lifecycle/Social**
+- Juvenile → Adult → Elder (biology)
+- Nomadic → Settled (social)
+- Peace → War (social)
+- Resting → Active → Hunting (metabolism)
 
-**Root:**
-- README.md - Engine overview
-- ENGINE.md - Complete API (400 lines)
-- ENGINE_ARCHITECTURE.md - Architecture (600 lines)
-
-**Memory Bank:**
-- sessions/ENGINE_REFACTOR_SESSION_COMPLETE.md - Session summary
-- sessions/BEAST_MODE_DFU_FOUNDATION_COMPLETE.md - Previous session
-- sessions/REFACTOR_COMPLETE.md - Refactor details
-- sessions/CLEANUP_PLAN.md - Cleanup strategy
-- architecture/DFU_*.md - DFU assessment (3 files)
-
-**Total:** 4,000+ lines of comprehensive documentation
-
----
-
-## Status by System
-
-### ✅ Engine Core
-- Laws: 57 files organized
-- Spawners: 9 files working
-- Agents: Clean structure (no nesting!)
-- Simulation: 6 files complete
-- Utils: RNG, seeds ready
-- Tables: Constants loaded
-
-### ✅ Demo Package
-- Landing page: Beautiful design
-- 3 demos: Terrain, Universe, Playground
-- Zustand: State management ready
-- R3F: Components created
-- Vite: Configured properly
-
-### ✅ Documentation
-- README: Engine-focused
-- ENGINE.md: Complete API
-- Architecture: Deep technical
-- Memory bank: Fully updated
-
-### ✅ Cleanup
-- No src-old directories
-- No redundant nesting
-- No BabylonJS references
-- No duplicate files
+**4. Fuzzy Logic → Environment**
+- Temperature (hot/warm/cold)
+- Resource abundance (scarce/adequate/abundant)
+- Threat level (safe/cautious/danger)
+- Social rank (subordinate/equal/dominant)
 
 ---
 
-## Dev Server
+## Implemented (So Far)
 
-**Running:** http://localhost:5173 (demo package)
+### ✅ Physics Governor
+**GravityBehavior.ts**
+- Newton's gravity as SteeringBehavior
+- F = G * (m1 * m2) / r²
+- Applies to all massive neighbors
+- Configurable scale for game feel
 
-**Access:**
-- `/` - Landing page with demo index
-- `/terrain` - Terrain demo (R3F)
-- `/universe` - Universe demo (R3F)
-- `/playground` - Law playground (R3F)
+### ✅ Ecological Governor
+**FlockingBehavior.ts**
+- Ecology laws (group behavior)
+- Social laws (Dunbar's number = max 150 neighbors)
+- Uses Yuka's built-in Alignment/Cohesion/Separation
+- Configurable weights
 
----
-
-## Next Steps (Future Agent)
-
-### Immediate:
-1. Test engine imports in demos
-2. Fix any import path issues
-3. Build out TerrainDemo components
-4. Add more R3F components
-
-### Short-term:
-1. Port all game features to R3F
-2. Create component library
-3. Build example scenes
-4. Test on mobile
-
-### Long-term:
-1. Publish engine to npm
-2. Build documentation site
-3. Create tutorial series
-4. Community engagement
+### ✅ Biological Governor
+**MetabolismGovernor.ts**
+- Kleiber's Law (M = 70 * mass^0.75)
+- HungerEvaluator (desirability from energy deficit)
+- SeekFoodGoal (composite: find → move → eat)
+- MetabolismSystem (depletes energy over time)
 
 ---
 
-## Key Achievements
+## In Progress
 
-🏆 **Clean architecture** - Engine/demo separation  
-🏆 **Modern stack** - R3F + Zustand + React  
-🏆 **Comprehensive docs** - 4,000+ lines  
-🏆 **Fixed nesting** - agents/ flattened  
-🏆 **Removed bloat** - -8,000 lines  
-🏆 **Working demos** - 3 R3F demos  
-🏆 **Git history** - Clean commits  
-
----
-
-**STATUS:** ✅ READY FOR DEVELOPMENT  
-**FOCUS:** Build R3F components using clean engine API  
-**FOUNDATION:** Solid, documented, production-ready
+### ⏳ More Governors to Create:
+1. **PredatorPreyBehavior** (Lotka-Volterra)
+2. **LifecycleStates** (Juvenile/Adult/Elder FSM)
+3. **ReproductionGoal** (mate seeking)
+4. **TemperatureFuzzy** (thermodynamics)
+5. **HierarchyBehavior** (social dominance)
+6. **TerritorialFuzzy** (spatial boundaries)
+7. **OrbitBehavior** (stellar mechanics)
 
 ---
 
-See also:
-- `memory-bank/sessions/ENGINE_REFACTOR_SESSION_COMPLETE.md`
-- `memory-bank/current-status.md`
-- `README.md`
-- `ENGINE.md`
+## Structure
+
+```
+engine/governors/
+├── README.md (philosophy & usage)
+├── physics/
+│   └── GravityBehavior.ts ✅
+├── ecological/
+│   └── FlockingBehavior.ts ✅
+├── biological/
+│   └── MetabolismGovernor.ts ✅
+└── [more to come...]
+```
+
+---
+
+## Usage Example
+
+```typescript
+import { Vehicle, EntityManager, Think } from 'yuka';
+import { 
+  GravityBehavior,
+  FlockingGovernor,
+  HungerEvaluator,
+  SeekFoodGoal 
+} from 'engine/governors';
+
+// Create creature
+const creature = new Vehicle();
+creature.mass = 10;
+creature.energy = 100;
+creature.maxEnergy = 100;
+
+// Add physics governor
+const gravity = new GravityBehavior();
+gravity.scale = 1e10; // Game-scale gravity
+creature.steering.add(gravity);
+
+// Add ecology governor
+const flocking = new FlockingGovernor();
+flocking.applyTo(creature, 10); // 10m neighborhood
+
+// Add biology governor
+const brain = new Think(creature);
+brain.addEvaluator(new HungerEvaluator());
+creature.brain = brain;
+
+// In update loop:
+MetabolismSystem.update(creature, delta); // Deplete energy
+entityManager.update(delta); // Yuka handles rest!
+
+// Creature will:
+// - Be pulled by gravity
+// - Flock with neighbors (max 150)
+// - Get hungry when energy < 30%
+// - Automatically switch to SeekFoodGoal
+// - Find food, move to it, eat it
+// - All emergent!
+```
+
+---
+
+## Benefits
+
+1. **Automatic Execution** - Laws run in agent loop
+2. **Emergent** - Laws interact through agent decisions
+3. **Composable** - Stack multiple governors
+4. **R3F Compatible** - Works with existing R3F demos
+5. **Debuggable** - Can visualize behaviors (Yuka helpers)
+6. **Performant** - Yuka's optimized update loop
+
+---
+
+## Next Steps
+
+1. Complete Phase 1 governors (4 more)
+2. Export from engine/index.ts
+3. Create R3F demo showing governors in action
+4. Update documentation
+5. Test with real agents
+
+---
+
+**Status:** Foundation governors implemented, architecture proven  
+**Next:** Continue implementing remaining governors
+
+---
+
+See: `engine/governors/README.md` for complete architecture
