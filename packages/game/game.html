@@ -56,7 +56,9 @@
     
     <script type="module">
         import * as THREE from 'three';
+        import { EntityManager } from 'yuka';
         import { ChunkManager } from './src/world/ChunkManager.ts';
+        import { CreatureSpawner } from './src/world/CreatureSpawner.ts';
         
         console.log('🎮 Ebb & Bloom - Starting...');
         
@@ -94,11 +96,25 @@
         const ambient = new THREE.AmbientLight(0x404040, 0.5);
         scene.add(ambient);
         
+        // Yuka entity manager for creatures
+        const entityManager = new EntityManager();
+        
         // Chunk streaming (Daggerfall approach)
         const chunkManager = new ChunkManager(scene, seed);
         chunkManager.update(0, 0); // Load initial chunks
         
+        // Creature spawning
+        const creatureSpawner = new CreatureSpawner(scene, entityManager, seed);
+        
+        // Spawn creatures in initial chunks
+        for (let x = -3; x <= 3; x++) {
+            for (let z = -3; z <= 3; z++) {
+                creatureSpawner.spawnInChunk(x, z);
+            }
+        }
+        
         console.log('✅ Terrain system ready');
+        console.log(`✅ Spawned ${creatureSpawner.getCreatureCount()} creatures`);
         
         // Player movement
         const moveSpeed = 0.2;
@@ -167,13 +183,19 @@
             // Update chunks based on player position
             chunkManager.update(camera.position.x, camera.position.z);
             
+            // Update creatures (Yuka AI)
+            entityManager.update(delta);
+            
+            // Update creature visuals
+            creatureSpawner.update(delta);
+            
             // Update HUD
             const pos = camera.position;
             document.getElementById('pos').textContent = 
                 `${pos.x.toFixed(1)}, ${pos.y.toFixed(1)}, ${pos.z.toFixed(1)}`;
             
             document.getElementById('biome').textContent = 
-                `Chunks: ${chunkManager.getActiveChunkCount()}/${chunkManager.getChunkCount()}`;
+                `Chunks: ${chunkManager.getActiveChunkCount()} | Creatures: ${creatureSpawner.getCreatureCount()}`;
             
             // Render
             renderer.render(scene, camera);
