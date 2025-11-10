@@ -54,8 +54,6 @@ export { PlayerController } from './core/PlayerController';
 export { CreatureManager } from './core/CreatureManager';
 export { CityPlanner } from './core/CityPlanner';
 export type { CityLayout, District } from './core/CityPlanner';
-export { GameEngine } from './core/GameEngine';
-export { GameEngineBackend } from './core/GameEngineBackend';
 
 // ============================================================================
 // PROCEDURAL (Governor-Driven Synthesis)
