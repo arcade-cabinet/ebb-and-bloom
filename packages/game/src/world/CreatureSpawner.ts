@@ -14,9 +14,11 @@
  */
 
 import * as THREE from 'three';
-import { Vehicle, WanderBehavior } from 'yuka';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import { Vehicle, WanderBehavior, FollowPathBehavior, Path, Vector3 } from 'yuka';
 import { EnhancedRNG } from '../utils/EnhancedRNG';
 import { EntityManager } from 'yuka';
+import { BiologyLaws } from '../laws/biology';
 
 /**
  * Sync function - copies entity transform to mesh
@@ -90,13 +92,17 @@ export class CreatureSpawner {
       wanderBehavior.jitter = 1;
       agent.steering.add(wanderBehavior);
       
-      // Create visual mesh (cone pointing forward like Yuka examples)
+      // Create visual mesh - procedural animal shape based on mass
+      // Use Kleiber's Law for proportions
       const size = Math.cbrt(mass / 50); // Scale with mass
-      const geometry = new THREE.ConeGeometry(size * 0.5, size * 1.5, 8);
-      geometry.rotateX(Math.PI * 0.5); // Point forward
+      const geometry = this.createCreatureGeometry(mass, chunkRng);
       
+      // Color variation based on species
+      const speciesHue = chunkRng.uniform(0, 360);
       const material = new THREE.MeshStandardMaterial({
-        color: chunkRng.uniform(0, 1) > 0.5 ? 0x8B4513 : 0x654321, // Brown variations
+        color: new THREE.Color().setHSL(speciesHue / 360, 0.6, 0.4),
+        roughness: 0.8,
+        metalness: 0.0
       });
       
       const mesh = new THREE.Mesh(geometry, material);
@@ -149,6 +155,116 @@ export class CreatureSpawner {
     if (toRemove.length > 0) {
       console.log(`[CreatureSpawner] Despawned ${toRemove.length} creatures from chunk (${chunkX}, ${chunkZ})`);
     }
+  }
+  
+  /**
+   * Create procedural creature geometry based on mass
+   * Uses BiologyLaws for realistic proportions
+   */
+  private createCreatureGeometry(mass: number, rng: EnhancedRNG): THREE.BufferGeometry {
+    // Use Kleiber's Law and allometric scaling
+    const bodyLength = Math.cbrt(mass / 100) * 2; // Body length
+    const bodyRadius = bodyLength * 0.4;
+    const legLength = bodyLength * 0.6;
+    const legRadius = bodyRadius * 0.15;
+    const headRadius = bodyRadius * 0.7;
+    
+    // Determine body plan (quadruped, biped, etc.)
+    const bodyPlan = rng.uniform(0, 1);
+    
+    if (bodyPlan < 0.6) {
+      // Quadruped (most common - deer, wolves, etc.)
+      return this.createQuadruped(bodyLength, bodyRadius, legLength, legRadius, headRadius);
+    } else if (bodyPlan < 0.9) {
+      // Biped (birds, smaller creatures)
+      return this.createBiped(bodyLength, bodyRadius, legLength, legRadius, headRadius);
+    } else {
+      // Hexapod (insect-like)
+      return this.createHexapod(bodyLength, bodyRadius, legLength, legRadius, headRadius);
+    }
+  }
+  
+  private createQuadruped(bodyLength: number, bodyRadius: number, legLength: number, legRadius: number, headRadius: number): THREE.BufferGeometry {
+    const body = new THREE.CapsuleGeometry(bodyRadius, bodyLength, 8, 16);
+    body.rotateZ(Math.PI / 2); // Horizontal
+    
+    const head = new THREE.SphereGeometry(headRadius, 8, 8);
+    head.translate(bodyLength / 2 + headRadius, 0, 0);
+    
+    // Four legs
+    const leg = new THREE.CylinderGeometry(legRadius, legRadius, legLength, 8);
+    leg.translate(0, -legLength / 2 - bodyRadius, 0);
+    
+    const legFrontLeft = leg.clone();
+    legFrontLeft.translate(bodyLength * 0.3, 0, -bodyRadius * 0.5);
+    
+    const legFrontRight = leg.clone();
+    legFrontRight.translate(bodyLength * 0.3, 0, bodyRadius * 0.5);
+    
+    const legBackLeft = leg.clone();
+    legBackLeft.translate(-bodyLength * 0.3, 0, -bodyRadius * 0.5);
+    
+    const legBackRight = leg.clone();
+    legBackRight.translate(-bodyLength * 0.3, 0, bodyRadius * 0.5);
+    
+    // Merge all parts (modern Three.js way)
+    const merged = mergeGeometries([body, head, legFrontLeft, legFrontRight, legBackLeft, legBackRight]);
+    if (!merged) return body; // Fallback
+    return merged;
+  }
+  
+  private createBiped(bodyLength: number, bodyRadius: number, legLength: number, legRadius: number, headRadius: number): THREE.BufferGeometry {
+    const body = new THREE.CapsuleGeometry(bodyRadius, bodyLength * 0.6, 8, 16);
+    
+    const head = new THREE.SphereGeometry(headRadius, 8, 8);
+    head.translate(0, bodyLength * 0.3 + headRadius, 0);
+    
+    // Two legs
+    const leg = new THREE.CylinderGeometry(legRadius, legRadius, legLength, 8);
+    leg.translate(0, -bodyLength * 0.3 - legLength / 2, 0);
+    
+    const legLeft = leg.clone();
+    legLeft.translate(0, 0, -bodyRadius * 0.5);
+    
+    const legRight = leg.clone();
+    legRight.translate(0, 0, bodyRadius * 0.5);
+    
+    // Merge all parts (modern Three.js way)
+    const merged = mergeGeometries([body, head, legLeft, legRight]);
+    if (!merged) return body; // Fallback
+    return merged;
+  }
+  
+  private createHexapod(bodyLength: number, bodyRadius: number, legLength: number, legRadius: number, headRadius: number): THREE.BufferGeometry {
+    const body = new THREE.CapsuleGeometry(bodyRadius * 0.6, bodyLength, 8, 16);
+    body.rotateZ(Math.PI / 2);
+    
+    const head = new THREE.SphereGeometry(headRadius * 0.8, 8, 8);
+    head.translate(bodyLength / 2 + headRadius, 0, 0);
+    
+    // Six legs (3 pairs)
+    const leg = new THREE.CylinderGeometry(legRadius * 0.5, legRadius * 0.5, legLength * 0.8, 6);
+    leg.translate(0, -legLength * 0.4 - bodyRadius * 0.6, 0);
+    
+    const parts = [body, head];
+    
+    // Add 6 legs at different positions along body
+    for (let i = 0; i < 3; i++) {
+      const xPos = (i - 1) * bodyLength * 0.3;
+      
+      const legLeft = leg.clone();
+      legLeft.translate(xPos, 0, -bodyRadius * 0.6);
+      parts.push(legLeft);
+      
+      const legRight = leg.clone();
+      legRight.translate(xPos, 0, bodyRadius * 0.6);
+      parts.push(legRight);
+    }
+    
+    // Merge all parts (modern Three.js way)
+    const merged = mergeGeometries(parts);
+    if (!merged) return body; // Fallback
+    return merged;
   }
   
   /**

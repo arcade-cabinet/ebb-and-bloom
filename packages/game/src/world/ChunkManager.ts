@@ -13,6 +13,12 @@
 
 import * as THREE from 'three';
 import { EnhancedRNG } from '../utils/EnhancedRNG';
+import { SimplexNoise } from './SimplexNoise';
+import { BiomeSystem, BiomeType } from './BiomeSystem';
+import { VegetationSpawner } from './VegetationSpawner';
+import { SettlementPlacer } from './SettlementPlacer';
+import { NPCSpawner } from './NPCSpawner';
+import { EntityManager } from 'yuka';
 
 export interface ChunkCoord {
   x: number;
@@ -24,6 +30,7 @@ export interface ChunkData {
   mesh: THREE.Mesh;
   active: boolean;
   lastUsed: number;
+  vegetationSpawned: boolean;
 }
 
 export class ChunkManager {
@@ -34,11 +41,27 @@ export class ChunkManager {
   private rng: EnhancedRNG;
   private scene: THREE.Scene;
   private maxChunks: number = 81; // 9x9 max (like Daggerfall maxTerrainArray)
+  private simplex: SimplexNoise; // Simplex noise for terrain (better than Perlin!)
+  private biomes: BiomeSystem;   // Biome system for terrain colors
+  private vegetation: VegetationSpawner; // Vegetation spawning
+  private settlements: SettlementPlacer; // Settlement placement
+  private npcSpawner?: NPCSpawner; // NPC spawning (optional - needs EntityManager)
+  private settlementsPlaced: Set<string> = new Set(); // Track which regions have settlements
+  private npcsSpawned: Set<string> = new Set(); // Track which settlements have NPCs
   
-  constructor(scene: THREE.Scene, seed: string) {
+  constructor(scene: THREE.Scene, seed: string, entityManager?: EntityManager) {
     this.scene = scene;
     this.seed = seed;
     this.rng = new EnhancedRNG(seed);
+    this.simplex = new SimplexNoise(seed);
+    this.biomes = new BiomeSystem(seed);
+    this.vegetation = new VegetationSpawner(scene, seed);
+    this.settlements = new SettlementPlacer(scene, seed);
+    
+    if (entityManager) {
+      this.npcSpawner = new NPCSpawner(scene, entityManager, seed);
+    }
+    
     console.log(`[ChunkManager] Initialized - Distance: ${this.renderDistance}, Max chunks: ${this.maxChunks}`);
   }
   
@@ -77,38 +100,61 @@ export class ChunkManager {
       segments
     );
     
-    // Apply heightmap
+    // Rotate geometry to horizontal FIRST (so Y becomes up)
+    geometry.rotateX(-Math.PI / 2);
+    
+    // Apply heightmap using simplex noise
     const vertices = geometry.attributes.position.array;
-    const maxHeight = 15;
+    const colors: number[] = [];
     
     for (let i = 0; i < vertices.length; i += 3) {
-      const localX = vertices[i];
-      const localZ = vertices[i + 1];
+      const localX = vertices[i];     // X is left-right
+      const localZ = vertices[i + 2]; // Z is forward-back (after rotation)
       const worldX = localX + chunkX * this.chunkSize;
       const worldZ = localZ + chunkZ * this.chunkSize;
       
-      // Multi-octave noise (Perlin-like)
-      const height = 
-        Math.sin(worldX * 0.02) * 5 +
-        Math.cos(worldZ * 0.02) * 5 +
-        Math.sin(worldX * 0.05) * 2 +
-        Math.cos(worldZ * 0.05) * 2 +
-        chunkRng.uniform(-0.5, 0.5);
+      // Simplex noise - TWO LAYERS like Daggerfall
+      // Layer 1: Large flat areas (low frequency)
+      const flatness = this.simplex.octaveNoise(worldX, worldZ, 2, 0.5, 2.0, 0.002);
       
-      vertices[i + 2] = height;
+      // Layer 2: Local variation (higher frequency)
+      const variation = this.simplex.octaveNoise(worldX, worldZ, 4, 0.5, 2.0, 0.02);
+      
+      // Blend: If flatness is high, terrain is flat. Otherwise add variation
+      const flatFactor = Math.abs(flatness); // 0-1
+      const baseHeight = 15; // Average ground level
+      
+      let height: number;
+      if (flatFactor > 0.3) {
+        // FLAT AREA (like Daggerfall plains/settlement areas)
+        height = baseHeight + variation * 2; // Minimal variation
+      } else {
+        // HILLY AREA
+        height = baseHeight + variation * 20; // More dramatic
+      }
+      
+      vertices[i + 1] = height; // Y is UP (after rotation)
+      
+      // Get biome color for this vertex
+      const biome = this.biomes.getBiome(worldX, worldZ, height);
+      colors.push(biome.color.r, biome.color.g, biome.color.b);
     }
     
+    // Add vertex colors to geometry
+    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
     geometry.computeVertexNormals();
     
-    // Material (grass for now, will use BiomeLaws later)
+    // Material with vertex colors enabled
     const material = new THREE.MeshStandardMaterial({
-      color: 0x2d8b3d,
+      vertexColors: true, // Use vertex colors for biome variation
       flatShading: false,
       side: THREE.DoubleSide,
+      roughness: 0.8,
+      metalness: 0.1
     });
     
     const mesh = new THREE.Mesh(geometry, material);
-    mesh.rotation.x = -Math.PI / 2;
+    // No rotation needed - geometry already rotated
     mesh.position.x = chunkX * this.chunkSize;
     mesh.position.z = chunkZ * this.chunkSize;
     mesh.receiveShadow = true;
@@ -200,12 +246,113 @@ export class ChunkManager {
       coord: { x: chunkX, z: chunkZ },
       mesh,
       active: true,
-      lastUsed: Date.now()
+      lastUsed: Date.now(),
+      vegetationSpawned: false
     });
+    
+    // Spawn vegetation in this chunk
+    this.spawnVegetation(chunkX, chunkZ);
+    
+    // Place settlements (in regions, not every chunk)
+    // Use chunk center as approximate position for settlement placement
+    const chunkCenterX = chunkX * this.chunkSize + this.chunkSize / 2;
+    const chunkCenterZ = chunkZ * this.chunkSize + this.chunkSize / 2;
+    this.placeSettlementsInRegion(chunkX, chunkZ, chunkCenterX, chunkCenterZ);
     
     // Log first few chunks (not spam)
     if (this.chunks.size <= 9) {
       console.log(`[ChunkManager] Loaded chunk (${chunkX}, ${chunkZ}) - Total: ${this.chunks.size}`);
+    }
+  }
+  
+  /**
+   * Spawn vegetation in a chunk
+   */
+  private spawnVegetation(chunkX: number, chunkZ: number): void {
+    const key = this.getKey(chunkX, chunkZ);
+    const chunk = this.chunks.get(key);
+    if (!chunk || chunk.vegetationSpawned) return;
+    
+    // Provide biome and height lookup functions
+    const getBiome = (x: number, z: number): BiomeType => {
+      const height = this.getTerrainHeight(x, z);
+      return this.biomes.getBiome(x, z, height).type;
+    };
+    
+    const getHeight = (x: number, z: number): number => {
+      return this.getTerrainHeight(x, z);
+    };
+    
+    // DFU Pattern: Provide settlement lookup for clearance check
+    const getSettlement = (x: number, z: number) => {
+      return this.getNearestSettlement(x, z);
+    };
+    
+    this.vegetation.spawnInChunk(chunkX, chunkZ, getBiome, getHeight, getSettlement);
+    chunk.vegetationSpawned = true;
+  }
+  
+  /**
+   * Place settlements in region (10x10 chunk areas)
+   * Only place once per region
+   */
+  private placeSettlementsInRegion(chunkX: number, chunkZ: number, playerX: number, playerZ: number): void {
+    // Group chunks into 10x10 regions
+    const regionX = Math.floor(chunkX / 10);
+    const regionZ = Math.floor(chunkZ / 10);
+    const regionKey = `${regionX},${regionZ}`;
+    
+    // Already placed in this region?
+    if (this.settlementsPlaced.has(regionKey)) {
+      // Check if we need to spawn NPCs in existing settlements
+      if (this.npcSpawner) {
+        const settlements = this.settlements.getSettlements();
+        for (const settlement of settlements) {
+          if (!this.npcsSpawned.has(settlement.id)) {
+            this.npcSpawner.spawnInSettlement(settlement);
+            this.npcsSpawned.add(settlement.id);
+            console.log(`[ChunkManager] ✅ Spawned NPCs in ${settlement.name}`);
+          }
+        }
+      }
+      return;
+    }
+    
+    this.settlementsPlaced.add(regionKey);
+    
+    // Provide biome and height lookup functions
+    const getBiome = (x: number, z: number): BiomeType => {
+      const height = this.getTerrainHeight(x, z);
+      return this.biomes.getBiome(x, z, height).type;
+    };
+    
+    const getHeight = (x: number, z: number): number => {
+      return this.getTerrainHeight(x, z);
+    };
+    
+    this.settlements.placeInRegion(regionX, regionZ, getBiome, getHeight);
+    
+    // Spawn NPCs immediately in new settlements
+    if (this.npcSpawner) {
+      const settlements = this.settlements.getSettlements();
+      console.log(`[ChunkManager] Spawning NPCs in ${settlements.length} settlements`);
+      
+      for (const settlement of settlements) {
+        if (!this.npcsSpawned.has(settlement.id)) {
+          this.npcSpawner.spawnInSettlement(settlement);
+          this.npcsSpawned.add(settlement.id);
+          console.log(`[ChunkManager] ✅ Spawned NPCs in ${settlement.name}`);
+        }
+      }
+    }
+  }
+  
+  /**
+   * Update NPCs (call from game loop)
+   */
+  updateNPCs(delta: number): void {
+    if (this.npcSpawner) {
+      this.npcSpawner.update(delta);
     }
   }
   
@@ -225,6 +372,77 @@ export class ChunkManager {
       if (chunk.active) count++;
     }
     return count;
+  }
+  
+  /**
+   * Get vegetation count
+   */
+  getVegetationCount(): number {
+    return this.vegetation.getVegetationCount();
+  }
+  
+  /**
+   * Get settlement count
+   */
+  getSettlementCount(): number {
+    return this.settlements.getSettlementCount();
+  }
+  
+  /**
+   * Get NPC count
+   */
+  getNPCCount(): number {
+    return this.npcSpawner ? this.npcSpawner.getNPCCount() : 0;
+  }
+  
+  /**
+   * Get game time (hour)
+   */
+  getGameTime(): number {
+    return this.npcSpawner ? this.npcSpawner.getGameTime() : 0;
+  }
+  
+  /**
+   * Get terrain height at world position (for collision/gravity)
+   * Returns the Y coordinate of the terrain at (x, z)
+   * MUST match generateChunk formula exactly for proper collision
+   */
+  getTerrainHeight(worldX: number, worldZ: number): number {
+    // MUST match generateChunk formula EXACTLY
+    const flatness = this.simplex.octaveNoise(worldX, worldZ, 2, 0.5, 2.0, 0.002);
+    const variation = this.simplex.octaveNoise(worldX, worldZ, 4, 0.5, 2.0, 0.02);
+    
+    const flatFactor = Math.abs(flatness);
+    const baseHeight = 15;
+    
+    if (flatFactor > 0.3) {
+      // FLAT AREA
+      return baseHeight + variation * 2;
+    } else {
+      // HILLY AREA
+      return baseHeight + variation * 20;
+    }
+  }
+  
+  /**
+   * Get all NPC meshes for raycasting (dialogue system)
+   */
+  getAllNPCMeshes(): THREE.Mesh[] {
+    return this.npcSpawner ? this.npcSpawner.getAllMeshes() : [];
+  }
+  
+  /**
+   * Get NPC data by mesh (dialogue system)
+   */
+  getNPCByMesh(mesh: THREE.Mesh): import('./NPCSpawner').NPCData | undefined {
+    return this.npcSpawner ? this.npcSpawner.getNPCByMesh(mesh) : undefined;
+  }
+  
+  /**
+   * Get nearest settlement to a position (for spawn location)
+   */
+  getNearestSettlement(x: number, z: number): import('./SettlementPlacer').Settlement | undefined {
+    return this.settlements.getNearestSettlement(x, z);
   }
 }
 

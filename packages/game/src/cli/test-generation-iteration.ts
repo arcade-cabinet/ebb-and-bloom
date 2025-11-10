@@ -256,3 +256,4 @@ function logMilestone(state: SimulationState) {
 // Run
 runLongTermSimulation().catch(console.error);
 
+

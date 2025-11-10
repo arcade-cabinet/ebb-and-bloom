@@ -34,3 +34,4 @@ export class TechnologyRegulator implements DomainRegulator {
     return ['agriculture.cropYield', 'metallurgy.alloyProperties', 'combustion.heatOutput'];
   }
 }
+

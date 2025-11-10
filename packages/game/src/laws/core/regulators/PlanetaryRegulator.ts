@@ -35,3 +35,4 @@ export class PlanetaryRegulator implements DomainRegulator {
     return ['climate.greenhouse', 'geology.tectonics', 'hydrology.waterCycle'];
   }
 }
+
