@@ -973,9 +973,10 @@ export class CompleteBottomUpScene {
       return;
     }
     
-    // Get markers from marker store
+    // Get markers from marker store (handle if not array)
     const markers = MARKER_STORE.getAllMarkers();
-    const galaxyMarkers = markers.filter(m => m.type === 'stellar-epoch' || m.type === 'galactic-center');
+    const markersArray = Array.isArray(markers) ? markers : [];
+    const galaxyMarkers = markersArray.filter(m => m.type === 'stellar-epoch' || m.type === 'galactic-center');
     
     for (const marker of galaxyMarkers) {
       if (!this.galaxyMarkerMeshes.has(marker.id)) {
