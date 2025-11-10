@@ -96,10 +96,10 @@ export class ElderState extends State {
     execute(agent: any): void {
         // Senescence (declining performance)
         const ageRatio = agent.age / agent.maxLifespan;
-        
+
         // Gradual decline
         agent.strengthMultiplier = Math.max(0.3, 1.0 - (ageRatio - 0.75) * 2);
-        
+
         // Store original maxSpeed if not already stored
         if (!agent.originalMaxSpeed) {
             agent.originalMaxSpeed = agent.maxSpeed;
@@ -171,7 +171,7 @@ export class LifecycleStateMachine extends StateMachine {
      */
     update(delta: number): void {
         const agent = this.owner;
-        
+
         // Age the agent (delta is in seconds, convert to years)
         agent.age += delta / (365.25 * 24 * 3600); // seconds → years
 

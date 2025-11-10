@@ -63,6 +63,22 @@ export class WorldManager {
         // Load initial chunks
         this.terrain.update(0, 0);
         
+        // CRITICAL: Find settlement to spawn in (like DFU)
+        const startSettlement = this.terrain.getNearestSettlement(0, 0);
+        
+        let spawnX, spawnZ;
+        if (startSettlement) {
+            // Spawn in settlement center
+            spawnX = startSettlement.position.x;
+            spawnZ = startSettlement.position.z;
+            console.log(`[WorldManager] Starting in ${startSettlement.name} (${startSettlement.type})`);
+        } else {
+            // Fallback to offset spawn (not origin!)
+            spawnX = 50;
+            spawnZ = 50;
+            console.log('[WorldManager] No settlement found, spawning in wilderness at (50, 50)');
+        }
+        
         // Create player controller (equivalent to PlayerMotor)
         this.player = new PlayerController(
             this.camera,
@@ -70,8 +86,8 @@ export class WorldManager {
             this.entityManager
         );
         
-        // Position player (DFU FixStanding pattern)
-        this.player.fixStanding(0, 0); // Spawn at origin, will find terrain height
+        // Position player ON GROUND at spawn location
+        this.player.fixStanding(spawnX, spawnZ);
         
         // Create creature manager
         this.creatures = new CreatureManager(
