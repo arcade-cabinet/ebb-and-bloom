@@ -305,7 +305,7 @@
                     rotation: Math.random() * Math.PI * 2,
                     rotationSpeed: 0.01 + Math.random() * 0.02,
                     scrollSpeed: 0.5 + Math.random() * 1.0,
-                    blueprint: MolecularVisuals.getMolecularGeometry(type)
+                    blueprint: MolecularVisuals.createBlueprint(type)
                 });
             }
         }
@@ -385,13 +385,18 @@
             }
         }
         
+        // Helper: Convert Babylon Color3 to CSS
+        function color3ToCSS(color) {
+            return `rgb(${Math.floor(color.r * 255)}, ${Math.floor(color.g * 255)}, ${Math.floor(color.b * 255)})`;
+        }
+        
         // Render molecular ticker tape
         function renderMolecularTicker() {
             molecularCtx.fillStyle = '#2d3748';
             molecularCtx.fillRect(0, 0, molecularCanvas.width, molecularCanvas.height);
             
             const centerY = molecularCanvas.height / 2;
-            const scale = 0.3;
+            const scale = 0.15; // Smaller scale for ticker
             
             for (const mol of molecules) {
                 // Update position
@@ -403,9 +408,38 @@
                 // Update rotation
                 mol.rotation += mol.rotationSpeed;
                 
-                // Render molecule (simplified)
+                // Render bonds FIRST (behind atoms)
+                const bonds = mol.blueprint.bonds || [];
                 const atoms = mol.blueprint.atoms || [];
                 
+                molecularCtx.strokeStyle = '#aaaaaa';
+                molecularCtx.lineWidth = 2;
+                
+                for (const bond of bonds) {
+                    const atom1 = atoms[bond.atom1];
+                    const atom2 = atoms[bond.atom2];
+                    
+                    // Rotate both atoms
+                    const cosY = Math.cos(mol.rotation);
+                    const sinY = Math.sin(mol.rotation);
+                    
+                    const x1_2d = atom1.position.x * cosY - atom1.position.z * sinY;
+                    const y1_2d = atom1.position.y;
+                    const x2_2d = atom2.position.x * cosY - atom2.position.z * sinY;
+                    const y2_2d = atom2.position.y;
+                    
+                    const screenX1 = mol.x + x1_2d * scale;
+                    const screenY1 = centerY + y1_2d * scale;
+                    const screenX2 = mol.x + x2_2d * scale;
+                    const screenY2 = centerY + y2_2d * scale;
+                    
+                    molecularCtx.beginPath();
+                    molecularCtx.moveTo(screenX1, screenY1);
+                    molecularCtx.lineTo(screenX2, screenY2);
+                    molecularCtx.stroke();
+                }
+                
+                // Render atoms
                 for (let i = 0; i < atoms.length; i++) {
                     const atom = atoms[i];
                     
@@ -415,9 +449,9 @@
                     const x2 = atom.position.x * cosY - atom.position.z * sinY;
                     const z2 = atom.position.x * sinY + atom.position.z * cosY;
                     
-                    const screenX = mol.x + x2 * scale * 100;
-                    const screenY = centerY + atom.position.y * scale * 100;
-                    const radius = atom.radius * scale / 2;
+                    const screenX = mol.x + x2 * scale;
+                    const screenY = centerY + atom.position.y * scale;
+                    const radius = atom.radius * scale * 0.8;
                     
                     // Gradient for 3D effect
                     const gradient = molecularCtx.createRadialGradient(
@@ -428,14 +462,22 @@
                         screenY,
                         radius
                     );
+                    const atomColor = color3ToCSS(atom.color);
                     gradient.addColorStop(0, '#ffffff');
-                    gradient.addColorStop(0.3, atom.color);
+                    gradient.addColorStop(0.3, atomColor);
                     gradient.addColorStop(1, '#000000');
                     
                     molecularCtx.fillStyle = gradient;
                     molecularCtx.beginPath();
                     molecularCtx.arc(screenX, screenY, radius, 0, Math.PI * 2);
                     molecularCtx.fill();
+                    
+                    // Element label
+                    molecularCtx.fillStyle = 'white';
+                    molecularCtx.font = 'bold 10px monospace';
+                    molecularCtx.textAlign = 'center';
+                    molecularCtx.textBaseline = 'middle';
+                    molecularCtx.fillText(atom.element, screenX, screenY);
                 }
             }
         }
@@ -530,18 +572,24 @@
         // Hide splash and start
         setTimeout(() => {
             document.getElementById('splash').classList.add('hidden');
+            
+            // Auto-start the universe (not paused)
+            paused = false;
+            document.getElementById('btn-pause').textContent = '⏸';
+            
             update();
             console.log('✅ Ebb & Bloom - Canvas 2D Universe');
             console.log('✅ EntropyAgent initialized');
             console.log('✅ AgentSpawner ready');
-            console.log('Press PLAY to start the universe!');
+            console.log('✅ Universe is running!');
             
             // Expose to window for debugging
             window.universe = {
                 entropyAgent,
                 spawner,
                 camera,
-                paused,
+                get paused() { return paused; },
+                set paused(val) { paused = val; },
                 speedMultiplier
             };
         }, 1000);
