@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ebb & Bloom - Open World</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            overflow: hidden;
+            font-family: 'Work Sans', -apple-system, sans-serif;
+        }
+        
+        #canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        #hud {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #00ff88;
+            padding: 15px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            border: 2px solid #00ff88;
+            border-radius: 8px;
+        }
+        
+        #loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 24px;
+            font-family: 'Playfair Display', serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading">Generating world...</div>
+    <div id="hud" style="display: none;">
+        <div>Position: <span id="pos">0, 0, 0</span></div>
+        <div>Biome: <span id="biome">Plains</span></div>
+        <div>FPS: <span id="fps">60</span></div>
+    </div>
+    
+    <script type="module">
+        import * as THREE from 'three';
+        import { EnhancedRNG } from './src/utils/EnhancedRNG.ts';
+        
+        console.log('🎮 Ebb & Bloom - Starting...');
+        
+        // Scene setup
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x87CEEB); // Sky blue
+        scene.fog = new THREE.Fog(0x87CEEB, 50, 200);
+        
+        // Camera (first-person)
+        const camera = new THREE.PerspectiveCamera(
+            75,
+            window.innerWidth / window.innerHeight,
+            0.1,
+            1000
+        );
+        camera.position.set(0, 5, 0);
+        
+        // Renderer
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        document.body.appendChild(renderer.domElement);
+        
+        // Lighting
+        const sun = new THREE.DirectionalLight(0xffffff, 1);
+        sun.position.set(50, 100, 50);
+        sun.castShadow = true;
+        scene.add(sun);
+        
+        const ambient = new THREE.AmbientLight(0x404040, 0.5);
+        scene.add(ambient);
+        
+        // Terrain generation
+        const seed = 'v1-green-valley-breeze';
+        const rng = new EnhancedRNG(seed);
+        
+        function generateTerrain(chunkX, chunkZ) {
+            const geometry = new THREE.PlaneGeometry(100, 100, 50, 50);
+            const vertices = geometry.attributes.position.array;
+            
+            // Perlin-like noise (simplified)
+            for (let i = 0; i < vertices.length; i += 3) {
+                const x = vertices[i] + chunkX * 100;
+                const z = vertices[i + 1] + chunkZ * 100;
+                
+                // Multi-octave noise
+                const height = 
+                    rng.uniform(-1, 1) * 2 +
+                    Math.sin(x * 0.05) * 3 +
+                    Math.cos(z * 0.05) * 3 +
+                    Math.sin(x * 0.01) * 8;
+                
+                vertices[i + 2] = height;
+            }
+            
+            geometry.computeVertexNormals();
+            
+            // Material (grass)
+            const material = new THREE.MeshStandardMaterial({
+                color: 0x228B22,
+                flatShading: false,
+            });
+            
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.rotation.x = -Math.PI / 2;
+            mesh.position.x = chunkX * 100;
+            mesh.position.z = chunkZ * 100;
+            mesh.receiveShadow = true;
+            
+            return mesh;
+        }
+        
+        // Generate 3x3 chunks
+        const chunks = [];
+        for (let x = -1; x <= 1; x++) {
+            for (let z = -1; z <= 1; z++) {
+                const chunk = generateTerrain(x, z);
+                scene.add(chunk);
+                chunks.push(chunk);
+            }
+        }
+        
+        console.log('✅ Terrain generated');
+        
+        // Player movement
+        const moveSpeed = 0.2;
+        const keys = {};
+        
+        window.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
+        window.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
+        
+        // Mouse look
+        let yaw = 0;
+        let pitch = 0;
+        
+        document.addEventListener('click', () => {
+            renderer.domElement.requestPointerLock();
+        });
+        
+        document.addEventListener('mousemove', e => {
+            if (document.pointerLockElement) {
+                yaw -= e.movementX * 0.002;
+                pitch -= e.movementY * 0.002;
+                pitch = Math.max(-Math.PI/2, Math.min(Math.PI/2, pitch));
+            }
+        });
+        
+        // Game loop
+        let lastTime = performance.now();
+        let frames = 0;
+        let fpsTime = 0;
+        
+        function update() {
+            const now = performance.now();
+            const delta = (now - lastTime) / 1000;
+            lastTime = now;
+            
+            // FPS counter
+            frames++;
+            fpsTime += delta;
+            if (fpsTime >= 1) {
+                document.getElementById('fps').textContent = frames;
+                frames = 0;
+                fpsTime = 0;
+            }
+            
+            // Movement
+            const forward = new THREE.Vector3(
+                Math.sin(yaw),
+                0,
+                Math.cos(yaw)
+            );
+            const right = new THREE.Vector3(
+                Math.cos(yaw),
+                0,
+                -Math.sin(yaw)
+            );
+            
+            if (keys['w']) camera.position.add(forward.clone().multiplyScalar(moveSpeed));
+            if (keys['s']) camera.position.add(forward.clone().multiplyScalar(-moveSpeed));
+            if (keys['a']) camera.position.add(right.clone().multiplyScalar(-moveSpeed));
+            if (keys['d']) camera.position.add(right.clone().multiplyScalar(moveSpeed));
+            
+            // Camera orientation
+            camera.rotation.order = 'YXZ';
+            camera.rotation.y = yaw;
+            camera.rotation.x = pitch;
+            
+            // Update HUD
+            const pos = camera.position;
+            document.getElementById('pos').textContent = 
+                `${pos.x.toFixed(1)}, ${pos.y.toFixed(1)}, ${pos.z.toFixed(1)}`;
+            
+            // Render
+            renderer.render(scene, camera);
+            requestAnimationFrame(update);
+        }
+        
+        // Start
+        setTimeout(() => {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('hud').style.display = 'block';
+            console.log('✅ Game ready - Click to capture mouse, WASD to move');
+            update();
+        }, 1000);
+        
+        // Handle resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
+

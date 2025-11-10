@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ebb & Bloom - Main Menu</title>
+    <title>Ebb & Bloom</title>
     <style>
         * {
             margin: 0;
@@ -12,245 +12,60 @@
         }
         
         body {
-            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: linear-gradient(180deg, #0a0a1a 0%, #1a1a2e 100%);
             color: #E2E8F0;
+            font-family: 'Work Sans', -apple-system, sans-serif;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px;
         }
         
         h1 {
             font-family: 'Playfair Display', serif;
             color: #38A169;
             font-size: 64px;
-            margin-bottom: 10px;
-            text-shadow: 0 0 20px rgba(56, 161, 105, 0.3);
+            margin-bottom: 20px;
         }
         
-        .subtitle {
+        .btn {
+            background: linear-gradient(135deg, #38A169, #2F855A);
+            color: white;
+            padding: 20px 60px;
+            font-size: 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(56, 161, 105, 0.6);
+        }
+        
+        p {
             color: #A0AEC0;
             font-size: 18px;
-            margin-bottom: 50px;
+            margin: 20px 0;
             text-align: center;
-        }
-        
-        .menu-section {
-            background: linear-gradient(135deg, rgba(74, 85, 104, 0.95), rgba(74, 85, 104, 0.85));
-            border: 2px solid #38A169;
-            border-radius: 12px;
-            padding: 30px;
-            margin: 15px 0;
-            min-width: 600px;
-            backdrop-filter: blur(10px);
-        }
-        
-        .menu-section h2 {
-            color: #38A169;
-            font-family: 'Playfair Display', serif;
-            font-size: 28px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .menu-section p {
-            color: #A0AEC0;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-        
-        .option-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        
-        .menu-option {
-            background: linear-gradient(135deg, #2d3748, #1a202c);
-            border: 2px solid #4A5568;
-            border-radius: 8px;
-            padding: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            color: inherit;
-            display: block;
-        }
-        
-        .menu-option:hover {
-            border-color: #38A169;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(56, 161, 105, 0.3);
-        }
-        
-        .menu-option h3 {
-            color: #F7FAFC;
-            font-size: 20px;
-            margin-bottom: 8px;
-        }
-        
-        .menu-option .desc {
-            color: #A0AEC0;
-            font-size: 14px;
-        }
-        
-        .menu-option .time {
-            color: #D69E2E;
-            font-size: 12px;
-            margin-top: 8px;
-            font-family: 'JetBrains Mono', monospace;
-        }
-        
-        .game-section {
-            background: linear-gradient(135deg, rgba(56, 161, 105, 0.2), rgba(47, 133, 90, 0.1));
-        }
-        
-        .seed-input-container {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        
-        .seed-input {
-            flex: 1;
-            background: #1a202c;
-            border: 2px solid #4A5568;
-            border-radius: 8px;
-            padding: 15px;
-            color: #F7FAFC;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 16px;
-        }
-        
-        .seed-input:focus {
-            outline: none;
-            border-color: #38A169;
-        }
-        
-        .btn-start {
-            background: linear-gradient(135deg, #38A169, #2F855A);
-            border: none;
-            color: white;
-            padding: 15px 40px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .btn-start:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(56, 161, 105, 0.6);
-        }
-        
-        .btn-random {
-            background: #4A5568;
-            border: none;
-            color: white;
-            padding: 15px 30px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .btn-random:hover {
-            background: #2d3748;
+            max-width: 600px;
         }
     </style>
 </head>
 <body>
     <h1>Ebb & Bloom</h1>
-    <p class="subtitle">Law-Based Universe Simulation</p>
+    <p>Open world game generated by scientific laws</p>
     
-    <!-- Simulation Section -->
-    <div class="menu-section">
-        <h2>🔬 Simulations (Watch Formation)</h2>
-        <p>Observe different cosmic formation patterns from start to finish</p>
-        
-        <div class="option-grid">
-            <a href="./simulation.html?start=big-bang&speed=1000" class="menu-option">
-                <h3>💥 Big Bang</h3>
-                <p class="desc">From t=0 to first atoms</p>
-                <p class="time">~380,000 years → 30 seconds</p>
-            </a>
-            
-            <a href="./simulation.html?start=stellar-epoch&speed=1000" class="menu-option">
-                <h3>🌟 Stellar Formation</h3>
-                <p class="desc">Skip to star formation era</p>
-                <p class="time">Starts at 100 Myr → See stars immediately</p>
-            </a>
-            
-            <a href="./simulation.html?start=galaxy&speed=1000" class="menu-option">
-                <h3>🌌 Galaxy Assembly</h3>
-                <p class="desc">Watch galaxies cluster</p>
-                <p class="time">1-5 Gyr → 2 minutes</p>
-            </a>
-            
-            <a href="./simulation.html?start=planetary&speed=100" class="menu-option">
-                <h3>🪐 Planetary Systems</h3>
-                <p class="desc">Planet formation around stars</p>
-                <p class="time">4.5 Gyr → 1 minute</p>
-            </a>
-        </div>
-    </div>
+    <button class="btn" onclick="window.location.href='./game.html'">
+        ▶ Start Game
+    </button>
     
-    <!-- Game Section -->
-    <div class="menu-section game-section">
-        <h2>🎮 Game (Play on a Planet)</h2>
-        <p>Enter a 3-word seed to generate a complete universe and start on a planet</p>
-        
-        <div class="seed-input-container">
-            <input 
-                type="text" 
-                id="seed-input" 
-                class="seed-input" 
-                placeholder="v1-wild-ocean-glow"
-                pattern="v1-[a-z]+-[a-z]+-[a-z]+"
-            >
-            <button class="btn-random" onclick="generateRandomSeed()">🎲 Random</button>
-            <button class="btn-start" onclick="startGame()">▶ Start Game</button>
-        </div>
-        
-        <p style="margin-top: 15px; font-size: 14px; color: #A0AEC0;">
-            Same seed = same universe. Try "v1-azure-mountain-wind" or make your own!
-        </p>
-    </div>
-    
-    <script>
-        // Word lists for random seed generation
-        const adjectives = ['wild', 'azure', 'crimson', 'golden', 'silver', 'emerald', 'violet', 'amber', 'jade', 'obsidian'];
-        const nouns = ['ocean', 'mountain', 'forest', 'desert', 'canyon', 'river', 'valley', 'peak', 'plain', 'coast'];
-        const descriptors = ['wind', 'storm', 'dawn', 'dusk', 'mist', 'frost', 'glow', 'shadow', 'light', 'bloom'];
-        
-        function generateRandomSeed() {
-            const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
-            const noun = nouns[Math.floor(Math.random() * nouns.length)];
-            const desc = descriptors[Math.floor(Math.random() * descriptors.length)];
-            const seed = `v1-${adj}-${noun}-${desc}`;
-            document.getElementById('seed-input').value = seed;
-        }
-        
-        function startGame() {
-            const seed = document.getElementById('seed-input').value;
-            if (!seed || !seed.match(/^v1-[a-z]+-[a-z]+-[a-z]+$/)) {
-                alert('Please enter a valid seed (format: v1-word-word-word)');
-                return;
-            }
-            // Navigate to game view with seed
-            window.location.href = `./game.html?seed=${encodeURIComponent(seed)}`;
-        }
-        
-        // Auto-generate seed on load
-        window.addEventListener('load', () => {
-            generateRandomSeed();
-        });
-    </script>
+    <p style="margin-top: 40px; font-size: 14px;">
+        Seed: v1-green-valley-breeze<br>
+        Same seed = same world
+    </p>
 </body>
 </html>
-
