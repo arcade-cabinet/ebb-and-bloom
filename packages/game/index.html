@@ -39,9 +39,54 @@
             left: 0;
             right: 0;
             bottom: 0;
-            /* CRITICAL: Force canvas to fill on all devices */
             min-width: 100vw;
             min-height: 100vh;
+        }
+        
+        /* UI FRAME OVERLAYS - positioned absolutely */
+        .ui-frame {
+            position: fixed;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .molecular-frame {
+            right: 0;
+            top: 25%;
+            width: 20%;
+            height: 50%;
+            border: 2px solid rgba(0, 255, 136, 0.5);
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .molecular-title {
+            position: absolute;
+            top: -25px;
+            left: 5px;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 12px;
+            color: #00ff88;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .hud-frame {
+            right: 0;
+            top: 0;
+            width: 20%;
+            height: 25%;
+            border: 2px solid rgba(136, 204, 255, 0.5);
+            border-radius: 5px;
+        }
+        
+        .vcr-frame {
+            right: 0;
+            bottom: 0;
+            width: 20%;
+            height: 10%;
+            border: 2px solid rgba(0, 255, 136, 0.5);
+            border-radius: 5px;
         }
         
         #loading {
@@ -148,6 +193,15 @@
     </div>
     
     <canvas id="renderCanvas"></canvas>
+    
+    <!-- UI FRAME OVERLAYS -->
+    <div class="ui-frame hud-frame">
+        <div class="molecular-title">STATISTICS</div>
+    </div>
+    <div class="ui-frame molecular-frame">
+        <div class="molecular-title">MOLECULAR BREAKDOWN</div>
+    </div>
+    <div class="ui-frame vcr-frame"></div>
     
     <script type="module">
         import { CompleteBottomUpScene } from './src/scenes/CompleteBottomUpScene.ts';

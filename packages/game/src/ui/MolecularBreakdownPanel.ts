@@ -56,7 +56,7 @@ export class MolecularBreakdownPanel {
   constructor(mainScene: Scene, engine: any) {
     // Create separate scene for molecular view
     this.scene = new Scene(engine);
-    this.scene.clearColor = new Color3(0.1, 0.1, 0.15).toColor4(); // Lighter for visibility
+    this.scene.clearColor = new Color3(0, 0, 0).toColor4(); // BLACK background for contrast
     
     // Camera for molecular view (close-up on molecules)
     this.camera = new ArcRotateCamera(
