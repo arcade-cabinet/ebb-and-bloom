@@ -23,7 +23,7 @@
 import * as THREE from 'three';
 import { EnhancedRNG } from '../utils/EnhancedRNG';
 import { BiomeType } from './BiomeSystem';
-import { ServiceTypology } from '../laws/social';
+import { SOCIAL_CONSTANTS } from '../tables/social-constants';
 
 export enum SettlementType {
   VILLAGE = 'village',     // 50-500 people

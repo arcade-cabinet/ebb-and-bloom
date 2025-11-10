@@ -10,8 +10,7 @@
  */
 
 import { EntityManager, Think, Vector3, Vehicle } from 'yuka';
-import { LEGAL_BROKER } from '../laws/core/LegalBroker';
-import { UniverseState } from '../laws/core/UniversalLawCoordinator';
+// Legal Broker removed - agents spawn directly now
 import { CreatureAgent } from './agents/CreatureAgent';
 import { DensityAgent } from './agents/DensityAgent';
 import { ReproductionEvaluator, SurvivalEvaluator } from './agents/evaluators/CreatureEvaluators';

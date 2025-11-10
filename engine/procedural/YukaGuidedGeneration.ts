@@ -9,7 +9,7 @@
  * NO ARTIST INPUT. PURE SYNTHESIS.
  */
 
-import { LAWS } from '../laws';
+import { BIOLOGICAL_CONSTANTS, ECOLOGICAL_CONSTANTS } from '../tables';
 import { PlanetaryVisuals } from './PlanetaryVisuals';
 import { CreatureVisuals } from './CreatureVisuals';
 import { ToolVisuals } from './ToolVisuals';

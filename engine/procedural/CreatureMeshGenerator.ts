@@ -2,8 +2,7 @@
  * Creature Mesh from Anatomy Laws
  */
 
-import { AnatomyLaws } from '../laws/04-biological/anatomy';
-import { BiologicalLaws } from '../laws/biology';
+import { BIOLOGICAL_CONSTANTS } from '../tables/biological-constants';
 
 export class CreatureMeshGenerator {
   generate(mass_kg: number, locomotion: string, diet: string) {

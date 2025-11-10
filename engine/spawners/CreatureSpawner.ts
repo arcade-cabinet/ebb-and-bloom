@@ -18,7 +18,7 @@ import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js
 import { Vehicle, WanderBehavior, FollowPathBehavior, Path, Vector3 } from 'yuka';
 import { EnhancedRNG } from '../utils/EnhancedRNG';
 import { EntityManager } from 'yuka';
-import { BiologyLaws } from '../laws/biology';
+import { BIOLOGICAL_CONSTANTS } from '../tables/biological-constants';
 
 /**
  * Sync function - copies entity transform to mesh

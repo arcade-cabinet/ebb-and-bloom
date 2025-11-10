@@ -9,7 +9,7 @@
  */
 
 import { EnhancedRNG } from '../utils/EnhancedRNG.js';
-import { LAWS } from '../laws/index.js';
+import { ECOLOGICAL_CONSTANTS } from '../tables/ecological-constants';
 
 export interface PopulationState {
   species: string;

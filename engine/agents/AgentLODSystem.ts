@@ -14,8 +14,7 @@
 import { Vehicle, Vector3 } from 'yuka';
 import { create } from 'zustand';
 import { AgentSpawner, AgentType } from './AgentSpawner';
-import { LEGAL_BROKER } from '../laws/core/LegalBroker';
-import { UniverseState } from '../laws/core/UniversalLawCoordinator';
+// Legal Broker removed - simplified LOD system
 
 /**
  * Simulation scale (determines which agents are active)
