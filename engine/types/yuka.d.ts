@@ -93,18 +93,18 @@ declare module 'yuka' {
     getEntityByName(name: string): any;
   }
   
-  export class Goal {
+  export class Goal<T = any> {
     static readonly STATUS: {
-      INACTIVE: symbol;
-      ACTIVE: symbol;
-      COMPLETED: symbol;
-      FAILED: symbol;
+      INACTIVE: string;
+      ACTIVE: string;
+      COMPLETED: string;
+      FAILED: string;
     };
     
-    owner: any; // Can be Vehicle or subclass
-    status: symbol;
+    owner: T; // Can be Vehicle or subclass
+    status: string;
     
-    constructor(owner?: any);
+    constructor(owner?: T);
     
     activate(): void;
     execute(): void;
@@ -118,16 +118,16 @@ declare module 'yuka' {
     replanIfFailed(): void;
   }
   
-  export class CompositeGoal extends Goal {
+  export class CompositeGoal<T = any> extends Goal<T> {
     subgoals: Goal[];
     
-    constructor(owner?: any);
+    constructor(owner?: T);
     
     addSubgoal(goal: Goal): this;
     removeSubgoal(goal: Goal): boolean;
     clearSubgoals(): this;
     currentSubgoal(): Goal | null;
-    executeSubgoals(): symbol;
+    executeSubgoals(): string;
     hasSubgoals(): boolean;
   }
   

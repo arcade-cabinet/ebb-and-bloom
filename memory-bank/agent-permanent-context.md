@@ -18,28 +18,31 @@
 
 ## 🔥 CRITICAL: ENGINE ARCHITECTURE
 
-**MAJOR REFACTOR COMPLETED (Nov 10, 2025):**
+**MAJOR REFACTOR + LAW PORT COMPLETED (Nov 10, 2025):**
 
 **What changed:**
 - ✅ Flattened monorepo → `engine/` + `demo/` structure
 - ✅ Added React Three Fiber + Drei + Zustand
 - ✅ Removed BabylonJS completely
 - ✅ Removed pnpm workspace (now npm)
+- ✅ **ELIMINATED engine/laws (8,755 lines deleted)**
+- ✅ **PORTED to engine/governors (17 Yuka-native governors)**
 - ✅ Proper engine/game separation
 
 **Current Structure:**
 ```
 engine/              # Pure simulation logic (no rendering)
-├── laws/           # 57 law files (8,500+ lines)
+├── governors/      # 17 Yuka-native governors (2,271 lines)
 ├── spawners/       # World generation
-├── agents/         # Yuka AI
+├── agents/         # Yuka AI integration
 ├── simulation/     # Timeline engine
+├── tables/         # Constants (physics, biology, ecology, social)
 ├── core/           # GameEngine
 └── index.ts        # Main export
 
 demo/               # R3F demos (presentation layer)
 ├── src/
-│   ├── demos/      # Terrain, Universe, Playground
+│   ├── demos/      # Terrain, Universe, Playground, Governors
 │   ├── store/      # Zustand state
 │   └── components/ # R3F components
 └── package.json    # Separate dependencies
@@ -47,7 +50,7 @@ demo/               # R3F demos (presentation layer)
 
 **The new flow:**
 ```
-Three-word seed → Laws → Complete Universe
+Three-word seed → Governors (Yuka-native) → Complete Universe
                     ↓
                  Engine API
                     ↓
@@ -56,6 +59,8 @@ Three-word seed → Laws → Complete Universe
 
 **Same seed = same universe. Always. Deterministic.**
 
+**100% Yuka governors - no external law calls!**
+
 ---
 
 ## Architecture
@@ -63,22 +68,21 @@ Three-word seed → Laws → Complete Universe
 **Engine Structure:**
 ```
 engine/
-├── laws/              # 57 mathematical law files
-│   ├── 00-universal/  # Complexity, cosmology, quantum
-│   ├── 01-physics/    # Core physics
-│   ├── 02-planetary/  # Geology, atmosphere, climate (11 files)
-│   ├── 03-chemical/   # Biochemistry
-│   ├── 04-biological/ # Anatomy, genetics, neuroscience (8 files)
-│   ├── 05-cognitive/  # Linguistics
-│   ├── 06-social/     # Demographics, kinship, warfare (7 files)
-│   ├── 07-technological/ # Agriculture, metallurgy, energy (9 files)
-│   ├── core/          # Legal Broker + 7 Regulators
-│   ├── physics.ts     # Core physics laws
-│   ├── stellar.ts     # Star formation
-│   ├── biology.ts     # Kleiber's Law
-│   ├── ecology.ts     # Lotka-Volterra
-│   ├── social.ts      # Dunbar's number
-│   └── taxonomy.ts    # Linnaean classification
+├── governors/         # 17 Yuka-native agent behaviors
+│   ├── physics/       # Gravity, Orbit, Temperature, Stellar (4)
+│   ├── biological/    # Metabolism, Lifecycle, Reproduction, Genetics, Cognitive (5)
+│   ├── ecological/    # Flocking, PredatorPrey, Territory, Foraging, Migration (5)
+│   ├── social/        # Hierarchy, Warfare, Cooperation (3)
+│   ├── README.md      # Governor architecture guide
+│   └── index.ts       # Main export
+│
+├── tables/            # Universal constants
+│   ├── physics-constants.ts
+│   ├── biological-constants.ts
+│   ├── ecological-constants.ts
+│   ├── social-constants.ts
+│   ├── periodic-table.ts
+│   └── linguistic-roots.ts
 │
 ├── spawners/          # World generation (Daggerfall-inspired)
 │   ├── ChunkManager.ts      # 7x7 chunk streaming

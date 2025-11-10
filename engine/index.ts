@@ -21,10 +21,10 @@ export { validateSeed, generateSeed } from './utils/seed/seed-manager';
 export * from './tables';
 
 // ============================================================================
-// LAWS (57 files)
+// LAWS ELIMINATED - See engine/governors instead
 // ============================================================================
-
-export * from './laws';
+// The laws directory has been completely eliminated and replaced with
+// Yuka-native governors. All law functionality is now in governors/
 
 // ============================================================================
 // SPAWNERS (World Generation)
@@ -110,6 +110,12 @@ export { AgentLODSystem } from './agents/AgentLODSystem';
 export { CreatureAgent } from './agents/CreatureAgent';
 export { PlanetaryAgent } from './agents/PlanetaryAgent';
 export { GravityBehavior } from './agents/behaviors/GravityBehavior';
+
+// ============================================================================
+// GOVERNORS (Yuka-Native Law Implementation)
+// ============================================================================
+
+export * from './governors';
 
 // ============================================================================
 // TYPES
