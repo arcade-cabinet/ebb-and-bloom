@@ -298,8 +298,8 @@
         const spawner = new AgentSpawner();
         const entropyAgent = new EntropyAgent();
         
-        // Register spawner with EntropyAgent
-        entropyAgent.setSpawner(spawner);
+        // Register spawner with EntropyAgent (direct property assignment)
+        entropyAgent.spawner = spawner;
         
         // Add entropy agent to spawner's entity manager
         spawner.getEntityManager().add(entropyAgent);
