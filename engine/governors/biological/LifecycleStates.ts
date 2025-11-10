@@ -99,7 +99,12 @@ export class ElderState extends State {
         
         // Gradual decline
         agent.strengthMultiplier = Math.max(0.3, 1.0 - (ageRatio - 0.75) * 2);
-        agent.maxSpeed = agent.baseMaxSpeed * agent.strengthMultiplier;
+        
+        // Store original maxSpeed if not already stored
+        if (!agent.originalMaxSpeed) {
+            agent.originalMaxSpeed = agent.maxSpeed;
+        }
+        agent.maxSpeed = agent.originalMaxSpeed * agent.strengthMultiplier;
 
         // Check for death
         if (agent.age >= agent.maxLifespan) {
@@ -131,7 +136,10 @@ export class LifecycleStateMachine extends StateMachine {
         // Store on agent
         agent.maturityAge = maturityAge;
         agent.maxLifespan = maxLifespan;
-        agent.age = 0; // Start at birth
+        // Don't overwrite existing age! Agent may start at any age
+        if (agent.age === undefined) {
+            agent.age = 0; // Only set if not already set
+        }
         agent.adultMass = mass; // Target adult mass
 
         // If spawned as juvenile, start at fraction of adult mass
