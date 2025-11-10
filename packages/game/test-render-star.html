@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Star Rendering Test - Canvas 2D</title>
+    <style>
+        body { margin: 0; background: black; }
+        canvas { display: block; }
+        #info {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            color: #00ff88;
+            font-family: monospace;
+            background: rgba(0,0,0,0.9);
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <div id="info">
+        <h3>Star Rendering Test</h3>
+        <p>Spectral types: O, B, A, F, G, K, M</p>
+        <p>Colors from temperature (Wien's Law)</p>
+    </div>
+    
+    <script type="module">
+        import { StellarVisuals } from './src/renderers/StellarVisuals.ts';
+        
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        // Create stars of different spectral types
+        const stars = [
+            { mass: 50, label: 'O-type (Blue Giant)' },
+            { mass: 10, label: 'B-type (Blue-White)' },
+            { mass: 3, label: 'A-type (White)' },
+            { mass: 1.5, label: 'F-type (Yellow-White)' },
+            { mass: 1.0, label: 'G-type (Sun)' },
+            { mass: 0.7, label: 'K-type (Orange)' },
+            { mass: 0.3, label: 'M-type (Red Dwarf)' }
+        ];
+        
+        const blueprints = stars.map(s => ({
+            ...s,
+            blueprint: StellarVisuals.createBlueprint(s.mass)
+        }));
+        
+        function colorToCSS(color) {
+            return `rgb(${color.r * 255}, ${color.g * 255}, ${color.b * 255})`;
+        }
+        
+        function render() {
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            const startY = 150;
+            const spacing = 120;
+            
+            blueprints.forEach((star, i) => {
+                const x = canvas.width / 2;
+                const y = startY + i * spacing;
+                const size = 20 + star.mass * 5;
+                
+                // Star glow
+                const gradient = ctx.createRadialGradient(x, y, 0, x, y, size * 2);
+                const color = colorToCSS(star.blueprint.color);
+                gradient.addColorStop(0, color);
+                gradient.addColorStop(0.5, color.replace('rgb', 'rgba').replace(')', ', 0.5)'));
+                gradient.addColorStop(1, 'rgba(0,0,0,0)');
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(x, y, size * 2, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Star core
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Label
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '14px monospace';
+                ctx.textAlign = 'left';
+                ctx.fillText(`${star.label} - ${star.blueprint.temperature.toFixed(0)}K`, x + size * 3, y);
+            });
+            
+            requestAnimationFrame(render);
+        }
+        
+        render();
+        
+        console.log('✅ Star rendering test');
+        console.log('Spectral types:', blueprints.map(b => b.blueprint.spectralType));
+    </script>
+</body>
+</html>
+

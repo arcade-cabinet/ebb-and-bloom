@@ -478,8 +478,13 @@ export class EntropyAgent extends Vehicle {
     // PIVOTAL EVENTS - SLOW DOWN DRAMATICALLY
     // Big Bang → Recombination (first 380kyr)
     if (this.age < 380000 * YEAR) {
+      // SUPER SLOW start to allow Big Bang visuals to render
+      if (this.age < 10 * YEAR) {
+        return 0.1 * YEAR; // 0.1 years/sec for first 10 years (100 seconds real-time)
+      }
+      
       // Player should see: Quantum foam → Particles → Atoms
-      // Duration: ~30 seconds real-time for entire early universe
+      // Duration: ~30 seconds real-time for early universe
       return 1e4 * YEAR; // 10,000 years/second (380kyr takes ~38 seconds)
     }
 

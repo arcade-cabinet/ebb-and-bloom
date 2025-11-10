@@ -159,15 +159,28 @@ export class StellarVisuals {
 
   /**
    * Render star with proper color, size, and glow
+   * Size depends on camera zoom level for LOD
    */
   static renderStar(
     blueprint: StellarBlueprint,
     position: Vector3,
     scene: Scene,
-    id: string
+    id: string,
+    zoomLevel: 'cosmic' | 'galactic' | 'stellar' = 'galactic'
   ): Mesh {
-    // Size proportional to radius (with scaling for visibility)
-    const visualSize = 2 + Math.log10(blueprint.radius + 1) * 2;
+    // Size varies by zoom level
+    let visualSize: number;
+    if (zoomLevel === 'cosmic') {
+      // MASSIVE spheres for cosmic view (camera can be 1,000,000 units away!)
+      // Need 1000-5000 unit spheres to be visible
+      visualSize = 2000 + Math.log10(blueprint.luminosity + 1) * 500;
+    } else if (zoomLevel === 'galactic') {
+      // Medium size for galactic view
+      visualSize = 100 + Math.log10(blueprint.radius + 1) * 20;
+    } else {
+      // Full size for stellar zoom  
+      visualSize = 20 + Math.log10(blueprint.radius + 1) * 10;
+    }
 
     const star = MeshBuilder.CreateSphere(
       `star-${id}`,
@@ -180,15 +193,14 @@ export class StellarVisuals {
 
     star.position = position;
 
-    // Emissive material (stars GLOW!)
+    // MAXIMUM BRIGHTNESS emissive material (stars GLOW!)
     const mat = new StandardMaterial(`star-mat-${id}`, scene);
-    mat.emissiveColor = blueprint.color;
-    mat.diffuseColor = blueprint.color.scale(0.5);
+    mat.emissiveColor = blueprint.color; // FULL COLOR
+    mat.diffuseColor = blueprint.color;
     mat.specularColor = new Color3(0, 0, 0); // No specular
 
-    // Brighter for hotter stars
-    const brightness = Math.min(1, blueprint.luminosity / 10);
-    mat.emissiveColor = mat.emissiveColor.scale(brightness);
+    // NO brightness reduction - stars are always BRIGHT!
+    // (Removed the scale reduction)
 
     star.material = mat;
 

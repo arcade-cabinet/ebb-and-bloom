@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Creature Rendering Test - Canvas 2D</title>
+    <style>
+        body { margin: 0; background: #2a4a2a; }
+        canvas { display: block; }
+        #info {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            color: #ffffff;
+            font-family: monospace;
+            background: rgba(0,0,0,0.9);
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <div id="info">
+        <h3>Creature Rendering Test</h3>
+        <p>From anatomy + biomechanics</p>
+        <p>Different body plans</p>
+    </div>
+    
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        // Different creature types
+        const creatures = [
+            {
+                name: 'Quadruped',
+                mass: 50, // kg
+                legs: 4,
+                color: '#8b6f47',
+                bodyLength: 100,
+                headSize: 25
+            },
+            {
+                name: 'Bipedal',
+                mass: 70,
+                legs: 2,
+                color: '#6f8b47',
+                bodyLength: 80,
+                headSize: 30
+            },
+            {
+                name: 'Hexapod',
+                mass: 20,
+                legs: 6,
+                color: '#47678b',
+                bodyLength: 60,
+                headSize: 15
+            }
+        ];
+        
+        let time = 0;
+        
+        function drawQuadruped(ctx, x, y, creature, phase) {
+            const scale = Math.log10(creature.mass) / 2;
+            
+            // Body
+            ctx.fillStyle = creature.color;
+            ctx.fillRect(x - creature.bodyLength/2 * scale, y - 20 * scale, creature.bodyLength * scale, 40 * scale);
+            
+            // Head
+            ctx.beginPath();
+            ctx.arc(x + creature.bodyLength/2 * scale, y, creature.headSize * scale, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Legs (animated walk cycle)
+            const legPositions = [
+                { x: -creature.bodyLength/3 * scale, swing: phase },
+                { x: -creature.bodyLength/6 * scale, swing: phase + Math.PI },
+                { x: creature.bodyLength/6 * scale, swing: phase },
+                { x: creature.bodyLength/3 * scale, swing: phase + Math.PI }
+            ];
+            
+            ctx.strokeStyle = creature.color;
+            ctx.lineWidth = 5 * scale;
+            
+            for (const leg of legPositions) {
+                const footY = Math.sin(leg.swing) * 15 * scale;
+                ctx.beginPath();
+                ctx.moveTo(x + leg.x, y + 20 * scale);
+                ctx.lineTo(x + leg.x, y + 50 * scale + footY);
+                ctx.stroke();
+            }
+        }
+        
+        function drawBipedal(ctx, x, y, creature, phase) {
+            const scale = Math.log10(creature.mass) / 2;
+            
+            // Body (upright)
+            ctx.fillStyle = creature.color;
+            ctx.fillRect(x - 20 * scale, y - creature.bodyLength/2 * scale, 40 * scale, creature.bodyLength * scale);
+            
+            // Head
+            ctx.beginPath();
+            ctx.arc(x, y - creature.bodyLength/2 * scale - creature.headSize * scale, creature.headSize * scale, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Arms
+            ctx.strokeStyle = creature.color;
+            ctx.lineWidth = 4 * scale;
+            ctx.beginPath();
+            ctx.moveTo(x - 20 * scale, y - 30 * scale);
+            ctx.lineTo(x - 40 * scale, y + Math.sin(phase) * 20 * scale);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x + 20 * scale, y - 30 * scale);
+            ctx.lineTo(x + 40 * scale, y + Math.sin(phase + Math.PI) * 20 * scale);
+            ctx.stroke();
+            
+            // Legs
+            const leg1 = Math.sin(phase) * 25 * scale;
+            const leg2 = Math.sin(phase + Math.PI) * 25 * scale;
+            
+            ctx.lineWidth = 6 * scale;
+            ctx.beginPath();
+            ctx.moveTo(x - 10 * scale, y + creature.bodyLength/2 * scale);
+            ctx.lineTo(x - 10 * scale, y + creature.bodyLength/2 * scale + 40 * scale + leg1);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x + 10 * scale, y + creature.bodyLength/2 * scale);
+            ctx.lineTo(x + 10 * scale, y + creature.bodyLength/2 * scale + 40 * scale + leg2);
+            ctx.stroke();
+        }
+        
+        function drawHexapod(ctx, x, y, creature, phase) {
+            const scale = Math.log10(creature.mass) / 2;
+            
+            // Segmented body
+            for (let seg = 0; seg < 3; seg++) {
+                const segX = x + (seg - 1) * 25 * scale;
+                ctx.fillStyle = creature.color;
+                ctx.beginPath();
+                ctx.ellipse(segX, y, 20 * scale, 15 * scale, 0, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            // 6 legs (3 per side)
+            ctx.strokeStyle = creature.color;
+            ctx.lineWidth = 3 * scale;
+            
+            for (let i = 0; i < 6; i++) {
+                const side = i < 3 ? -1 : 1;
+                const segIndex = i % 3;
+                const legX = x + (segIndex - 1) * 25 * scale;
+                const legPhase = phase + i * Math.PI / 3;
+                const footY = Math.sin(legPhase) * 10 * scale;
+                
+                ctx.beginPath();
+                ctx.moveTo(legX, y);
+                ctx.lineTo(legX + side * 30 * scale, y + 30 * scale + footY);
+                ctx.stroke();
+            }
+        }
+        
+        function render() {
+            ctx.fillStyle = '#2a4a2a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            time += 0.05;
+            
+            const startY = 200;
+            const spacing = 200;
+            
+            creatures.forEach((creature, i) => {
+                const x = canvas.width / 2;
+                const y = startY + i * spacing;
+                
+                // Draw creature based on type
+                if (creature.legs === 4) {
+                    drawQuadruped(ctx, x, y, creature, time);
+                } else if (creature.legs === 2) {
+                    drawBipedal(ctx, x, y, creature, time);
+                } else if (creature.legs === 6) {
+                    drawHexapod(ctx, x, y, creature, time);
+                }
+                
+                // Label
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '16px monospace';
+                ctx.textAlign = 'center';
+                ctx.fillText(`${creature.name} (${creature.mass}kg, ${creature.legs} legs)`, x, y + 100);
+            });
+            
+            requestAnimationFrame(render);
+        }
+        
+        render();
+        
+        console.log('✅ Creature rendering test');
+        console.log('Body plans:', creatures.map(c => c.name));
+    </script>
+</body>
+</html>
+

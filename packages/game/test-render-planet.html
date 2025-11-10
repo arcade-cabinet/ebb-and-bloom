@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Planet Rendering Test - Canvas 2D</title>
+    <style>
+        body { margin: 0; background: #000005; }
+        canvas { display: block; }
+        #info {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            color: #00ff88;
+            font-family: monospace;
+            background: rgba(0,0,0,0.9);
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <div id="info">
+        <h3>Planet Rendering Test</h3>
+        <p>Composition-based colors</p>
+        <p>From periodic table</p>
+    </div>
+    
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        // Different planet compositions
+        const planets = [
+            { 
+                name: 'Iron Core', 
+                composition: { Fe: 0.7, Ni: 0.2, Si: 0.1 },
+                color: '#b87333' // Bronze
+            },
+            { 
+                name: 'Rocky (Earth-like)', 
+                composition: { O: 0.46, Si: 0.28, Al: 0.08, Fe: 0.05 },
+                color: '#8b7355' // Brown-gray
+            },
+            { 
+                name: 'Ice World', 
+                composition: { H: 0.6, O: 0.3, N: 0.1 },
+                color: '#c0e0ff' // Pale blue
+            },
+            { 
+                name: 'Gas Giant', 
+                composition: { H: 0.75, He: 0.24 },
+                color: '#ffcc99' // Pale orange
+            }
+        ];
+        
+        let rotation = 0;
+        
+        function render() {
+            ctx.fillStyle = '#000005';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            rotation += 0.002;
+            
+            const startX = 200;
+            const spacing = (canvas.width - 400) / (planets.length - 1);
+            
+            planets.forEach((planet, i) => {
+                const x = startX + i * spacing;
+                const y = canvas.height / 2;
+                const radius = 80;
+                
+                // Planet sphere with terminator (day/night)
+                const gradient = ctx.createRadialGradient(
+                    x - radius * 0.3,
+                    y - radius * 0.3,
+                    radius * 0.1,
+                    x,
+                    y,
+                    radius * 1.5
+                );
+                gradient.addColorStop(0, '#ffffff');
+                gradient.addColorStop(0.4, planet.color);
+                gradient.addColorStop(0.8, planet.color.replace(')', ', 0.5)').replace('rgb', 'rgba').replace('#', 'rgba('));
+                gradient.addColorStop(1, '#000000');
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Rotation bands (texture suggestion)
+                for (let band = -2; band <= 2; band++) {
+                    const bandY = y + band * 15 + Math.sin(rotation + band) * 5;
+                    ctx.strokeStyle = `rgba(255,255,255,0.05)`;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.ellipse(x, bandY, radius * 0.9, radius * 0.15, 0, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+                
+                // Label
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '14px monospace';
+                ctx.textAlign = 'center';
+                ctx.fillText(planet.name, x, y + radius + 25);
+                
+                // Composition
+                ctx.font = '10px monospace';
+                const comp = Object.entries(planet.composition)
+                    .map(([el, pct]) => `${el}${(pct*100).toFixed(0)}%`)
+                    .join(' ');
+                ctx.fillText(comp, x, y + radius + 40);
+            });
+            
+            requestAnimationFrame(render);
+        }
+        
+        render();
+        
+        console.log('✅ Planet rendering test');
+        console.log('Planets:', planets.map(p => p.name));
+    </script>
+</body>
+</html>
+

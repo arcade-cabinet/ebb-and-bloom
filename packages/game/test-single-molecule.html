@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Single H2O Molecule Test</title>
+    <style>
+        body { margin: 0; background: #1a1a2e; }
+        canvas { display: block; margin: 50px auto; border: 2px solid #00ff88; }
+        #info {
+            color: #00ff88;
+            font-family: monospace;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="info">
+        <h1>H₂O - Water Molecule</h1>
+        <p>Bent geometry, 104.5° angle</p>
+        <p>O (red) with two H (white)</p>
+    </div>
+    <canvas id="canvas" width="800" height="600"></canvas>
+    
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // H2O geometry (from MolecularVisuals.ts)
+        const bondLength = 95.84;
+        const angle = 104.5 * Math.PI / 180;
+        
+        const atoms = [
+            { element: 'O', x: 0, y: 0, z: 0, radius: 152, color: '#ff3333' }, // Red oxygen
+            { 
+                element: 'H', 
+                x: bondLength * Math.cos(angle / 2), 
+                y: bondLength * Math.sin(angle / 2), 
+                z: 0, 
+                radius: 120, 
+                color: '#ffffff' // White hydrogen
+            },
+            { 
+                element: 'H', 
+                x: bondLength * Math.cos(angle / 2), 
+                y: -bondLength * Math.sin(angle / 2), 
+                z: 0, 
+                radius: 120, 
+                color: '#ffffff' 
+            }
+        ];
+        
+        const bonds = [
+            { from: 0, to: 1 },
+            { from: 0, to: 2 }
+        ];
+        
+        let rotation = 0;
+        
+        function project3D(x, y, z, rotY) {
+            // Simple rotation around Y axis
+            const cosY = Math.cos(rotY);
+            const sinY = Math.sin(rotY);
+            
+            const x2 = x * cosY - z * sinY;
+            const z2 = x * sinY + z * cosY;
+            
+            // Orthographic projection
+            return { x: x2, y: y, z: z2 };
+        }
+        
+        function render() {
+            ctx.fillStyle = '#1a1a2e';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const scale = 1.5; // Visual scale
+            
+            // Rotate molecule
+            rotation += 0.01;
+            
+            // Project all atoms
+            const projected = atoms.map((atom, idx) => {
+                const p = project3D(atom.x, atom.y, atom.z, rotation);
+                return {
+                    index: idx,
+                    element: atom.element,
+                    color: atom.color,
+                    radius: atom.radius,
+                    screenX: centerX + p.x * scale,
+                    screenY: centerY + p.y * scale,
+                    depth: p.z
+                };
+            });
+            
+            // Sort by depth (back to front)
+            projected.sort((a, b) => a.depth - b.depth);
+            
+            // Draw bonds FIRST (behind atoms)
+            ctx.strokeStyle = '#aaaaaa';
+            ctx.lineWidth = 4;
+            
+            for (const bond of bonds) {
+                const a1 = projected[bond.from];
+                const a2 = projected[bond.to];
+                
+                ctx.beginPath();
+                ctx.moveTo(a1.screenX, a1.screenY);
+                ctx.lineTo(a2.screenX, a2.screenY);
+                ctx.stroke();
+            }
+            
+            // Draw atoms as spheres (circles with shading)
+            for (const atom of projected) {
+                const radius = atom.radius * scale;
+                
+                // Shadow for 3D effect
+                const gradient = ctx.createRadialGradient(
+                    atom.screenX - radius * 0.3,
+                    atom.screenY - radius * 0.3,
+                    radius * 0.1,
+                    atom.screenX,
+                    atom.screenY,
+                    radius
+                );
+                gradient.addColorStop(0, '#ffffff');
+                gradient.addColorStop(0.3, atom.color);
+                gradient.addColorStop(1, '#000000');
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(atom.screenX, atom.screenY, radius, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Element label
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 20px monospace';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(atom.element, atom.screenX, atom.screenY);
+            }
+            
+            requestAnimationFrame(render);
+        }
+        
+        render();
+        
+        console.log('✅ Canvas 2D H2O molecule rendering');
+        console.log('Atoms:', atoms);
+        console.log('Bonds:', bonds);
+    </script>
+</body>
+</html>
+

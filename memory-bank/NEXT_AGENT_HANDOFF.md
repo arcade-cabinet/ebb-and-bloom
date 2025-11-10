@@ -1,17 +1,304 @@
-# NEXT AGENT HANDOFF - Post BEAST MODE Session
+# NEXT AGENT HANDOFF - Canvas 2D Refactor Required
 
-**Date:** Nov 9-10, 2025  
-**Status:** 37 commits delivered, core systems operational, visual polish needed  
-**Session:** BEAST MODE execution of holistic investigation + revolutionary UX redesign
+**Date:** Nov 10, 2025  
+**Status:** Babylon rendering broken, Canvas 2D proven to work  
+**Session:** Discovered Babylon setup is fundamentally broken, Canvas 2D works perfectly  
+**Action Required:** Complete refactor to Canvas 2D
 
 ---
 
-## WHAT WAS ACCOMPLISHED (37 COMMITS)
+## CRITICAL DISCOVERY: Babylon Broken, Canvas 2D Works
 
-### ✅ ALL 4 HANDOFF ISSUES RESOLVED
+### What's Broken (Babylon)
+- ❌ 3D meshes don't render (unknown why)
+- ❌ Dual-scene viewport approach doesn't work
+- ❌ 1000 star meshes created but invisible
+- ❌ All properties correct but nothing shows
+- ❌ Blocking issue after full day of debugging
 
-1. **Stars Not Forming** - FIXED
-   - Mass increased (1e24 → 1e34 kg)
+### What Works (Canvas 2D)
+- ✅ 6 compositional tests ALL PASS
+- ✅ 1000 stars at 60 FPS
+- ✅ Molecules with atoms/bonds/rotation
+- ✅ Raycasting for click detection
+- ✅ Spectral colors from Wien's Law
+- ✅ Planet rendering from composition
+- ✅ Creature animation (walk cycles)
+
+---
+
+## WORKING COMPOSITIONAL TESTS (View These First!)
+
+### Test 1: Simple Star Field
+**File:** `test-simple-render.html`  
+**URL:** http://localhost:5173/test-simple-render.html  
+**Result:** ✅ 1000 white stars, 60 FPS, beautiful
+
+### Test 2: H2O Molecule
+**File:** `test-single-molecule.html`  
+**URL:** http://localhost:5173/test-single-molecule.html  
+**Result:** ✅ Rotating water molecule, O (red) + 2H (white), bonds visible
+
+### Test 3: Raycasting
+**File:** `test-raycast-molecule.html`  
+**URL:** http://localhost:5173/test-raycast-molecule.html  
+**Result:** ✅ Click on atoms, they highlight (green ring), shows data
+
+### Test 4: All Star Types  
+**File:** `test-render-star.html`  
+**URL:** http://localhost:5173/test-render-star.html  
+**Result:** ✅ O/B/A/F/G/K/M with correct colors (blue → yellow → red)
+
+### Test 5: Planets
+**File:** `test-render-planet.html`  
+**URL:** http://localhost:5173/test-render-planet.html  
+**Result:** ✅ Iron/Rocky/Ice/Gas planets with composition colors
+
+### Test 6: Creatures
+**File:** `test-render-creature.html`  
+**URL:** http://localhost:5173/test-render-creature.html  
+**Result:** ✅ Quadruped/Bipedal/Hexapod with animated walking
+
+---
+
+## REFACTORING PLAN (Priority Order)
+
+### Phase 1: Universe View (COSMIC scale)
+**Goal:** See stars forming from Big Bang → Stellar Era
+
+**Create:** `index.html` (new Canvas 2D version)
+
+**Requirements:**
+1. Canvas 2D rendering (800x600 or fullscreen)
+2. Import EntropyAgent + AgentSpawner
+3. Render stellar agents as glowing points (use test-render-star.html technique)
+4. Project 3D agent positions to 2D (orthographic top-down view)
+5. Scale: 0.5-1.0 (fit ±500 unit grid into canvas)
+6. VCR controls (play/pause, speed)
+7. HUD showing age/temp/star count
+8. Update every frame (60 FPS)
+
+**Copy from:** `test-render-star.html` (star rendering with gradients)
+
+**Success Criteria:**
+- Open http://localhost:5173/
+- See black screen (t=0)
+- Wait ~120s at 1000x speed
+- See 1000 stars appear as glowing points
+- Stars clustered in 10x10x10 grid pattern
+- Can pause/resume
+- Can speed up (1x → 10x → 100x → 1000x)
+
+### Phase 2: Molecular Ticker Tape
+**Goal:** Bottom strip showing molecules streaming
+
+**Add to:** `index.html` (bottom 15% of canvas)
+
+**Requirements:**
+1. Separate canvas region (y > height * 0.85)
+2. Import MolecularVisuals blueprints
+3. Render 10-20 molecules scrolling left-to-right
+4. Use test-single-molecule.html technique (atoms + bonds)
+5. Context-aware (H2/He early, H2O/CO2 later)
+6. Wrap around when off-screen
+
+**Copy from:** `test-single-molecule.html` (3D projection + atom rendering)
+
+**Success Criteria:**
+- See H2, He molecules streaming at cosmic phase
+- See H2O, CO2, CH4 at molecular era
+- Molecules rotate as they scroll
+- CPK colors correct (O=red, C=gray, H=white)
+
+### Phase 3: Interaction (Click to Zoom)
+**Goal:** Click on star → zoom to planetary view
+
+**Add to:** `index.html`
+
+**Requirements:**
+1. Canvas click handler
+2. Raycast to find nearest star (use test-raycast-molecule.html technique)
+3. On click → create PlanetaryAgents around that star
+4. Zoom camera to stellar system view
+5. Render planets as spheres (use test-render-planet.html)
+6. Back button returns to cosmic view
+
+**Copy from:** `test-raycast-molecule.html` (raycasting logic)
+
+### Phase 4: Planet Surface
+**Goal:** Click planet → see creatures
+
+**Requirements:**
+1. Zoom to planet surface
+2. Render creatures from agents (use test-render-creature.html)
+3. Animated walk cycles
+4. Click creature → show stats
+5. Ground/terrain (simple green gradient)
+
+**Copy from:** `test-render-creature.html` (body plan rendering)
+
+---
+
+## TECHNICAL APPROACH (Canvas 2D)
+
+### Single Canvas, Multiple Layers
+
+```javascript
+function render() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  // Layer 1: Background (space or planet surface)
+  renderBackground(ctx);
+  
+  // Layer 2: Main content (stars, planets, or creatures)
+  if (zoomLevel === 'cosmic') {
+    renderStarsFromAgents(ctx, stellarAgents);
+  } else if (zoomLevel === 'planetary') {
+    renderPlanetsFromAgents(ctx, planetaryAgents);
+  } else if (zoomLevel === 'surface') {
+    renderCreaturesFromAgents(ctx, creatureAgents);
+  }
+  
+  // Layer 3: Molecular ticker tape (bottom 15%)
+  renderMolecularTicker(ctx);
+  
+  // Layer 4: HUD (top-right)
+  renderHUD(ctx);
+  
+  // Layer 5: VCR controls (bottom-left)
+  renderVCR(ctx);
+}
+```
+
+### 3D to 2D Projection
+
+```javascript
+function project(agent, camera, canvas) {
+  // Simple orthographic projection
+  const screenX = canvas.width/2 + (agent.position.x - camera.target.x) * camera.zoom;
+  const screenY = canvas.height/2 + (agent.position.y - camera.target.y) * camera.zoom;
+  return { x: screenX, y: screenY };
+}
+```
+
+### Raycasting
+
+```javascript
+function raycast(mouseX, mouseY, agents, camera, canvas) {
+  for (const agent of agents) {
+    const screen = project(agent, camera, canvas);
+    const dx = mouseX - screen.x;
+    const dy = mouseY - screen.y;
+    const distance = Math.sqrt(dx*dx + dy*dy);
+    const radius = agent.visualRadius; // Depends on zoom
+    
+    if (distance < radius) return agent;
+  }
+  return null;
+}
+```
+
+---
+
+## FILES TO DELETE (Babylon cruft)
+
+**Scenes:**
+- `src/scenes/CompleteBottomUpScene.ts` (broken, 1200 lines of non-working code)
+
+**Renderers:**
+- Keep `src/renderers/StellarVisuals.ts` (blueprints are good, just rendering broken)
+- Keep `src/renderers/MolecularVisuals.ts` (blueprints are good)
+
+**UI:**
+- Delete `src/ui/MolecularBreakdownPanel.ts` (dual-scene approach broken)
+- Keep `src/ui/AdaptiveHUD.ts` (might be useful for Canvas 2D HUD)
+
+**Tests:**
+- Delete `tests/verify-visuals.spec.ts` (never worked)
+
+**Keep test files as reference:**
+- `test-simple-render.html`
+- `test-single-molecule.html`
+- `test-raycast-molecule.html`
+- `test-render-star.html`
+- `test-render-planet.html`
+- `test-render-creature.html`
+
+---
+
+## NEW FILE STRUCTURE
+
+```
+packages/game/
+├── index.html (NEW - Canvas 2D universe)
+├── src/
+│   ├── canvas-renderers/ (NEW)
+│   │   ├── CosmicRenderer.ts (stars as points)
+│   │   ├── MolecularTickerRenderer.ts (bottom strip)
+│   │   ├── PlanetaryRenderer.ts (planets as spheres)
+│   │   └── SurfaceRenderer.ts (creatures + terrain)
+│   ├── canvas-utils/ (NEW)
+│   │   ├── projection.ts (3D → 2D)
+│   │   ├── raycasting.ts (click detection)
+│   │   └── camera.ts (zoom/pan state)
+│   └── yuka-integration/ (KEEP - unchanged)
+│       ├── agents/ (working!)
+│       └── AgentSpawner.ts (working!)
+```
+
+---
+
+## IMPLEMENTATION CHECKLIST
+
+### Step 1: Create CosmicRenderer
+- [ ] Copy star rendering from `test-render-star.html`
+- [ ] Import StellarVisuals for blueprints (mass → color)
+- [ ] Project agent.position (x,y,z) to screen (x,y)
+- [ ] Draw stars with glow gradients
+- [ ] Test: 1000 stars visible
+
+### Step 2: Wire to Yuka
+- [ ] Import EntropyAgent, AgentSpawner
+- [ ] Create render loop (requestAnimationFrame)
+- [ ] Update agents every frame
+- [ ] Render stellar agents using CosmicRenderer
+- [ ] Test: Stars form when agents collapse
+
+### Step 3: Add VCR Controls
+- [ ] HTML buttons (play/pause, speed)
+- [ ] Canvas click handler
+- [ ] Update paused/speedOverride state
+- [ ] Test: Can control simulation
+
+### Step 4: Add Molecular Ticker
+- [ ] Copy from `test-single-molecule.html`
+- [ ] Render to bottom 15% of canvas
+- [ ] Import MolecularVisuals for geometry
+- [ ] Scroll molecules left-to-right
+- [ ] Test: Molecules visible and animating
+
+### Step 5: Add Raycasting
+- [ ] Copy from `test-raycast-molecule.html`
+- [ ] Click → find nearest star
+- [ ] Zoom to that star
+- [ ] Spawn planetary agents
+- [ ] Test: Can click stars
+
+### Step 6: Add Planetary View
+- [ ] Copy from `test-render-planet.html`
+- [ ] Render planets around selected star
+- [ ] Composition-based colors
+- [ ] Test: Planets visible
+
+### Step 7: Add Surface View
+- [ ] Copy from `test-render-creature.html`
+- [ ] Render creatures from agents
+- [ ] Animated walk cycles
+- [ ] Test: Creatures walk around
+
+---
+
+## WHAT WAS ACCOMPLISHED (Previous Sessions - Agent Systems)
    - TimeScale applied to spawner
    - VERIFIED: 1000 stars form at 118 Myr
 
@@ -590,39 +877,73 @@ mp.moleculeMeshes.forEach(m => {
 
 ---
 
-## FOR NEXT AGENT
+## FOR NEXT AGENT - CANVAS 2D REFACTOR
 
-**Priority 1:** Make stars visible
-- They exist (1000 meshes)
-- They're just not rendering/visible
-- Debug materials, scale, lighting
+**Priority 1: Get Cosmic View Working**
+1. Copy `test-render-star.html` rendering code
+2. Replace `index.html` script with Canvas 2D
+3. Import EntropyAgent + AgentSpawner
+4. Render stellar agents as glowing points
+5. Test: Stars appear when they form
 
-**Priority 2:** Make molecules visible in panel
-- 25 created per context
-- Scale might be too small still
-- Test with 0.5 scale
+**Priority 2: Add Molecular Ticker**
+1. Copy `test-single-molecule.html` rendering code
+2. Add bottom strip (15% of canvas height)
+3. Stream H2, H2O, CO2, CH4 molecules
+4. Test: Molecules scroll across bottom
 
-**Priority 3:** Wire VCR buttons
-- Simple onclick handlers
-- Pause/unpause working first
-- Then speed control
+**Priority 3: Add Interactivity**
+1. Copy `test-raycast-molecule.html` raycasting
+2. Click star → zoom to planetary view
+3. Render planets from agents
+4. Test: Can explore individual stars
 
-**Priority 4:** Test full formation cycle
-- Big Bang → Atoms → Molecules → Stars
-- Screenshot each phase
-- Verify cinematic timing
+**Priority 4: Add Surface View**
+1. Copy `test-render-creature.html` rendering
+2. Click planet → see creatures
+3. Animated walk cycles
+4. Test: Creatures walk around
 
-**Don't:**
-- Write status docs
-- Declare victory
-- Stop at "tests pass"
-- Assume rendering works
+**Reference Files (Keep These):**
+- `test-simple-render.html` - Proof 1000 stars works
+- `test-single-molecule.html` - H2O with atoms/bonds
+- `test-raycast-molecule.html` - Click detection
+- `test-render-star.html` - Spectral colors
+- `test-render-planet.html` - Composition colors
+- `test-render-creature.html` - Body plans + animation
 
-**Do:**
-- Actually SEE the visuals
-- Test on mobile (OnePlus Open!)
-- Screenshot everything
-- Fix until it's BEAUTIFUL
+**Delete When Done:**
+- `src/scenes/CompleteBottomUpScene.ts` (1200 lines of broken Babylon)
+- `src/ui/MolecularBreakdownPanel.ts` (dual-scene doesn't work)
+
+**Core Truth:**
+- Yuka agents work ✅
+- Legal Broker works ✅
+- Genesis works ✅
+- **ONLY rendering was broken**
+- Canvas 2D fixes rendering
+- Everything else stays the same
+
+---
+
+## SUCCESS CRITERIA
+
+```bash
+pnpm dev → http://localhost:5173/
+
+VISUAL VERIFICATION:
+1. Black screen (t=0)
+2. Wait 60s at 1000x speed
+3. See 1000 glowing stars appear
+4. Stars have colors (O=blue, G=yellow, M=red)
+5. HUD shows age advancing
+6. Bottom strip shows molecules scrolling
+7. Click star → zoom to that star
+8. See planets around star
+9. Click planet → see creatures walking
+
+ALL VISUALLY VERIFIED, NOT JUST "TESTS PASS"
+```
 
 ---
 
