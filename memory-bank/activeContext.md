@@ -1,42 +1,47 @@
 # Active Context
 
 **Date:** November 10, 2025  
-**Status:** ✅ Engine v1.0 + Governors Foundation Complete
+**Status:** Engine v1.0 + Governors Foundation
 
 ---
 
-## Current State
+## Governors Architecture (NEW)
 
-**Engine:** Clean architecture, 57 laws, spawners working  
-**Demo:** R3F package with 3 demos  
-**Governors:** New Yuka-native law system (3 implemented)  
-**Docs:** Clean (only README.md in root)
+**What:** Transform 57 laws into Yuka primitives  
+**Why:** Laws execute IN agent loop (not external calls)  
+**How:** Behaviors, Goals, Evaluators, FSM, Fuzzy Logic
 
----
+**Implemented (3):**
+- `governors/physics/GravityBehavior.ts`
+- `governors/ecological/FlockingBehavior.ts`  
+- `governors/biological/MetabolismGovernor.ts`
 
-## Latest: Governors Architecture
+**Remaining Work:**
+1. PredatorPreyBehavior (Lotka-Volterra)
+2. LifecycleStates (Juvenile/Adult/Elder FSM)
+3. ReproductionGoal + Evaluator
+4. TemperatureFuzzy (hot/warm/cold)
+5. HierarchyBehavior (social dominance)
+6. TerritorialFuzzy (spatial boundaries)
+7. OrbitBehavior (stellar mechanics)
+8. Export from engine/index.ts
+9. Create R3F demo showing governors
 
-**Breakthrough:** Transform laws into Yuka primitives (behaviors, goals, evaluators, FSM, fuzzy)
-
-**Implemented:**
-- GravityBehavior (physics → steering)
-- FlockingGovernor (ecology + social → behaviors)
-- MetabolismGovernor (biology → goals + evaluators)
-
-**Structure:**
-```
-engine/governors/
-├── physics/GravityBehavior.ts
-├── ecological/FlockingBehavior.ts
-└── biological/MetabolismGovernor.ts
-```
+**Pattern:** Study Yuka examples, implement law as proper Yuka primitive, test with R3F
 
 ---
 
-## Next
+## Current Structure
 
-Continue implementing governors or build R3F demos using them.
+**Root:** README.md only ✅  
+**Engine:** 17 directories (laws, spawners, agents, governors, etc.)  
+**Demo:** R3F package (3 demos)  
+**Docs:** 9 clean files
 
 ---
+
+## Next Session
+
+Continue implementing governors OR build R3F demos using existing 3.
 
 See: `engine/governors/README.md`

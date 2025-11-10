@@ -12,7 +12,7 @@
  * Pattern: GoalEvaluator + Goal (like examples/goal/)
  */
 
-import { GoalEvaluator, Goal, Vector3 } from 'yuka';
+import { GoalEvaluator, Goal } from 'yuka';
 
 /**
  * Kleiber's Law: Metabolic rate = 70 * mass^0.75 (watts)
