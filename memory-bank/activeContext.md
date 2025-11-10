@@ -59,23 +59,50 @@
 
 ---
 
-## Current Structure
+## Current Structure (CLEAN)
 
-**Engine:**
-- `governors/` - 15 planetary-scale governors
-- `spawners/` - Terrain, biomes, creatures, NPCs
-- `agents/` - Creature AI
-- `tables/` - Constants
+```
+engine/ (59 files, 8,123 lines)
+├── governors/      # 15 governors (biology, ecology, social, physics)
+├── spawners/       # Terrain, biomes, vegetation, creatures, NPCs, settlements
+├── systems/        # Infrastructure (tools, structures, trade, workshops)
+├── agents/         # CreatureAgent (simple, uses governors)
+├── procedural/     # CreatureMeshGenerator (simple composites)
+├── core/           # GameEngine
+├── tables/         # Constants
+├── utils/          # RNG, seeds
+└── types/          # TypeScript defs
+```
 
 **Demo:**
-- TerrainDemo - World exploration (main game)
+- TerrainDemo - Main game (world exploration)
 - PlaygroundDemo - Governor experiments
 
 ---
 
+## Cleanup Complete ✅
+
+**Deleted:**
+- engine/planetary/ (whole-planet scale)
+- engine/ecology/ (redundant)
+- engine/agents/AgentSpawner (complex)
+- engine/agents/AgentLODSystem (complex)
+- engine/agents/behaviors/ (duplicate)
+- engine/procedural/YukaGuidedGeneration (abstract)
+
+**Refactored:**
+- CreatureSpawner → Uses governors directly
+- CreatureMeshGenerator → Simple composites
+
+**Result:**
+- 59 files (clean)
+- 8,123 lines (focused)
+- 100% governor-driven
+- Zero complexity
+
 ## Next Steps
 
-1. Polish TerrainDemo (main experience)
-2. Add more creature variety
-3. Improve ecosystem emergence
-4. Settlement interaction
+1. Test in browser
+2. Add tool/structure synthesis (from governors)
+3. Improve creature mesh variety
+4. Settlement AI
