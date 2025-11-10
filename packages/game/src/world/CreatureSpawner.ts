@@ -6,15 +6,28 @@
  * 
  * Daggerfall spawned enemies/animals in dungeons and wilderness.
  * We use law-based generation for more realistic ecology.
+ * 
+ * PROPER YUKA PATTERN (from examples/playground/shooter):
+ * - entity.setRenderComponent(mesh, sync)
+ * - sync function copies entity.worldMatrix to mesh.matrix
+ * - mesh.matrixAutoUpdate = false (Yuka controls it)
  */
 
 import * as THREE from 'three';
-import { CreatureAgent } from '../yuka-integration/agents/CreatureAgent';
+import { Vehicle, WanderBehavior } from 'yuka';
 import { EnhancedRNG } from '../utils/EnhancedRNG';
-import { EntityManager, WanderBehavior } from 'yuka';
+import { EntityManager } from 'yuka';
+
+/**
+ * Sync function - copies entity transform to mesh
+ * (Yuka pattern from examples)
+ */
+function sync(entity: Vehicle, renderComponent: THREE.Object3D) {
+  renderComponent.matrix.copy(entity.worldMatrix);
+}
 
 export interface CreatureData {
-  agent: CreatureAgent;
+  agent: Vehicle;
   mesh: THREE.Mesh;
   chunkX: number;
   chunkZ: number;
@@ -60,35 +73,39 @@ export class CreatureSpawner {
       const x = chunkX * 100 + chunkRng.uniform(-40, 40);
       const z = chunkZ * 100 + chunkRng.uniform(-40, 40);
       
-      // Create creature agent
+      // Create creature agent (use simple Vehicle, not CreatureAgent with brain)
       const mass = chunkRng.uniform(10, 200); // 10-200 kg
       const speed = chunkRng.uniform(1, 3);   // 1-3 m/s
       
-      const agent = new CreatureAgent(mass, speed, 0.3);
-      agent.position.set(x, 1, z); // y=1 to stand on terrain
+      const agent = new Vehicle();
+      agent.position.set(x, 0, z); // y=0, Yuka uses XZ plane
       agent.name = `creature-${chunkX}-${chunkZ}-${i}`;
-      
-      // Disable brain (causes errors without evaluators)
-      agent.brain = null;
-      
-      // Simple wander behavior (no complex brain for now)
-      const wanderBehavior = new WanderBehavior();
-      wanderBehavior.radius = 10;
-      wanderBehavior.distance = 5;
-      wanderBehavior.jitter = 2;
-      agent.steering.add(wanderBehavior);
       agent.maxSpeed = speed;
+      agent.updateOrientation = true; // Auto-rotate to face movement
       
-      // Create visual mesh (simple cube for now)
+      // Wander behavior (Yuka pattern from examples)
+      const wanderBehavior = new WanderBehavior();
+      wanderBehavior.radius = 5;
+      wanderBehavior.distance = 3;
+      wanderBehavior.jitter = 1;
+      agent.steering.add(wanderBehavior);
+      
+      // Create visual mesh (cone pointing forward like Yuka examples)
       const size = Math.cbrt(mass / 50); // Scale with mass
-      const geometry = new THREE.BoxGeometry(size, size * 1.5, size);
+      const geometry = new THREE.ConeGeometry(size * 0.5, size * 1.5, 8);
+      geometry.rotateX(Math.PI * 0.5); // Point forward
+      
       const material = new THREE.MeshStandardMaterial({
         color: chunkRng.uniform(0, 1) > 0.5 ? 0x8B4513 : 0x654321, // Brown variations
       });
+      
       const mesh = new THREE.Mesh(geometry, material);
-      mesh.position.set(x, size * 0.75, z); // Slightly above ground
+      mesh.matrixAutoUpdate = false; // CRITICAL: Yuka controls matrix
       mesh.castShadow = true;
       mesh.receiveShadow = true;
+      
+      // PROPER YUKA PATTERN: setRenderComponent with sync function
+      agent.setRenderComponent(mesh, sync);
       
       // Add to scene and entity manager
       this.scene.add(mesh);
@@ -135,23 +152,11 @@ export class CreatureSpawner {
   }
   
   /**
-   * Update all creatures (sync visuals to agents)
+   * Update all creatures (Yuka handles sync automatically via setRenderComponent)
    */
   update(delta: number): void {
-    for (const creature of this.creatures.values()) {
-      // Sync mesh position to agent position
-      creature.mesh.position.set(
-        creature.agent.position.x,
-        creature.mesh.geometry.parameters.height / 2,
-        creature.agent.position.z
-      );
-      
-      // Rotate mesh to face movement direction
-      if (creature.agent.velocity.length() > 0.01) {
-        const angle = Math.atan2(creature.agent.velocity.x, creature.agent.velocity.z);
-        creature.mesh.rotation.y = angle;
-      }
-    }
+    // Yuka's setRenderComponent + sync function handles all position/rotation updates
+    // No manual syncing needed - that's the whole point of the pattern!
   }
   
   /**
