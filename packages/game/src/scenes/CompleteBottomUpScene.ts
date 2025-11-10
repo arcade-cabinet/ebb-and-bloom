@@ -132,13 +132,12 @@ export class CompleteBottomUpScene {
     this.camera.lowerRadiusLimit = 0.01;
     this.camera.upperRadiusLimit = 100000;
     
-    // CRITICAL: Set viewport to LEFT 80% of screen
-    // Right 20% reserved for UI panels
+    // FULL SCREEN main view (molecular panel at bottom, not side!)
     this.camera.viewport = new Viewport(
       0,      // x = left edge
-      0,      // y = bottom edge  
-      0.8,    // width = 80% of screen
-      1.0     // height = full height
+      0.15,   // y = 15% from bottom (molecular strip height)
+      1.0,    // width = FULL width
+      0.85    // height = 85% (top 85% of screen)
     );
     
     // MAXIMUM lighting (space is dark but we need visibility!)

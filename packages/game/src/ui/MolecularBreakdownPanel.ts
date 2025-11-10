@@ -73,13 +73,12 @@ export class MolecularBreakdownPanel {
     light.intensity = 3.0; // MAXIMUM
     light.groundColor = new Color3(1, 1, 1); // Full brightness
     
-    // Set viewport (RIGHT 20%, MIDDLE 50%)
-    // Position: x=0.8 (right panel starts), y=0.25 (below HUD), height=0.50 (middle section)
+    // BOTTOM STRIP viewport (full width, 15% height)
     this.camera.viewport = new Viewport(
-      0.8,             // x = 80% from left (right panel starts)
-      0.25,            // y = 25% from bottom (below HUD space at top)
-      this.width,      // width = 20%
-      this.height      // height = 50%
+      0.0,    // x = left edge (full width!)
+      0.0,    // y = bottom
+      1.0,    // width = FULL width
+      0.15    // height = 15% (bottom strip)
     );
     
     // Active camera for this scene

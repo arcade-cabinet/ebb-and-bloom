@@ -43,60 +43,100 @@
             min-height: 100vh;
         }
         
-        /* UI FRAME OVERLAYS - positioned absolutely */
-        .ui-frame {
+        /* ═══════════════════════════════════════════════ */
+        /* NEW LAYOUT: Full screen + bottom molecular strip */
+        /* ═══════════════════════════════════════════════ */
+        
+        /* MOLECULAR STRIP - bottom horizontal panel */
+        .molecular-strip {
             position: fixed;
-            pointer-events: none;
-            z-index: 10;
-        }
-        
-        /* MOLECULAR BREAKDOWN PANEL - with actual panel image! */
-        .molecular-frame {
+            bottom: 0;
+            left: 0;
             right: 0;
-            top: 25%;
-            width: 20%;
-            height: 50%;
-            border: 2px solid #38A169; /* Bloom Emerald */
-            border-radius: 10px;
-            background: linear-gradient(135deg, rgba(74, 85, 104, 0.95), rgba(42, 67, 101, 0.95)); /* Ebb Indigo gradient */
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            height: 15%;
+            background: linear-gradient(180deg, rgba(74, 85, 104, 0.98), rgba(42, 67, 101, 0.98));
+            backdrop-filter: blur(15px);
+            border-top: 3px solid #38A169; /* Bloom Emerald */
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 10px;
         }
         
-        .molecular-title {
+        /* VCR button group - LEFT side */
+        .vcr-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .vcr-btn {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #38A169, #2F855A);
+            border: 2px solid #38A169;
+            border-radius: 8px;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            pointer-events: all;
+        }
+        
+        .vcr-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(56, 161, 105, 0.6);
+        }
+        
+        /* Molecular viewport - CENTER */
+        .molecular-viewport {
+            flex: 1;
+            height: 100%;
+            position: relative;
+            margin: 0 10px;
+        }
+        
+        .molecular-label {
             position: absolute;
-            top: 8px;
+            top: 5px;
             left: 10px;
             font-family: 'Work Sans', sans-serif;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
-            color: #38A169; /* Bloom Emerald */
+            color: #38A169;
             text-transform: uppercase;
             letter-spacing: 2px;
+            z-index: 11;
+            pointer-events: none;
         }
         
-        /* HUD PANEL */
-        .hud-frame {
-            right: 0;
-            top: 0;
-            width: 20%;
-            height: 25%;
-            border: 2px solid #A0AEC0; /* Echo Silver */
-            border-radius: 10px;
+        /* Free-floating event notifications (agent-spawned) */
+        .event-notification {
+            position: fixed;
+            padding: 12px 20px;
             background: linear-gradient(135deg, rgba(74, 85, 104, 0.95), rgba(42, 67, 101, 0.95));
+            border: 2px solid #D69E2E; /* Trait Gold */
+            border-radius: 8px;
+            color: #F7FAFC;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 14px;
             backdrop-filter: blur(10px);
+            animation: float-in 0.5s ease-out;
+            pointer-events: none;
+            z-index: 20;
         }
         
-        /* VCR CONTROLS */
-        .vcr-frame {
-            right: 0;
-            bottom: 0;
-            width: 20%;
-            height: 12%;
-            border: 2px solid #D69E2E; /* Trait Gold */
-            border-radius: 10px;
-            background: linear-gradient(135deg, rgba(74, 85, 104, 0.95), rgba(26, 32, 44, 0.95));
-            backdrop-filter: blur(10px);
+        @keyframes float-in {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         #loading {
@@ -204,14 +244,27 @@
     
     <canvas id="renderCanvas"></canvas>
     
-    <!-- UI FRAME OVERLAYS -->
-    <div class="ui-frame hud-frame">
-        <div class="molecular-title">STATISTICS</div>
+    <!-- MOLECULAR STRIP - bottom panel with VCR controls -->
+    <div class="molecular-strip">
+        <!-- VCR Controls - LEFT -->
+        <div class="vcr-controls">
+            <button class="vcr-btn" id="btn-rewind" title="Rewind">◀◀</button>
+            <button class="vcr-btn" id="btn-back" title="Step Back">◀</button>
+            <button class="vcr-btn" id="btn-play" title="Play/Pause">▶</button>
+            <button class="vcr-btn" id="btn-forward" title="Step Forward">▶</button>
+            <button class="vcr-btn" id="btn-fastforward" title="Fast Forward">▶▶</button>
+        </div>
+        
+        <!-- Molecular Viewport - CENTER (Babylon renders here) -->
+        <div class="molecular-viewport">
+            <div class="molecular-label">MOLECULAR BREAKDOWN</div>
+        </div>
+        
+        <!-- Future: Speed/settings on right side -->
     </div>
-    <div class="ui-frame molecular-frame">
-        <div class="molecular-title">MOLECULAR BREAKDOWN</div>
-    </div>
-    <div class="ui-frame vcr-frame"></div>
+    
+    <!-- Free-floating event notifications container -->
+    <div id="events-container"></div>
     
     <script type="module">
         import { CompleteBottomUpScene } from './src/scenes/CompleteBottomUpScene.ts';
