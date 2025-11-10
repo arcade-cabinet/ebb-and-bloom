@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { TerrainDemo } from '../demos/TerrainDemo';
 import { PlaygroundDemo } from '../demos/PlaygroundDemo';
+import MolecularDemo from '../demos/MolecularDemo';
+import PigmentationDemo from '../demos/PigmentationDemo';
+import EcosystemDemo from '../demos/EcosystemDemo';
+import ToolsDemo from '../demos/ToolsDemo';
 import './DemoIndex.css';
 
 interface Demo {
@@ -18,20 +22,56 @@ const demos: Demo[] = [
   {
     id: 'terrain',
     title: 'World Exploration',
-    description: 'Procedurally generated world from three-word seed. Infinite terrain, 11 biomes, creatures, NPCs, settlements. Explore and evolve.',
+    description: 'Infinite procedurally generated world. Governors power living creatures, ecosystems, and civilizations.',
     path: '/terrain',
     component: TerrainDemo,
     status: 'working',
-    tags: ['exploration', 'biomes', 'creatures', 'evolution', 'governors']
+    tags: ['exploration', 'biomes', 'creatures', 'governors']
+  },
+  {
+    id: 'ecosystem',
+    title: 'Living Ecosystem',
+    description: 'Watch predator-prey dynamics, flocking, metabolism, and social hierarchies emerge in real-time.',
+    path: '/ecosystem',
+    component: EcosystemDemo,
+    status: 'working',
+    tags: ['governors', 'ecology', 'emergence', 'AI']
+  },
+  {
+    id: 'molecular',
+    title: 'Molecular Synthesis',
+    description: 'See how protein, calcium, and chitin percentages create different creature forms. Chemistry drives visuals.',
+    path: '/molecular',
+    component: MolecularDemo,
+    status: 'working',
+    tags: ['synthesis', 'chemistry', 'procedural', 'molecular']
+  },
+  {
+    id: 'pigmentation',
+    title: 'Pigmentation System',
+    description: 'Diet and environment determine coloring. Melanin, carotenoids, and pterins create realistic pigments.',
+    path: '/pigmentation',
+    component: PigmentationDemo,
+    status: 'working',
+    tags: ['synthesis', 'biology', 'pigments', 'camouflage']
+  },
+  {
+    id: 'tools',
+    title: 'Tools & Structures',
+    description: 'Creatures synthesize tools and structures from available materials. Wood, stone, bone compositions.',
+    path: '/tools',
+    component: ToolsDemo,
+    status: 'working',
+    tags: ['synthesis', 'tools', 'structures', 'materials']
   },
   {
     id: 'playground',
-    title: 'Governor Playground',
-    description: 'Interactive visualization of governors. Experiment with biology, ecology, and social behaviors.',
+    title: 'Interactive Playground',
+    description: 'Experiment with governors and synthesis parameters. Real-time visualization of systems.',
     path: '/playground',
     component: PlaygroundDemo,
     status: 'experimental',
-    tags: ['governors', 'interactive', 'visualization']
+    tags: ['interactive', 'governors', 'visualization']
   }
 ];
 
