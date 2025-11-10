@@ -8,7 +8,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Sky, PointerLockControls, Stats } from '@react-three/drei';
-import { WorldManager } from 'ebb-and-bloom-engine';
+import { WorldManager } from '../engine/core/WorldManager';
 
 function World() {
   const { scene, camera } = useThree();
