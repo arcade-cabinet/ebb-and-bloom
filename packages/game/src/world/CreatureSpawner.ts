@@ -11,7 +11,7 @@
 import * as THREE from 'three';
 import { CreatureAgent } from '../yuka-integration/agents/CreatureAgent';
 import { EnhancedRNG } from '../utils/EnhancedRNG';
-import { EntityManager } from 'yuka';
+import { EntityManager, WanderBehavior } from 'yuka';
 
 export interface CreatureData {
   agent: CreatureAgent;
@@ -67,6 +67,14 @@ export class CreatureSpawner {
       const agent = new CreatureAgent(mass, speed, 0.3);
       agent.position.set(x, 1, z); // y=1 to stand on terrain
       agent.name = `creature-${chunkX}-${chunkZ}-${i}`;
+      
+      // Simple wander behavior (no complex brain for now)
+      const wanderBehavior = new WanderBehavior();
+      wanderBehavior.radius = 10;
+      wanderBehavior.distance = 5;
+      wanderBehavior.jitter = 2;
+      agent.steering.add(wanderBehavior);
+      agent.maxSpeed = speed;
       
       // Create visual mesh (simple cube for now)
       const size = Math.cbrt(mass / 50); // Scale with mass
