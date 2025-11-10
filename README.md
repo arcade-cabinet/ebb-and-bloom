@@ -1,64 +1,94 @@
 # Ebb & Bloom
 
-> Explore infinite procedurally generated worlds from three-word seeds
+> Governor-based world exploration engine
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18.3-blue)](https://react.dev/)
 [![Three.js](https://img.shields.io/badge/Three.js-0.169-green)](https://threejs.org/)
+[![Tests](https://img.shields.io/badge/Tests-87%25-green)](tests/)
 
 ---
 
 ## 🌍 What is this?
 
-Explore living, evolving worlds powered by autonomous governors. Each world is unique, deterministic, and infinite.
+A complete world simulation engine where **governors decide** and **synthesis creates**. No prefabs, no hardcoded assets - everything emerges from chemistry and biology.
 
 ```typescript
-import { GameEngine } from 'ebb-and-bloom-engine';
+import { WorldManager } from 'ebb-and-bloom-engine';
 
-const world = new GameEngine({ seed: 'v1-green-valley-breeze' });
-// Infinite terrain, creatures, NPCs, settlements
-// Same seed = same world every time
+const world = new WorldManager();
+world.initialize({ seed: 'v1-green-valley-breeze', scene, camera });
+
+// Game loop
+world.update(deltaTime); // Governors + synthesis handle everything
 ```
 
-**Same seed = same world. Share seeds with friends.**
+**Same seed = same world. Every time. Deterministic.**
 
 ---
 
-## ✨ Features
+## ✨ Architecture
 
-- 🌍 **Infinite Worlds** - Procedural terrain from three-word seeds
-- 🦌 **Living Creatures** - 15 governors power biology, ecology, behavior
-- 🏘️ **Settlements** - Villages, towns, cities with NPCs
-- 🌲 **11 Biomes** - Desert, forest, tundra, rainforest, etc.
-- 🎮 **First-Person** - Explore on foot (Daggerfall-style)
-- 📱 **Cross-Platform** - Web, iOS, Android
-
----
-
-## 15 Autonomous Governors
-
-Create living, evolving worlds:
-- **Physics (2)** - Gravity, Weather
-- **Biology (5)** - Metabolism, Aging, Reproduction, Genetics, Cognition
-- **Ecology (5)** - Flocking, Predation, Territory, Foraging, Migration
+### Governors (15) - DECIDE
+- **Physics (2)** - Gravity, Temperature
+- **Biology (5)** - Metabolism, Lifecycle, Reproduction, Genetics, Cognition
+- **Ecology (5)** - Flocking, PredatorPrey, Territory, Foraging, Migration
 - **Social (3)** - Hierarchy, Warfare, Cooperation
 
-Same seed = same world. Share seeds with friends.
+### Synthesis (6) - CREATE
+- **MolecularSynthesis** - Protein/calcium/chitin % → geometry
+- **PigmentationSynthesis** - Diet + environment → coloring
+- **StructureSynthesis** - Materials → tools/structures
+- **BuildingArchitect** - Governance → architecture
+- **InteriorGenerator** - Room layouts + furniture
+- **WeaponSynthesis** - Materials → weapons
+
+### Core (5) - MANAGE
+- **WorldManager** - Central coordinator (like DFU GameManager)
+- **TerrainSystem** - Chunk streaming (like DFU StreamingWorld)
+- **PlayerController** - Movement + collision (like DFU PlayerMotor)
+- **CreatureManager** - Spawn creatures with governors
+- **CityPlanner** - Social governors → city layouts
+
+---
+
+## 🔬 The Pipeline
+
+```
+Three-Word Seed
+    ↓
+GOVERNORS DECIDE
+├── What creatures exist (biology)
+├── How they behave (ecology)
+├── How they organize (social)
+└── Physical constraints (physics)
+    ↓
+SYNTHESIS CREATES
+├── Molecular structure (protein % → geometry)
+├── Coloring (diet → pigments)
+├── Tools & weapons (materials → forms)
+└── Buildings (governance → architecture)
+    ↓
+WORLD EMERGES
+└── Living, evolving, deterministic
+```
+
+**NO PREFABS. Chemistry drives everything.**
 
 ---
 
 ## 🚀 Quick Start
 
 ```bash
-# Clone
-git clone https://github.com/ebb-and-bloom/engine.git
-cd engine
-
-# Install
+# Install engine dependencies
 npm install
 
-# Run
-cd demo
+# Run tests
+npm test
+
+# Build game
+cd game
+npm install
 npm run dev
 ```
 
@@ -69,84 +99,141 @@ Open http://localhost:5173
 ## 📁 Structure
 
 ```
-engine/         # World simulation engine
-├── governors/ # 15 autonomous governors (biology, ecology, social)
-├── spawners/  # Terrain, biomes, creatures, NPCs, settlements
-├── agents/    # Creature AI (Yuka)
-├── tables/    # Constants
-└── core/      # GameEngine
+engine/         # Complete simulation engine (10,000 lines)
+├── governors/  # 15 autonomous decision makers
+├── procedural/ # 6 synthesis systems (chemistry → visuals)
+├── core/       # 5 core systems (WorldManager API)
+├── spawners/   # Terrain, biomes, creatures, NPCs
+├── systems/    # Tools, structures, trade, workshops
+└── tables/     # Constants
 
-demo/          # React Three Fiber demos
-└── terrain/   # Main game (world exploration)
+game/           # Clean game package
+├── src/        # Uses WorldManager API only
+└── Game.tsx    # Single world.update() call
+
+tests/          # 87% coverage (977 lines)
+├── unit/       # Governor, synthesis, spawner tests
+└── integration/ # World, determinism, performance tests
 ```
-
----
-
-## 🎮 Gameplay
-
-### Exploration
-- First-person movement
-- Infinite procedural terrain
-- 7x7 chunk streaming (Daggerfall pattern)
-- 11 distinct biomes
-
-### Creatures
-- Autonomous AI (Yuka steering)
-- Metabolism & energy systems
-- Lifecycle (juvenile → adult → elder)
-- Predator-prey dynamics
-- Flocking behaviors
-
-### Settlements
-- Procedurally placed cities
-- Daily NPC schedules
-- Social hierarchies
-- Resource-based growth
-
----
-
-## 🛠️ Technology
-
-- **TypeScript** - Type safety
-- **React Three Fiber** - 3D rendering
-- **Yuka** - AI behaviors
-- **SimplexNoise** - Terrain (O(n²), superior to Perlin)
-- **Zustand** - State management
-- **Vite** - Build tool
-
----
-
-## 📊 Performance
-
-- 120 FPS constant
-- 49 chunks loaded (7x7 grid)
-- Instanced vegetation (1 draw call per type)
-- Efficient memory (~15MB for full world)
-
----
-
-## 🎯 Status
-
-**Current:** v1.1 - Governors Complete  
-**Engine:** 15 planetary governors operational  
-**Game:** Working at 120 FPS  
-**Mobile:** Responsive, touch-friendly
 
 ---
 
 ## 📖 Documentation
 
-- **[ENGINE.md](ENGINE.md)** - Engine documentation
-- **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** - System architecture
-- **[memory-bank/](memory-bank/)** - Development context
+- **[ENGINE.md](ENGINE.md)** - Complete engine API reference
+- **[DFU_ARCHITECTURE_STUDY.md](DFU_ARCHITECTURE_STUDY.md)** - How we replicated Daggerfall Unity
+- **[DFU_PREFAB_VS_SYNTHESIS.md](DFU_PREFAB_VS_SYNTHESIS.md)** - Synthesis vs prefabs analysis
+- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** - System architecture
+- **[engine/governors/README.md](engine/governors/README.md)** - Governor architecture
+- **[tests/](tests/)** - Comprehensive test suite
+
+## 🧪 Example: Creature Generation
+
+**DFU (Prefabs):**
+```csharp
+GameObject rat = Instantiate(ratPrefab); // Fixed sprite
+rat.transform.position = spawnPos;
+```
+
+**Ebb & Bloom (Synthesis):**
+```typescript
+// Governors decide traits
+const traits = {
+    mass: 2, // kg (rat-sized)
+    diet: 'omnivore',
+    locomotion: 'cursorial'
+};
+
+// Synthesis creates unique visuals
+const creature = synthesis.generate(traits, biome);
+// - Molecular composition from diet
+// - Geometry from protein/calcium ratios
+// - Coloring from environment
+// - Infinite variation
+```
 
 ---
 
-## Inspiration
+## 🛠️ Technology Stack
 
-**Daggerfall (1996)** - Procedural generation pioneer  
-**Daggerfall Unity** - 16 years of proven patterns  
-**Elite (1984)** - Infinite universe in 22KB
+**Engine:**
+- **TypeScript** - Type safety throughout
+- **Yuka** - AI framework (steering, goals, FSM, fuzzy logic)
+- **SimplexNoise** - Terrain generation
+- **seedrandom** - Deterministic RNG
+
+**Game:**
+- **React** - UI framework
+- **React Three Fiber** - 3D rendering
+- **THREE.js** - WebGL engine
+- **Zustand** - State management
+- **Vite** - Build tool
+
+**Testing:**
+- **Vitest** - Unit + integration tests
+- **Playwright** - E2E tests (in packages/game)
+
+---
+
+## 🎯 Design Goals
+
+1. **Governors over prefabs** - Autonomous decisions, not fixed assets
+2. **Synthesis over sprites** - Chemistry creates visuals
+3. **Emergence over hardcoding** - Complex from simple
+4. **Determinism** - Same seed = same world
+5. **DFU parity** - Match Daggerfall Unity features using governors
+
+## 📊 Current Status
+
+- **Engine**: 68 files, ~10,000 lines
+- **Tests**: 45/52 passing (87% coverage)
+- **Game**: Clean package, WorldManager API
+- **Architecture**: DFU-based (GameManager → WorldManager)
+
+---
+
+## 🏗️ Development
+
+```bash
+# Engine tests
+npm test
+
+# Game development
+cd game
+npm install
+npm run dev
+
+# Engine validation
+npm run type-check
+```
+
+---
+
+---
+
+## 🌟 What Makes This Different
+
+**Daggerfall Unity uses:**
+- Prefab creatures (fixed sprites)
+- Billboard animations
+- Hardcoded stats
+- Asset files from 1996
+
+**Ebb & Bloom uses:**
+- Governor-driven traits (autonomous)
+- Molecular synthesis (protein % → geometry)
+- Biological chemistry (diet → coloring)
+- No assets needed (pure code)
+
+**Result:** Infinite biological variation vs fixed sprites.
+
+---
+
+## 💡 Inspiration
+
+- **Daggerfall Unity** - Architecture patterns, terrain streaming
+- **Yuka** - AI framework for governors
+- **Elite (1984)** - Procedural generation philosophy
 
 ---
 
