@@ -1,116 +1,83 @@
 # Agent Collaboration Rules
 
 **For**: All AI agents working on this project  
-**Purpose**: Shared rules for multi-agent collaboration
+**Purpose**: Shared rules for multi-agent collaboration  
+**Last Updated**: 2025-11-10 (Engine refactor complete)
+
+---
+
+## Project Structure
+
+**Ebb & Bloom Engine** - Law-based simulation engine with R3F demos
+
+```
+engine/    # Pure TypeScript simulation logic
+demo/      # React Three Fiber presentation
+tools/     # CLI utilities
+```
 
 ---
 
 ## Available Agents
 
-### Cline (CLI)
-**Best for**: Autonomous task execution, backend implementation  
-**Invoke**: `cline "task description"`  
-**Modes**: `--yolo` (non-interactive), `--oneshot` (full autonomous)
-
-### Claude (CLI)
-**Best for**: Design decisions, architecture planning, code review  
-**Invoke**: `claude "prompt"`  
-**Modes**: `--print` (non-interactive), `-c` (continue conversation)
-
-### Cursor
-**Best for**: Interactive development, file editing, multi-file changes  
-**Context**: Uses `.clinerules` and `.github/copilot-instructions.md`
+### Cursor (Primary)
+**Best for**: Interactive development, engine implementation, R3F components  
+**Context**: Uses `.clinerules` and this file
 
 ### GitHub Copilot
-**Best for**: Code completion, inline suggestions, React Three Fiber components  
-**Context**: Uses `.github/copilot-instructions.md`
+**Best for**: Code completion, React components, R3F patterns  
+**Context**: Uses `.cursor/rules/`
+
+### Claude (CLI)
+**Best for**: Design decisions, architecture planning  
+**Usage**: Research and planning
+
+### Cline (CLI)
+**Best for**: Autonomous task execution  
+**Usage**: Batch operations, testing
 
 ---
 
 ## Task Delegation
 
-### Backend Implementation
-**Agent**: Cline or Cursor  
-**Why**: REST API endpoints, Yuka coordination, physics calculations
+### Engine Development
+**Agent**: Cursor  
+**Tasks**: Laws, spawners, agents, simulation systems  
+**Tech**: TypeScript, Yuka, SimplexNoise
 
-### Frontend Rendering
-**Agent**: Copilot or Cursor  
-**Why**: React Three Fiber components, visual blueprint implementation
+### R3F Components
+**Agent**: Cursor + Copilot  
+**Tasks**: Demo scenes, 3D components, visual systems  
+**Tech**: React, R3F, Drei, Zustand
 
-### AI Generation Pipeline
-**Agent**: Cline  
-**Why**: OpenAI workflow orchestration, prompt engineering
+### Documentation
+**Agent**: Cursor  
+**Tasks**: API docs, architecture guides, README  
+**Location**: docs/ and memory-bank/
 
-### Architecture Decisions
-**Agent**: Claude  
-**Why**: Design thinking, trade-off analysis
-
-### Code Review
-**Agent**: Claude or Cursor  
-**Why**: Pattern checking, quality assessment
-
----
-
-## Process Compose Integration
-
-**File**: `process-compose.yml` (to be created)
-
-**Use for**: Background tasks, parallel execution
-
-```bash
-# Start all processes
-process-compose up
-
-# Start specific processes
-process-compose up dev-backend dev-frontend
-
-# View logs
-process-compose logs
-```
-
-**Available processes** (when configured):
-- `dev-backend` - Backend API server
-- `dev-frontend` - Frontend dev server
-- `test-watch` - Test watcher
-- `type-check` - TypeScript validation
-
----
-
-## Multi-Agent Workflow
-
-### 1. Task Decomposition
-```bash
-# Use Claude for planning
-claude "Analyze how to implement Gen0 planet rendering and break into subtasks"
-
-# Delegate subtasks to Cline
-cline "Implement Gen0Planet component with PBR materials" --yolo
-cline "Create texture loading utility" --yolo
-```
-
-### 2. Parallel Execution
-```bash
-# Use process-compose for parallel work
-process-compose up dev-backend &
-cline "Implement backend endpoint for visual blueprints" --yolo &
-```
-
-### 3. Review & Integration
-```bash
-# Use Claude for review
-claude "Review Gen0Planet component for correctness and performance"
-```
+### Testing
+**Agent**: Cursor  
+**Tasks**: E2E tests, unit tests, validation  
+**Tools**: Playwright, Vitest
 
 ---
 
 ## Memory Bank Synchronization
 
-**All agents MUST**:
-1. Read `activeContext.md` and `progress.md` at start
-2. Update `activeContext.md` after significant changes
-3. Update `progress.md` when status changes
-4. NEVER create status/summary/planning documents
-5. Keep memory bank factual and minimal
+**All agents MUST:**
+1. Read `agent-permanent-context.md` first (project facts)
+2. Read `activeContext.md` second (current focus)
+3. Read `progress.md` third (what's done)
+4. Update `activeContext.md` after significant changes
+5. Update `progress.md` when milestones complete
+
+**NEVER create** in repository root:
+- Status documents (e.g., "TESTS_COMPLETE.md")
+- Planning documents (e.g., "NEXT_AGENT_NEEDS.md")  
+- Completion reports (e.g., "BEAST_MODE_*.md")
+- Handoff documents (e.g., "README_FOR_NEXT_AGENT.md")
+
+**All status/progress/planning** goes in `memory-bank/` ONLY.
 
 ---
 
@@ -120,16 +87,81 @@ claude "Review Gen0Planet component for correctness and performance"
 - Write findings to `memory-bank/activeContext.md`
 - Reference specific files/lines
 - State what's broken, what's priority
+- Keep it factual, not flowery
 
 ### Agent → Human
-- Show code changes, not explanations
+- Show code changes, not just explanations
 - Reference memory bank for context
 - Ask only for true blockers
+- Provide working code
 
 ### Human → Agent
 - Check memory bank first
-- Provide context if not in memory bank
+- Provide context if needed
 - Reference docs for architectural decisions
+
+---
+
+## Documentation Rules
+
+### docs/ = Permanent Architecture
+**Purpose:** Long-term technical documentation  
+**Audience:** Developers, contributors  
+**Content:** 
+- Engine architecture
+- Law system design
+- API references
+- Technical patterns
+
+**Examples:**
+- `docs/ARCHITECTURE.md` - Engine architecture
+- `docs/LAW_SYSTEM.md` - Law system guide
+- `docs/architecture/` - Specific architecture docs
+
+### memory-bank/ = Ephemeral State
+**Purpose:** Agent context and session state  
+**Audience:** AI agents  
+**Content:**
+- Current focus (activeContext.md)
+- Progress tracking (progress.md)
+- Project facts (agent-permanent-context.md)
+- Session logs (sessions/)
+
+**Examples:**
+- `memory-bank/activeContext.md`
+- `memory-bank/progress.md`
+- `memory-bank/sessions/` - Historical sessions
+
+### NEVER Mix
+- ❌ Don't put status docs in docs/
+- ❌ Don't put architecture in memory-bank/ (except architecture/ subfolder for deep dives)
+- ❌ Don't create docs in root (only README.md allowed)
+
+---
+
+## Current Tech Stack
+
+### Engine (TypeScript)
+```typescript
+import {
+  EnhancedRNG,
+  ChunkManager,
+  BiomeSystem,
+  calculateGravity
+} from 'ebb-and-bloom-engine';
+```
+
+### Demo (React Three Fiber)
+```typescript
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, Stats } from '@react-three/drei';
+import { useGameStore } from '@demo/store/gameStore';
+```
+
+### State (Zustand)
+```typescript
+const { player, world } = useGameStore();
+```
 
 ---
 
@@ -137,58 +169,74 @@ claude "Review Gen0Planet component for correctness and performance"
 
 ### Code
 - TypeScript strict mode
-- TDD (tests first, when appropriate)
-- Semantic commits
-- All tests must pass
+- Engine = pure logic (no rendering)
+- Demo = R3F components only
+- Zustand for state
+- Tests must pass
 
 ### Documentation
-- Memory bank for current state (ephemeral)
-- docs/ for permanent architecture (versioned)
-- NEVER mix the two
+- Only README.md in root
+- Architecture docs in docs/
+- Status in memory-bank/
+- Clear separation
 
-### NO Creating
-- Status documents
-- Planning documents  
-- Completion reports
-- Gap analyses
-- Audit reports
-- "What remains" documents
-
-**All status info goes in memory bank (`activeContext.md`, `progress.md`). All architectural info goes in `docs/`.**
+### Git Commits
+- Semantic commits
+- Clear descriptions
+- Reference issues when relevant
+- Clean history
 
 ---
 
-## Package-Specific Guidelines
+## Package Structure
 
-### Backend (`packages/backend/`)
-- Use Fastify for REST endpoints
-- Import types from `@ebb/gen/schemas` and `@ebb/shared/schemas`
-- Use seed API for deterministic generation
-- Write Vitest tests for all endpoints
+### Engine (`engine/`)
+**Purpose**: Simulation logic, laws, spawners  
+**No dependencies on**: React, R3F, rendering libraries  
+**Exports**: Clean TypeScript API
 
-### Gen (`packages/gen/`)
-- Use OpenAI SDK for archetype generation
-- Enforce WARP/WEFT flow strictly
-- Run quality assessment after generation
-- Generate documentation automatically
+### Demo (`demo/`)
+**Purpose**: Visual demos, R3F components, UI  
+**Dependencies**: React, R3F, Drei, Zustand  
+**Imports**: Engine via package
 
-### Simulation (`packages/simulation/`)
-- Use React Three Fiber for rendering only
-- Fetch data from backend API (no direct simulation access)
-- Use visual blueprints for rendering instructions
-- Write Playwright tests for E2E flows
+### Tools (`tools/`)
+**Purpose**: CLI utilities, testing, validation  
+**Usage**: Development helpers
+
+---
+
+## Testing
+
+### Engine Tests
+```bash
+npm test                 # Unit tests
+tools/testing/test-determinism.ts
+tools/testing/test-rng-quality.ts
+```
+
+### Demo Tests
+```bash
+cd demo
+npm run test:e2e        # Playwright E2E tests
+```
 
 ---
 
 ## Tool Access
 
 All agents have access to:
-- `cline` - Task execution
-- `claude` - Architecture analysis
-- `process-compose` - Background tasks
 - File system
 - Git
-- pnpm
-- Test runner
+- npm
+- Test runners
+- TypeScript compiler
+- Vite dev server
 
-Use them for task decomposition and parallel work.
+---
+
+**CRITICAL**: 
+- Engine in `engine/` (not `packages/game/src/`)
+- Use R3F for rendering (not BabylonJS)
+- Status docs in `memory-bank/` ONLY
+- Only README.md in root directory

@@ -1,84 +1,48 @@
-# Architecture Documentation - Ebb and Bloom
+# Architecture Documentation
 
-**Version**: 0.2.0  
-**Architecture Frozen**: 2025-11-07  
-**Based On**: Complete chat chronology + memory bank progress + WORLD.md analysis
+Deep-dive technical documentation for specific systems.
 
-This directory contains the definitive architectural documentation for Ebb and Bloom, representing the evolution from the original monolithic approach to the current package-based monorepo structure.
+---
 
-## Architecture Documents
+## Core Architecture Documents
 
-### Core Architecture
-- **[api.md](./api.md)** - REST API Package Architecture
-- **[simulation.md](./simulation.md)** - Simulation Package Design  
-- **[generations.md](./generations.md)** - Gen 0-6 System Breakdown
-- **[game.md](./game.md)** - Game Layer Package Design
+### Agent System
+- **AGENT_LOD_ARCHITECTURE.md** - LOD-based spawning/despawning
+- **YUKA_RESEARCH_FINDINGS.md** - Yuka patterns and best practices
 
-### Package Structure
+### Design Principles
+- **BOTTOM_UP_EMERGENCE_THE_KEY.md** - Molecular → Cosmic emergence
+- **YUKA_DECIDES_EVERYTHING.md** - No-forcing rule
+- **ENTROPY_AGENT_ARCHITECTURE.md** - Top-level governor design
 
-The final architecture decomposes the original monolithic "world" approach into discrete, focused packages:
+### Integration
+- **THE_REAL_INTEGRATION.md** - How all systems connect
 
-```
-packages/
-├── backend/           # Simulation + REST APIs
-├── frontend/          # 3D sphere viewer + UI (future)
-├── cli/              # Command-line interface (future) 
-└── game/             # Game layer wrapper (future)
-```
+---
 
-## Architectural Evolution
+## Reading Order
 
-### From WORLD.md Vision
-The original `docs/WORLD.md` described a comprehensive Yuka-driven ecosystem where everything is an AI entity with goals. This vision remains intact but is now properly decomposed.
+**For new contributors:**
+1. Start with `/README.md` (overview)
+2. Read `/docs/ARCHITECTURE.md` (engine structure)
+3. Read specific docs here as needed
 
-### Through Development Reality  
-The chat chronology revealed critical insights:
-1. **ECS ≠ Backend Logic**: ECS is for rendering, not game simulation
-2. **Yuka ≠ ECS**: Yuka is the decision layer, separate from data storage
-3. **Backend = REST Resources**: Not continuous system loops
-4. **Separation of Concerns**: Simulation logic separate from visualization
+**For understanding agents:**
+1. BOTTOM_UP_EMERGENCE_THE_KEY.md (philosophy)
+2. YUKA_DECIDES_EVERYTHING.md (core rule)
+3. AGENT_LOD_ARCHITECTURE.md (implementation)
 
-### To Package-Based Architecture
-The frozen architecture represents the synthesis of original vision with architectural reality:
+**For understanding laws:**
+1. `/docs/LAW_SYSTEM.md` (overview)
+2. `/docs/PEER_REVIEWED_LAWS.md` (citations)
+3. `/docs/LEGAL_BROKER_ARCHITECTURE.md` (broker system)
 
-- **Simulation Package**: Pure mathematical simulation with Yuka AI
-- **API Package**: RESTful exposure of simulation state
-- **Frontend Package**: Rendering and visualization only  
-- **Game Package**: Player interaction layer
+---
 
-## Key Architectural Principles
+## Parent Documentation
 
-1. **Simulation First**: Build mathematical simulation as standalone module
-2. **Package Decomposition**: Each package has single responsibility
-3. **API-Driven**: All inter-package communication via REST APIs
-4. **Yuka Integration**: Full use of AI systems for decision-making
-5. **AI-Sourced Content**: OpenAI generates all game parameters
-6. **Visual Blueprints**: Complete rendering instructions embedded in data
+- `/README.md` - Quick start
+- `/ENGINE.md` - Complete API
+- `/docs/ARCHITECTURE.md` - Engine architecture
+- `/docs/LAW_SYSTEM.md` - Law system guide
 
-## Implementation Status
-
-### ✅ Completed
-- **Backend Package**: Complete Gen 0-6 systems with Yuka AI integration
-- **AI Data Pools**: OpenAI workflows generating all content
-- **Visual Blueprints**: Rendering instructions for all entities
-- **Comprehensive Testing**: Mathematical correctness proven
-
-### 🔄 Current Priority
-- **REST API Layer**: Expose simulation via HTTP endpoints
-- **Database Integration**: SQLite + Drizzle ORM for persistence
-
-### 📋 Future Packages
-- **Frontend Package**: Simple 3D sphere viewer
-- **CLI Package**: Command-line interface  
-- **Game Package**: Player interaction and victory conditions
-
-## Documentation Usage
-
-Each architecture document serves a specific purpose:
-
-- **Read `api.md`** for REST API design and endpoints
-- **Read `simulation.md`** for mathematical simulation architecture
-- **Read `generations.md`** for detailed Gen 0-6 system specifications
-- **Read `game.md`** for player interaction and game layer design
-
-These documents represent the definitive architecture freeze and should guide all future development.

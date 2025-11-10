@@ -2,38 +2,56 @@
 
 **For**: All AI agents (Cursor, Claude, Cline, Copilot)  
 **Purpose**: Critical permanent information that should never be lost  
-**Last Updated**: 2025-11-08
+**Last Updated**: 2025-11-10 (Engine refactor complete)
 
 ---
 
 ## Project
 
-**Ebb & Bloom**: Law-based universe simulation game with deterministic generation.
+**Ebb & Bloom Engine**: Law-based universe simulation engine with deterministic procedural generation.
 
-**Core Principle**: "Everything emerges from LAWS" - physics, chemistry, biology, ecology, taxonomy, and social laws generate complete universes from three-word seeds.
+**Core Principle**: "Everything emerges from LAWS" - 57 scientific laws from physics, biology, ecology, and social sciences generate complete universes from three-word seeds.
 
-**Platform**: Cross-platform (iOS, Android, Web) via Capacitor
+**Platform**: Web (React Three Fiber) + Cross-platform (iOS, Android via Capacitor)
 
 ---
 
-## 🔥 CRITICAL: LAW-BASED ARCHITECTURE
+## 🔥 CRITICAL: ENGINE ARCHITECTURE
 
-**WE DELETED THE AI GENERATION SYSTEM**
+**MAJOR REFACTOR COMPLETED (Nov 10, 2025):**
 
-**What we removed:**
-- ❌ `packages/gen/` - Entire AI generation pipeline
-- ❌ `manifests/` - All hardcoded archetypes
-- ❌ OpenAI API dependencies for content generation
+**What changed:**
+- ✅ Flattened monorepo → `engine/` + `demo/` structure
+- ✅ Added React Three Fiber + Drei + Zustand
+- ✅ Removed BabylonJS completely
+- ✅ Removed pnpm workspace (now npm)
+- ✅ Proper engine/game separation
 
-**What we built instead:**
-- ✅ `packages/game/src/laws/` - Complete mathematical law system
-- ✅ `packages/game/src/tables/` - Universal constants (periodic table, physics, linguistics)
-- ✅ `packages/game/src/utils/EnhancedRNG.ts` - Deterministic RNG (seedrandom)
-- ✅ Law-based generation for everything
+**Current Structure:**
+```
+engine/              # Pure simulation logic (no rendering)
+├── laws/           # 57 law files (8,500+ lines)
+├── spawners/       # World generation
+├── agents/         # Yuka AI
+├── simulation/     # Timeline engine
+├── core/           # GameEngine
+└── index.ts        # Main export
+
+demo/               # R3F demos (presentation layer)
+├── src/
+│   ├── demos/      # Terrain, Universe, Playground
+│   ├── store/      # Zustand state
+│   └── components/ # R3F components
+└── package.json    # Separate dependencies
+```
 
 **The new flow:**
 ```
 Three-word seed → Laws → Complete Universe
+                    ↓
+                 Engine API
+                    ↓
+            R3F Components → Visual
 ```
 
 **Same seed = same universe. Always. Deterministic.**
@@ -42,31 +60,66 @@ Three-word seed → Laws → Complete Universe
 
 ## Architecture
 
-**Monorepo Structure**:
+**Engine Structure:**
 ```
-packages/
-├── game/          # ✅ UNIFIED PACKAGE (frontend + backend)
-│   ├── src/
-│   │   ├── laws/           # Mathematical law system
-│   │   ├── tables/         # Universal constants
-│   │   ├── engine/         # GameEngine (internal API)
-│   │   ├── scenes/         # BabylonJS scenes
-│   │   ├── seed/           # Seed management
-│   │   └── utils/          # EnhancedRNG, etc.
-│   ├── public/             # Assets
-│   └── simulation.html     # Reports view (for validation)
-├── shared/        # Zod schemas only
-└── (gen/ deleted)
+engine/
+├── laws/              # 57 mathematical law files
+│   ├── 00-universal/  # Complexity, cosmology, quantum
+│   ├── 01-physics/    # Core physics
+│   ├── 02-planetary/  # Geology, atmosphere, climate (11 files)
+│   ├── 03-chemical/   # Biochemistry
+│   ├── 04-biological/ # Anatomy, genetics, neuroscience (8 files)
+│   ├── 05-cognitive/  # Linguistics
+│   ├── 06-social/     # Demographics, kinship, warfare (7 files)
+│   ├── 07-technological/ # Agriculture, metallurgy, energy (9 files)
+│   ├── core/          # Legal Broker + 7 Regulators
+│   ├── physics.ts     # Core physics laws
+│   ├── stellar.ts     # Star formation
+│   ├── biology.ts     # Kleiber's Law
+│   ├── ecology.ts     # Lotka-Volterra
+│   ├── social.ts      # Dunbar's number
+│   └── taxonomy.ts    # Linnaean classification
+│
+├── spawners/          # World generation (Daggerfall-inspired)
+│   ├── ChunkManager.ts      # 7x7 chunk streaming
+│   ├── BiomeSystem.ts       # 11 biomes
+│   ├── SimplexNoise.ts      # Terrain heightmaps
+│   ├── VegetationSpawner.ts # Instanced trees
+│   ├── SettlementPlacer.ts  # Law-based cities
+│   ├── NPCSpawner.ts        # Daily schedules
+│   ├── CreatureSpawner.ts   # Kleiber's Law
+│   └── WaterSystem.ts       # Animated shaders
+│
+├── agents/            # Yuka AI integration
+│   ├── AgentSpawner.ts
+│   ├── AgentLODSystem.ts
+│   ├── CreatureAgent.ts
+│   ├── PlanetaryAgent.ts
+│   ├── evaluators/    # Decision-making
+│   └── behaviors/     # Steering behaviors
+│
+├── simulation/        # Timeline engine
+│   ├── UniverseSimulator.ts
+│   ├── TimelineSimulator.ts
+│   └── UniverseActivityMap.ts
+│
+├── utils/             # Core utilities
+│   ├── EnhancedRNG.ts       # Deterministic RNG
+│   └── seed/                # Seed management
+│
+└── tables/            # Universal constants
+    ├── periodic-table.ts
+    ├── physics-constants.ts
+    └── linguistic-roots.ts
 ```
 
-**Technology Stack**:
-- **Game Logic**: Direct function calls (no HTTP)
-- **Frontend**: BabylonJS (3D + GUI)
-- **State**: GameEngine state (no React, no Zustand)
-- **Platform**: Capacitor (iOS, Android, Web)
-- **RNG**: seedrandom (deterministic, string seeds)
-- **Physics**: Custom law system
-- **Build**: Vite + TypeScript
+**Technology Stack:**
+- **Engine**: TypeScript (pure logic, no rendering)
+- **Demo**: React + React Three Fiber + Drei
+- **State**: Zustand
+- **AI**: Yuka (steering behaviors)
+- **RNG**: seedrandom (deterministic)
+- **Build**: Vite + npm
 
 ---
 
@@ -74,99 +127,77 @@ packages/
 
 1. **Law-Based Generation**: Everything emerges from mathematical laws
 2. **Deterministic**: Same seed must produce same result
-3. **No AI Generation**: Laws replace OpenAI API calls
+3. **Engine/Demo Separation**: Engine has NO rendering code
 4. **String Seeds**: Three-word format (`v1-word-word-word`)
-5. **Internal API**: Direct function calls (no HTTP)
-6. **Unified Package**: Single `packages/game` for everything
-7. **Cross-Platform**: Single codebase for Web/iOS/Android
-
----
-
-## Law System Structure
-
-**`src/laws/`**:
-- `physics.ts` - Gravity, thermodynamics, orbital mechanics
-- `stellar.ts` - Star formation, habitable zones
-- `biology.ts` - Kleiber's Law, allometric scaling
-- `ecology.ts` - Lotka-Volterra, carrying capacity
-- `social.ts` - Dunbar's number, Service typology
-- `taxonomy.ts` - Linnaean classification, binomial nomenclature
-
-**`src/tables/`**:
-- `physics-constants.ts` - G, c, k_B, fundamental constants
-- `periodic-table.ts` - Complete element data
-- `linguistic-roots.ts` - Latin/Greek roots for naming
-
-**`src/utils/EnhancedRNG.ts`**:
-- Uses `seedrandom` (accepts string seeds directly)
-- Provides statistical distributions (normal, Poisson, exponential, etc.)
-- Box-Muller transform for Gaussian
-- Deterministic - same seed = same sequence
+5. **No Status Docs**: All status goes in memory-bank/ only
+6. **React Three Fiber**: Use R3F for all 3D rendering
 
 ---
 
 ## Development Commands
 
 ```bash
-cd packages/game
+# Engine (root)
+npm install              # Install engine dependencies
+npm test                 # Run tests
+npm run type-check       # TypeScript validation
 
-# Development
-pnpm dev                      # Dev server (localhost:5173)
-pnpm dev --host               # Network accessible
+# Demo (separate package)
+cd demo
+npm install              # Install demo dependencies
+npm run dev              # Dev server (localhost:5173)
+npm run build            # Production build
 
-# Building
-pnpm build                    # Web build
-just build-android            # Android APK (see justfile)
-
-# Testing
-pnpm exec tsx src/cli-tools/test-determinism.ts <seed>
-pnpm exec tsx src/cli-tools/test-rng-quality.ts
-pnpm exec tsx src/cli-tools/test-stochastic.ts
-
-# Validation
-./validate-all-laws.sh        # Comprehensive test suite
+# Tools
+cd tools/cli
+tsx validate-laws.ts     # Validate all laws
+tsx test-determinism.ts  # Test determinism
 ```
 
 ---
 
 ## Key Files
 
-**Core Systems**:
-- `src/engine/GameEngineBackend.ts` - Main game engine
-- `src/laws/*.ts` - All law implementations
-- `src/tables/*.ts` - Universal constants
-- `src/utils/EnhancedRNG.ts` - Deterministic RNG
-- `src/seed/seed-manager.ts` - Seed validation
+**Engine Core:**
+- `engine/index.ts` - Main API export
+- `engine/laws/*.ts` - All 57 law implementations
+- `engine/spawners/ChunkManager.ts` - Terrain streaming
+- `engine/utils/EnhancedRNG.ts` - Deterministic RNG
 
-**Scenes**:
-- `src/scenes/SimulationScene.ts` - Reports view (VCR controls, URL parameters)
-- `simulation.html` - Entry point for reports
+**Demo:**
+- `demo/src/demos/TerrainDemo.tsx` - R3F terrain demo
+- `demo/src/store/gameStore.ts` - Zustand state
+- `demo/index.html` - Entry point
 
-**Build**:
-- `justfile` - Build recipes (Android, iOS, web)
-- `vite.config.ts` - Vite configuration
-- `capacitor.config.ts` - Cross-platform config
+**Documentation:**
+- `README.md` - Engine overview
+- `ENGINE.md` - Complete API docs
+- `ENGINE_ARCHITECTURE.md` - Technical architecture
+- `docs/` - Additional architecture docs
 
 ---
 
 ## Current Status
 
-**Law System**: ✅ Complete
-- 6 law files implemented
-- 3 table files complete
-- EnhancedRNG working with seedrandom
+**Engine**: ✅ Complete (v1.0)
+- 57 law files implemented
+- DFU proven patterns (7x7 chunks, steepness check, clearance)
+- SimplexNoise terrain (superior to Perlin)
+- Instanced vegetation (efficient)
+- Yuka AI agents
 - Deterministic generation verified
 
-**Build System**: ✅ Working
-- Android APK builds successfully
-- Web dev server running
-- Simulation view functional with URL controls
+**Demo**: ✅ Working
+- R3F integration complete
+- 3 demos created (Terrain, Universe, Playground)
+- Zustand state management
+- Beautiful landing page
 
-**What's Next**:
-- Validate all laws with comprehensive test suite
-- Fix any remaining RNG issues (seedrandom vs Mersenne Twister)
-- Add more laws (climate, hydrology, materials science)
-- Refactor old Gen0-5 code to use law system
+**Documentation**: ✅ Comprehensive
+- README.md (engine overview)
+- ENGINE.md (400 lines API docs)
+- ENGINE_ARCHITECTURE.md (600 lines architecture)
+- Memory bank updated
 
 ---
 
@@ -181,111 +212,65 @@ pnpm exec tsx src/cli-tools/test-stochastic.ts
 - Update `activeContext.md` with current tasks
 - Update `progress.md` when milestones complete
 
-**Never create**: Status docs, planning docs → all goes in memory bank
-
----
-
-## YOLO Mode
-
-**When user says** "do it", "implement", "beast mode":
-1. Read memory bank
-2. Execute immediately (no planning phase)
-3. Make large changes
-4. Iterate until complete
-5. Update memory bank
-6. Validate with tests
+**NEVER create**: 
+- Status docs in root (use memory-bank/)
+- Planning docs in root (use memory-bank/)
+- Completion announcements (use memory-bank/)
 
 ---
 
 ## Critical Patterns
 
-**Seed Management**:
+**Engine Import**:
 ```typescript
-import { validateSeed, generateSeed } from './seed/seed-manager';
-
-const seed = generateSeed(); // "v1-wild-ocean-glow"
-const validation = validateSeed(seed);
-if (!validation.valid) throw new Error(validation.error);
+import {
+  EnhancedRNG,
+  ChunkManager,
+  BiomeSystem,
+  calculateGravity
+} from 'ebb-and-bloom-engine';
 ```
 
-**EnhancedRNG Usage**:
+**R3F Demo**:
 ```typescript
-import { EnhancedRNG } from './utils/EnhancedRNG';
+import { Canvas } from '@react-three/fiber';
+import { ChunkManager } from '@engine/spawners/ChunkManager';
 
-const rng = new EnhancedRNG(seed); // String seed directly!
-const value = rng.uniform(0, 1);
-const gaussian = rng.normal(0, 1);
-const count = rng.poisson(5);
+function TerrainDemo() {
+  return (
+    <Canvas>
+      {/* R3F components */}
+    </Canvas>
+  );
+}
 ```
 
-**GameEngine Usage**:
+**Zustand State**:
 ```typescript
-import { GameEngine } from './engine/GameEngineBackend';
+import { useGameStore } from '@demo/store/gameStore';
 
-const engine = new GameEngine({ seed });
-const universe = engine.generateUniverse();
+const { player, world } = useGameStore();
 ```
 
 ---
 
 ## Key Decisions
 
-### Reverted to seedrandom (2025-11-08)
-**Why**: Mersenne Twister (@stdlib) had seed overflow issues, seedrandom works perfectly with string seeds
-**Impact**: Simpler, no hash conversion needed, deterministic, good enough quality
+### Engine Refactor (2025-11-10)
+**Why**: Separate simulation logic from presentation
+**Impact**: Clean API, reusable engine, R3F demos
 
-### Law-Based Architecture (2025-11-08)
-**Why**: Scientific rigor, infinite content, deterministic, educational, enables Gen6+
-**Impact**: Deleted entire AI generation system, built complete law system from scratch
+### React Three Fiber (2025-11-10)
+**Why**: Modern web 3D, component-based, huge ecosystem
+**Impact**: Replaced BabylonJS, better DX, declarative
 
-### Unified Package (2025-11-08)
-**Why**: Simpler deployment, no HTTP overhead, faster, easier testing
-**Impact**: Single packages/game for everything, direct function calls only
+### Zustand (2025-11-10)
+**Why**: Lightweight state management, simple API
+**Impact**: Clean state, no boilerplate, React integration
 
----
-
-## Build System
-
-**Android APK**:
-```bash
-just build-android
-# Output: /workspace/dev-builds/<timestamp>/app-debug.apk
-```
-
-**Web**:
-```bash
-pnpm build
-# Output: dist/
-```
-
-**Simulation View** (for validation):
-- URL: http://localhost:5173/simulation.html
-- Supports URL parameters: `?seed=v1-test&cycle=10&autoplay=true&speed=2`
-- Exposes `window.simulation` API for programmatic control
-
----
-
-## Documentation
-
-**Primary**: `README.md` - Single source of truth  
-**Architecture**: `docs/LAW_BASED_ARCHITECTURE.md` - Complete law system docs  
-**Build**: `BUILD.md` - Production build instructions
-
-**Archived**: `memory-bank/archived-docs/` - Old status docs (obsolete)
-
----
-
-## Emergency Contacts
-
-**Blocking issues**:
-1. Check `activeContext.md` for current blockers
-2. Check `progress.md` for known issues
-3. Run `./validate-all-laws.sh` to verify system health
-
-**Common issues**:
-- TypeScript errors → Fix imports, add types
-- RNG overflow → We reverted to seedrandom (fixed)
-- Build failures → Check Java 21, Gradle, dependencies
+### Daggerfall Patterns (2025-11-10)
+**Why**: 16 years of proven architecture
+**Impact**: 7x7 chunks, steepness check, settlement clearance working perfectly
 
 ---
 
@@ -293,9 +278,14 @@ pnpm build
 
 - TypeScript: 0 errors, 0 warnings
 - Determinism: 100% (same seed = same result)
-- Tests: All core laws validated
-- Performance: < 5s universe generation
+- Performance: 120 FPS target
+- Tests: All passing
+- Documentation: Comprehensive
 
 ---
 
-**CRITICAL**: This is a law-based system now. Do not reference `packages/gen/`, `manifests/`, or OpenAI generation. Use `src/laws/` instead.
+**CRITICAL**: 
+- Engine is in `engine/` (not `packages/game/src/`)
+- Use R3F for rendering (not BabylonJS)
+- Import from `ebb-and-bloom-engine` package
+- Status docs go in `memory-bank/` ONLY
