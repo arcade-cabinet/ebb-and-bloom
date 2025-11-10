@@ -41,16 +41,37 @@ const TerrainScene: React.FC<{ seed: string }> = ({ seed }) => {
         entityManagerRef.current
       );
       
-      // Load initial chunks
+      // CRITICAL: Load chunks FIRST (before getting spawn position)
       chunkManagerRef.current.update(0, 0);
       
-      // Setup player
+      // DFU PATTERN: Spawn player IN A SETTLEMENT
+      const startSettlement = chunkManagerRef.current.getNearestSettlement(0, 0);
+      
+      let spawnX, spawnZ;
+      if (startSettlement) {
+        spawnX = startSettlement.position.x;
+        spawnZ = startSettlement.position.z;
+        console.log(`🏘️ Starting in ${startSettlement.name} (${startSettlement.type})`);
+      } else {
+        spawnX = 50;
+        spawnZ = 50;
+        console.log('⚠️ No settlement found, spawning in wilderness');
+      }
+      
+      // Get ACTUAL terrain height at spawn position
+      const terrainHeight = chunkManagerRef.current.getTerrainHeight(spawnX, spawnZ);
+      const playerHeight = 1.8; // Eye height (DFU standard)
+      const spawnY = terrainHeight + playerHeight;
+      
+      console.log(`🎮 SPAWN: (${spawnX.toFixed(0)}, ${spawnZ.toFixed(0)}), terrain: ${terrainHeight.toFixed(1)}m, eye: ${spawnY.toFixed(1)}m`);
+      
+      // Setup player AT TERRAIN HEIGHT
       const player = playerRef.current;
       player.maxSpeed = 10;
-      player.position.set(0, 5, 0);
+      player.position.set(spawnX, spawnY, spawnZ); // ON GROUND, not arbitrary
       entityManagerRef.current.add(player);
       
-      console.log('[TerrainDemo] Initialized - ChunkManager + Player');
+      console.log('[TerrainDemo] Player spawned on terrain ✅');
     }
   }, [scene, seed]);
   
