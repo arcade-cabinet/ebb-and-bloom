@@ -147,9 +147,9 @@ export class MolecularVisuals {
       
       const mat = new StandardMaterial(`mat-${i}`, scene);
       mat.diffuseColor = atom.color;
-      mat.emissiveColor = atom.color.scale(0.8); // STRONG glow (space is dark!)
-      mat.specularColor = atom.color.scale(0.3);
-      mat.ambientColor = atom.color.scale(0.5);
+      mat.emissiveColor = atom.color; // FULL BRIGHTNESS
+      mat.specularColor = new Color3(1, 1, 1);
+      mat.ambientColor = atom.color;
       sphere.material = mat;
     }
 
@@ -184,9 +184,10 @@ export class MolecularVisuals {
       cylinder.rotation = Vector3.RotationFromAxis(axis1, axis2, axis3);
       
       const bondMat = new StandardMaterial(`bond-mat-${i}`, scene);
-      bondMat.diffuseColor = new Color3(0.7, 0.7, 0.7); // Light gray bonds
-      bondMat.emissiveColor = new Color3(0.3, 0.3, 0.3); // Bonds also glow slightly
-      bondMat.alpha = 0.9;
+      bondMat.diffuseColor = new Color3(0.9, 0.9, 0.9);
+      bondMat.emissiveColor = new Color3(0.7, 0.7, 0.7); // Bright bonds
+      bondMat.specularColor = new Color3(1, 1, 1);
+      bondMat.alpha = 1.0;
       cylinder.material = bondMat;
     }
 

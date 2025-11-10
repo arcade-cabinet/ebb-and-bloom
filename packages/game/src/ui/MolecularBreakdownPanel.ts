@@ -56,7 +56,7 @@ export class MolecularBreakdownPanel {
   constructor(mainScene: Scene, engine: any) {
     // Create separate scene for molecular view
     this.scene = new Scene(engine);
-    this.scene.clearColor = new Color3(0.02, 0.02, 0.05).toColor4(); // Very dark blue
+    this.scene.clearColor = new Color3(0.1, 0.1, 0.15).toColor4(); // Lighter for visibility
     
     // Camera for molecular view (close-up on molecules)
     this.camera = new ArcRotateCamera(
@@ -68,10 +68,10 @@ export class MolecularBreakdownPanel {
       this.scene
     );
     
-    // VERY BRIGHT light (molecules MUST be visible!)
+    // MAXIMUM BRIGHT light
     const light = new HemisphericLight('mol-light', new Vector3(0, 1, 0), this.scene);
-    light.intensity = 2.0; // Very bright
-    light.groundColor = new Color3(0.5, 0.5, 0.5); // Brighter ground
+    light.intensity = 3.0; // MAXIMUM
+    light.groundColor = new Color3(1, 1, 1); // Full brightness
     
     // Set viewport (RIGHT 20%, MIDDLE 50%)
     // Position: x=0.8 (right panel starts), y=0.25 (below HUD), height=0.50 (middle section)
@@ -85,9 +85,9 @@ export class MolecularBreakdownPanel {
     // Active camera for this scene
     this.scene.activeCamera = this.camera;
     
-    // STRONG glow for molecules
+    // MAXIMUM glow
     const glow = new GlowLayer('mol-glow', this.scene);
-    glow.intensity = 2.0; // Maximum visibility
+    glow.intensity = 3.0; // MAXIMUM
     
     console.log('[MolecularBreakdownPanel] Initialized - RIGHT 20%, MIDDLE 50% viewport');
   }
