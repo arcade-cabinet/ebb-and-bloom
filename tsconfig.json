@@ -15,11 +15,11 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true,
     "paths": {
-      "@engine/*": ["../engine/*"]
+      "@engine/*": ["./engine/*"]
     }
   },
-  "include": ["."]
+  "include": ["engine/**/*", "game/**/*", "tests/**/*"],
+  "exclude": ["node_modules", "dist", "game/dist", "android", "packages"]
 }
 

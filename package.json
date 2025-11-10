@@ -2,26 +2,20 @@
   "name": "ebb-and-bloom",
   "version": "1.1.0",
   "description": "Governor-based world exploration engine and game",
-  "private": true,
   "type": "module",
+  "main": "./engine/index.ts",
   "scripts": {
-    "dev": "cd game && npm run dev",
-    "build": "cd game && npm run build",
+    "dev": "vite game/index.html --host",
+    "build": "vite build game/index.html --outDir game/dist",
     "build:android": "npm run build && npx cap sync android && npx cap open android",
     "build:ios": "npm run build && npx cap sync ios && npx cap open ios",
     "sync": "npx cap sync",
-    "sync:android": "npx cap sync android",
-    "sync:ios": "npx cap sync ios",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:unit": "vitest run tests/unit",
     "test:integration": "vitest run tests/integration",
-    "type-check": "cd engine && tsc --noEmit && cd ../game && tsc --noEmit"
+    "type-check": "tsc --noEmit"
   },
-  "workspaces": [
-    "engine",
-    "game"
-  ],
   "dependencies": {
     "@capacitor/app": "^7.1.0",
     "@capacitor/core": "^7.4.4",
