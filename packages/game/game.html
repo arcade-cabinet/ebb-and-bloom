@@ -56,9 +56,10 @@
     
     <script type="module">
         import * as THREE from 'three';
-        import { EntityManager } from 'yuka';
+        import { EntityManager, Vehicle, Time } from 'yuka';
         import { ChunkManager } from './src/world/ChunkManager.ts';
         import { CreatureSpawner } from './src/world/CreatureSpawner.ts';
+        import { FirstPersonControls } from './src/player/FirstPersonControls.ts';
         
         console.log('🎮 Ebb & Bloom - Starting...');
         
@@ -96,8 +97,27 @@
         const ambient = new THREE.AmbientLight(0x404040, 0.5);
         scene.add(ambient);
         
-        // Yuka entity manager for creatures
+        // Yuka time system (proper delta calculation)
+        const time = new Time();
+        
+        // Yuka entity manager for all entities (player + creatures)
         const entityManager = new EntityManager();
+        
+        // Create player entity (Yuka Vehicle)
+        const player = new Vehicle();
+        player.position.set(0, 2, 0); // Start at y=2 above terrain
+        player.maxSpeed = 10;
+        player.name = 'player';
+        entityManager.add(player);
+        
+        // Connect camera to player (Yuka pattern)
+        function syncCamera(entity: Vehicle, renderComponent: THREE.Camera) {
+          renderComponent.matrixWorld.copy(entity.worldMatrix);
+        }
+        player.setRenderComponent(camera as any, syncCamera);
+        
+        // Player controls (Yuka pattern)
+        const controls = new FirstPersonControls(player);
         
         // Chunk streaming (Daggerfall approach)
         const chunkManager = new ChunkManager(scene, seed);
@@ -115,84 +135,43 @@
         
         console.log('✅ Terrain system ready');
         console.log(`✅ Spawned ${creatureSpawner.getCreatureCount()} creatures`);
+        console.log('✅ Player entity created');
         
-        // Player movement
-        const moveSpeed = 0.2;
-        const keys = {};
-        
-        window.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
-        window.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
-        
-        // Mouse look
-        let yaw = 0;
-        let pitch = 0;
-        
+        // Click to start (connects controls and locks pointer)
         document.addEventListener('click', () => {
-            renderer.domElement.requestPointerLock();
-        });
-        
-        document.addEventListener('mousemove', e => {
-            if (document.pointerLockElement) {
-                yaw -= e.movementX * 0.002;
-                pitch -= e.movementY * 0.002;
-                pitch = Math.max(-Math.PI/2, Math.min(Math.PI/2, pitch));
+            if (!document.pointerLockElement) {
+                controls.connect();
             }
         });
         
-        // Game loop
-        let lastTime = performance.now();
+        // Game loop (proper Yuka pattern with Time)
         let frames = 0;
         let fpsTime = 0;
         
         function update() {
-            const now = performance.now();
-            const delta = (now - lastTime) / 1000;
-            lastTime = now;
+            const delta = time.update().getDelta();
             
             // FPS counter
             frames++;
             fpsTime += delta;
             if (fpsTime >= 1) {
-                document.getElementById('fps').textContent = frames;
+                document.getElementById('fps').textContent = frames.toString();
                 frames = 0;
                 fpsTime = 0;
             }
             
-            // Movement
-            const forward = new THREE.Vector3(
-                Math.sin(yaw),
-                0,
-                Math.cos(yaw)
-            );
-            const right = new THREE.Vector3(
-                Math.cos(yaw),
-                0,
-                -Math.sin(yaw)
-            );
+            // Update controls (handles WASD input)
+            controls.update(delta);
             
-            if (keys['w']) camera.position.add(forward.clone().multiplyScalar(moveSpeed));
-            if (keys['s']) camera.position.add(forward.clone().multiplyScalar(-moveSpeed));
-            if (keys['a']) camera.position.add(right.clone().multiplyScalar(-moveSpeed));
-            if (keys['d']) camera.position.add(right.clone().multiplyScalar(moveSpeed));
-            
-            // Camera orientation
-            camera.rotation.order = 'YXZ';
-            camera.rotation.y = yaw;
-            camera.rotation.x = pitch;
-            
-            // Update chunks based on player position
-            chunkManager.update(camera.position.x, camera.position.z);
-            
-            // Update creatures (Yuka AI)
+            // Update all entities (player + creatures)
             entityManager.update(delta);
             
-            // Update creature visuals
-            creatureSpawner.update(delta);
+            // Update chunks based on player position
+            chunkManager.update(player.position.x, player.position.z);
             
             // Update HUD
-            const pos = camera.position;
             document.getElementById('pos').textContent = 
-                `${pos.x.toFixed(1)}, ${pos.y.toFixed(1)}, ${pos.z.toFixed(1)}`;
+                `${player.position.x.toFixed(1)}, ${player.position.y.toFixed(1)}, ${player.position.z.toFixed(1)}`;
             
             document.getElementById('biome').textContent = 
                 `Chunks: ${chunkManager.getActiveChunkCount()} | Creatures: ${creatureSpawner.getCreatureCount()}`;
