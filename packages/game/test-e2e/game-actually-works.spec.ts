@@ -21,8 +21,14 @@ test('game actually loads and renders terrain', async ({ page }) => {
   await page.goto('http://localhost:5173/game.html');
   await page.waitForLoadState('networkidle');
   
+  console.log('=== Waiting for initialization ===');
+  
   // Wait for game to initialize
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(3000);
+  
+  console.log('=== Checking errors ===');
+  console.log('Errors:', errors);
+  console.log('Logs:', logs.slice(-15));
   
   // Take screenshot
   await page.screenshot({ path: 'test-results/game-loaded.png', fullPage: true });

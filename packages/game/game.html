@@ -111,10 +111,10 @@
         entityManager.add(player);
         
         // Connect camera to player (Yuka pattern)
-        function syncCamera(entity: Vehicle, renderComponent: THREE.Camera) {
+        function syncCamera(entity, renderComponent) {
           renderComponent.matrixWorld.copy(entity.worldMatrix);
         }
-        player.setRenderComponent(camera as any, syncCamera);
+        player.setRenderComponent(camera, syncCamera);
         
         // Player controls (Yuka pattern)
         const controls = new FirstPersonControls(player);
