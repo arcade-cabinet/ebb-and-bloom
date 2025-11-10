@@ -253,23 +253,25 @@
         import { StellarVisuals } from './src/renderers/StellarVisuals.ts';
         import { MolecularVisuals } from './src/renderers/MolecularVisuals.ts';
         
-        console.log('✅ Module loaded - waiting for DOM...');
+        console.log('✅ Imports loaded');
         
-        // Wait for DOM to be ready before accessing elements
-        function initializeSimulation() {
-            console.log('🎬 Initializing simulation...');
-            
-            // Canvas setup
-            const universeCanvas = document.getElementById('universe-canvas');
-            const molecularCanvas = document.getElementById('molecular-canvas');
+        // Canvas setup - wait for DOM
+        let universeCanvas, molecularCanvas, universeCtx, molecularCtx;
+        
+        function initCanvas() {
+            universeCanvas = document.getElementById('universe-canvas');
+            molecularCanvas = document.getElementById('molecular-canvas');
             
             if (!universeCanvas || !molecularCanvas) {
-                console.error('❌ Canvas elements not found!', { universeCanvas, molecularCanvas });
-                return;
+                console.error('❌ Canvas elements not found!');
+                return false;
             }
             
-            const universeCtx = universeCanvas.getContext('2d');
-            const molecularCtx = molecularCanvas.getContext('2d');
+            universeCtx = universeCanvas.getContext('2d');
+            molecularCtx = molecularCanvas.getContext('2d');
+            console.log('✅ Canvas initialized');
+            return true;
+        }
         
         // Set canvas sizes
         function resizeCanvases() {
@@ -680,35 +682,23 @@
             };
         }
         
-            // Start immediately when DOM is ready
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', () => {
-                    console.log('DOM loaded, starting simulation...');
-                    setTimeout(startSimulation, 100);
-                });
-            } else {
-                console.log('DOM already loaded, starting simulation...');
-                setTimeout(startSimulation, 100);
+        // Wait for DOM, then start
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+        
+        function init() {
+            console.log('🎬 DOM ready, initializing...');
+            
+            if (!initCanvas()) {
+                console.error('❌ Failed to initialize canvas');
+                return;
             }
             
-            // Fallback: force hide splash after 3 seconds
-            setTimeout(() => {
-                const splash = document.getElementById('splash');
-                if (splash && !splash.classList.contains('hidden')) {
-                    console.warn('⚠️ Splash still visible after 3s - force hiding');
-                    splash.classList.add('hidden');
-                    if (!window.universe) {
-                        console.error('❌ window.universe not initialized!');
-                    }
-                }
-            }, 3000);
-        } // end initializeSimulation
-        
-        // Call init when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initializeSimulation);
-        } else {
-            initializeSimulation();
+            resizeCanvases();
+            startSimulation();
         }
     </script>
 </body>
