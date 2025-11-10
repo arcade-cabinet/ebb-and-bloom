@@ -5,7 +5,7 @@
  * Everything emerges from physics, biology, ecology, and social laws.
  */
 
-import { EventEmitter } from '../utils/EventEmitter.js';
+// EventEmitter removed - using simple callbacks instead
 import { generateGameData } from '../gen-systems/loadGenData.js';
 import { validateSeed } from '../seed/seed-manager.js';
 
