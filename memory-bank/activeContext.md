@@ -80,29 +80,52 @@ engine/ (59 files, 8,123 lines)
 
 ---
 
-## Cleanup Complete ✅
+## Synthesis System Complete ✅
 
-**Deleted:**
-- engine/planetary/ (whole-planet scale)
-- engine/ecology/ (redundant)
-- engine/agents/AgentSpawner (complex)
-- engine/agents/AgentLODSystem (complex)
-- engine/agents/behaviors/ (duplicate)
-- engine/procedural/YukaGuidedGeneration (abstract)
+**New Procedural Pipeline:**
 
-**Refactored:**
-- CreatureSpawner → Uses governors directly
-- CreatureMeshGenerator → Simple composites
+```
+Governors → Traits → Molecular Composition → Visual Synthesis
+```
 
-**Result:**
-- 59 files (clean)
-- 8,123 lines (focused)
-- 100% governor-driven
-- Zero complexity
+**MolecularSynthesis:**
+- Protein % → Muscle cylinders (bulk)
+- Calcium % → Bone rigidity (segments)
+- Chitin % → Exoskeleton (facets)
+- Lipid % → Fat distribution (sphere inflation)
+- Keratin % → Horns/spikes
+
+**PigmentationSynthesis:**
+- Diet → Pigments (carotenoids from plants, porphyrins from meat)
+- Environment → Camouflage (vegetation green, rock brown)
+- Genetics → Patterns (spots, stripes, solid)
+- Age → Graying (melanin accumulation)
+
+**StructureSynthesis:**
+- Material availability → Tool/structure appearance
+- Wood/stone/bone → Composite forms
+- NO PREFABS
+
+**Complete Chain:**
+1. Governors decide: "Herbivore, forest, high genetics"
+2. Molecular: High lipid, moderate protein → Bulky body
+3. Pigmentation: Plant diet + forest → Green with leaf patterns
+4. Result: Fat green creature with camouflage spots
+
+## Architecture
+
+```
+engine/
+├── governors/      # DECIDE (biology, ecology, social)
+├── procedural/     # SYNTHESIZE (molecules → visuals)
+├── systems/        # INFRASTRUCTURE (tools, structures)
+├── spawners/       # GENERATE (terrain, creatures, NPCs)
+└── agents/         # ACT (powered by governors)
+```
 
 ## Next Steps
 
-1. Test in browser
-2. Add tool/structure synthesis (from governors)
-3. Improve creature mesh variety
-4. Settlement AI
+1. Test synthesis in browser
+2. Add more molecular variations
+3. Creature evolution over time
+4. Material gathering for structures
