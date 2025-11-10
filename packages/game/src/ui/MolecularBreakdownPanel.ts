@@ -58,12 +58,12 @@ export class MolecularBreakdownPanel {
     this.scene = new Scene(engine);
     this.scene.clearColor = new Color3(0, 0, 0).toColor4(); // BLACK background for contrast
     
-    // Camera for molecular view (close-up on molecules)
+    // Camera for molecular-scale view (VERY close for tiny molecules)
     this.camera = new ArcRotateCamera(
       'molecular-camera',
-      Math.PI / 4,  // Angle for better 3D view
-      Math.PI / 3,  // Elevation
-      20,           // Distance from center
+      Math.PI / 4,  
+      Math.PI / 3,  
+      15,           // Close enough to see small molecules
       Vector3.Zero(),
       this.scene
     );
@@ -108,17 +108,17 @@ export class MolecularBreakdownPanel {
     }
     this.moleculeMeshes = [];
     
-    // Create new molecules for this context
-    const moleculeCount = Math.min(15, context.molecules.length * 3); // 15 max for performance
+    // Create free-floating molecules (appropriate scale!)
+    const moleculeCount = Math.min(25, context.molecules.length * 5);
     
     for (let i = 0; i < moleculeCount; i++) {
       const formula = context.molecules[Math.floor(Math.random() * context.molecules.length)];
       const blueprint = MolecularVisuals.createBlueprint(formula);
       
-      // Random position in view sphere (closer to camera)
+      // Random position in 3D space
       const angle1 = Math.random() * Math.PI * 2;
       const angle2 = Math.random() * Math.PI * 2;
-      const radius = 5 + Math.random() * 10; // Closer spread (5-15 units)
+      const radius = 3 + Math.random() * 8; // 3-11 units from center
       
       const pos = new Vector3(
         radius * Math.sin(angle1) * Math.cos(angle2),

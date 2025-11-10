@@ -203,7 +203,7 @@ export class MolecularVisuals {
       formula: 'H2',
       geometry: MolecularGeometry.LINEAR,
       bondAngle: 180,
-      scale: 1.0, // pm → game units (CINEMATIC SCALE for visibility!)
+      scale: 0.02, // pm → game units (realistic molecular scale)
       atoms: [
         {
           element: 'H',
