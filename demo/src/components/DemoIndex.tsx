@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { TerrainDemo } from '../demos/TerrainDemo';
-import { UniverseDemo } from '../demos/UniverseDemo';
 import { PlaygroundDemo } from '../demos/PlaygroundDemo';
 import './DemoIndex.css';
 
@@ -18,30 +17,21 @@ interface Demo {
 const demos: Demo[] = [
   {
     id: 'terrain',
-    title: 'Procedural Terrain',
-    description: 'Daggerfall-style infinite world with SimplexNoise, 11 biomes, vegetation, and settlements. Working game at 120 FPS.',
+    title: 'World Exploration',
+    description: 'Procedurally generated world from three-word seed. Infinite terrain, 11 biomes, creatures, NPCs, settlements. Explore and evolve.',
     path: '/terrain',
     component: TerrainDemo,
     status: 'working',
-    tags: ['terrain', 'biomes', 'vegetation', 'NPCs', 'creatures', 'Yuka AI']
-  },
-  {
-    id: 'universe',
-    title: 'Universe Simulation',
-    description: 'Full timeline from Big Bang to Heat Death. 57 scientific laws generating stars, planets, and civilizations.',
-    path: '/universe',
-    component: UniverseDemo,
-    status: 'working',
-    tags: ['cosmology', 'physics', 'stellar', 'timeline']
+    tags: ['exploration', 'biomes', 'creatures', 'evolution', 'governors']
   },
   {
     id: 'playground',
-    title: 'Law Playground',
-    description: 'Interactive visualization of individual laws. Experiment with physics, biology, ecology, and social laws.',
+    title: 'Governor Playground',
+    description: 'Interactive visualization of governors. Experiment with biology, ecology, and social behaviors.',
     path: '/playground',
     component: PlaygroundDemo,
     status: 'experimental',
-    tags: ['laws', 'interactive', 'visualization']
+    tags: ['governors', 'interactive', 'visualization']
   }
 ];
 
@@ -56,13 +46,13 @@ const HomePage: React.FC = () => {
     <div className="demo-index">
       <header className="hero">
         <div className="container">
-          <h1 className="serif">Ebb & Bloom Engine</h1>
-          <p className="tagline">Law-based universe simulation with deterministic procedural generation</p>
+          <h1 className="serif">Ebb & Bloom</h1>
+          <p className="tagline">Explore procedurally generated worlds from three-word seeds</p>
           
           <div className="stats">
             <div className="stat">
-              <span className="mono">57</span>
-              <span>Scientific Laws</span>
+              <span className="mono">17</span>
+              <span>Governors</span>
             </div>
             <div className="stat">
               <span className="mono">∞</span>
@@ -121,23 +111,23 @@ const HomePage: React.FC = () => {
         </div>
 
         <section className="about">
-          <h2 className="serif">About the Engine</h2>
+          <h2 className="serif">About</h2>
           <div className="about-grid">
             <div className="about-item">
-              <h3>Law-Based Generation</h3>
-              <p>57 mathematical laws from physics, biology, ecology, and social sciences generate infinite unique universes.</p>
+              <h3>Governor-Based</h3>
+              <p>17 autonomous governors power biological, ecological, and social evolution of living worlds.</p>
             </div>
             <div className="about-item">
               <h3>Deterministic</h3>
-              <p>Same seed = same universe. Always. Perfect for multiplayer, speedruns, and reproducible research.</p>
+              <p>Same seed = same world. Always. Share seeds with friends to explore identical worlds.</p>
             </div>
             <div className="about-item">
-              <h3>Multi-Scale</h3>
-              <p>Simulates from quantum (Planck scale) to cosmic (universe-wide) with seamless transitions.</p>
+              <h3>Living Worlds</h3>
+              <p>Creatures evolve, ecosystems emerge, civilizations rise. Everything alive and autonomous.</p>
             </div>
             <div className="about-item">
-              <h3>React Three Fiber</h3>
-              <p>Modern web rendering with R3F + Drei. Runs in browser, works on mobile.</p>
+              <h3>Web & Mobile</h3>
+              <p>Built with React Three Fiber. Runs in browser, works on mobile. No install needed.</p>
             </div>
           </div>
         </section>

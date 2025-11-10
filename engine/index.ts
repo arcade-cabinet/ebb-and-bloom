@@ -43,38 +43,11 @@ export { CreatureSpawner } from './spawners/CreatureSpawner';
 export { WaterSystem } from './spawners/WaterSystem';
 
 // ============================================================================
-// SIMULATION SYSTEMS
-// ============================================================================
-
-export { UniverseSimulator } from './simulation/UniverseSimulator';
-export { UniverseActivityMap } from './simulation/UniverseActivityMap';
-export { TimelineSimulator } from './simulation/TimelineSimulator';
-
-// ============================================================================
-// SYNTHESIS (Genesis Engine)
-// ============================================================================
-
-export { GenesisSynthesisEngine } from './synthesis/GenesisSynthesisEngine';
-
-// ============================================================================
 // CORE ENGINE
 // ============================================================================
 
 export { GameEngine } from './core/GameEngine';
 export { GameEngineBackend } from './core/GameEngineBackend';
-
-// ============================================================================
-// GENERATION
-// ============================================================================
-
-export { EnhancedUniverseGenerator } from './generation/EnhancedUniverseGenerator';
-export { SimpleUniverseGenerator } from './generation/SimpleUniverseGenerator';
-
-// ============================================================================
-// PHYSICS
-// ============================================================================
-
-export { MonteCarloAccretion } from './physics/MonteCarloAccretion';
 
 // ============================================================================
 // PLANETARY

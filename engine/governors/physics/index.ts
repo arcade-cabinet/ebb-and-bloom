@@ -1,11 +1,9 @@
 /**
  * Physics Governors
  * 
- * Yuka-native implementations of physics laws.
+ * Planetary-scale physics only.
  */
 
 export { GravityBehavior } from './GravityBehavior';
-export { OrbitBehavior } from './OrbitBehavior';
 export { TemperatureBehavior, createTemperatureFuzzy } from './TemperatureFuzzy';
-export { StellarEvolutionSystem } from './StellarBehavior';
 
