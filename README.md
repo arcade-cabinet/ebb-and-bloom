@@ -1,217 +1,159 @@
-# Ebb & Bloom Engine
+# Ebb & Bloom
 
-> Law-based universe simulation engine with deterministic procedural generation
+> Explore infinite procedurally generated worlds from three-word seeds
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18.3-blue)](https://react.dev/)
 [![Three.js](https://img.shields.io/badge/Three.js-0.169-green)](https://threejs.org/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ---
 
-## What is This?
+## 🌍 What is this?
 
-**Ebb & Bloom** generates infinite unique worlds from three-word seeds using **15 autonomous governors** instead of AI or hardcoded data.
+Explore living, evolving worlds powered by autonomous governors. Each world is unique, deterministic, and infinite.
 
 ```typescript
-import { UniverseSimulator } from '@ebb-and-bloom/engine';
+import { GameEngine } from 'ebb-and-bloom-engine';
 
-const sim = new UniverseSimulator({ seed: 'v1-green-valley-breeze' });
-sim.advanceTime(13.8e9); // Simulate 13.8 billion years
-
-console.log(sim.getState()); // Complete universe state
+const world = new GameEngine({ seed: 'v1-green-valley-breeze' });
+// Infinite terrain, creatures, NPCs, settlements
+// Same seed = same world every time
 ```
 
-**Same seed = Same universe. Always.**
+**Same seed = same world. Share seeds with friends.**
 
 ---
 
-## Features
+## ✨ Features
 
-- ✅ **57 Scientific Laws** - Physics, biology, ecology, social
-- ✅ **Deterministic** - Same seed = identical results
-- ✅ **Multi-Scale** - Quantum → Cosmic
-- ✅ **React Three Fiber** - Modern web rendering
-- ✅ **Yuka AI** - Autonomous agent behaviors
-- ✅ **SimplexNoise** - Superior terrain generation
-- ✅ **Law-Based Spawning** - No hardcoded data
-- ✅ **Mobile Support** - Responsive, touch-friendly
+- 🌍 **Infinite Worlds** - Procedural terrain from three-word seeds
+- 🦌 **Living Creatures** - 15 governors power biology, ecology, behavior
+- 🏘️ **Settlements** - Villages, towns, cities with NPCs
+- 🌲 **11 Biomes** - Desert, forest, tundra, rainforest, etc.
+- 🎮 **First-Person** - Explore on foot (Daggerfall-style)
+- 📱 **Cross-Platform** - Web, iOS, Android
 
 ---
 
-## Quick Start
+## 15 Autonomous Governors
+
+Create living, evolving worlds:
+- **Physics (2)** - Gravity, Weather
+- **Biology (5)** - Metabolism, Aging, Reproduction, Genetics, Cognition
+- **Ecology (5)** - Flocking, Predation, Territory, Foraging, Migration
+- **Social (3)** - Hierarchy, Warfare, Cooperation
+
+Same seed = same world. Share seeds with friends.
+
+---
+
+## 🚀 Quick Start
 
 ```bash
+# Clone
+git clone https://github.com/ebb-and-bloom/engine.git
+cd engine
+
 # Install
-npm install @ebb-and-bloom/engine
-
-# Run demo
-npm run dev
-```
-
-Then open http://localhost:5173
-
----
-
-## Documentation
-
-- **[ENGINE.md](ENGINE.md)** - Complete engine documentation
-- **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** - System architecture
-- **[DFU_ASSESSMENT](memory-bank/sessions/)** - Daggerfall Unity analysis
-- **[API Reference](docs/API.md)** - Full API documentation
-
----
-
-## Architecture
-
-```
-engine/              # Core simulation engine
-├── laws/           # 57 law files (8,500+ lines)
-├── spawners/       # World generation (terrain, vegetation, settlements)
-├── agents/         # Yuka-based AI
-├── simulation/     # Timeline engine
-└── utils/          # RNG, seed management
-
-src/demo/           # Demo applications
-├── terrain.tsx     # Terrain generation demo
-├── universe.tsx    # Universe simulation demo
-└── game.tsx        # Complete game demo
-```
-
----
-
-## Performance
-
-**Benchmarks:**
-- 120 FPS constant
-- 49 chunks (7x7 grid, Daggerfall pattern)
-- 286 trees (instanced, steepness + clearance filtered)
-- 58 NPCs (daily schedules, Yuka AI)
-- 100 creatures (Kleiber's Law)
-- 2 settlements (law-based placement)
-
-**vs Daggerfall Unity:**
-- 23% code size (10k vs 43k lines)
-- 60-70% feature parity
-- Better algorithms (SimplexNoise, instancing, laws)
-- Web platform (DFU is Unity exe)
-
----
-
-## Examples
-
-### Generate Terrain
-```typescript
-import { ChunkManager, BiomeSystem } from '@ebb-and-bloom/engine';
-
-const chunks = new ChunkManager(scene, 'v1-terrain-seed');
-chunks.update(0, 0); // Load 7x7 grid around origin
-
-const height = chunks.getTerrainHeight(100, 200);
-const settlement = chunks.getNearestSettlement(100, 200);
-```
-
-### Simulate Universe
-```typescript
-import { UniverseSimulator } from '@ebb-and-bloom/engine';
-
-const sim = new UniverseSimulator({ seed: 'v1-cosmic-test' });
-sim.advanceTime(1e9); // 1 billion years
-
-const state = sim.getState();
-console.log(`${state.stars.length} stars generated`);
-```
-
-### Use Laws Directly
-```typescript
-import { 
-  calculateGravity,
-  calculateMetabolicRate,
-  lotkaVolterra
-} from '@ebb-and-bloom/engine/laws';
-
-const force = calculateGravity(mass1, mass2, distance);
-const metabolicRate = calculateMetabolicRate(bodyMass); // Kleiber's Law
-const [prey, pred] = lotkaVolterra(preyPop, predPop, alpha, beta);
-```
-
----
-
-## Development
-
-```bash
-# Install dependencies
 npm install
 
-# Run development server
+# Run
+cd demo
 npm run dev
+```
 
-# Run tests
-npm test
+Open http://localhost:5173
 
-# Run E2E tests
-npm run test:e2e
+---
 
-# Build for production
-npm run build
+## 📁 Structure
 
-# Type check
-npm run type-check
+```
+engine/         # World simulation engine
+├── governors/ # 15 autonomous governors (biology, ecology, social)
+├── spawners/  # Terrain, biomes, creatures, NPCs, settlements
+├── agents/    # Creature AI (Yuka)
+├── tables/    # Constants
+└── core/      # GameEngine
+
+demo/          # React Three Fiber demos
+└── terrain/   # Main game (world exploration)
 ```
 
 ---
 
-## Technology Stack
+## 🎮 Gameplay
+
+### Exploration
+- First-person movement
+- Infinite procedural terrain
+- 7x7 chunk streaming (Daggerfall pattern)
+- 11 distinct biomes
+
+### Creatures
+- Autonomous AI (Yuka steering)
+- Metabolism & energy systems
+- Lifecycle (juvenile → adult → elder)
+- Predator-prey dynamics
+- Flocking behaviors
+
+### Settlements
+- Procedurally placed cities
+- Daily NPC schedules
+- Social hierarchies
+- Resource-based growth
+
+---
+
+## 🛠️ Technology
 
 - **TypeScript** - Type safety
-- **React** - UI framework
 - **React Three Fiber** - 3D rendering
-- **Drei** - R3F helpers
-- **Three.js** - WebGL engine
-- **Yuka** - AI/steering behaviors
-- **SimplexNoise** - Terrain generation
+- **Yuka** - AI behaviors
+- **SimplexNoise** - Terrain (O(n²), superior to Perlin)
+- **Zustand** - State management
 - **Vite** - Build tool
-- **Vitest** - Unit testing
-- **Playwright** - E2E testing
+
+---
+
+## 📊 Performance
+
+- 120 FPS constant
+- 49 chunks loaded (7x7 grid)
+- Instanced vegetation (1 draw call per type)
+- Efficient memory (~15MB for full world)
+
+---
+
+## 🎯 Status
+
+**Current:** v1.1 - Governors Complete  
+**Engine:** 15 planetary governors operational  
+**Game:** Working at 120 FPS  
+**Mobile:** Responsive, touch-friendly
+
+---
+
+## 📖 Documentation
+
+- **[ENGINE.md](ENGINE.md)** - Engine documentation
+- **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** - System architecture
+- **[memory-bank/](memory-bank/)** - Development context
 
 ---
 
 ## Inspiration
 
 **Daggerfall (1996)** - Procedural generation pioneer  
-**Daggerfall Unity (2009-2025)** - Community reimplementation  
-**Elite (1984)** - Infinite universe in 22KB  
-**No Man's Sky (2016)** - Modern procedural cosmos
-
----
-
-## Status
-
-**Current:** v1.0.0 - Engine Architecture Complete  
-**Game:** Working at 120 FPS, all systems operational  
-**Docs:** Comprehensive (2,235+ lines of analysis)  
-**Tests:** 18/18 passing
-
----
-
-## Contributing
-
-We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md).
+**Daggerfall Unity** - 16 years of proven patterns  
+**Elite (1984)** - Infinite universe in 22KB
 
 ---
 
 ## License
 
-MIT License - See [LICENSE](LICENSE) file.
+MIT License - See [LICENSE](LICENSE)
 
 ---
 
-## Community
-
-- **GitHub:** [github.com/ebb-and-bloom/engine](https://github.com/ebb-and-bloom/engine)
-- **Docs:** [ebb-and-bloom.dev](https://ebb-and-bloom.dev)
-- **Discord:** [discord.gg/ebb-bloom](https://discord.gg/ebb-bloom)
-
----
-
-**Made with ❤️ by the Ebb & Bloom community**
+**Made with ❤️ for explorers**
