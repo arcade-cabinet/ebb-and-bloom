@@ -1,22 +1,21 @@
 # Active Context
 
 **Date:** November 10, 2025  
-**Status:** LAWS FULLY PORTED TO GOVERNORS ✅✅✅
+**Status:** PLANETARY EXPLORATION FOCUSED 🌍
 
 ---
 
-## COMPLETE PORT: engine/laws → engine/governors
+## FOCUS: ONE WORLD EXPLORATION
 
-**What:** Eliminated laws directory completely, ported EVERYTHING to governors  
-**Result:** 22 governor files + 3 constant tables
+**What:** Three-word seed → Explore a living, evolving planet  
+**Scale:** Planetary surface only (no universe/stellar)  
+**Result:** 15 governors powering world evolution
 
-### Implemented Governors (17)
+### Active Governors (15)
 
-**Physics (4):**
-- ✅ `GravityBehavior` - Universal gravitation
-- ✅ `OrbitBehavior` - Stellar orbital mechanics  
-- ✅ `TemperatureFuzzy` - Thermodynamics
-- ✅ `StellarEvolutionSystem` - Star lifecycle
+**Physics (2):**
+- ✅ `GravityBehavior` - Ground-level gravity
+- ✅ `TemperatureFuzzy` - Weather/climate
 
 **Biological (5):**
 - ✅ `MetabolismGovernor` - Kleiber's Law
@@ -47,27 +46,36 @@
 
 ---
 
-## Laws DELETED - 100% Governors Now
+## Eliminated Directories
 
-**OLD** (`engine/laws/`): ❌ DELETED (8,755 lines)  
-**NEW** (`engine/governors/`): ✅ 22 files (Yuka-native)  
-**Constants** (`engine/tables/`): ✅ 3 new constant tables
+**Universe/Stellar Scale (DELETED):**
+- ❌ `engine/simulation/` - Universe timeline
+- ❌ `engine/synthesis/` - Universe genesis  
+- ❌ `engine/generation/` - Universe generators
+- ❌ `engine/audio/` - Cosmic sonification
+- ❌ `engine/physics/` - Star formation
 
-**No more external law calls - everything executes in agent loops!**
+**Focus:** One world, infinite depth
 
 ---
 
 ## Current Structure
 
-**Root:** README.md only ✅  
-**Engine:** 18 directories (laws, governors, spawners, agents, etc.)  
-**Demo:** R3F package (4 demos: Terrain, Universe, Playground, **Governors**)  
-**Docs:** Complete
+**Engine:**
+- `governors/` - 15 planetary-scale governors
+- `spawners/` - Terrain, biomes, creatures, NPCs
+- `agents/` - Creature AI
+- `tables/` - Constants
+
+**Demo:**
+- TerrainDemo - World exploration (main game)
+- PlaygroundDemo - Governor experiments
 
 ---
 
 ## Next Steps
 
-1. Test GovernorsDemo in browser
-2. Create additional governor demos
-3. Integrate governors into existing CreatureAgent/PlanetaryAgent
+1. Polish TerrainDemo (main experience)
+2. Add more creature variety
+3. Improve ecosystem emergence
+4. Settlement interaction

@@ -75,14 +75,14 @@ export class SeekFoodGoal extends Goal {
   owner: any;
   status: string;
   active!: () => boolean;
-  
+
   constructor(owner: any) {
     super(owner);
   }
 
   activate(): void {
     const owner = this.owner;
-    
+
     // Find nearest food source
     const food = this.findNearestFood(owner);
 
@@ -135,7 +135,7 @@ export class SeekFoodGoal extends Goal {
 
   terminate(): void {
     const owner = this.owner;
-    
+
     const arriveBehavior = owner.steering?.behaviors?.find(
       (b: any) => b.constructor.name === 'ArriveBehavior'
     );

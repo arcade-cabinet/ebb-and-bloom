@@ -11,7 +11,7 @@
 
 ## What is This?
 
-**Ebb & Bloom Engine** generates infinite unique universes from three-word seeds using **57 scientific laws** instead of AI or hardcoded data.
+**Ebb & Bloom** generates infinite unique worlds from three-word seeds using **15 autonomous governors** instead of AI or hardcoded data.
 
 ```typescript
 import { UniverseSimulator } from '@ebb-and-bloom/engine';

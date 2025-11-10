@@ -8,9 +8,9 @@
 
 ## Project
 
-**Ebb & Bloom Engine**: Law-based universe simulation engine with deterministic procedural generation.
+**Ebb & Bloom**: Explore living, procedurally generated worlds.
 
-**Core Principle**: "Everything emerges from LAWS" - 57 scientific laws from physics, biology, ecology, and social sciences generate complete universes from three-word seeds.
+**Core Principle**: Three-word seeds generate complete worlds with evolving creatures, ecosystems, and civilizations. 15 autonomous governors power everything.
 
 **Platform**: Web (React Three Fiber) + Cross-platform (iOS, Android via Capacitor)
 
@@ -31,21 +31,16 @@
 
 **Current Structure:**
 ```
-engine/              # Pure simulation logic (no rendering)
-├── governors/      # 17 Yuka-native governors (2,271 lines)
-├── spawners/       # World generation
-├── agents/         # Yuka AI integration
-├── simulation/     # Timeline engine
-├── tables/         # Constants (physics, biology, ecology, social)
-├── core/           # GameEngine
-└── index.ts        # Main export
+engine/              # World simulation
+├── governors/      # 15 planetary governors
+├── spawners/       # Terrain, biomes, creatures, settlements
+├── agents/         # Creature AI (Yuka)
+├── tables/         # Constants
+└── core/           # GameEngine
 
-demo/               # R3F demos (presentation layer)
-├── src/
-│   ├── demos/      # Terrain, Universe, Playground, Governors
-│   ├── store/      # Zustand state
-│   └── components/ # R3F components
-└── package.json    # Separate dependencies
+demo/               # R3F game
+├── terrain/        # Main game
+└── playground/     # Experiments
 ```
 
 **The new flow:**
