@@ -31,30 +31,45 @@
 
 **Current Structure:**
 ```
-engine/              # World simulation
-├── governors/      # 15 planetary governors
-├── spawners/       # Terrain, biomes, creatures, settlements
-├── agents/         # Creature AI (Yuka)
+engine/              # Complete simulation engine (10,000 lines)
+├── governors/      # 15 governors (decide behavior)
+├── procedural/     # 6 synthesis systems (create visuals)
+├── core/           # 5 core systems (WorldManager API)
+├── spawners/       # Terrain, biomes, creatures, NPCs
+├── systems/        # Tools, structures, trade
 ├── tables/         # Constants
-└── core/           # GameEngine
+├── agents/         # CreatureAgent
+├── types/          # TypeScript definitions
+└── utils/          # RNG, seeds
 
-demo/               # R3F game
-├── terrain/        # Main game
-└── playground/     # Experiments
+game/               # Clean game package (~100 lines)
+├── Game.tsx        # Main component
+├── main.tsx        # Entry point
+└── index.html      # HTML shell
+
+tests/              # 87% coverage (977 lines)
+├── unit/           # Governors, synthesis, spawners
+└── integration/    # World, determinism, performance
 ```
 
 **The new flow:**
 ```
-Three-word seed → Governors (Yuka-native) → Complete Universe
-                    ↓
-                 Engine API
-                    ↓
-            R3F Components → Visual
+Three-Word Seed
+    ↓
+Governors DECIDE (biology, ecology, social, physics)
+    ↓
+Synthesis CREATES (molecular → visuals)
+    ↓
+WorldManager API
+    ↓
+Game (React + R3F)
+    ↓
+Living World
 ```
 
-**Same seed = same universe. Always. Deterministic.**
+**Same seed = same world. Always. Deterministic.**
 
-**100% Yuka governors - no external law calls!**
+**NO PREFABS. Governors + Synthesis.**
 
 ---
 
