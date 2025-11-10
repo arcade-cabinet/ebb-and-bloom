@@ -642,8 +642,8 @@
             requestAnimationFrame(update);
         }
         
-        // Hide splash and start
-        setTimeout(() => {
+        // Hide splash and start IMMEDIATELY (no delay)
+        function startSimulation() {
             document.getElementById('splash').classList.add('hidden');
             
             // Auto-start the universe (not paused)
@@ -652,8 +652,9 @@
             
             update();
             console.log('✅ Ebb & Bloom - Canvas 2D Universe');
-            console.log('✅ EntropyAgent initialized');
-            console.log('✅ AgentSpawner ready');
+            console.log('✅ Mode:', startMode);
+            console.log('✅ Speed:', speedMultiplier + 'x');
+            console.log('✅ Age:', entropyAgent.age / (365.25 * 86400 * 1e6), 'Myr');
             console.log('✅ Universe is running!');
             
             // Expose to window for debugging
@@ -665,7 +666,12 @@
                 set paused(val) { paused = val; },
                 speedMultiplier
             };
-        }, 1000);
+        }
+        
+        // Start after brief delay to ensure canvas is ready
+        requestAnimationFrame(() => {
+            requestAnimationFrame(startSimulation);
+        });
     </script>
 </body>
 </html>
