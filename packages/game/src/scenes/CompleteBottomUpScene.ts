@@ -896,9 +896,10 @@ export class CompleteBottomUpScene {
     // Check zoom level
     this.currentZoomLevel = getZoomLevelFromCameraDistance(this.camera.radius);
     
-    // Stars only visible at STELLAR zoom or closer
-    if (this.currentZoomLevel === ZoomLevel.COSMIC || this.currentZoomLevel === ZoomLevel.GALACTIC) {
-      // Too zoomed out - hide stars, show galaxy markers instead
+    // Stars visible at GALACTIC zoom and closer (not just STELLAR!)
+    // At stellar-era, we WANT to see the stars forming!
+    if (this.currentZoomLevel === ZoomLevel.COSMIC) {
+      // Only hide at COSMIC zoom (too far to see individual stars)
       return;
     }
     
