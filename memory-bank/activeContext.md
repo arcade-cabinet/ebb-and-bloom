@@ -123,9 +123,22 @@ engine/
 └── agents/         # ACT (powered by governors)
 ```
 
+## Demos Complete ✅
+
+**6 Working Demos:**
+1. **/terrain** - World exploration (main game)
+2. **/ecosystem** - Living ecosystem (governors in action)
+3. **/molecular** - Molecular synthesis (interactive sliders)
+4. **/pigmentation** - Diet/environment coloring
+5. **/tools** - Tool & structure synthesis
+6. **/playground** - Governor experiments
+
+**Dev server:** `cd demo && npm run dev`  
+**URL:** http://localhost:5173
+
 ## Next Steps
 
-1. Test synthesis in browser
-2. Add more molecular variations
-3. Creature evolution over time
-4. Material gathering for structures
+1. Polish TerrainDemo (integrate new synthesis)
+2. Add creature aging visuals
+3. Material gathering mechanics
+4. Settlement NPC interactions
