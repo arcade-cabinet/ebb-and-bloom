@@ -212,6 +212,7 @@ export class CreatureAgent extends Vehicle {
   energy: number;            // Current energy
   maxEnergy: number;         // Maximum energy
   hunger: number;            // 0 = satiated, 1 = starving
+  hungerThreshold: number;   // Hunger level to trigger foraging
   age: number;               // Years
 
   // Simulation
@@ -222,6 +223,7 @@ export class CreatureAgent extends Vehicle {
 
     this.species = 'Generic';
     this.mass = mass;
+    this.hungerThreshold = hungerThreshold; // ✅ FIXED: Assign parameter to property
     this.name = `Creature-${Date.now()}`;
 
     // Calculate metabolism from legal broker (Kleiber's Law)
