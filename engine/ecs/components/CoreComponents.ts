@@ -130,6 +130,11 @@ export const EntitySchema = z.object({
   conservedMass: z.number().optional(),
   conservedCharge: z.number().optional(),
   conservedEnergy: z.number().optional(),
+  
+  mesh: z.any().optional(),
+  visible: z.boolean().optional(),
+  castShadow: z.boolean().optional(),
+  receiveShadow: z.boolean().optional(),
 });
 
 export type Entity = z.infer<typeof EntitySchema>;

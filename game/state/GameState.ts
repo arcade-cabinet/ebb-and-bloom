@@ -1,18 +1,13 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { World } from 'miniplex';
 import * as THREE from 'three';
 import { rngRegistry } from '../../engine/rng/RNGRegistry';
 import { EnhancedRNG } from '../../engine/utils/EnhancedRNG';
 import { GenesisConstants } from '../../engine/genesis/GenesisConstants';
 import { CosmicProvenanceTimeline } from '../../engine/genesis/CosmicProvenanceTimeline';
+import { World } from '../../engine/ecs/World';
 
-export type Entity = {
-  id?: string;
-  position?: THREE.Vector3;
-  velocity?: THREE.Vector3;
-  mesh?: THREE.Mesh;
-};
+export type { Entity } from '../../engine/ecs/components/CoreComponents';
 
 interface GameState {
   // === TWIN 1: Seed & RNG ===
@@ -24,14 +19,14 @@ interface GameState {
   cosmicTimeline: CosmicProvenanceTimeline | null;
   
   // === CORE: ECS World ===
-  world: World<Entity> | null;
+  world: World | null;
   
   // === Three.js Context ===
   scene: THREE.Scene | null;
   camera: THREE.Camera | null;
   
   // === UNIFIED API ===
-  initializeWorld: (seed: string, scene: THREE.Scene, camera: THREE.Camera, source?: 'user' | 'auto') => void;
+  initializeWorld: (seed: string, scene: THREE.Scene, camera: THREE.Camera, source?: 'user' | 'auto') => Promise<void>;
   dispose: () => void;
   getScopedRNG: (namespace: string) => EnhancedRNG;
   
@@ -50,7 +45,7 @@ export const useGameState = create<GameState>()(
       camera: null,
       isInitialized: false,
       
-      initializeWorld: (
+      initializeWorld: async (
         seed: string, 
         scene: THREE.Scene, 
         camera: THREE.Camera,
@@ -73,8 +68,9 @@ export const useGameState = create<GameState>()(
           temperature: genesis.getSurfaceTemperature()
         });
         
-        const ecsWorld = new World<Entity>();
-        console.log('[GameState] ✅ Miniplex ECS world created');
+        const ecsWorld = new World();
+        await ecsWorld.initialize();
+        console.log('[GameState] ✅ ECS World with law orchestrator created');
         
         console.log('[GameState] ✅ Three.js scene/camera refs stored');
         
@@ -105,7 +101,7 @@ export const useGameState = create<GameState>()(
         const { world } = get();
         
         if (world) {
-          world.clear();
+          world.destroy();
         }
         
         set({

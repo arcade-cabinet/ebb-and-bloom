@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { PointerLockControls, Stats, PerformanceMonitor, AdaptiveDpr, AdaptiveEvents } from '@react-three/drei';
 import { Button, Box } from '@mui/material';
+import { v4 as uuidv4 } from 'uuid';
+import * as THREE from 'three';
 import { BaseScene } from './BaseScene';
 import { SceneManager } from './SceneManager';
 import { WorldProvider } from '../ui/WorldContext';
@@ -9,6 +11,8 @@ import { HUD } from '../ui/hud/HUD';
 import { useGameState } from '../state/GameState';
 import { TransitionWrapper } from '../ui/TransitionWrapper';
 import { RenderResourceManager } from '../core/RenderResourceManager';
+import type { World as ECSWorld } from '../../engine/ecs/World';
+import type { GenesisConstants } from '../../engine/genesis/GenesisConstants';
 
 export class GameplayScene extends BaseScene {
   private manager: SceneManager;
@@ -53,15 +57,110 @@ interface GameplaySceneComponentProps {
   manager: SceneManager;
 }
 
+function spawnInitialWorld(
+  world: ECSWorld,
+  scene: THREE.Scene,
+  genesis: GenesisConstants
+): void {
+  const chunkSize = 100;
+
+  for (let x = -1; x <= 1; x++) {
+    for (let z = -1; z <= 1; z++) {
+      const terrainGeo = new THREE.PlaneGeometry(chunkSize, chunkSize, 10, 10);
+      const terrainMat = new THREE.MeshStandardMaterial({
+        color: 0x7cfc00,
+        side: THREE.DoubleSide,
+      });
+      const terrainMesh = new THREE.Mesh(terrainGeo, terrainMat);
+      terrainMesh.rotation.x = -Math.PI / 2;
+      terrainMesh.position.set(x * chunkSize, 0, z * chunkSize);
+      terrainMesh.receiveShadow = true;
+      scene.add(terrainMesh);
+
+      world.add({
+        entityId: uuidv4(),
+        scale: 'structural',
+        position: { x: x * chunkSize, y: 0, z: z * chunkSize },
+        mesh: terrainMesh,
+        visible: true,
+        receiveShadow: true,
+      });
+
+      const density = Math.min(1.0, genesis.getMetallicity() / 0.02);
+      const treeCount = Math.floor(density * 20);
+
+      for (let i = 0; i < treeCount; i++) {
+        const treeX = x * chunkSize + Math.random() * chunkSize - chunkSize / 2;
+        const treeZ = z * chunkSize + Math.random() * chunkSize - chunkSize / 2;
+
+        const trunk = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.5, 0.5, 5, 8),
+          new THREE.MeshStandardMaterial({ color: 0x8b4513 })
+        );
+        const foliage = new THREE.Mesh(
+          new THREE.SphereGeometry(3, 8, 8),
+          new THREE.MeshStandardMaterial({ color: 0x228b22 })
+        );
+        foliage.position.y = 4;
+
+        const tree = new THREE.Group();
+        tree.add(trunk);
+        tree.add(foliage);
+        tree.position.set(treeX, 0, treeZ);
+        tree.castShadow = true;
+        tree.receiveShadow = true;
+        scene.add(tree);
+
+        world.add({
+          entityId: uuidv4(),
+          scale: 'organismal',
+          mass: 100,
+          position: { x: treeX, y: 0, z: treeZ },
+          velocity: { x: 0, y: 0, z: 0 },
+          temperature: genesis.getSurfaceTemperature(),
+          elementCounts: {
+            C: 50,
+            O: 30,
+            H: 15,
+            N: 3,
+            P: 1,
+            K: 1,
+          },
+          genome: 'TREE_GENOME_PLACEHOLDER',
+          phenotype: { species: 'oak', height: 5, age: Math.random() * 100 },
+          mesh: tree,
+          visible: true,
+          castShadow: true,
+          receiveShadow: true,
+        });
+      }
+
+      console.log(`[World] Spawned chunk (${x}, ${z}) with ${treeCount} trees`);
+    }
+  }
+
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+  scene.add(ambientLight);
+
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+  directionalLight.position.set(50, 50, 50);
+  directionalLight.castShadow = true;
+  directionalLight.shadow.mapSize.width = 2048;
+  directionalLight.shadow.mapSize.height = 2048;
+  scene.add(directionalLight);
+
+  console.log(`[World] Spawned ${world.getStatistics().entityCount} entities`);
+}
+
 function World() {
   const { scene, camera } = useThree();
   const { seed, world } = useGameState();
   const [isReady, setIsReady] = useState(false);
+  const spawnedRef = useRef(false);
 
   useEffect(() => {
-    // Check if already initialized WITHOUT adding to deps (prevents cleanup loop)
     const { isInitialized } = useGameState.getState();
-    
+
     if (isInitialized) {
       console.log('🌍 World already initialized');
       setIsReady(true);
@@ -70,26 +169,35 @@ function World() {
 
     console.log(`🌍 Initializing unified world with seed: ${seed}`);
 
-    // UNIFIED INITIALIZATION
     const { initializeWorld } = useGameState.getState();
-    initializeWorld(seed, scene, camera, 'auto');
-    
-    setIsReady(true);
-    console.log('🌍 World initialized using UNIFIED GameState');
+    initializeWorld(seed, scene, camera, 'auto').then(() => {
+      const { world: ecsWorld, genesisConstants: genesis } = useGameState.getState();
+      if (!ecsWorld || !genesis) {
+        console.error('❌ World or Genesis not initialized!');
+        return;
+      }
 
-    // Cleanup ONLY runs on unmount (when scene/camera/seed changes)
+      if (!spawnedRef.current) {
+        spawnInitialWorld(ecsWorld, scene, genesis);
+        spawnedRef.current = true;
+      }
+
+      setIsReady(true);
+      console.log('🌍 World initialized with law-based ECS');
+    });
+
     return () => {
       console.log('🧹 Cleaning up world (component unmounting)');
       const { dispose } = useGameState.getState();
       dispose();
+      spawnedRef.current = false;
     };
   }, [scene, camera, seed]);
 
-  useFrame((_state, _delta) => {
+  useFrame((_state, delta) => {
     if (!isReady || !world) return;
-    
-    // Phase 2 will add ECS systems here
-    // For now, world exists but has no entities/systems
+
+    world.tick(delta);
   });
 
   return null;
