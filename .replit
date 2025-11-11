@@ -4,7 +4,7 @@ expertMode = true
 
 [nix]
 channel = "stable-25_05"
-packages = ["chromium"]
+packages = ["chromium", "SDL2", "sdl3"]
 
 [workflows]
 runButton = "Project"
