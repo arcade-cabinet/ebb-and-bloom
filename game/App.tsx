@@ -12,7 +12,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Game } from './Game';
 import DemoIndex from './demos/DemoIndex';
-import Demo00_LawObservatory from './demos/Demo00_LawObservatory';
 import Demo01_MolecularSynthesis from './demos/Demo01_MolecularSynthesis';
 import Demo02_CompositeBuilder from './demos/Demo02_CompositeBuilder';
 import Demo03_EvolutionChain from './demos/Demo03_EvolutionChain';
@@ -51,7 +50,6 @@ export function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/demos" replace />} />
         <Route path="/demos" element={<DemoIndex />} />
-        <Route path="/demos/00" element={<Demo00_LawObservatory />} />
         <Route path="/demos/01" element={<Demo01_MolecularSynthesis />} />
         <Route path="/demos/02" element={<Demo02_CompositeBuilder />} />
         <Route path="/demos/03" element={<Demo03_EvolutionChain />} />
