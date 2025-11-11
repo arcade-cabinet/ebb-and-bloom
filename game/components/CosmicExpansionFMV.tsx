@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import { CosmicProvenanceTimeline, CosmicStage } from '../../engine/genesis/CosmicProvenanceTimeline';
 import { GenesisConstants } from '../../engine/genesis/GenesisConstants';
 import { EnhancedRNG } from '../../engine/utils/EnhancedRNG';
+import { useGameState } from '../state/GameState';
 
 interface CosmicExpansionFMVProps {
   seed: string;
@@ -19,8 +20,14 @@ export function CosmicExpansionFMV({
   autoPlay = true, 
   stageIndex 
 }: CosmicExpansionFMVProps) {
-  const timeline = useMemo(() => new CosmicProvenanceTimeline(seed), [seed]);
-  const genesis = useMemo(() => new GenesisConstants(seed), [seed]);
+  const { initializeWithSeed, getScopedRNG } = useGameState();
+  
+  useEffect(() => {
+    initializeWithSeed(seed, 'user');
+  }, [seed, initializeWithSeed]);
+  
+  const timeline = useMemo(() => new CosmicProvenanceTimeline(getScopedRNG('cosmic-timeline')), [getScopedRNG]);
+  const genesis = useMemo(() => new GenesisConstants(getScopedRNG('genesis')), [getScopedRNG]);
   const stages = useMemo(() => timeline.getStages(), [timeline]);
   
   const [currentStage, setCurrentStage] = useState(stageIndex ?? 0);

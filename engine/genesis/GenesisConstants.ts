@@ -9,6 +9,7 @@
 
 import { CosmicProvenanceTimeline } from './CosmicProvenanceTimeline';
 import { PHYSICS_CONSTANTS } from '../../agents/tables/physics-constants';
+import EnhancedRNG from '../utils/EnhancedRNG';
 
 export interface GenesisConstantsData {
   // Cosmic constants

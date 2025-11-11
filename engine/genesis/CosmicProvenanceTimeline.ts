@@ -712,11 +712,10 @@ export class CosmicProvenanceTimeline {
       throw new Error(`Stage ${stageId} not found`);
     }
 
-    const stageRng = new EnhancedRNG(`${this.seed}-${stageId}`);
     const constants: Record<string, number> = {};
 
     for (const param of stage.seedInfluence) {
-      const seedValue = stageRng.normal(1.0, 0.1);
+      const seedValue = this.rng.normal(1.0, 0.1);
       constants[param] = Math.max(0.01, seedValue);
     }
 
@@ -933,22 +932,16 @@ export class CosmicProvenanceTimeline {
     energy: number; 
     entropy: number; 
   } {
-    const stageRng = new EnhancedRNG(`${this.seed}-conservation-${stage.id}`);
-    
     const totalMassEnergy = 1e53;
     const initialEntropy = PHYSICS_CONSTANTS.k_B * Math.log(1e120);
     
     const timeFraction = stage.timeEnd / (14e9 * 31557600);
     
-    const mass = totalMassEnergy * (0.3 + 0.7 * stageRng.uniform());
+    const mass = totalMassEnergy * (0.3 + 0.7 * this.rng.uniform());
     const energy = totalMassEnergy - mass;
-    const entropy = initialEntropy * Math.exp(timeFraction * 10) * stageRng.uniform(0.9, 1.1);
+    const entropy = initialEntropy * Math.exp(timeFraction * 10) * this.rng.uniform(0.9, 1.1);
     
     return { mass, energy, entropy };
-  }
-
-  public getSeed(): string {
-    return this.seed;
   }
 
   public getStageAtTime(time: number): CosmicStage | null {

@@ -256,7 +256,7 @@ export class CosmicAudioSonification {
   private generateExpansionRumble(progress: number): AudioNode {
     if (!this.audioContext || !this.masterGain) throw new Error('AudioContext not initialized');
     
-    const stageRng = new EnhancedRNG(`${this.seed}-inflation`);
+    const stageRng = this.rng;
     const duration = 3.0;
     const now = this.audioContext.currentTime;
     const nodes: AudioNode[] = [];
@@ -292,7 +292,7 @@ export class CosmicAudioSonification {
   private generatePlasmaChaos(progress: number): AudioNode {
     if (!this.audioContext || !this.masterGain) throw new Error('AudioContext not initialized');
     
-    const stageRng = new EnhancedRNG(`${this.seed}-plasma`);
+    const stageRng = this.rng;
     const duration = 2.5;
     const now = this.audioContext.currentTime;
     const nodes: AudioNode[] = [];
@@ -357,7 +357,7 @@ export class CosmicAudioSonification {
   private generateAtomicBonding(progress: number): AudioNode {
     if (!this.audioContext || !this.masterGain) throw new Error('AudioContext not initialized');
     
-    const stageRng = new EnhancedRNG(`${this.seed}-nucleosynthesis`);
+    const stageRng = this.rng;
     const duration = 3.0;
     const now = this.audioContext.currentTime;
     const nodes: AudioNode[] = [];
@@ -421,7 +421,7 @@ export class CosmicAudioSonification {
   private generatePhotonRelease(progress: number): AudioNode {
     if (!this.audioContext || !this.masterGain) throw new Error('AudioContext not initialized');
     
-    const stageRng = new EnhancedRNG(`${this.seed}-recombination`);
+    const stageRng = this.rng;
     const duration = 3.5;
     const now = this.audioContext.currentTime;
     const nodes: AudioNode[] = [];
@@ -488,7 +488,7 @@ export class CosmicAudioSonification {
   private generateGravitationalBass(progress: number): AudioNode {
     if (!this.audioContext || !this.masterGain) throw new Error('AudioContext not initialized');
     
-    const stageRng = new EnhancedRNG(`${this.seed}-darkmatter`);
+    const stageRng = this.rng;
     const duration = 4.0;
     const now = this.audioContext.currentTime;
     const nodes: AudioNode[] = [];
@@ -541,7 +541,7 @@ export class CosmicAudioSonification {
   private generateStellarHum(progress: number): AudioNode {
     if (!this.audioContext || !this.masterGain) throw new Error('AudioContext not initialized');
     
-    const stageRng = new EnhancedRNG(`${this.seed}-popiii`);
+    const stageRng = this.rng;
     const duration = 3.5;
     const now = this.audioContext.currentTime;
     const nodes: AudioNode[] = [];
@@ -581,7 +581,7 @@ export class CosmicAudioSonification {
   private generateSupernovaExplosion(progress: number): AudioNode {
     if (!this.audioContext || !this.masterGain) throw new Error('AudioContext not initialized');
     
-    const stageRng = new EnhancedRNG(`${this.seed}-supernova`);
+    const stageRng = this.rng;
     const duration = 4.0;
     const now = this.audioContext.currentTime;
     const nodes: AudioNode[] = [];
@@ -661,7 +661,7 @@ export class CosmicAudioSonification {
   private generateGalacticHarmony(progress: number): AudioNode {
     if (!this.audioContext || !this.masterGain) throw new Error('AudioContext not initialized');
     
-    const stageRng = new EnhancedRNG(`${this.seed}-galaxy`);
+    const stageRng = this.rng;
     const duration = 3.5;
     const now = this.audioContext.currentTime;
     const nodes: AudioNode[] = [];
@@ -705,7 +705,7 @@ export class CosmicAudioSonification {
   private generateNebulaWisps(progress: number): AudioNode {
     if (!this.audioContext || !this.masterGain) throw new Error('AudioContext not initialized');
     
-    const stageRng = new EnhancedRNG(`${this.seed}-nebula`);
+    const stageRng = this.rng;
     const duration = 4.0;
     const now = this.audioContext.currentTime;
     const nodes: AudioNode[] = [];
@@ -756,7 +756,7 @@ export class CosmicAudioSonification {
   private generateCloudCollapse(progress: number): AudioNode {
     if (!this.audioContext || !this.masterGain) throw new Error('AudioContext not initialized');
     
-    const stageRng = new EnhancedRNG(`${this.seed}-collapse`);
+    const stageRng = this.rng;
     const duration = 3.5;
     const now = this.audioContext.currentTime;
     const nodes: AudioNode[] = [];
@@ -821,7 +821,7 @@ export class CosmicAudioSonification {
   private generateDiskRotation(progress: number): AudioNode {
     if (!this.audioContext || !this.masterGain) throw new Error('AudioContext not initialized');
     
-    const stageRng = new EnhancedRNG(`${this.seed}-disk`);
+    const stageRng = this.rng;
     const duration = 4.0;
     const now = this.audioContext.currentTime;
     const nodes: AudioNode[] = [];
@@ -875,7 +875,7 @@ export class CosmicAudioSonification {
   private generatePlanetesimalCollisions(progress: number): AudioNode {
     if (!this.audioContext || !this.masterGain) throw new Error('AudioContext not initialized');
     
-    const stageRng = new EnhancedRNG(`${this.seed}-accretion`);
+    const stageRng = this.rng;
     const duration = 4.0;
     const now = this.audioContext.currentTime;
     const nodes: AudioNode[] = [];
@@ -934,7 +934,7 @@ export class CosmicAudioSonification {
   private generateCoreRumble(progress: number): AudioNode {
     if (!this.audioContext || !this.masterGain) throw new Error('AudioContext not initialized');
     
-    const stageRng = new EnhancedRNG(`${this.seed}-differentiation`);
+    const stageRng = this.rng;
     const duration = 4.5;
     const now = this.audioContext.currentTime;
     const nodes: AudioNode[] = [];
@@ -992,7 +992,7 @@ export class CosmicAudioSonification {
   private generateOceanicBubbling(progress: number): AudioNode {
     if (!this.audioContext || !this.masterGain) throw new Error('AudioContext not initialized');
     
-    const stageRng = new EnhancedRNG(`${this.seed}-life`);
+    const stageRng = this.rng;
     const duration = 4.0;
     const now = this.audioContext.currentTime;
     const nodes: AudioNode[] = [];

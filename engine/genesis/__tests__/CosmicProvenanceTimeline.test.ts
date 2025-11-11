@@ -5,13 +5,16 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import { CosmicProvenanceTimeline } from '../CosmicProvenanceTimeline';
+import { rngRegistry } from '../../rng/RNGRegistry';
 
 describe('CosmicProvenanceTimeline', () => {
-  const seed = 'test-cosmic-seed';
   let timeline: CosmicProvenanceTimeline;
 
   beforeEach(() => {
-    timeline = new CosmicProvenanceTimeline(seed);
+    rngRegistry.reset();
+    rngRegistry.setSeed('test-cosmic-seed');
+    const rng = rngRegistry.getScopedRNG('timeline-test');
+    timeline = new CosmicProvenanceTimeline(rng);
   });
 
   it('should create timeline with all 15 stages', () => {
@@ -27,8 +30,15 @@ describe('CosmicProvenanceTimeline', () => {
   });
 
   it('should generate deterministic constants from seed', () => {
-    const timeline1 = new CosmicProvenanceTimeline(seed);
-    const timeline2 = new CosmicProvenanceTimeline(seed);
+    rngRegistry.reset();
+    rngRegistry.setSeed('test-seed-deterministic');
+    const rng1 = rngRegistry.getScopedRNG('timeline-1');
+    const timeline1 = new CosmicProvenanceTimeline(rng1);
+    
+    rngRegistry.reset();
+    rngRegistry.setSeed('test-seed-deterministic');
+    const rng2 = rngRegistry.getScopedRNG('timeline-1');
+    const timeline2 = new CosmicProvenanceTimeline(rng2);
     
     const constants1 = timeline1.getAllConstants();
     const constants2 = timeline2.getAllConstants();
@@ -37,8 +47,15 @@ describe('CosmicProvenanceTimeline', () => {
   });
 
   it('should generate different constants for different seeds', () => {
-    const timeline1 = new CosmicProvenanceTimeline('seed-1');
-    const timeline2 = new CosmicProvenanceTimeline('seed-2');
+    rngRegistry.reset();
+    rngRegistry.setSeed('seed-1');
+    const rng1 = rngRegistry.getScopedRNG('timeline-diff-1');
+    const timeline1 = new CosmicProvenanceTimeline(rng1);
+    
+    rngRegistry.reset();
+    rngRegistry.setSeed('seed-2');
+    const rng2 = rngRegistry.getScopedRNG('timeline-diff-2');
+    const timeline2 = new CosmicProvenanceTimeline(rng2);
     
     const constants1 = timeline1.getAllConstants();
     const constants2 = timeline2.getAllConstants();
@@ -263,9 +280,6 @@ describe('CosmicProvenanceTimeline', () => {
       expect(progress).toBeLessThan(1);
     });
 
-    it('should return seed', () => {
-      expect(timeline.getSeed()).toBe(seed);
-    });
   });
 
   describe('All Stage IDs', () => {

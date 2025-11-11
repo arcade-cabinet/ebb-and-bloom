@@ -185,7 +185,7 @@ export class CosmicHapticFeedback {
   private async playPlasmaChaos(progress: number): Promise<void> {
     const numImpacts = Math.floor(8 + progress * 4);
     const pattern: PatternStep[] = [];
-    const rng = new EnhancedRNG(`${this.seed}-quark-gluon-plasma-haptic`);
+    const rng = this.rng;
 
     for (let i = 0; i < numImpacts; i++) {
       const irregularDelay = 50 + rng.uniform(0, 150);
@@ -286,7 +286,7 @@ export class CosmicHapticFeedback {
   private async playNebulaWisps(progress: number): Promise<void> {
     const numWisps = 6 + Math.floor(progress * 2);
     const pattern: PatternStep[] = [];
-    const rng = new EnhancedRNG(`${this.seed}-molecular-cloud-haptic`);
+    const rng = this.rng;
 
     for (let i = 0; i < numWisps; i++) {
       const irregularDelay = 200 + rng.uniform(0, 200);
