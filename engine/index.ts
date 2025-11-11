@@ -15,10 +15,10 @@ export { EnhancedRNG } from './utils/EnhancedRNG';
 export { validateSeed, generateSeed } from './utils/seed/seed-manager';
 
 // ============================================================================
-// UNIVERSAL CONSTANTS
+// UNIVERSAL CONSTANTS (re-exported from agents/tables for convenience)
 // ============================================================================
 
-export * from './tables';
+export * from '../agents/tables';
 
 // ============================================================================
 // LAWS ELIMINATED - See engine/governors instead
@@ -86,16 +86,9 @@ export { TradeSystem } from './systems/TradeSystem';
 export { StructureBuildingSystem } from './systems/StructureBuildingSystem';
 
 // ============================================================================
-// AGENTS (Creature AI)
+// Note: Governors and agents are separate from the engine
+// Import them from '../agents' if needed in your game layer
 // ============================================================================
-
-export { CreatureAgent } from '../agents/agents-yuka/CreatureAgent';
-
-// ============================================================================
-// GOVERNORS (Yuka-Native Law Implementation)
-// ============================================================================
-
-export * from '../agents';
 
 // ============================================================================
 // TYPES

@@ -33,6 +33,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@engine': resolve(__dirname, './engine'),
+      '@agents': resolve(__dirname, './agents'),
+      '@generation': resolve(__dirname, './generation'),
     },
   },
 });

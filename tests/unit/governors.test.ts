@@ -21,7 +21,7 @@ import {
     HierarchyBehavior,
     WarfareBehavior,
     CooperationBehavior
-} from '../../engine/governors';
+} from '../../agents/governors';
 
 describe('Physics Governors', () => {
     describe('GravityBehavior', () => {

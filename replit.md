@@ -208,20 +208,59 @@ For detailed project history and architecture decisions, review:
 - Prioritize engine architecture over game features
 - No prefabs - everything generated from laws and chemistry
 
+## Architecture (Corrected)
+
+The project is organized into three main areas aligned with the separation of concerns:
+
+### `engine/` - Pure Engine Systems
+Core systems that execute without autonomous behavior:
+- **core/** - WorldManager, TerrainSystem, PlayerController, CreatureManager, CityPlanner
+- **procedural/** - MolecularSynthesis, PigmentationSynthesis, StructureSynthesis, etc.
+- **systems/** - CreatureBehaviorSystem, PackFormationSystem, ToolSystem, TradeSystem
+- **utils/** - EnhancedRNG, seed management
+- **stores/** - World state management
+- **config/** - Feature flags
+- **types/** - Type definitions
+
+### `agents/` - Governors & Laws (Controls the Engine)
+Autonomous systems that make decisions and control engine behavior:
+- **governors/** - 17 Yuka-native governors (physics, biological, ecological, social)
+- **tables/** - Universal constants and law data (physics, biology, ecology, social)
+- **agents-yuka/** - Yuka agent classes (CreatureAgent, etc.)
+
+### `generation/` - World Generation
+Procedural spawners and world systems:
+- **spawners/** - ChunkManager, BiomeSystem, SimplexNoise, VegetationSpawner, SettlementPlacer, NPCSpawner, CreatureSpawner, WaterSystem
+
+### `game/` - Game Layer
+React UI and game-specific code:
+- **ui/** - HUD, screens, theme (Material-UI)
+- **Game.tsx** - Main game component
+- **main.tsx** - Entry point
+
 ## Recent Changes
 
-**November 11, 2025 - Replit Import Complete:**
+**November 11, 2025 - Replit Import & Architecture Fix:**
 - ✅ Configured project for Replit environment
-- ✅ Updated Vite to use port 5000 with 0.0.0.0 host binding
-- ✅ Added `allowedHosts: ['all']` to support Replit's proxy system
-- ✅ Configured development workflow (npm run dev on port 5000)
+- ✅ Updated Vite to use port 5000 with `host: '0.0.0.0'`
+- ✅ Added `allowedHosts: true` to support Replit's proxy system (correct syntax per Vite docs)
+- ✅ Configured development workflow (npm run dev on port 5000, webview output)
 - ✅ Set up deployment configuration (autoscale with npm run build/preview)
-- ✅ Verified website loads successfully with no errors
+- ✅ **Fixed architecture** - Moved tables from engine/ to agents/ (law constants belong with governors)
+- ✅ **Fixed import paths** - All governor imports now correctly reference `../../tables/`
+- ✅ **Governor tests passing** - 15/15 governor tests pass
+- ✅ **Game running** - WorldManager initializing successfully, deterministic generation working
 - ✅ Installed all dependencies (725 packages)
 - ✅ Created comprehensive replit.md documentation
-- ✅ No LSP/TypeScript errors
+- ✅ Added vitest path aliases for @agents and @generation
 
-**Import Status:** Complete and verified working
+**Import Status:** ✅ Complete and verified working
+
+**Architecture Status:** ✅ Aligned with design intent:
+- `engine/` = Pure systems (WorldManager, TerrainSystem, synthesis, etc.)
+- `agents/` = Governors + law tables (autonomous decision-makers that control the engine)
+- `generation/` = World spawners (ChunkManager, BiomeSystem, etc.)
+- `game/` = React UI layer
 
 ## Dependencies Notes
 
