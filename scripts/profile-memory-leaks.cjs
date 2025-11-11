@@ -13,7 +13,7 @@ let startTime = performance.now();
 
 console.log('🔍 Starting memory leak profiler...\n');
 console.log('This will run the dev server and track memory usage every 5 seconds');
-console.log('Press Ctrl+C to stop and generate report\n');
+console.log('Auto-stopping after 30 seconds to generate report\n');
 
 // Start Vite with heap exposure
 const vite = spawn('node', [
@@ -25,6 +25,12 @@ const vite = spawn('node', [
 ], {
   stdio: 'inherit'
 });
+
+// Auto-stop after 30 seconds
+setTimeout(() => {
+  console.log('\n⏱️  30 seconds elapsed, stopping profiler...');
+  process.emit('SIGINT');
+}, 30000);
 
 // Sample memory every 5 seconds
 const interval = setInterval(() => {
