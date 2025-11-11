@@ -10,6 +10,9 @@
  * See: governors/README.md for architecture
  */
 
+// Base classes
+export * from './YukaGovernorBase';
+
 // Physics
 export * from './physics';
 

@@ -19,6 +19,9 @@
 import { SteeringBehavior, Vector3 } from 'yuka';
 import { PHYSICS_CONSTANTS } from '../../tables/physics-constants';
 
+// Module-level reusable vectors for zero-allocation pattern
+const direction = new Vector3();
+
 export class GravityBehavior extends SteeringBehavior {
     /**
      * Minimum distance to prevent singularities
@@ -58,9 +61,6 @@ export class GravityBehavior extends SteeringBehavior {
      * @returns {Vector3} - Accumulated force
      */
     calculate(vehicle: any, force: Vector3, delta: number): Vector3 {
-        // Reusable vectors for zero-allocation pattern
-        const direction = new Vector3();
-        
         // Get all entities with mass
         const entities = vehicle.manager?.entities || [];
 
@@ -68,10 +68,11 @@ export class GravityBehavior extends SteeringBehavior {
             if (entity === vehicle) continue;
             if (!entity.mass || entity.mass === 0) continue;
 
-            // Calculate distance vector
+            // Calculate distance vector (reuse module-level vector)
             direction.subVectors(entity.position, vehicle.position);
             
-            // Use dot product for squared length (YUKA pattern)
+            // Use dot product for squared length (YUKA internal pattern)
+            // squaredLength() internally calls this.dot(this)
             const distanceSquared = Math.max(
                 direction.dot(direction),
                 this.minDistance * this.minDistance
@@ -92,7 +93,7 @@ export class GravityBehavior extends SteeringBehavior {
             // Apply time integration for frame-rate independence
             const timeScaledForce = clampedMagnitude * delta;
 
-            // Add to force accumulator
+            // Add to force accumulator (using module-level direction vector)
             force.add(direction.multiplyScalar(timeScaledForce));
         }
 

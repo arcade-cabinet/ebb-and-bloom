@@ -5,6 +5,8 @@
  * Main HUD component that contains all HUD sub-components.
  */
 
+/// <reference types="vite/client" />
+
 import { useEffect, useState } from 'react';
 import * as THREE from 'three';
 import { useNavigate } from 'react-router-dom';
@@ -24,7 +26,7 @@ export function HUD() {
   const [playerPosition, setPlayerPosition] = useState<{ x: number; y: number; z: number } | null>(null);
   const [heading, setHeading] = useState(0);
   
-  // Check if we're in development mode
+  // Check if we're in development mode (Vite provides import.meta.env.DEV)
   const isDev = import.meta.env.DEV;
 
   // Update player position and heading from world
