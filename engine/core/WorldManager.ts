@@ -69,11 +69,11 @@ export class WorldManager {
         // CRITICAL: Position player using DFU's PositionPlayerToLocation pattern
         const spawnPos = this.positionPlayerToLocation(0, 0);
 
-        // Create player controller (equivalent to PlayerMotor)
+        // Create player controller (PURE ENGINE - DFU PlayerMotor equivalent)
+        // No Yuka - governors will control externally later
         this.player = new PlayerController(
             this.camera,
-            this.terrain,
-            this.entityManager
+            this.terrain
         );
 
         // Position player ON GROUND at spawn location (DFU FixStanding pattern)

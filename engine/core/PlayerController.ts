@@ -1,28 +1,32 @@
 /**
- * PLAYER CONTROLLER
+ * PLAYER CONTROLLER - PURE ENGINE MODE
  * 
- * Equivalent to DFU's PlayerMotor + CharacterController.
- * Handles movement, collision, camera, grounding.
+ * Direct DFU PlayerMotor + CharacterController implementation.
+ * No Yuka dependencies - pure physics first, governors control later.
  * 
- * Based on:
+ * Based on Daggerfall Unity source:
  * - Assets/Scripts/Game/PlayerMotor.cs (movement logic)
+ * - Assets/Scripts/Game/Player/PlayerSpeedChanger.cs (speed formulas)
+ * - Assets/Scripts/Game/Player/AcrobatMotor.cs (jump/gravity)
  * - Unity CharacterController (collision/physics)
  */
 
 import * as THREE from 'three';
-import { EntityManager, Vehicle } from 'yuka';
 import { TerrainSystem } from './TerrainSystem';
 
 export class PlayerController {
-    // DFU CharacterController equivalent
-    private vehicle: Vehicle;
+    // Pure THREE.js position (no Yuka abstraction)
+    private position: THREE.Vector3;
     private camera: THREE.Camera;
     private terrain: TerrainSystem;
 
-    // DFU constants
-    private readonly controllerHeight: number = 2.0;  // CharacterController height
-    private readonly eyeHeight: number = 1.8;         // Camera height from feet
-    private readonly gravity: number = -9.8;          // m/s²
+    // DFU constants (from Daggerfall Unity source)
+    private readonly controllerHeight: number = 1.8;  // CharacterController height (DFU standard)
+    private readonly eyeHeight: number = 1.62;        // Camera height from feet (90% of controller height)
+    private readonly gravity: number = -20.0;         // DFU gravity (AcrobatMotor.defaultGravity = 20.0)
+    private readonly jumpSpeed: number = 4.5;         // DFU jump velocity (AcrobatMotor.defaultJumpSpeed = 4.5)
+    private readonly walkSpeed: number = 5.0;         // DFU walk speed ≈(50+150-25)/39.5 ≈ 4.43, rounded to 5.0
+    private readonly groundTolerance: number = 0.1;   // DFU grounding tolerance
 
     // State
     private verticalVelocity: number = 0;
@@ -36,14 +40,12 @@ export class PlayerController {
     private cameraYaw: number = 0;
     private cameraPitch: number = 0;
 
-    constructor(camera: THREE.Camera, terrain: TerrainSystem, entityManager: EntityManager) {
+    constructor(camera: THREE.Camera, terrain: TerrainSystem) {
         this.camera = camera;
         this.terrain = terrain;
-        this.vehicle = new Vehicle();
-        this.vehicle.maxSpeed = 10;
-        entityManager.add(this.vehicle);
+        this.position = new THREE.Vector3(); // Pure engine position
 
-        console.log(`[PlayerController] Created with height ${this.controllerHeight}m, eyes at ${this.eyeHeight}m`);
+        console.log(`[PlayerController] Pure engine mode - DFU physics: height=${this.controllerHeight}m, eyes=${this.eyeHeight}m, walk=${this.walkSpeed}m/s, gravity=${this.gravity}m/s²`);
     }
 
     /**
@@ -77,7 +79,7 @@ export class PlayerController {
         if (hit) {
             // Position player at hit point + 65% of controller height (DFU pattern)
             const newY = hit.point.y + (this.controllerHeight * 0.65);
-            this.vehicle.position.set(x, newY, z);
+            this.position.set(x, newY, z);
 
             // Position camera at eye height (must match update() behavior to avoid jump)
             this.camera.position.set(
@@ -93,7 +95,7 @@ export class PlayerController {
         // Fallback: Use direct height query (if raycast fails)
         const terrainHeight = this.terrain.getTerrainHeight(x, z);
         const newY = terrainHeight + (this.controllerHeight * 0.65);
-        this.vehicle.position.set(x, newY, z);
+        this.position.set(x, newY, z);
 
         // Position camera at eye height (must match update() behavior to avoid jump)
         this.camera.position.set(
@@ -127,37 +129,36 @@ export class PlayerController {
             moveDirection.addScaledVector(right, this.moveInput.x);   // Left/right
             moveDirection.normalize();
 
-            // Apply movement (DFU: controller.Move)
-            // Convert THREE Vector3 to Yuka Vector3 by setting position directly
-            const speed = this.vehicle.maxSpeed;
-            const moveX = moveDirection.x * speed * delta;
-            const moveZ = moveDirection.z * speed * delta;
+            // Apply movement (DFU: controller.Move(moveDirection * Time.deltaTime))
+            // Pure engine - direct position manipulation
+            const moveX = moveDirection.x * this.walkSpeed * delta;
+            const moveZ = moveDirection.z * this.walkSpeed * delta;
 
-            this.vehicle.position.x += moveX;
-            this.vehicle.position.z += moveZ;
+            this.position.x += moveX;
+            this.position.z += moveZ;
         }
 
         // Check grounding (DFU: collisionFlags & CollisionFlags.Below)
         const terrainHeight = this.terrain.getTerrainHeight(
-            this.vehicle.position.x,
-            this.vehicle.position.z
+            this.position.x,
+            this.position.z
         );
-        const feetHeight = terrainHeight + (this.controllerHeight * 0.65);
+        const feetHeight = terrainHeight + (this.controllerHeight * 0.65); // DFU pattern
 
-        this.isGrounded = Math.abs(this.vehicle.position.y - feetHeight) < 0.1;
+        this.isGrounded = Math.abs(this.position.y - feetHeight) < this.groundTolerance;
 
         if (this.isGrounded) {
-            // Snap to ground
-            this.vehicle.position.y = feetHeight;
+            // Snap to ground (DFU pattern)
+            this.position.y = feetHeight;
             this.verticalVelocity = 0;
         } else {
-            // Apply gravity
+            // Apply DFU gravity
             this.verticalVelocity += this.gravity * delta;
-            this.vehicle.position.y += this.verticalVelocity * delta;
+            this.position.y += this.verticalVelocity * delta;
 
-            // Don't fall through
-            if (this.vehicle.position.y < feetHeight) {
-                this.vehicle.position.y = feetHeight;
+            // Don't fall through terrain
+            if (this.position.y < feetHeight) {
+                this.position.y = feetHeight;
                 this.verticalVelocity = 0;
                 this.isGrounded = true;
             }
@@ -184,9 +185,9 @@ export class PlayerController {
 
         // Sync camera position to player (but keep rotation)
         this.camera.position.set(
-            this.vehicle.position.x,
-            this.vehicle.position.y + this.eyeHeight, // Eye height offset
-            this.vehicle.position.z
+            this.position.x,
+            this.position.y + this.eyeHeight, // Eye height offset
+            this.position.z
         );
     }
 
@@ -218,10 +219,14 @@ export class PlayerController {
 
     /**
      * Jump (DFU AcrobatMotor pattern)
+     * 
+     * DFU: moveDirection.y = jumpSpeed * jumpSpeedMultiplier
+     * Base jumpSpeed = 4.5 (AcrobatMotor.defaultJumpSpeed)
+     * Multiplier includes skill bonuses, but we use 1.0 for base implementation
      */
     jump(): void {
         if (this.isGrounded) {
-            this.verticalVelocity = 5.0; // DFU jump velocity
+            this.verticalVelocity = this.jumpSpeed; // DFU base jump velocity (4.5 m/s)
             this.isGrounded = false;
         }
     }
@@ -230,11 +235,7 @@ export class PlayerController {
      * Get position (for WorldManager)
      */
     getPosition(): THREE.Vector3 {
-        return new THREE.Vector3(
-            this.vehicle.position.x,
-            this.vehicle.position.y,
-            this.vehicle.position.z
-        );
+        return this.position.clone();
     }
 
     /**
