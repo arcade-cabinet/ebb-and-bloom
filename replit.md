@@ -5,11 +5,12 @@
 Ebb & Bloom is a **competitive evolution game** where you guide ONE species from protozoa to transcendence while competing against YUKA-controlled autonomous species for resources.
 
 **Core Gameplay:**
-- **You:** Guide YOUR species through evolutionary decisions (mutualism, parasitism, or competitive exclusion)
-- **YUKA:** Governs ALL other species - they adapt autonomously to your decisions
-- **Start:** Primordial world (post-planetary formation, early Earth)
-- **Goal:** Survive the resource race and reach transcendence
-- **Mechanics:** Synthesis systems as archetype generators - materials unlock possibilities (SiO2 → flint → stone axe)
+- **You:** Play as a GOVERNOR guiding ONE SPECIES (all individuals in lineage, not single creature)
+- **YUKA:** Other governors guide competing species using SAME law-constrained tools
+- **Control:** INDIRECT environmental influence (smite predators, nurture food, shape terrain) - creatures respond autonomously
+- **Constraints:** Energy budget, 57 scientific laws apply equally to you AND YUKA
+- **Start:** Primordial world (protozoa → civilization → transcendence)
+- **Goal:** First species to transcend wins (but they decide autonomously, not you)
 
 **Technical Foundation:**
 - **Law-Based Generation:** 57 scientific laws drive all emergence

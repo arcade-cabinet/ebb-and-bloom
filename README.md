@@ -11,9 +11,11 @@
 
 ## 🧬 What is this?
 
-**You guide ONE species. YUKA governs ALL others.** A competitive evolution game where synthesis systems reveal possibilities from materials (SiO2 → flint → stone axe), not pre-made content to explore.
+**You ARE a governor.** Guide ONE species (entire lineage) through primordial evolution by shaping their environment. YUKA governors guide all other species using the SAME law-constrained tools. Creatures respond autonomously - you can't control individuals directly.
 
-**Core Loop:** Strategic evolution decisions → Resource competition → YUKA adaptation → Mutualism/Parasitism/Exclusion strategies
+**Core Loop:** Environmental manipulation (smite/nurture/pressure) → Species adaptation → YUKA response → Resource competition → Emergence
+
+**Gameplay:** Like Populous meets Spore - indirect influence, not creature control. Energy budget prevents god-mode. 57 laws constrain both you AND YUKA.
 
 **[📖 Read the Core Gameplay Vision](docs/CORE_GAMEPLAY_VISION.md)**
 
