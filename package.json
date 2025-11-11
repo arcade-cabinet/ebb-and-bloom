@@ -66,6 +66,7 @@
     "miniplex": "2.0.0",
     "miniplex-react": "2.0.1",
     "nipplejs": "0.10.2",
+    "periodic-table": "0.0.8",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-router-dom": "^7.9.5",

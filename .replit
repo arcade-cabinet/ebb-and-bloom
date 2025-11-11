@@ -4,7 +4,7 @@ expertMode = true
 
 [nix]
 channel = "stable-25_05"
-packages = ["chromium", "SDL2", "sdl3"]
+packages = ["chromium", "SDL2", "sdl3", "jq"]
 
 [workflows]
 runButton = "Project"
@@ -30,6 +30,11 @@ waitForPort = 5000
 [workflows.workflow.metadata]
 outputType = "webview"
 
+[deployment]
+deploymentTarget = "autoscale"
+run = ["npm", "run", "preview"]
+build = ["npm", "run", "build"]
+
 [[ports]]
 localPort = 5000
 externalPort = 80
@@ -39,14 +44,5 @@ localPort = 34121
 externalPort = 3001
 
 [[ports]]
-localPort = 40067
-externalPort = 3002
-
-[[ports]]
 localPort = 40803
 externalPort = 3000
-
-[deployment]
-deploymentTarget = "autoscale"
-run = ["npm", "run", "preview"]
-build = ["npm", "run", "build"]
