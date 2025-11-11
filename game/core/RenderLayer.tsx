@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { SceneManager } from '../scenes/SceneManager';
 import { Canvas } from '@react-three/fiber';
-import { Suspense, useEffect, useRef } from 'react';
+import { Suspense, useRef } from 'react';
 import { LoadingOverlay } from '../ui/LoadingOverlay';
 import * as THREE from 'three';
 
