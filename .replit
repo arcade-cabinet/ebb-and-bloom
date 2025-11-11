@@ -1,9 +1,10 @@
-modules = ["nodejs-20", "web"]
+modules = ["nodejs-20", "web", "bash", "java-graalvm22.3", "nodejs-22", "nodejs-24", "typescript-language-server", "docker"]
 [agent]
 expertMode = true
 
 [nix]
 channel = "stable-25_05"
+packages = ["chromium"]
 
 [workflows]
 runButton = "Project"
@@ -32,6 +33,10 @@ outputType = "webview"
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[[ports]]
+localPort = 34121
+externalPort = 3001
 
 [[ports]]
 localPort = 40803

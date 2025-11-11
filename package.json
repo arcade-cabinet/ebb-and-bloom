@@ -4,6 +4,9 @@
   "description": "Governor-based world exploration engine and game",
   "type": "module",
   "main": "./engine/index.ts",
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
@@ -58,6 +61,7 @@
     "@use-gesture/react": "10.3.1",
     "d3-force-3d": "3.0.6",
     "fast-simplex-noise": "^4.0.0",
+    "happy-dom": "20.0.10",
     "leva": "^0.10.1",
     "miniplex": "2.0.0",
     "miniplex-react": "2.0.1",

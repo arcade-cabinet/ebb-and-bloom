@@ -22,6 +22,7 @@ Key capabilities include:
 - Focus on bottom-up emergence over hardcoded systems
 - Prioritize engine architecture over game features
 - No prefabs - everything generated from laws and chemistry
+- **Modernization Philosophy:** Import directly from libraries where needed, don't create wrapper abstractions unless serving actual DRY needs. Use YUKA for agent behaviors, specialized libs for pure scientific math, create shared utils ONLY when preventing real duplication. Supplement, don't compromise.
 
 ## System Architecture
 
@@ -49,13 +50,15 @@ Visuals and structures are created through chemical synthesis, eliminating the n
 - **BuildingArchitect:** Designs architecture based on governance.
 
 **Technology Stack:**
-- **Frontend:** React 18.3, React Three Fiber
+- **Runtime:** Node.js 24.4.0 (latest LTS)
+- **Frontend:** React 19.2, React Three Fiber
 - **3D Engine:** Three.js 0.169
 - **AI Framework:** Yuka
 - **Build Tool:** Vite 5.4
-- **Language:** TypeScript 5.7
+- **Language:** TypeScript 5.7 targeting ES2023
 - **State Management:** Zustand
-- **Testing:** Vitest + Playwright
+- **Testing:** Vitest (happy-dom) + Playwright
+- **Mobile:** Capacitor 7.x for Android/iOS
 
 **Project Structure Overview:**
 - `engine/`: Pure engine systems (WorldManager, TerrainSystem, procedural synthesis).

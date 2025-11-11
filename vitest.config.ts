@@ -6,7 +6,7 @@ export default defineConfig({
     include: ['tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     exclude: ['**/node_modules/**', '**/dist/**'],
     globals: true,
-    environment: 'jsdom', // React/UI tests need DOM
+    environment: 'happy-dom', // 2-3x faster than jsdom, supports React+MUI
     setupFiles: ['./tests/setup.ts'],
     coverage: {
       provider: 'v8',
