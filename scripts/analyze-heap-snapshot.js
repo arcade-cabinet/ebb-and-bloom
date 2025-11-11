@@ -1,6 +1,4 @@
 
-#!/usr/bin/env node
-
 /**
  * Heap Snapshot Analyzer
  * Takes heap snapshots and compares them to find leaks

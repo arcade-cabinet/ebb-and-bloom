@@ -1,6 +1,4 @@
 
-#!/usr/bin/env node
-
 /**
  * Memory Leak Detection Script
  * Monitors Vite dev server memory usage and generates reports
