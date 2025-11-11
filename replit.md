@@ -114,7 +114,18 @@ Visuals and structures are created through chemical synthesis, eliminating the n
 
 ### Current Session Progress
 
-**CRITICAL FIXES - Game Now Playable:**
+**PHASE 1 COMPLETE - Unified GameState with Miniplex ECS:**
+- ✅ **WorldManager Eliminated:** Redundant world management replaced by unified GameState
+- ✅ **Miniplex ECS Integrated:** GameState now owns `World<Entity>` instance
+- ✅ **Functional Twins:** RNG + Genesis + Timeline + ECS World initialized atomically via `initializeWorld()`
+- ✅ **Clean API:** Only 3 methods: `initializeWorld()`, `dispose()`, `getScopedRNG()`
+- ✅ **All Legacy Methods Removed:** No backward compatibility cruft
+- ✅ **Scene Flow Updated:** Menu validates → Intro visualizes → Gameplay initializes
+- ✅ **React Hook Bug Fixed:** Prevented dispose/reinit loop in GameplayScene
+- ✅ **Zero LSP Errors:** Clean TypeScript across entire codebase
+- ✅ **Architect Reviewed:** Phase 1 approved and ready for Phase 2
+
+**PREVIOUS CRITICAL FIXES - Game Now Playable:**
 - ✅ **Routing Fixed:** App.tsx now routes "/" to Game component (was redirecting to /demos)
 - ✅ **Black Screen Fixed:** MenuScene now renders visibly on startup
   - SceneManager: Skip fade transitions on initial scene load
@@ -123,7 +134,6 @@ Visuals and structures are created through chemical synthesis, eliminating the n
 - ✅ **Legacy Cleanup:** Removed packages/ directory (old monorepo remnant)
 - ✅ **Timer Injection:** CosmicHapticFeedback now accepts timer mocks for fast tests
 - ✅ **450+ Tests Passing:** All unit, integration, E2E, performance tests green
-- ✅ **Zero LSP Errors:** Clean TypeScript across entire codebase
 
 **Test Infrastructure Achievements:**
 - ✅ Comprehensive test infrastructure (fixtures, factories, parameterization)
