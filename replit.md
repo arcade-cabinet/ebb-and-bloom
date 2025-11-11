@@ -2,27 +2,37 @@
 
 ## Overview
 
-Ebb & Bloom is a **law-based universe simulation engine** that generates deterministic, scientifically-grounded procedural worlds from three-word seeds. It operates by implementing 57 mathematical laws from physics, biology, ecology, and social sciences, rather than relying on AI or hardcoded data. The project aims to create multi-scale simulations from quantum to cosmic levels, driven by 17 Yuka-native autonomous governors making all decisions, inspired by the architecture of Daggerfall.
+Ebb & Bloom is a **competitive evolution game** where you guide ONE species from protozoa to transcendence while competing against YUKA-controlled autonomous species for resources.
 
-Key capabilities include:
-- **Law-Based Generation:** Everything emerges from scientific laws.
-- **Deterministic:** Same seed always produces the same universe.
-- **Multi-Scale Simulation:** From Planck scale to universe-wide.
-- **Governor-Driven:** Autonomous agents make all decisions.
-- **Daggerfall-Inspired Architecture:** Adapts a proven 1996 architecture for modern web.
-- **Complete World Generation:** 7x7 chunk streaming with 11 biome types.
-- **Procedural Synthesis:** Chemistry-driven visuals, no prefabs.
-- **Full Timeline Simulation:** From Big Bang to Heat Death.
+**Core Gameplay:**
+- **You:** Guide YOUR species through evolutionary decisions (mutualism, parasitism, or competitive exclusion)
+- **YUKA:** Governs ALL other species - they adapt autonomously to your decisions
+- **Start:** Primordial world (post-planetary formation, early Earth)
+- **Goal:** Survive the resource race and reach transcendence
+- **Mechanics:** Synthesis systems as archetype generators - materials unlock possibilities (SiO2 → flint → stone axe)
+
+**Technical Foundation:**
+- **Law-Based Generation:** 57 scientific laws drive all emergence
+- **Deterministic:** Same seed always produces same universe
+- **Governor-Driven:** 17 YUKA autonomous governors make all NPC decisions
+- **Multi-Scale:** Quantum to cosmic simulation support
+- **Daggerfall Bridge:** Uses DFU spawner LOGIC with law-computed data (not hardcoded medieval content)
 
 ## User Preferences
 
-- Follow DFU (Daggerfall Unity) patterns for architecture
-- Use Yuka AI framework for agent behaviors
+**Gameplay Philosophy:**
+- **Competitive Evolution:** Player vs YUKA species, not exploration sandbox
+- **Primordial Start:** Begin at abiogenesis, NOT medieval Britain
+- **Archetype Discovery:** Synthesis systems generate possibilities from materials, not pre-made content
+- **Strategic Depth:** Every evolutionary decision has trade-offs and YUKA responses
+
+**Technical Philosophy:**
+- Use YUKA AI framework for ALL autonomous species behaviors
 - Maintain deterministic generation (same seed = same world)
 - Focus on bottom-up emergence over hardcoded systems
-- Prioritize engine architecture over game features
+- DFU spawner LOGIC is good, DFU medieval CONTENT is irrelevant
 - No prefabs - everything generated from laws and chemistry
-- **Modernization Philosophy:** Import directly from libraries where needed, don't create wrapper abstractions unless serving actual DRY needs. Use YUKA for agent behaviors, specialized libs for pure scientific math, create shared utils ONLY when preventing real duplication. Supplement, don't compromise.
+- **Modernization:** Import directly from libraries, create abstractions only when preventing real duplication
 
 ## System Architecture
 
@@ -34,7 +44,12 @@ The project is structured into three main areas: `engine/`, `agents/`, `generati
 - **Law System:** 57 scientific formulas (Physics, Stellar, Biology, Ecology, Social, Taxonomy) dictate all generation and simulation processes.
 
 **Architecture Bridge (DFU Adaptation):**
-The architecture leverages proven DFU spawner logic but replaces its hardcoded data sources (e.g., `MAPS.BSA`) with data intelligently calculated by governors based on scientific laws. This means DFU spawners (e.g., BuildingSpawner, SettlementPlacer, CreatureSpawner) receive dynamic, law-governed data instead of static lookups.
+We use DFU's spawner CODE (ChunkManager streaming, EntityManager ownership) but feed it law-computed data instead of hardcoded medieval content. For example:
+```
+DFU: population = MAPS.BSA.lookup(regionID)  // Hardcoded
+Ebb: population = EcologyGovernor.calculateCarryingCapacity(biome, resources)
+```
+This keeps proven architectural patterns while enabling competitive evolution gameplay.
 
 **World Generation:**
 - **ChunkManager:** Implements a 7x7 streaming grid, mirroring the DFU pattern.

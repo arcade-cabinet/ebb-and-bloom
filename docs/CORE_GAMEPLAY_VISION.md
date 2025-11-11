@@ -16,32 +16,59 @@
 
 **This IS Ebb & Bloom:**
 - ✅ **Start:** Primordial world (post-planetary formation, early Earth conditions)
-- ✅ **You:** Play as EVOLUTION guiding ONE species
-- ✅ **YUKA:** Autonomous governors guide ALL OTHER species
+- ✅ **You:** Play as a GOVERNOR guiding ONE SPECIES (not one creature)
+- ✅ **YUKA:** Autonomous governors guide ALL OTHER SPECIES
 - ✅ **Goal:** Competitive resource race to transcendence
-- ✅ **Gameplay:** Strategic evolution decisions vs autonomous life
+- ✅ **Gameplay:** Indirect environmental influence - creatures respond autonomously
+
+**Why not control one creature?**
+- First mating → You'd have 2+ creatures (which one do you control?)
+- First tribe → You'd have 50+ creatures (control becomes meaningless)
+- Civilization → Thousands of individuals (impossible to control)
+- **You're guiding a LINEAGE through time, not controlling individuals**
 
 ---
 
 ## THE ACTUAL GAME LOOP
 
-### Your Role: Evolution Director
+### Your Role: The Player-Governor
 
-**You guide ONE species through:**
-1. **Origin** - Start as protozoa in primordial soup
-2. **Survival** - Compete for resources with YUKA-controlled species
-3. **Discovery** - Unlock archetypes from available materials
-4. **Evolution** - Make strategic decisions at evolutionary pressure points
-5. **Transcendence** - Guide your species from matter to consciousness
+**You ARE a governor** - Using the SAME tools YUKA has, but guiding ONE SPECIES (all individuals in that lineage):
+
+**NOT direct control:**
+- ❌ You can't click on one creature and say "go mate"
+- ❌ You can't tell individuals what to do
+- ❌ You can't control them like RTS units
+- ❌ You can't instantly make them powerful
+
+**WHY species, not creature:**
+- Gen1: You have 10 cells → Which one would you control?
+- Gen5: You have 100 creatures → Controlling one is meaningless
+- Gen10: You have 1000+ tribe members → Individual control impossible
+- **You guide the WHOLE LINEAGE through environmental pressures**
+
+**INDIRECT influence** - Primordial creator powers (all law-constrained):
+- ⚡ **Smite:** Lightning strikes to clear predators (costs energy, follows physics)
+- 🌱 **Nurture:** Increase food abundance (limited by carrying capacity law)
+- 🔥 **Pressure:** Introduce environmental stress (triggers adaptation responses)
+- 🌊 **Shape:** Alter terrain, water, climate (within thermodynamic constraints)
+
+**You use GOVERNOR TOOLS (law-bounded):**
+- Same decision space as YUKA governors
+- **SAME 57 laws apply to you** - Can't violate physics, biology, ecology
+- Environmental manipulation, NOT direct creature commands
+- Actions cost resources (energy budget per generation)
+- Your creatures respond autonomously to the pressures YOU create
+- **You can't just "win instantly" - laws prevent that**
 
 ### YUKA's Role: Autonomous Life
 
 **YUKA governors control EVERYTHING ELSE:**
 - All other species (competitors, prey, predators)
-- Environmental pressures
+- Their environmental responses
 - Ecological dynamics
 - Social dynamics
-- **They evolve autonomously based on laws**
+- **They have the SAME tools you do**
 
 ---
 
@@ -51,38 +78,47 @@
 
 **1. Mutualism (Cooperation)**
 ```
-Your species + Other species = Both benefit
-Example: Pollination, symbiosis, alliance
-Risk: Dependency, exploitation
+You create conditions → Your species + Others cooperate
+Example: Increase flowering plants → Pollination emerges
+Your action: Shape environment to favor symbiosis
+Law constraint: Carrying capacity must support both species
 ```
 
 **2. Parasitism (Exploitation)**
 ```
-Your species benefits, Other species harmed
-Example: Resource theft, predation, disease
-Risk: Retaliation, extinction of host
+You create pressure → Your species parasitizes others
+Example: Reduce prey defenses → Predation emerges
+Your action: Weaken competitors, strengthen yours
+Law constraint: Host species can't go extinct (ecological collapse)
 ```
 
 **3. Competitive Exclusion**
 ```
-Your species dominates niche, Other species excluded
-Example: Outcompete for food, territory, mates
-Risk: YUKA species adapt, environmental collapse
+You dominate niche → Other species excluded
+Example: Increase resource abundance in your territory
+Your action: Environmental advantages for your species
+Law constraint: YUKA governors adapt their species in response
 ```
 
-### Resource Race
+### Resource Race (All Law-Constrained)
 
-**You compete for:**
-- **Materials:** SiO2, wood, metals (limited by geology)
-- **Energy:** Food, sunlight, chemical gradients
-- **Space:** Territory, niches, habitats
-- **Time:** Evolutionary advantage, technology first
+**You compete for (finite resources):**
+- **Materials:** SiO2, wood, metals (GeologyLaw: limited by planetary composition)
+- **Energy:** Food, sunlight (ThermodynamicsLaw: energy conservation)
+- **Space:** Territory, niches (CarryingCapacityLaw: population limits)
+- **Time:** Evolutionary advantage (EvolutionLaw: mutation rates fixed)
 
-**YUKA species compete too:**
-- They evolve speed when you evolve size
-- They form packs when you become solitary
-- They migrate when you dominate their niche
-- **They adapt to YOUR decisions**
+**Your governor powers cost energy:**
+- Lightning strike: 1000 energy units
+- Increase food: 500 energy/generation
+- Shape terrain: 2000 energy
+- **Energy budget regenerates slowly (law-based)**
+
+**YUKA governors compete identically:**
+- They can smite YOUR species with lightning
+- They can nurture THEIR species with food
+- They use the SAME energy budget constraints
+- **Fair competition - same rules, same tools**
 
 ---
 
@@ -172,87 +208,95 @@ Result: Young Earth-like planet
 ```
 Primordial soup conditions
 ↓
-Player spawns as: PROTOZOA
+Player governor assigned to: PROTOZOA SPECIES
+  - Population: 10 cells initially
   - Metabolism: Chemosynthesis
   - Size: Microscopic
-  - Complexity: Single cell
-  - Goal: Survive, reproduce, evolve
+  - They reproduce autonomously (you don't control mating)
+  - They move autonomously (you don't control movement)
+  - YOU shape their environment (food, temperature, predators)
 ↓
-YUKA spawns: Other primordial life
-  - Competing for same chemical gradients
-  - Some become predators
-  - Some become symbiotes
-  - ALL evolving autonomously
+YUKA governors assigned to: Other species
+  - Each YUKA governor controls a competing species
+  - They use same environmental tools as you
+  - All creatures behave autonomously
+  - Governors compete through indirect influence
 ```
 
-**THIS IS TURN 1. Not medieval Britain.**
+**THIS IS TURN 1. Not medieval Britain. Not creature control. SPECIES guidance.**
 
 ---
 
 ## GENERATIONAL PROGRESSION
 
 ### Gen1-2: Cellular Evolution
-- **Your Decisions:** Metabolism type, reproduction strategy, defenses
-- **YUKA Response:** Other cells adapt, specialize, compete
-- **Discoveries:** Photosynthesis, predation, multicellularity
-- **Goal:** Survive long enough to evolve complexity
+- **Your Governor Actions:** Increase chemical gradients near your cells (costs energy)
+- **Your Creatures' Response:** They autonomously evolve chemosynthesis, reproduce faster
+- **YUKA Governor Actions:** They increase pH in their territory, their cells adapt
+- **Emergent Result:** Niche separation OR competition (creatures decide, not you)
+- **Goal:** Keep your lineage alive long enough to get multicellular
 
 ### Gen3-5: Multicellular Life
-- **Your Decisions:** Body plan, sensory systems, locomotion
-- **YUKA Response:** Predator/prey arms race, niche filling
-- **Discoveries:** Eyes, limbs, nervous systems
-- **Goal:** Dominate ecological niche
+- **Your Governor Actions:** Strike predators with lightning (1000 energy), increase food plants
+- **Your Creatures' Response:** They autonomously evolve size (less predation pressure felt)
+- **YUKA Governor Actions:** They nurture THEIR predators, increase prey defenses
+- **Emergent Result:** Arms race - you can't just "make them win", laws constrain both sides
+- **Goal:** Achieve stable population above carrying capacity threshold
 
 ### Gen6-10: Tool Use
-- **Your Decisions:** Which materials to use, what tools to make
-- **YUKA Response:** Other species may steal tools, trade, compete
-- **Discoveries:** Stone tools → Fire → Shelter → Agriculture
-- **Goal:** Unlock settlement archetypes
+- **Your Governor Actions:** Create SiO2 deposits near your species (geology law: must exist naturally)
+- **Your Creatures' Response:** They discover flint, MAYBE evolve tool use (not guaranteed!)
+- **YUKA Governor Actions:** They create wood abundance for THEIR species
+- **Emergent Result:** If your species evolves tool use first = advantage, but costs energy
+- **Goal:** Get stone tools before YUKA species do
 
 ### Gen11-20: Civilization
-- **Your Decisions:** Governance type, resource allocation, expansion
-- **YUKA Response:** Other tribes form, alliances/wars emerge
-- **Discoveries:** Writing → Mathematics → Science
-- **Goal:** Discover the laws we're using
+- **Your Governor Actions:** Create fertile plains (carrying capacity boost), reduce predators
+- **Your Creatures' Response:** Population grows → Settlement emerges (Dunbar's Law forces it)
+- **YUKA Governor Actions:** They create river valleys, their tribes form simultaneously
+- **Emergent Result:** Multiple civilizations emerge, alliances/wars autonomous
+- **Goal:** Reach science before resource depletion
 
 ### Gen21+: Transcendence
-- **Your Decisions:** Upload consciousness, colonize space, transcend matter
-- **YUKA Response:** Other civilizations reach same point, competition for stars
-- **Discoveries:** FTL travel, AI, post-biological existence
-- **Goal:** Transcend the material plane
+- **Your Governor Actions:** You've spent all energy budget - now just observe
+- **Your Creatures' Response:** They discover the 57 laws, understand they're in a simulation
+- **YUKA Governor Actions:** Same - other civs reach this point independently
+- **Emergent Result:** First civilization to transcend wins, but it's their choice, not yours
+- **Goal:** Hope your nurturing was enough
 
 ---
 
 ## WHY THIS WORKS
 
-### 1. Every Game is Unique
-**Same seed = Different gameplay**
-- Geology determines available materials
-- Your decisions create unique evolutionary path
-- YUKA species respond dynamically
-- No two playthroughs identical
+### 1. Fair Competition
+**Player = Governor, bound by same laws as YUKA:**
+- You can't violate physics, biology, ecology - same as YUKA
+- Energy budget prevents spamming powers - same as YUKA
+- Indirect influence only - same as YUKA
+- **It's a strategy game, not a god simulator**
 
-### 2. Genuine Emergence
-**Nothing is pre-scripted:**
-- Materials unlock archetypes based on chemistry
-- Tools enable capabilities based on physics
-- Settlements emerge from population math
-- Science discovery based on cognitive capacity
-- **All computed from laws, not hardcoded**
+### 2. Genuine Challenge
+**You can't just "win instantly":**
+- Lightning costs 1000 energy, budget regenerates slow
+- Creatures respond autonomously, don't obey commands
+- YUKA governors adapt to YOUR strategies in real-time
+- Laws create hard constraints (carrying capacity, thermodynamics)
+- **Your species might go extinct despite your best efforts**
 
-### 3. Strategic Depth
-**Every decision matters:**
-- Evolve speed → Can't evolve size (trade-off)
-- Make stone axes → Wood becomes scarce (depletion)
-- Form settlement → Predators attack (concentration)
-- Discover fire → Other species scared away (consequences)
+### 3. Primordial Powers = Engaging Gameplay
+**Indirect influence creates interesting decisions:**
+- "Smite predators or nurture food?" (energy budget choice)
+- "Shape terrain for defense or offense?" (territory strategy)
+- "Increase food now or save energy for crisis?" (resource management)
+- "Help competitors (mutualism) or sabotage (parasitism)?" (strategy choice)
 
-### 4. No Content Limits
-**Infinite replayability:**
-- Not exploring 150,000 pre-made dungeons
-- Discovering infinite archetypes from laws
-- Every seed creates new evolutionary challenges
-- YUKA ensures every playthrough feels alive
+### 4. Emergent Storytelling
+**Every playthrough tells a unique story:**
+- Your species might form symbiosis you didn't plan
+- YUKA species might steal your tool innovations
+- Climate changes you create might backfire
+- Your nurturing might make them dependent (bad for transcendence)
+- **Creatures have agency - you're just shaping pressures**
 
 ---
 
@@ -310,16 +354,25 @@ settlement_type = SocialGovernor.determineGovernanceType(population)
 
 ## CRITICAL DISTINCTIONS
 
-| Daggerfall | Ebb & Bloom |
+| Traditional RPG | Ebb & Bloom |
 |-----------|-------------|
+| Control one character | Guide entire species (all individuals) |
+| Click to move/attack | Shape environment (indirect influence) |
+| Level up stats | Species evolves autonomously |
 | Medieval Britain | Primordial Earth |
 | 150,000 pre-made locations | Infinite procedural archetypes |
-| Player explores existing world | Player guides evolution |
 | Static NPCs with schedules | YUKA autonomous species |
-| Hardcoded quests | Emergent survival pressures |
-| Level up character | Evolve entire species |
-| Kill enemies for XP | Compete for resources |
-| End goal: Complete quests | End goal: Transcendence |
+| Kill enemies for XP | Compete for resources via environment |
+| End goal: Complete quests | End goal: First species to transcend |
+
+| God Simulator | Ebb & Bloom |
+|-----------|-------------|
+| Omnipotent powers | Law-constrained governor powers |
+| Unlimited mana/energy | Finite energy budget per generation |
+| Direct commands to units | Indirect environmental influence |
+| Can violate physics | Must obey 57 scientific laws |
+| Always win eventually | Your species CAN go extinct |
+| Control outcome | Creatures decide outcome autonomously |
 
 ---
 

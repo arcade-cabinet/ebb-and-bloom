@@ -1,6 +1,6 @@
 # Ebb & Bloom
 
-> Governor-based world exploration engine
+> Competitive evolution game: Guide YOUR species from protozoa to transcendence while competing against YUKA-controlled autonomous life
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18.3-blue)](https://react.dev/)
@@ -9,9 +9,13 @@
 
 ---
 
-## 🌍 What is this?
+## 🧬 What is this?
 
-A complete world simulation engine where **governors decide** and **synthesis creates**. No prefabs, no hardcoded assets - everything emerges from chemistry and biology.
+**You guide ONE species. YUKA governs ALL others.** A competitive evolution game where synthesis systems reveal possibilities from materials (SiO2 → flint → stone axe), not pre-made content to explore.
+
+**Core Loop:** Strategic evolution decisions → Resource competition → YUKA adaptation → Mutualism/Parasitism/Exclusion strategies
+
+**[📖 Read the Core Gameplay Vision](docs/CORE_GAMEPLAY_VISION.md)**
 
 ```typescript
 import { WorldManager } from 'ebb-and-bloom-engine';
