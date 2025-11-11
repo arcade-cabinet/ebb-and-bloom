@@ -36,17 +36,35 @@ export function SceneOrchestrator({ children }: SceneOrchestratorProps) {
   // Given the existing sceneManager implementation, this part is redundant and has been replaced.
   // The original SceneManager.changeScene is the intended way to switch scenes.
 
-  // Cleanup effect to prevent memory leaks
-  // This effect will run when the component unmounts or when `currentScene` changes.
-  // It attempts to hint the garbage collector to free up memory.
+  // Aggressive cleanup effect
   useEffect(() => {
-    return () => {
+    const cleanup = () => {
+      // Clear all intervals/timeouts
+      const highestId = window.setTimeout(() => {}, 0);
+      for (let i = 0; i < highestId; i++) {
+        window.clearTimeout(i);
+        window.clearInterval(i);
+      }
+
       // Force garbage collection hint
-      if (typeof window !== 'undefined' && (window as any).gc) {
+      if ((window as any).gc) {
         (window as any).gc();
       }
+
+      // Request browser to release memory
+      if ((performance as any).memory) {
+        console.log('Memory before cleanup:', (performance as any).memory.usedJSHeapSize / 1048576, 'MB');
+      }
     };
-  }, [/* currentScene */]); // Removed currentScene from dependency array as SceneManager is used for scene changes
+
+    // Cleanup every 30 seconds
+    const cleanupInterval = setInterval(cleanup, 30000);
+
+    return () => {
+      clearInterval(cleanupInterval);
+      cleanup();
+    };
+  }, []);
 
   // The SceneOrchestrator component itself doesn't render scenes directly based on state.
   // It acts as a container and initializer for the SceneManager.
