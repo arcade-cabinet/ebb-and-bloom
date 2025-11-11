@@ -6,10 +6,12 @@ import { EnhancedRNG } from '../../engine/utils/EnhancedRNG';
 interface GameState {
   seed: string;
   seedSource: 'user' | 'auto';
+  currentSeed: string;
   
   initializeWithSeed: (seed: string, source?: 'user' | 'auto') => void;
   generateRandomSeed: () => void;
   getScopedRNG: (namespace: string) => EnhancedRNG;
+  setCurrentSeed: (seed: string) => void;
   
   isInitialized: boolean;
 }
@@ -19,6 +21,7 @@ export const useGameState = create<GameState>()(
     (set, get) => ({
       seed: '',
       seedSource: 'auto',
+      currentSeed: '',
       isInitialized: false,
       
       initializeWithSeed: (seed: string, source: 'user' | 'auto' = 'auto') => {
@@ -38,12 +41,18 @@ export const useGameState = create<GameState>()(
         }
         return rngRegistry.getScopedRNG(namespace);
       },
+      
+      setCurrentSeed: (seed: string) => {
+        set({ currentSeed: seed });
+        rngRegistry.setSeed(seed);
+      },
     }),
     {
       name: 'ebb-and-bloom-game-state',
       partialize: (state) => ({ 
         seed: state.seed, 
         seedSource: state.seedSource,
+        currentSeed: state.currentSeed,
         isInitialized: state.isInitialized 
       }),
     }

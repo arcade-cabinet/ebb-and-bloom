@@ -7,8 +7,13 @@ export default defineConfig({
       'tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       'engine/**/__tests__/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'
     ],
-    exclude: ['**/node_modules/**', '**/dist/**'],
-    globals: true,
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      'tests/e2e/**', // Exclude Playwright E2E tests
+      'tests/browser/**', // Exclude Playwright browser tests
+    ],
+    globals: false, // Disabled to avoid conflict with Playwright
     environment: 'happy-dom', // 2-3x faster than jsdom, supports React+MUI
     setupFiles: ['./tests/setup.ts'],
     coverage: {
