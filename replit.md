@@ -26,6 +26,7 @@ Ebb & Bloom is a **competitive evolution game** where you guide ONE species from
 - **Primordial Start:** Begin at abiogenesis, NOT medieval Britain
 - **Archetype Discovery:** Synthesis systems generate possibilities from materials, not pre-made content
 - **Strategic Depth:** Every evolutionary decision has trade-offs and YUKA responses
+- **Temporal Pacing:** Systems must be observable - SEE creatures thinking, reasoning, building (not instant)
 
 **Technical Philosophy:**
 - Use YUKA AI framework for ALL autonomous species behaviors
@@ -34,6 +35,15 @@ Ebb & Bloom is a **competitive evolution game** where you guide ONE species from
 - DFU spawner LOGIC is good, DFU medieval CONTENT is irrelevant
 - No prefabs - everything generated from laws and chemistry
 - **Modernization:** Import directly from libraries, create abstractions only when preventing real duplication
+- **Visualization:** Time dilation controls, decision transparency, smooth interpolation - avoid instant simulation
+
+**Cosmic Genesis Foundation:**
+- **Complete Provenance Chain:** Big Bang → Dark Matter Web → Pop III Stars → Supernova Enrichment → Galaxy Position → Molecular Cloud → Stellar Furnace → Planetary Accretion → Differentiation → Surface
+- **Radial Expansion:** Distance from cosmic center determines galaxy age, supernova cycles, metallicity, available elements
+- **Material Traceability:** Everything traces back to cosmic origin (kill fox = fox parts with cosmic lineage, destroy shelter = materials with planetary lineage)
+- **Geology from Accretion:** Where is tin/copper/diamonds? Determined by galaxy metallicity + planetary accretion + impact delivery
+- **Natural Progression:** Spears → gunpowder → atomic bomb follows element availability from cosmic position
+- **Intro FMV:** Cosmic expansion visualization teaches provenance, solves rendering/zoom/audio, production-ready content
 
 ## System Architecture
 

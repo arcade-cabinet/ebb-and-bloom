@@ -1,12 +1,19 @@
 /**
  * WORLD STATE STORE (Zustand)
  * 
- * Central state management for GenerationGovernor.
+ * Central state management for world generation.
  * Tracks ALL chunk states, governor states, and game time.
+ * 
+ * TODO: Replace with PlanetaryState from genesis pipeline
  */
 
 import { create } from 'zustand';
-import { ChunkState } from '../../agents/governors/world-generation/GenerationGovernor';
+
+interface ChunkState {
+  generated: boolean;
+  biome?: string;
+  lastUpdate?: number;
+}
 
 interface WorldState {
     // Game time

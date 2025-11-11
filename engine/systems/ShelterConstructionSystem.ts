@@ -194,7 +194,7 @@ export class ShelterConstructionSystem {
   private checkConstructionComplete(agent: ShelterAgentWrapper): boolean {
     const goal = (agent.vehicle as any).currentGoal;
     if (goal instanceof ShelterBuilderGoal) {
-      return goal.status === 2; // Goal.STATUS_COMPLETED
+      return goal.status === 'completed';
     }
     return false;
   }
