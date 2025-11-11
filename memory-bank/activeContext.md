@@ -1,18 +1,32 @@
 # Active Context
 
 **Date:** November 11, 2025  
-**Status:** ✅ Phase 3 Complete - Intent API Fully Integrated  
-**Focus:** Documentation sync, preparing for Phase 4 (Creature AI implementation)
+**Status:** ✅ Pino Logging Complete | 🔄 React Native Migration In Progress  
+**Focus:** Migrating from Capacitor to React Native + Expo for native mobile performance
 
 ---
 
-## Current Focus: Documentation Synchronization
+## Current Focus: React Native + Expo Migration
 
-**What:** Aligning all documentation (memory-bank, docs/, replit.md, .clinerules)  
-**Why:** Prevent documentation drift across agent handoffs  
-**Result:** Three-tier system (memory-bank/ + README + docs/) properly structured
+**What:** Full platform migration from web (Vite + Capacitor) to native (React Native + Expo)  
+**Why:** True native mobile performance, better sensor integration, production-ready mobile deployment  
+**Status:** Initial setup complete (`ebb-bloom-native/`), Android tooling installed
 
 ### Completed This Session
+
+**Pino Structured Logging (Architect Approved):**
+- ✅ All console.* calls replaced with module-scoped Pino loggers
+- ✅ GovernorActionExecutor.execute() returns Promise<boolean>
+- ✅ Intent success/failure fully traceable
+- ✅ Conservation violations logged with structured data
+- ✅ GenesisConstants warnings logged per-warning
+- ✅ GameState.executeGovernorIntent propagates success boolean
+
+**Production-Ready Logging:**
+- Module-scoped loggers: genesis, ecs, world, intent, law, conservation, gameState
+- Browser-compatible (pino-browser)
+- Structured JSON logging with meaningful data
+- Proper log levels (debug/info/warn/error)
 
 **Phase 3 Implementation:**
 - ✅ GovernorActionPort interface (unified player/AI API)
@@ -192,9 +206,18 @@ world.remove(entityId);
 
 ---
 
-## Next Steps (Phase 4)
+## Next Steps
 
-### Immediate Tasks
+### Immediate: React Native + Expo Migration
+
+1. **Complete Platform Migration**
+   - Port ECS engine to React Native environment
+   - Integrate React Three Fiber (Expo GL)
+   - Set up Expo sensors (gyroscope, accelerometer, haptics)
+   - Configure Android build
+   - Test on device
+
+### After Migration: Phase 4 (Creature AI)
 
 1. **Delete Obsolete Generators**
    - Remove old generation/ spawners (replaced by ECS + Laws)
@@ -214,12 +237,6 @@ world.remove(entityId);
    - Energy budget management
    - Territory awareness
    - **READ:** `docs/INTENT_API_PHILOSOPHY.md` before starting
-
-4. **Wire Planetary Accretion to FMV**
-   - Deterministic layer generation (Core → Crust)
-   - Material deposit calculation
-   - Life probability mapping
-   - **READ:** `docs/COSMIC_PROVENANCE.md` section on accretion
 
 ---
 
@@ -315,4 +332,18 @@ world.remove(entityId);
 
 ---
 
-**Last Updated:** November 11, 2025, 16:45 UTC
+---
+
+## React Native Migration Notes
+
+**Decision:** Abandoning Capacitor in favor of React Native + Expo
+- **Reason:** True native performance vs webview wrapper
+- **Created:** `ebb-bloom-native/` project directory
+- **Tooling:** JDK 17, Android Studio, watchman installed
+- **Next:** Port ECS engine, integrate Expo GL + Three.js
+
+**Critical:** This is a FULL migration, not a proof-of-concept. All future work happens in React Native environment.
+
+---
+
+**Last Updated:** November 11, 2025, 17:30 UTC
