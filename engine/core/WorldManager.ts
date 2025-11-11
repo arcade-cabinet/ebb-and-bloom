@@ -16,12 +16,14 @@ import { CreatureManager } from './CreatureManager';
 import { PlayerController } from './PlayerController';
 import { TerrainSystem } from './TerrainSystem';
 import { SpawnGovernor } from '../../agents/governors/physics/SpawnGovernor';
+import { GenesisConstants } from '../genesis/GenesisConstants';
 
 export interface WorldConfig {
     seed: string;
     scene: THREE.Scene;
     camera: THREE.Camera;
-    chunkDistance?: number; // Default: 3 (7x7 grid like DFU)
+    chunkDistance?: number;
+    genesisConstants?: GenesisConstants;
 }
 
 export class WorldManager {
@@ -36,6 +38,7 @@ export class WorldManager {
     scene!: THREE.Scene;
     camera!: THREE.Camera;
     seed!: string;
+    genesisConstants: GenesisConstants | null = null;
 
     // State
     isReady: boolean = false;
@@ -52,8 +55,11 @@ export class WorldManager {
         this.scene = config.scene;
         this.camera = config.camera;
         this.seed = config.seed;
+        this.genesisConstants = config.genesisConstants || null;
 
         console.log(`[WorldManager] Initializing world: ${this.seed}`);
+        console.log(`[WorldManager] Genesis constants:`, 
+            this.genesisConstants ? 'PROVIDED (using cosmic synthesis)' : 'MISSING (using default generation)');
         console.log(`[WorldManager] Agentic systems: ${isGenerationGovernorEnabled() ? 'ENABLED' : 'DISABLED'} (pure engine mode)`);
 
         // Create terrain system (equivalent to StreamingWorld)
@@ -61,7 +67,8 @@ export class WorldManager {
             this.scene,
             this.seed,
             this.entityManager,
-            config.chunkDistance || 3
+            config.chunkDistance || 3,
+            this.genesisConstants
         );
 
         // Load initial terrain chunks (pure engine - no governor)

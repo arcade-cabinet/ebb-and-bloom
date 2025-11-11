@@ -2,16 +2,19 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { rngRegistry } from '../../engine/rng/RNGRegistry';
 import { EnhancedRNG } from '../../engine/utils/EnhancedRNG';
+import { GenesisConstants } from '../../engine/genesis/GenesisConstants';
 
 interface GameState {
   seed: string;
   seedSource: 'user' | 'auto';
   currentSeed: string;
+  genesisConstants: GenesisConstants | null;
   
   initializeWithSeed: (seed: string, source?: 'user' | 'auto') => void;
   generateRandomSeed: () => void;
   getScopedRNG: (namespace: string) => EnhancedRNG;
   setCurrentSeed: (seed: string) => void;
+  setGenesisConstants: (constants: GenesisConstants) => void;
   
   isInitialized: boolean;
 }
@@ -22,6 +25,7 @@ export const useGameState = create<GameState>()(
       seed: '',
       seedSource: 'auto',
       currentSeed: '',
+      genesisConstants: null,
       isInitialized: false,
       
       initializeWithSeed: (seed: string, source: 'user' | 'auto' = 'auto') => {
@@ -45,6 +49,10 @@ export const useGameState = create<GameState>()(
       setCurrentSeed: (seed: string) => {
         set({ currentSeed: seed });
         rngRegistry.setSeed(seed);
+      },
+      
+      setGenesisConstants: (constants: GenesisConstants) => {
+        set({ genesisConstants: constants });
       },
     }),
     {

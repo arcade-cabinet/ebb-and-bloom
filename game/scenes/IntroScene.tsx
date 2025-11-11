@@ -46,10 +46,11 @@ interface IntroSceneComponentProps {
 }
 
 function IntroSceneComponent({ manager }: IntroSceneComponentProps) {
-  const { currentSeed } = useGameState();
+  const { currentSeed, setGenesisConstants } = useGameState();
   
-  const handleComplete = (_constants: GenesisConstants) => {
-    console.log('Cosmic expansion complete, transitioning to gameplay');
+  const handleComplete = (constants: GenesisConstants) => {
+    console.log('Cosmic expansion complete, storing genesis constants');
+    setGenesisConstants(constants);
     manager.changeScene('gameplay');
   };
   

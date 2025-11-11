@@ -43,6 +43,8 @@ export function CosmicExpansionFMV({
   const genesis = useRef<GenesisConstants | null>(null);
   const audioSystem = useRef<CosmicAudioSonification | null>(null);
   const hapticSystem = useRef<CosmicHapticFeedback | null>(null);
+  const stageStartTimeRef = useRef(Date.now());
+  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
   
   const gyroscopeOffset = useGyroscopeCamera(enableGyroscope, 0.5, 0.15);
   
@@ -84,20 +86,23 @@ export function CosmicExpansionFMV({
   useEffect(() => {
     if (!autoPlay || !timeline.current) return;
     
-    const stageDuration = 5000;
-    const startTime = Date.now();
+    stageStartTimeRef.current = Date.now();
     
-    const interval = setInterval(() => {
-      const elapsed = Date.now() - startTime;
-      const newProgress = (elapsed % stageDuration) / stageDuration;
+    progressIntervalRef.current = setInterval(() => {
+      const elapsed = Date.now() - stageStartTimeRef.current;
+      const stageDuration = 5000;
+      const newProgress = Math.min(elapsed / stageDuration, 1.0);
       setProgress(newProgress);
       
-      if (elapsed > stageDuration) {
+      if (elapsed >= stageDuration) {
         const stages = timeline.current!.getStages();
         if (currentStage < stages.length - 1) {
           setCurrentStage(prev => prev + 1);
+          stageStartTimeRef.current = Date.now();
         } else {
-          clearInterval(interval);
+          if (progressIntervalRef.current) {
+            clearInterval(progressIntervalRef.current);
+          }
           if (genesis.current) {
             onComplete(genesis.current);
           }
@@ -105,8 +110,12 @@ export function CosmicExpansionFMV({
       }
     }, 16);
     
-    return () => clearInterval(interval);
-  }, [autoPlay, currentStage, onComplete]);
+    return () => {
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+      }
+    };
+  }, [autoPlay, onComplete]);
   
   useEffect(() => {
     if (!timeline.current) return;
