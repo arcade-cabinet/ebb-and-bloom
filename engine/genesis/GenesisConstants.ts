@@ -104,8 +104,8 @@ export class GenesisConstants {
   private constants: GenesisConstantsData;
   private warnings: ValidationWarning[] = [];
 
-  constructor(seed: string) {
-    this.timeline = new CosmicProvenanceTimeline(seed);
+  constructor(masterRng: EnhancedRNG) {
+    this.timeline = new CosmicProvenanceTimeline(masterRng);
     this.constants = this.calculateAllConstants();
     this.validate();
   }

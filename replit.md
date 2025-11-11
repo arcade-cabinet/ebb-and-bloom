@@ -23,12 +23,17 @@ Ebb & Bloom is a **competitive evolution game** where you guide ONE species from
 
 **Gameplay Philosophy:**
 - **Competitive Evolution:** Player vs YUKA species, not exploration sandbox
+- **Governor View (Spore-style):** Strategic overhead perspective - see the ECOSYSTEM, not single creature. Like Spore's Creature/Tribal/Civilization stages - guide your species from above
+- **Mobile Diorama:** Tilt device to pan strategic view, hold the living world in your hands
 - **Primordial Start:** Begin at abiogenesis, NOT medieval Britain
 - **Archetype Discovery:** Synthesis systems generate possibilities from materials, not pre-made content
 - **Strategic Depth:** Every evolutionary decision has trade-offs and YUKA responses
 - **Temporal Pacing:** Systems must be observable - SEE creatures thinking, reasoning, building (not instant)
 
 **Technical Philosophy:**
+- **MOBILE-FIRST:** Android via Capacitor is primary platform, dev server for testing only
+- **Sensory Immersion:** Leverage ALL mobile sensors (gyroscope, accelerometer, haptics) - hold the universe in your hands
+- **Gyroscope Camera:** Device orientation controls perspective through cosmic stages
 - Use YUKA AI framework for ALL autonomous species behaviors
 - Maintain deterministic generation (same seed = same world)
 - Focus on bottom-up emergence over hardcoded systems

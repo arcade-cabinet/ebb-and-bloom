@@ -47,6 +47,7 @@
     "@capacitor/core": "^7.4.4",
     "@capacitor/filesystem": "^7.1.4",
     "@capacitor/haptics": "^7.0.2",
+    "@capacitor/motion": "7.0.1",
     "@capacitor/preferences": "^7.0.2",
     "@dimforge/rapier3d": "0.19.3",
     "@emotion/react": "11.14.0",

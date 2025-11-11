@@ -43,11 +43,11 @@ export interface CosmicStage {
 
 export class CosmicProvenanceTimeline {
   private stages: CosmicStage[];
-  private seed: string;
+  private rng: EnhancedRNG;
   private calculatedConstants: Record<string, number>;
 
-  constructor(seed: string) {
-    this.seed = seed;
+  constructor(masterRng: EnhancedRNG) {
+    this.rng = masterRng;
     this.calculatedConstants = {};
     this.stages = this.defineStages();
     this.calculateAllConstants();
