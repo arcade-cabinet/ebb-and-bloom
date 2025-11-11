@@ -1,14 +1,19 @@
 /**
- * BUILDING GENERATOR
+ * BUILDING SPAWNER (DFU-Compatible)
  * 
- * Generates THREE.js meshes from building prefabs.
- * Like Daggerfall Unity's building generation.
+ * Spawns THREE.js building meshes from prefabs.
+ * This is PROVEN 30-year-old DFU code - we keep the logic intact.
+ * 
+ * BRIDGE ARCHITECTURE:
+ * - Receives building data from governors (materials, size, type)
+ * - Uses DFU spawning logic to create meshes
+ * - NO MAPS.BSA hardcoded data - governors provide all parameters
  */
 
 import * as THREE from 'three';
-import { BuildingPrefab, BuildingPrefabRegistry, BuildingType } from './BuildingPrefab';
+import { BuildingPrefab } from './BuildingPrefab';
 
-export class BuildingGenerator {
+export class BuildingSpawner {
     /**
      * Generate building mesh from prefab
      */

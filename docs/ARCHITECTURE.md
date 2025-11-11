@@ -59,6 +59,85 @@ See: `engine/governors/README.md` for complete documentation
 
 ---
 
+## BRIDGE ARCHITECTURE (30 Years of Innovation)
+
+**Core Principle:** DFU spawners are GOOD code - we keep their proven 30-year-old logic intact and replace hardcoded MAPS.BSA data with governor-calculated data using scientific laws.
+
+### The Architecture
+
+```
+Governors (Modern AI)          DFU Spawners (Proven Code)
+--------------------           ------------------------
+Use scientific laws       →    Receive intelligent data
+Calculate from terrain    →    Spawn settlements/NPCs/creatures
+No hardcoded data         →    Execute proven DFU logic
+```
+
+### Before & After
+
+**OLD DFU Approach (Hardcoded):**
+```typescript
+population = MAPS.BSA.lookup(regionID)           // Hardcoded database
+temperature = CLIMATE.BSA.lookup(x, z)           // Static data
+settlement_type = LOCATION_TYPES[id]             // Predefined
+npc_schedule = NPC_SCHEDULES[role]               // Fixed schedules
+```
+
+**NEW Approach (Governor-Based):**
+```typescript
+population = ecologyGovernor.calculateCarryingCapacity(terrain, climate)  // Laws
+temperature = physicsGovernor.calculateTemperature(latitude, altitude)    // Laws
+settlement_type = socialGovernor.determineGovernanceType(population)      // Laws
+npc_schedule = socialGovernor.generateNPCSchedule(role, settlement)       // Laws
+```
+
+### The Bridge: GovernorDataProvider
+
+The `GovernorDataProvider` interface defines how DFU spawners REQUEST data from governors:
+
+```typescript
+interface GovernorDataProvider {
+  calculateSettlementPopulation(terrain, climate): number;
+  determineGovernanceType(population, culture): GovernanceType;
+  calculateCarryingCapacity(biome, area): number;
+  generateNPCSchedule(role, settlement): Schedule;
+  calculateResourceAvailability(terrain, season): ResourceAvailability;
+}
+```
+
+### Key Insight
+
+**We DON'T replace DFU spawners - they work perfectly!**
+**We REPLACE their data source: MAPS.BSA → Governors (using laws)**
+
+This means:
+- BuildingSpawner (DFU) receives materials/size from governors → spawns buildings
+- SettlementPlacer (DFU) receives population from governors → places settlements
+- CreatureSpawner (DFU) receives density from governors → spawns creatures
+- NPCSpawner (DFU) receives schedules from governors → spawns NPCs
+
+### Implementation
+
+1. **Spawners** (DFU-compatible, proven logic):
+   - `BuildingSpawner` - Uses prefabs, executes DFU building generation
+   - `SettlementPlacer` - Uses DFU grid patterns, proven placement logic
+   - `CreatureSpawner` - Uses DFU instancing, proven spawn patterns
+   - `NPCSpawner` - Uses DFU schedules, proven behavior patterns
+
+2. **Governors** (Modern AI, scientific laws):
+   - Calculate population using ecology laws (carrying capacity)
+   - Determine governance using social laws (Service typology)
+   - Generate schedules using social laws (Dunbar's number)
+   - Calculate resources using ecology laws (biome productivity)
+
+3. **The Bridge** (GovernorDataProvider):
+   - Spawners call governors for data
+   - Governors use laws to calculate
+   - Spawners execute with governor data
+   - NO MAPS.BSA hardcoded data needed!
+
+---
+
 ## World Generation (Daggerfall-Inspired)
 
 ### ChunkManager

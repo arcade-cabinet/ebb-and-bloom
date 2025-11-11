@@ -9,14 +9,14 @@ The engine just renders what's generated.
 
 ```
 generation/
-├── spawners/          # All generation logic (spawners + generators)
+├── spawners/          # All DFU-compatible spawners (proven 30-year-old logic)
 │   ├── ChunkManager.ts           # Terrain chunk generation
 │   ├── BiomeSystem.ts            # Biome determination
 │   ├── CreatureSpawner.ts        # Creature spawning
 │   ├── SettlementPlacer.ts       # Settlement placement
 │   ├── VegetationSpawner.ts      # Vegetation spawning
 │   ├── BuildingPrefab.ts         # Building prefab definitions
-│   ├── BuildingGenerator.ts      # Building mesh generation
+│   ├── BuildingSpawner.ts        # Building mesh spawning (DFU-compatible)
 │   └── ...
 │
 └── README.md
@@ -40,11 +40,11 @@ generation/
 import { ChunkManager } from '../generation/spawners/ChunkManager';
 import { SettlementPlacer } from '../generation/spawners/SettlementPlacer';
 import { BuildingPrefabRegistry } from '../generation/spawners/BuildingPrefab';
-import { BuildingGenerator } from '../generation/spawners/BuildingGenerator';
+import { BuildingSpawner } from '../generation/spawners/BuildingSpawner';
 
-// Generation decides what to spawn using prefabs
+// DFU spawners use prefabs (proven logic)
 const prefab = BuildingPrefabRegistry.get(BuildingType.HOUSE);
-const mesh = BuildingGenerator.generate(prefab, position, rotation);
+const mesh = BuildingSpawner.generate(prefab, position, rotation);
 
 const chunkManager = new ChunkManager(scene, seed, entityManager);
 const settlementPlacer = new SettlementPlacer(scene, seed);

@@ -18,7 +18,8 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { Vehicle, WanderBehavior, FollowPathBehavior, Path, EntityManager, Vector3 as YukaVector3 } from 'yuka';
 import { EnhancedRNG } from '../../engine/utils/EnhancedRNG';
-import { Settlement, SettlementType, BuildingType } from './SettlementPlacer';
+import { Settlement, SettlementType } from './SettlementPlacer';
+import { BuildingType } from './BuildingPrefab';
 
 export enum NPCRole {
   VILLAGER = 'villager',

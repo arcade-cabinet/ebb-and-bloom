@@ -9,7 +9,8 @@
  */
 
 import * as THREE from 'three';
-import { Settlement, Building, BuildingType } from '../world/SettlementPlacer';
+import { Settlement, Building } from '../../../../generation/spawners/SettlementPlacer';
+import { BuildingType } from '../../../../generation/spawners/BuildingPrefab';
 
 export class Minimap {
   private canvas: HTMLCanvasElement;

@@ -52,61 +52,29 @@ export class PlayerController {
     /**
      * Fix standing - position player on ground
      * 
-     * DFU equivalent:
-     * Ray ray = new Ray(transform.position + Vector3.up * extraHeight, Vector3.down);
-     * if (Physics.Raycast(ray, out hit, controller.height * 2 + extraHeight + extraDistance))
-     *     transform.position = hit.point + Vector3.up * (controller.height * 0.65f);
+     * DETERMINISTIC APPROACH: Use heightmap directly (no raycast fallback)
+     * TerrainSystem.getTerrainHeight() is authoritative - it's the source of truth
      * 
-     * We use terrain heightmap query (equivalent to raycast for terrain-only)
-     * For buildings/obstacles, would need actual raycast against scene geometry
+     * DFU equivalent positioning:
+     * transform.position = hit.point + Vector3.up * (controller.height * 0.65f);
      */
-    fixStanding(x: number, z: number, extraHeight: number = 0, extraDistance: number = 0): boolean {
-        // DFU pattern: Raycast from above downward
-        // We simulate this by querying terrain height (works for terrain, not buildings)
-        const maxDistance = (this.controllerHeight * 2) + extraHeight + extraDistance;
-
-        // Start raycast from above (DFU pattern)
-        // DFU terrain can be up to 1539m, so start well above that
-        const rayStartY = 2000; // Start high above max terrain (1539m)
-        const rayDirection = new THREE.Vector3(0, -1, 0); // Downward
-
-        // Use terrain raycast (DFU equivalent)
-        const hit = this.terrain.raycastTerrain(
-            new THREE.Vector3(x, rayStartY, z),
-            rayDirection,
-            maxDistance
-        );
-
-        if (hit) {
-            // Position player at hit point + 65% of controller height (DFU pattern)
-            const newY = hit.point.y + (this.controllerHeight * 0.65);
-            this.position.set(x, newY, z);
-
-            // Position camera at eye height (must match update() behavior to avoid jump)
-            this.camera.position.set(
-                x,
-                newY + this.eyeHeight, // Eye height offset (matches update())
-                z
-            );
-
-            console.log(`[PlayerController] FixStanding at (${x}, ${z}) → terrain: ${hit.point.y.toFixed(2)}m, player: ${newY.toFixed(2)}m, camera: ${(newY + this.eyeHeight).toFixed(2)}m`);
-            return true;
+    fixStanding(x: number, z: number, extraHeight: number = 0, _extraDistance: number = 0): void {
+        const terrainHeight = this.terrain.getTerrainHeight(x, z);
+        
+        if (terrainHeight === undefined || isNaN(terrainHeight)) {
+            throw new Error(`[PlayerController] Cannot determine terrain height at (${x}, ${z}) - heightmap query failed`);
         }
 
-        // Fallback: Use direct height query (if raycast fails)
-        const terrainHeight = this.terrain.getTerrainHeight(x, z);
-        const newY = terrainHeight + (this.controllerHeight * 0.65);
+        const newY = terrainHeight + (this.controllerHeight * 0.65) + extraHeight;
         this.position.set(x, newY, z);
 
-        // Position camera at eye height (must match update() behavior to avoid jump)
         this.camera.position.set(
             x,
-            newY + this.eyeHeight, // Eye height offset (matches update())
+            newY + this.eyeHeight,
             z
         );
 
-        console.log(`[PlayerController] FixStanding (fallback) at (${x}, ${z}) → terrain: ${terrainHeight.toFixed(2)}m, player: ${newY.toFixed(2)}m, camera: ${(newY + this.eyeHeight).toFixed(2)}m`);
-        return false;
+        console.log(`[PlayerController] FixStanding at (${x}, ${z}) → terrain: ${terrainHeight.toFixed(2)}m, player: ${newY.toFixed(2)}m, camera: ${(newY + this.eyeHeight).toFixed(2)}m`);
     }
 
     /**

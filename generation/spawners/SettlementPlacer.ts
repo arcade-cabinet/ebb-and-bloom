@@ -24,7 +24,7 @@ import * as THREE from 'three';
 import { EnhancedRNG } from '../../engine/utils/EnhancedRNG';
 import { BiomeType } from './BiomeSystem';
 import { BuildingPrefabRegistry, BuildingType } from './BuildingPrefab';
-import { BuildingGenerator } from './BuildingGenerator';
+import { BuildingSpawner } from './BuildingSpawner';
 import { SocialGovernorPrefabIntegration } from './GovernorPrefabIntegration';
 
 export enum SettlementType {
@@ -48,15 +48,6 @@ export interface Building {
   size: THREE.Vector3;
   rotation: number;
   material: BuildingMaterial;
-}
-
-export enum BuildingType {
-  HOUSE = 'house',
-  SHOP = 'shop',
-  TAVERN = 'tavern',
-  TEMPLE = 'temple',
-  WAREHOUSE = 'warehouse',
-  WORKSHOP = 'workshop'
 }
 
 export enum BuildingMaterial {
@@ -210,9 +201,6 @@ export class SettlementPlacer {
                           population < 5000 ? 'chiefdom' : 'state';
     
     console.log(`[Settlement] ${settlement.name}: ${governanceType}, pop ${population}`);
-    
-    // Use GovernorPrefabIntegration to select prefabs based on social laws
-    const availablePrefabs = SocialGovernorPrefabIntegration.selectByHierarchy(population, governanceType);
     
     // Service buildings - determined by governance complexity
     // Use isVillage to reduce building counts (villages are simpler)
@@ -398,8 +386,8 @@ export class SettlementPlacer {
       [BiomeType.SAVANNA]: { wood: 300, stone: 500, metal: 100 },
       [BiomeType.OCEAN]: { wood: 0, stone: 200, metal: 50 },
       [BiomeType.BEACH]: { wood: 100, stone: 400, metal: 50 },
-      [BiomeType.SWAMP]: { wood: 600, stone: 100, metal: 25 },
-      [BiomeType.ICE]: { wood: 0, stone: 500, metal: 100 }
+      [BiomeType.RAINFOREST]: { wood: 600, stone: 100, metal: 25 },
+      [BiomeType.SNOW]: { wood: 0, stone: 500, metal: 100 }
     };
 
     const base = baseResources[biome] || { wood: 300, stone: 300, metal: 100 };
@@ -640,7 +628,7 @@ export class SettlementPlacer {
     const prefab = BuildingPrefabRegistry.get(prefabType);
     
     // Generate mesh from prefab
-    const mesh = BuildingGenerator.generate(prefab, building.position, building.rotation);
+    const mesh = BuildingSpawner.generate(prefab, building.position, building.rotation);
     
     // Scale mesh to match building size
     const scaleX = building.size.x / prefab.width;
@@ -649,77 +637,6 @@ export class SettlementPlacer {
     mesh.scale.set(scaleX, scaleY, scaleZ);
     
     return mesh;
-  }
-  
-  /**
-   * OLD createBuildingMesh - DEPRECATED, use prefabs instead
-   */
-  private createBuildingMesh_OLD(building: Building): THREE.Group {
-    const group = new THREE.Group();
-    
-    // Material color based on building material (VIBRANT colors)
-    let wallColor: number;
-    switch (building.material) {
-      case BuildingMaterial.WOOD:
-        wallColor = 0xD4A574; // Light wood
-        break;
-      case BuildingMaterial.STONE:
-        wallColor = 0xC0C0C0; // Stone
-        break;
-      case BuildingMaterial.BRICK:
-        wallColor = 0xCC5533; // Brick red
-        break;
-    }
-    
-    // Main building body
-    const wallMaterial = new THREE.MeshStandardMaterial({
-      color: wallColor,
-      roughness: 0.8,
-      metalness: 0.0
-    });
-    
-    const bodyGeometry = new THREE.BoxGeometry(
-      building.size.x,
-      building.size.y,
-      building.size.z
-    );
-    
-    const body = new THREE.Mesh(bodyGeometry, wallMaterial);
-    body.position.y = building.size.y / 2;
-    body.castShadow = true;
-    body.receiveShadow = true;
-    group.add(body);
-    
-    // DOOR (single box - efficient)
-    const doorGeometry = new THREE.BoxGeometry(2.5, 4, 0.3);
-    const doorMaterial = new THREE.MeshStandardMaterial({
-      color: 0x2A1A0A, // Dark wood
-      roughness: 0.9
-    });
-    const door = new THREE.Mesh(doorGeometry, doorMaterial);
-    door.position.set(0, 2, building.size.z / 2 + 0.2);
-    group.add(door);
-    
-    group.rotation.y = building.rotation;
-    
-    // Add roof (pyramid) - DARK RED tiles
-    const roofGeometry = new THREE.ConeGeometry(
-      Math.max(building.size.x, building.size.z) * 0.75,
-      building.size.y * 0.4,
-      4
-    );
-    const roofMaterial = new THREE.MeshStandardMaterial({
-      color: 0x8B3333, // Dark red tiles
-      roughness: 0.7,
-      metalness: 0.0
-    });
-    const roof = new THREE.Mesh(roofGeometry, roofMaterial);
-    roof.position.y = building.size.y;
-    roof.rotation.y = Math.PI / 4;
-    roof.castShadow = true;
-    group.add(roof);
-    
-    return group;
   }
   
   /**
