@@ -1,7 +1,92 @@
 # System Patterns
 
-**Last Updated:** November 11, 2025  
+**Last Updated:** November 11, 2025, 18:01 UTC  
 **Architecture:** Phase 3 Complete - Intent API + ECS + Law Systems
+**Warning:** Multiple anti-patterns exist - see "Broken Patterns" section
+
+---
+
+## ⚠️ BROKEN PATTERNS (Anti-Patterns in Codebase)
+
+### Singleton Managers Outside GameState
+
+**What's Broken:**
+- SceneManager uses getInstance() singleton pattern
+- WorldManager exists separately from GameState
+- State scattered across multiple systems
+
+**Files:**
+- `game/scenes/SceneManager.ts` (singleton)
+- `engine/core/WorldManager.ts` (separate from GameState)
+- `game/state/GameState.ts` (should own both)
+
+**Why It's Bad:**
+- Can't test scene transitions in isolation
+- Unclear ownership of world state
+- Multiple sources of truth
+
+**Should Be:**
+```typescript
+// GameState should own ALL state
+interface GameState {
+  world: World;
+  currentScene: SceneType;
+  sceneHistory: SceneType[];
+  transitionToScene: (scene: SceneType) => void;
+  // WorldManager responsibilities integrated here
+}
+```
+
+### Parallel Generation Systems (ECS + Old Code)
+
+**What's Broken:**
+- TerrainSystem/ChunkManager for terrain generation
+- BiomeSystem for biome spawning
+- ECS World for entity management
+- Two systems doing similar work
+
+**Files:**
+- `engine/core/TerrainSystem.ts`
+- `generation/ChunkManager.ts`
+- `generation/BiomeSystem.ts`
+- `engine/ecs/World.ts`
+
+**Why It's Bad:**
+- Unclear where terrain belongs (World? TerrainSystem?)
+- Can't query terrain through ECS
+- Duplicate responsibility
+
+**Should Be:**
+- Terrain as ECS entities with Structural component
+- Law-based generation (not hardcoded spawners)
+- Single unified system
+
+### E2E Test Coverage Gaps
+
+**What Exists:**
+- Extensive Playwright test suite in tests/e2e/
+- Flow tests (seed-to-gameplay, intro-fmv, pause-resume)
+- Visual regression tests
+- Performance benchmarks
+
+**What's Missing:**
+- Tests didn't catch today's HMR loop bug
+- Unclear if tests run in CI/CD
+- Need validation that tests actually pass
+
+**Files:**
+- `tests/e2e/` (flows, demos, performance, visual)
+- `playwright.config.ts`
+
+**Why It Matters:**
+- Runtime regressions slip through
+- Need to verify test suite is healthy
+
+**Should Verify:**
+```bash
+# Do the tests actually pass?
+npm run test:e2e
+```
 
 ---
 

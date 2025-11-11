@@ -1,16 +1,21 @@
 # Active Context
 
 **Date:** November 11, 2025  
-**Status:** ✅ Pino Logging Complete | 🔄 React Native Migration In Progress  
-**Focus:** Migrating from Capacitor to React Native + Expo for native mobile performance
+**Status:** ✅ Game Runs | ⚠️ Major Architectural Debt  
+**Focus:** HMR loop fixed, runtime stable, but managers NOT integrated into GameState
 
 ---
 
-## Current Focus: React Native + Expo Migration
+## Current Session Summary
 
-**What:** Full platform migration from web (Vite + Capacitor) to native (React Native + Expo)  
-**Why:** True native mobile performance, better sensor integration, production-ready mobile deployment  
-**Status:** Initial setup complete (`ebb-bloom-native/`), Android tooling installed
+**Fixed:**
+- ✅ `initializeWithSeed()` missing from GameState (CosmicExpansionFMV crash)
+- ✅ Missing Suspense import in RenderLayer (blank screen)
+- ✅ Infinite HMR loop (Zustand functions in useEffect deps)
+
+**Runtime Status:** Game loads successfully, menu functional, no console errors
+
+**What Was NOT Done:** See "Architectural Debt" section below
 
 ### Completed This Session
 
@@ -208,16 +213,19 @@ world.remove(entityId);
 
 ## Next Steps
 
-### Immediate: React Native + Expo Migration
+### Critical: Address Architectural Debt
 
-1. **Complete Platform Migration**
-   - Port ECS engine to React Native environment
-   - Integrate React Three Fiber (Expo GL)
-   - Set up Expo sensors (gyroscope, accelerometer, haptics)
-   - Configure Android build
-   - Test on device
+1. **Integrate Managers into GameState**
+   - Move SceneManager into Zustand store
+   - Integrate WorldManager responsibilities into GameState
+   - Eliminate singleton patterns
 
-### After Migration: Phase 4 (Creature AI)
+2. **Validate Existing E2E Tests**
+   - Extensive Playwright test suite exists in tests/e2e/
+   - Verify tests are passing and covering critical paths
+   - Add missing coverage if needed (today's HMR loop wasn't caught)
+
+### Phase 4 (Creature AI)
 
 1. **Delete Obsolete Generators**
    - Remove old generation/ spawners (replaced by ECS + Laws)
@@ -242,7 +250,37 @@ world.remove(entityId);
 
 ## Known Issues
 
-**None.** Zero LSP errors, server running smoothly, memory leak fixed.
+**LSP:** Clean (0 errors)
+**Runtime:** Stable (menu loads, seed system works, no HMR loops)
+
+---
+
+## Architectural Debt (NOT DONE)
+
+### 1. SceneManager/SceneOrchestrator NOT Integrated into GameState
+**Problem:** SceneManager is a singleton outside Zustand state management
+**Impact:** Scene state not part of unified GameState, harder to test/debug
+**Status:** UNCHANGED - still using singleton pattern
+**Files:** `game/scenes/SceneManager.ts`, `game/core/SceneOrchestrator.tsx`
+
+### 2. WorldManager NOT Integrated into GameState
+**Problem:** WorldManager is separate from GameState, duplicates responsibilities
+**Impact:** Unclear ownership of terrain/entities, architectural confusion
+**Status:** UNCHANGED - WorldManager still exists as separate system
+**Files:** `engine/core/WorldManager.ts`
+
+### 3. TerrainSystem/ChunkManager NOT Replaced by ECS
+**Problem:** Old generation code (ChunkManager, BiomeSystem, spawners) still in use
+**Impact:** Parallel systems - ECS World for entities, old code for terrain
+**Status:** UNCHANGED - WorldManager still uses TerrainSystem/ChunkManager
+**Files:** `engine/core/TerrainSystem.ts`, `generation/ChunkManager.ts`, `generation/BiomeSystem.ts`
+**NOTE:** Do NOT delete these - they're actively used by WorldManager
+
+### 4. Mobile Platform Confusion
+**Problem:** Project has Capacitor configured (android/ directory), but unclear if it's being actively used/tested
+**Impact:** Unclear deployment story for actual mobile devices
+**Status:** Capacitor config exists but needs validation
+**Files:** `capacitor.config.ts`, `android/` directory
 
 ---
 
@@ -334,16 +372,12 @@ world.remove(entityId);
 
 ---
 
-## React Native Migration Notes
+## Mobile Platform: Capacitor
 
-**Decision:** Abandoning Capacitor in favor of React Native + Expo
-- **Reason:** True native performance vs webview wrapper
-- **Created:** `ebb-bloom-native/` project directory
-- **Tooling:** JDK 17, Android Studio, watchman installed
-- **Next:** Port ECS engine, integrate Expo GL + Three.js
-
-**Critical:** This is a FULL migration, not a proof-of-concept. All future work happens in React Native environment.
+**Current Setup:** Capacitor configured for Android (capacitor.config.ts, android/ directory)
+**Status:** Configuration exists but deployment/testing workflow unclear
+**Decision:** Continue with Capacitor as configured
 
 ---
 
-**Last Updated:** November 11, 2025, 17:30 UTC
+**Last Updated:** November 11, 2025, 18:01 UTC
