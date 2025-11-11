@@ -20,7 +20,21 @@ export default defineConfig({
     strictPort: true,
     allowedHosts: true,
     hmr: {
-      clientPort: 5000
+      clientPort: 5000,
+      overlay: false  // Disable error overlay that can cause reloads
+    },
+    watch: {
+      // Ignore files that cause reload loops
+      ignored: [
+        '**/tsconfig*.json',
+        '**/node_modules/**',
+        '**/.git/**',
+        '**/dist/**',
+        '**/android/**',
+        '**/docs/**',
+        '**/memory-bank/**',
+        '**/*.md'
+      ]
     }
   },
   preview: {
