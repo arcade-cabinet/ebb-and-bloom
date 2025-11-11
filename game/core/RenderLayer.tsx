@@ -1,8 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, Suspense } from 'react';
 import { SceneManager } from '../scenes/SceneManager';
 import { Canvas } from '@react-three/fiber';
-import { Suspense, useRef } from 'react';
-import { LoadingOverlay } from '../ui/LoadingOverlay';
 import * as THREE from 'three';
 
 const sceneManager = SceneManager.getInstance();
@@ -40,7 +38,7 @@ export function RenderLayer() {
       sceneManager.update(0.016);
     };
 
-    const animationFrame = requestAnimationFrame(frameThrottle(function loop(time) {
+    const animationFrame = requestAnimationFrame(frameThrottle(function loop(_time) {
       handleUpdate();
       requestAnimationFrame(loop);
     }));
@@ -80,10 +78,11 @@ export function RenderLayer() {
         sceneRef.current.clear();
       }
 
-      if (rendererRef.current) {
-        rendererRef.current.renderLists.dispose();
-        rendererRef.current.dispose();
-        rendererRef.current.forceContextLoss();
+      if (rendererRef.current && 'dispose' in rendererRef.current) {
+        (rendererRef.current as any).dispose();
+        if ('forceContextLoss' in rendererRef.current) {
+          (rendererRef.current as any).forceContextLoss();
+        }
       }
 
       if (cameraRef.current) {
@@ -91,8 +90,8 @@ export function RenderLayer() {
       }
 
       // Force garbage collection hint
-      if (global.gc) {
-        global.gc();
+      if ((window as any).gc) {
+        (window as any).gc();
       }
     };
   }, []);

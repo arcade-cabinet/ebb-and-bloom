@@ -60,19 +60,17 @@ export function SceneOrchestrator({ children }: SceneOrchestratorProps) {
 
   // Add event listener for scene changes initiated by SceneManager
   useEffect(() => {
-    const handleSceneChange = (newSceneName: SceneType) => {
-      // Ensure we don't transition if it's the same scene or if not initialized
-      if (newSceneName !== currentSceneName) {
-        transitionToScene(newSceneName);
-      }
+    const handleSceneChange = () => {
+      // Scene has changed, re-render
+      setCurrentSceneName(currentSceneRef.current?.type || 'menu');
     };
 
     // Subscribe to scene change events from SceneManager
-    sceneManager.on('sceneChange', handleSceneChange);
+    const unsubscribe = sceneManager.onSceneChange(handleSceneChange);
 
     // Cleanup subscription on unmount
     return () => {
-      sceneManager.off('sceneChange', handleSceneChange);
+      unsubscribe();
       // Also perform cleanup for the last active scene on unmount
       if (currentSceneRef.current?.cleanup) {
         console.log('SceneOrchestrator: Cleaning up last scene on unmount');

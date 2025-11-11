@@ -3,12 +3,9 @@
   "version": "1.1.0",
   "description": "Governor-based world exploration engine and game",
   "type": "module",
-  "main": "index.js",
+  "main": "./engine/index.ts",
   "scripts": {
     "dev": "vite --host",
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
     "dev:profile": "node --expose-gc scripts/profile-memory-leaks.cjs",
     "dev:heap": "node --heap-prof --heap-prof-interval=5000000 ./node_modules/vite/bin/vite.js --host",
     "analyze:heap": "node scripts/analyze-heap-snapshot.cjs",

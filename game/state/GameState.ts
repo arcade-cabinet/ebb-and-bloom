@@ -33,6 +33,7 @@ interface GameState {
   
   // === UNIFIED API ===
   initializeWorld: (seed: string, scene: THREE.Scene, camera: THREE.Camera, source?: 'user' | 'auto') => Promise<void>;
+  initializeWithSeed: (seed: string, source?: 'user' | 'auto') => void;
   dispose: () => void;
   getScopedRNG: (namespace: string) => EnhancedRNG;
   executeGovernorIntent: (intent: GovernorIntent) => Promise<boolean>;
@@ -52,6 +53,12 @@ export const useGameState = create<GameState>()(
       scene: null,
       camera: null,
       isInitialized: false,
+      
+      initializeWithSeed: (seed: string, source: 'user' | 'auto' = 'auto') => {
+        gameStateLogger.info({ seed, source }, 'Initializing seed only (no world)');
+        set({ seed, seedSource: source });
+        rngRegistry.setSeed(seed);
+      },
       
       initializeWorld: async (
         seed: string, 
