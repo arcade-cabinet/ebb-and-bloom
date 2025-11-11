@@ -6,9 +6,9 @@
   "main": "./engine/index.ts",
   "scripts": {
     "dev": "vite --host",
-    "dev:profile": "node --expose-gc scripts/profile-memory-leaks.js",
+    "dev:profile": "node --expose-gc scripts/profile-memory-leaks.cjs",
     "dev:heap": "node --heap-prof --heap-prof-interval=5000000 ./node_modules/vite/bin/vite.js --host",
-    "analyze:heap": "node scripts/analyze-heap-snapshot.js",
+    "analyze:heap": "node scripts/analyze-heap-snapshot.cjs",
     "build": "vite build",
     "preview": "vite preview --host --port 5173",
     "preview:build": "pnpm run build && vite preview --host --port 5173",
