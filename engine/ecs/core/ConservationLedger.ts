@@ -1,3 +1,5 @@
+import { conservationLogger } from '../../logging/logger';
+
 export interface ConservedQuantities {
   mass: number;
   energy: number;
@@ -37,7 +39,9 @@ export class ConservationLedger {
   private readonly maxViolations = 1000;
   private readonly energyDriftThreshold = 0.05;
 
-  constructor() {}
+  constructor() {
+    conservationLogger.debug('ConservationLedger initialized');
+  }
 
   getTotals(): Readonly<ConservedQuantities> {
     return { ...this.totals };
@@ -111,6 +115,12 @@ export class ConservationLedger {
 
     const massDrift = Math.abs(aggregateTotals.mass - childrenTotals.mass);
     if (massDrift > 1e-10) {
+      conservationLogger.warn({
+        context,
+        expectedMass: childrenTotals.mass,
+        actualMass: aggregateTotals.mass,
+        drift: massDrift,
+      }, 'Mass conservation violation in aggregation');
       this.recordViolation(
         'mass',
         childrenTotals.mass,
@@ -263,12 +273,13 @@ export class ConservationLedger {
       this.violations.shift();
     }
 
-    console.warn(`[ConservationLedger] VIOLATION: ${context}`, {
+    conservationLogger.warn({
+      context,
       quantityType,
       expected,
       actual,
       drift,
-    });
+    }, 'Conservation law violation detected');
   }
 
   private recordAudit(

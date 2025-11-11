@@ -10,6 +10,7 @@
 import { CosmicProvenanceTimeline } from './CosmicProvenanceTimeline';
 import { PHYSICS_CONSTANTS } from '../../agents/tables/physics-constants';
 import EnhancedRNG from '../utils/EnhancedRNG';
+import { genesisLogger } from '../logging/logger';
 
 export interface GenesisConstantsData {
   // Cosmic constants
@@ -106,9 +107,28 @@ export class GenesisConstants {
   private warnings: ValidationWarning[] = [];
 
   constructor(masterRng: EnhancedRNG) {
+    genesisLogger.debug('Initializing GenesisConstants');
     this.timeline = new CosmicProvenanceTimeline(masterRng);
     this.constants = this.calculateAllConstants();
     this.validate();
+    
+    genesisLogger.info({
+      metallicity: this.constants.metallicity,
+      gravity: this.constants.gravity,
+      surfaceTemp: this.constants.surface_temperature,
+      warnings: this.warnings.length,
+    }, 'GenesisConstants initialized');
+    
+    if (this.warnings.length > 0) {
+      this.warnings.forEach(warning => {
+        genesisLogger.warn({
+          parameter: warning.parameter,
+          value: warning.value,
+          expectedRange: warning.expectedRange,
+          severity: warning.severity,
+        }, warning.message);
+      });
+    }
   }
 
   private calculateAllConstants(): GenesisConstantsData {
@@ -716,14 +736,18 @@ export class GenesisConstants {
 
   printWarnings(): void {
     if (this.warnings.length === 0) {
-      console.log('✅ All constants within expected ranges.');
+      genesisLogger.debug('All constants within expected ranges');
       return;
     }
 
-    console.log(`⚠️  ${this.warnings.length} validation warning(s):`);
+    genesisLogger.info({ warningCount: this.warnings.length }, 'Genesis validation warnings');
     for (const warning of this.warnings) {
-      const icon = warning.severity === 'extreme' ? '🔴' : warning.severity === 'warning' ? '⚠️ ' : 'ℹ️ ';
-      console.log(`${icon} ${warning.message}`);
+      genesisLogger.warn({
+        parameter: warning.parameter,
+        value: warning.value,
+        expectedRange: warning.expectedRange,
+        severity: warning.severity,
+      }, warning.message);
     }
   }
 }

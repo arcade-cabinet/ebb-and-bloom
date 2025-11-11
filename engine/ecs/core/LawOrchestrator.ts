@@ -1,6 +1,7 @@
 import type { World } from 'miniplex';
 import type { Entity } from '../components/CoreComponents';
 import { ConservationLedger } from './ConservationLedger';
+import { lawLogger } from '../../logging/logger';
 import { CosmicEnvironmentSystem } from '../systems/CosmicEnvironmentSystem';
 import { ThermodynamicsSystem } from '../systems/ThermodynamicsSystem';
 import { ReactionKineticsSystem } from '../systems/ReactionKineticsSystem';
@@ -45,13 +46,18 @@ export class LawOrchestrator {
   async initialize(): Promise<void> {
     if (this.initialized) return;
     
+    lawLogger.debug({ systemCount: this.systems.length }, 'Initializing LawOrchestrator');
     await this.rapierPhysicsSystem.initialize();
     this.initialized = true;
+    lawLogger.info({ 
+      systemCount: this.systems.length,
+      systems: this.systems.map(s => s.constructor.name),
+    }, 'LawOrchestrator initialized');
   }
 
   tick(world: World<Entity>, delta: number): void {
     if (!this.initialized) {
-      console.warn('LawOrchestrator not initialized. Call initialize() first.');
+      lawLogger.warn('LawOrchestrator not initialized');
       return;
     }
 
@@ -59,7 +65,10 @@ export class LawOrchestrator {
       try {
         system.update(world, delta);
       } catch (error) {
-        console.error(`Error in system ${system.constructor.name}:`, error);
+        lawLogger.error({ 
+          system: system.constructor.name,
+          error: error instanceof Error ? error.message : String(error),
+        }, 'System update failed');
       }
     }
   }

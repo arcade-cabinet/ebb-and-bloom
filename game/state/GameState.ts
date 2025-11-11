@@ -8,6 +8,7 @@ import { CosmicProvenanceTimeline } from '../../engine/genesis/CosmicProvenanceT
 import { World } from '../../engine/ecs/World';
 import { GovernorActionExecutor } from '../../engine/ecs/core/GovernorActionExecutor';
 import type { GovernorIntent } from '../../agents/controllers/GovernorActionPort';
+import { gameStateLogger } from '../../engine/logging/logger';
 
 export type { Entity } from '../../engine/ecs/components/CoreComponents';
 
@@ -34,7 +35,7 @@ interface GameState {
   initializeWorld: (seed: string, scene: THREE.Scene, camera: THREE.Camera, source?: 'user' | 'auto') => Promise<void>;
   dispose: () => void;
   getScopedRNG: (namespace: string) => EnhancedRNG;
-  executeGovernorIntent: (intent: GovernorIntent) => Promise<void>;
+  executeGovernorIntent: (intent: GovernorIntent) => Promise<boolean>;
   
   isInitialized: boolean;
 }
@@ -58,8 +59,7 @@ export const useGameState = create<GameState>()(
         camera: THREE.Camera,
         source: 'user' | 'auto' = 'auto'
       ) => {
-        console.log(`[GameState] 🌍 Initializing unified world state`);
-        console.log(`[GameState] Seed: ${seed}`);
+        gameStateLogger.info({ seed, source }, 'Initializing unified world state');
         
         rngRegistry.setSeed(seed);
         
@@ -69,20 +69,20 @@ export const useGameState = create<GameState>()(
         const genesis = new GenesisConstants(genesisRng);
         const timeline = new CosmicProvenanceTimeline(timelineRng);
         
-        console.log('[GameState] ✅ Cosmic twins created:', {
+        gameStateLogger.debug({
           gravity: genesis.getGravity(),
           metallicity: genesis.getMetallicity(),
-          temperature: genesis.getSurfaceTemperature()
-        });
+          temperature: genesis.getSurfaceTemperature(),
+        }, 'Cosmic twins created');
         
         const ecsWorld = new World();
         await ecsWorld.initialize();
-        console.log('[GameState] ✅ ECS World with law orchestrator created');
+        gameStateLogger.debug('ECS World with law orchestrator created');
         
         const executor = new GovernorActionExecutor(ecsWorld, genesis, scene);
-        console.log('[GameState] ✅ Governor action executor created');
+        gameStateLogger.debug('Governor action executor created');
         
-        console.log('[GameState] ✅ Three.js scene/camera refs stored');
+        gameStateLogger.debug('Three.js scene/camera refs stored');
         
         set({
           seed,
@@ -96,7 +96,7 @@ export const useGameState = create<GameState>()(
           isInitialized: true
         });
         
-        console.log('[GameState] 🎉 UNIFIED WORLD INITIALIZED');
+        gameStateLogger.info('Unified world initialized successfully');
       },
       
       getScopedRNG: (namespace: string) => {
@@ -108,7 +108,7 @@ export const useGameState = create<GameState>()(
       },
       
       dispose: () => {
-        console.log('[GameState] 🧹 Disposing world state');
+        gameStateLogger.info('Disposing world state');
         const { world } = get();
         
         if (world) {
@@ -122,14 +122,19 @@ export const useGameState = create<GameState>()(
           camera: null,
           isInitialized: false
         });
+        
+        gameStateLogger.debug('World state disposed');
       },
       
-      executeGovernorIntent: async (intent: GovernorIntent) => {
+      executeGovernorIntent: async (intent: GovernorIntent): Promise<boolean> => {
         const { governorExecutor } = get();
         if (!governorExecutor) {
+          gameStateLogger.error('Governor executor not initialized');
           throw new Error('❌ Governor executor not initialized! Call initializeWorld() first.');
         }
-        await governorExecutor.execute(intent);
+        const success = await governorExecutor.execute(intent);
+        gameStateLogger.debug({ success, intentType: intent.type }, 'Intent execution result');
+        return success;
       },
     }),
     {

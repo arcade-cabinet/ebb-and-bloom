@@ -1,185 +1,573 @@
 # System Patterns
 
-**Last Updated**: 2025-01-09
+**Last Updated:** November 11, 2025  
+**Architecture:** Phase 3 Complete - Intent API + ECS + Law Systems
 
 ---
 
-## Core Architecture Pattern
+## Core Architectural Patterns
 
-**"Everything is Squirrels"**: Base archetypes evolve through environmental pressure.
+### 1. WARP/WEFT Flow (Causal + Scale Dimensions)
 
+**Critical Insight:** Every entity exists in TWO dimensions simultaneously.
+
+**WARP (Vertical/Temporal)**: Causal flow through cosmic time
 ```
-Seed → Gen 0 (Planetary Physics) → Gen 1 (Creatures) → Gen 2+ (Yuka Evolution)
+Big Bang
+  → Dark Matter Web
+  → Population III Stars
+  → Supernovae (metallicity enrichment)
+  → Galaxy Formation
+  → Stellar System (Pop I/II stars)
+  → Planetary Accretion
+  → Differentiation (core → mantle → crust)
+  → Surface Chemistry
+  → Abiogenesis
+  → Creatures
+  → Tools & Civilization
+  → Transcendence
 ```
 
----
+**WEFT (Horizontal/Spatial)**: Scale flow at any time slice
+```
+Universal (cosmological constants)
+  → Galactic (metallicity, age, position)
+  → Stellar (star type, luminosity, habitable zone)
+  → Planetary (mass, composition, tectonics)
+  → Surface (biomes, geology, hydrology)
+  → Organismal (creatures, populations)
+  → Cellular (metabolism, genetics)
+  → Molecular (chemistry, bonds)
+  → Atomic (elements, isotopes)
+  → Quantum (fundamental forces)
+```
 
-## Monorepo Package Pattern
-
-**Each package has single responsibility**:
+**Implementation in Current System:**
 
 ```typescript
-// packages/backend/ - REST API + Simulation
-import { Gen1System } from './gen1/CreatureSystem.js';
-import { generateGen1DataPools } from './gen-systems/loadGenData.js';
+// WARP: Cosmic provenance chain
+const genesis = new GenesisConstants(rng);
+const timeline = new CosmicProvenanceTimeline(rng);
+// Future: PlanetaryAccretion, SurfaceChemistry, etc.
 
-// packages/gen/ - AI Generation Pipeline
-import { executeWarpWeftGeneration } from './workflows/warp-weft-agent.js';
-
-// packages/simulation/ - React Three Fiber Rendering
-import { useGameState } from './hooks/useGameState.js';
+// WEFT: Multi-scale entity
+world.add({
+  entityId: uuidv4(),
+  scale: 'organismal',           // WEFT position
+  
+  // Properties from WARP chain
+  cosmicLineage: {
+    galaxyAge: genesis.getGalaxyAge(),
+    metallicity: genesis.getMetallicity(),
+    supernovaCycles: Math.floor(galaxyAge / 1e9),
+  },
+  
+  // Properties from WEFT scales
+  mass: 10,                      // Organismal scale
+  elementCounts: { 'C': 10 },    // Atomic scale
+  genome: 'DNA_SEQUENCE',        // Molecular scale
+  metabolism: { ... },           // Cellular scale
+  position: { x, y, z },         // Surface scale
+});
 ```
 
-**Rule**: Packages communicate via workspace dependencies (`workspace:*`) and REST APIs.
+**Why This Matters:**
+- **WARP ensures scientific rigor**: Can't have iron in young galaxy
+- **WEFT enables emergence**: Organismal behavior from molecular properties
+- **Both enforce determinism**: Same seed → same WARP chain → same WEFT properties
+
+**Example: Spawning a Tree**
+
+```typescript
+// WARP: Why does this tree exist?
+// Big Bang → Galaxy (metallicity 0.7) → Star (Pop I) 
+// → Planet (metal-rich) → Soil (nutrient-dense) → Seeds → Evolution
+
+// WEFT: What are tree's properties at each scale?
+const tree = {
+  // Universal scale (inherited from genesis)
+  physicsConstants: genesis.getPhysicsConstants(),
+  
+  // Galactic scale
+  metallicity: genesis.getMetallicity(),  // 0.7 (metal-rich)
+  
+  // Planetary scale  
+  gravity: planet.surfaceGravity,
+  
+  // Surface scale
+  position: { x: 100, y: 0, z: 200 },
+  biome: 'temperate_forest',
+  
+  // Organismal scale
+  mass: 500,  // kg
+  height: 20, // meters
+  
+  // Cellular scale
+  metabolism: {
+    photosynthesisRate: 0.8,
+    respirationRate: 0.2,
+  },
+  
+  // Molecular scale
+  genome: 'TREE_DNA_SEQUENCE',
+  
+  // Atomic scale
+  elementCounts: {
+    'C': 250,   // Carbon from stellar fusion
+    'O': 100,   // Oxygen from supernovae
+    'N': 20,    // Nitrogen from stellar nucleosynthesis
+    'Fe': 5,    // Iron (only in metal-rich galaxy!)
+  },
+};
+```
+
+**Anti-pattern:** Creating entities without WARP provenance or WEFT scale context.
 
 ---
 
-## WARP/WEFT Flow Pattern
+### 2. Three-Tier Documentation System
 
-**WARP (Vertical)**: Causal flow between generations
-**WEFT (Horizontal)**: Scale flow within each generation
+**Pattern:** Separate ephemeral AI context from permanent human docs
 
-```typescript
-// WARP: Gen N → Gen N+1
-const gen1Data = await generateGen1DataPools(baseSeed, planet, gen0Data);
-
-// WEFT: Macro → Meso → Micro
-const macro = await generateScale('gen0', 'macro', baseSeed, {});
-const meso = await generateScale('gen0', 'meso', baseSeed, { macro });
-const micro = await generateScale('gen0', 'micro', baseSeed, { macro, meso });
 ```
+memory-bank/          # AI session continuity (ephemeral)
+  ├─ activeContext.md
+  ├─ progress.md
+  ├─ systemPatterns.md (this file)
+  ├─ techContext.md
+  └─ productContext.md
+
+README.md            # Standalone human docs (permanent)
+  └─ Never references memory-bank/
+
+docs/                # Deep technical guides (permanent)
+  ├─ AI_HIERARCHY.md
+  ├─ COSMIC_PROVENANCE.md
+  └─ INTENT_API_PHILOSOPHY.md
+```
+
+**Rule:** NEVER reference memory-bank in READMEs or docs/
 
 ---
 
-## Yuka AI Integration Pattern
+### 3. Unified State Management (GameState Pattern)
 
-**Gen0-Gen6 systems use appropriate Yuka systems**:
+**Pattern:** Single source of truth for world state
 
 ```typescript
-// Gen0: CohesionBehavior, SeparationBehavior
-class AccretionSimulation {
-  private cohesionBehavior = new CohesionBehavior();
-  private separationBehavior = new SeparationBehavior();
+// game/state/GameState.ts
+export const useGameState = create<GameState>()(
+  persist(
+    (set, get) => ({
+      // Atomic initialization (WARP + WEFT setup)
+      initializeWorld: async (seed, scene, camera) => {
+        rngRegistry.setSeed(seed);
+        
+        // WARP: Cosmic provenance
+        const genesis = new GenesisConstants(rng);
+        const timeline = new CosmicProvenanceTimeline(rng);
+        
+        // WEFT: Multi-scale world
+        const world = new World();
+        await world.initialize();
+        
+        const executor = new GovernorActionExecutor(world, genesis, scene);
+        
+        set({ seed, genesis, timeline, world, executor, ... });
+      },
+      
+      // Unified intent execution
+      executeGovernorIntent: async (intent) => {
+        const { executor } = get();
+        await executor.execute(intent);
+      }
+    }),
+    { name: 'ebb-and-bloom-game-state' }
+  )
+);
+```
+
+**Why:**
+- Atomic initialization (WARP + WEFT in one operation)
+- Single API for all world operations
+- Clean disposal
+
+**Anti-pattern:** Multiple managers with duplicate state
+
+---
+
+### 4. Intent-Based Actions (No Direct Manipulation)
+
+**Pattern:** Both player and AI submit intents, laws determine outcomes
+
+```typescript
+// Unified interface
+interface GovernorActionPort {
+  requestAction(action, target): Promise<GovernorIntent>;
 }
 
-// Gen1: GoalEvaluator, CompositeGoal, StateMachine
-class Gen1System {
-  private evaluateGoals(creature: Creature): void {
-    const mostUrgent = creature.needs.reduce((prev, curr) =>
-      curr.urgency > prev.urgency ? curr : prev
-    );
-    if (mostUrgent.urgency > 0.6) {
-      this.executeGoal(creature, mostUrgent);
+// Player implementation
+class PlayerGovernorController implements GovernorActionPort {
+  async requestAction(action, target) {
+    if (this.energy < action.cost) throw new Error('Insufficient energy');
+    this.energy -= action.cost;
+    return { action, target, magnitude: 1.0 };
+  }
+}
+
+// AI implementation (future)
+class RivalAIGovernorController implements GovernorActionPort {
+  async requestAction(action, target) {
+    if (this.energy < action.cost) throw new Error('Insufficient energy');
+    this.energy -= action.cost; // SAME COST
+    return { action, target, magnitude: 1.0 }; // SAME MAGNITUDE
+  }
+}
+
+// Execution (same for both)
+await gameState.executeGovernorIntent(intent);
+```
+
+**Why:**
+- Provable fairness (same code path)
+- Testability (swap implementations)
+- Extensibility (add new actions)
+
+**Reference:** `docs/INTENT_API_PHILOSOPHY.md`
+
+---
+
+### 5. ECS Architecture (Miniplex)
+
+**Pattern:** Archetype-based entity-component system with WEFT scale component
+
+```typescript
+// Define entity schema
+export const EntitySchema = z.object({
+  entityId: z.string().uuid(),
+  scale: z.enum([
+    'quantum',
+    'atomic', 
+    'molecular',
+    'cellular',
+    'organismal',
+    'population',
+    'surface',
+    'planetary',
+    'stellar',
+    'galactic',
+    'universal'
+  ]),
+  
+  // Physics (all scales)
+  mass: z.number().optional(),
+  position: z.object({ x, y, z }).optional(),
+  
+  // Chemistry (atomic/molecular scales)
+  elementCounts: z.record(z.string(), z.number()).optional(),
+  
+  // Biology (cellular/organismal scales)
+  genome: z.string().optional(),
+  metabolism: z.object({ ... }).optional(),
+  
+  // Provenance (WARP tracking)
+  cosmicLineage: z.object({
+    galaxyAge: z.number(),
+    metallicity: z.number(),
+    supernovaCycles: z.number(),
+  }).optional(),
+});
+
+// Query by scale (WEFT)
+const organisms = world.with('scale').where(e => e.scale === 'organismal');
+const molecules = world.with('scale').where(e => e.scale === 'molecular');
+```
+
+**Why:**
+- Type-safe (Zod validation)
+- Fast queries (archetype storage)
+- Multi-scale support (WEFT dimension)
+
+---
+
+### 6. Law Orchestrator (System Coordinator)
+
+**Pattern:** Systems run in WEFT scale order (macro → micro)
+
+```typescript
+// engine/ecs/core/LawOrchestrator.ts
+export class LawOrchestrator {
+  private systems: System[] = [
+    // Universal scale
+    new ThermodynamicsSystem(),
+    
+    // Planetary/Surface scale
+    new OdexEcologySystem(),
+    
+    // Organismal scale
+    new MetabolismSystem(),
+    new BiologyEvolutionSystem(),
+    
+    // Molecular/Atomic scale
+    new ChemistrySystem(),
+    
+    // All scales
+    new RapierPhysicsSystem(),
+    new CulturalTransmissionSystem(),
+  ];
+  
+  async tick(deltaTime: number): Promise<void> {
+    // Run in WEFT order (macro → micro)
+    for (const system of this.systems) {
+      await system.update(this.world, deltaTime);
     }
   }
 }
+```
 
-// Gen2/Gen3: FuzzyModule
-class PackFormationFuzzy {
-  private fuzzy = new FuzzyModule();
-  evaluate(scarcity: number, proximity: number): number {
-    this.fuzzy.fuzzify('problem', scarcity * 100);
-    this.fuzzy.fuzzify('capability', proximity * 100);
-    return this.fuzzy.defuzzify('desirability') / 100;
+**Why:**
+- WEFT ordering (larger scales influence smaller)
+- Consistent execution
+- Easy to add/remove systems
+
+---
+
+### 7. Conservation Ledger (Physics Enforcement)
+
+**Pattern:** Track conserved quantities across all WEFT scales
+
+```typescript
+// engine/ecs/core/ConservationLedger.ts
+export class ConservationLedger {
+  private totalMass = 0;
+  private totalCharge = 0;
+  private totalEnergy = 0;
+  
+  addEntity(entity: Entity): void {
+    // Mass conserved across scales
+    if (entity.mass) this.totalMass += entity.mass;
+    
+    // Charge conserved (atomic scale)
+    if (entity.charge) this.totalCharge += entity.charge;
+    
+    // Energy conserved (all scales)
+    // E = mc² + kinetic + potential + thermal
+  }
+  
+  removeEntity(entity: Entity): void {
+    // Conservation check
+    if (entity.mass) this.totalMass -= entity.mass;
   }
 }
 ```
 
----
-
-## Seed-Driven Deterministic Pattern
-
-**All generation uses deterministic seeds**:
-
-```typescript
-import { validateSeed, getGenerationSeed } from '../seed/seed-manager.js';
-
-const validation = validateSeed('v1-red-blue-green');
-const gen0Seed = getGenerationSeed(validation.seed!, 0);
-const gen1Seed = getGenerationSeed(validation.seed!, 1);
-
-// Same seed → same results
-const planet1 = await simulate(gen0Seed);
-const planet2 = await simulate(gen0Seed);
-expect(planet1.radius).toBe(planet2.radius);
-```
+**Why:**
+- Physics enforcement (thermodynamics)
+- Works across WEFT scales
+- Debugging (detect violations)
 
 ---
 
-## Universal Template Pattern
+### 8. Scoped RNG (Deterministic WARP Generation)
 
-**Archetypes are templates with parameter ranges**:
-
-```typescript
-interface Archetype {
-  parameters: {
-    speed: { min: 0.5, max: 2.0, default: 1.0 },
-    strength: { min: 0.3, max: 1.5, default: 0.8 }
-  };
-  selectionBias: {
-    baseWeight: 0.5,
-    seedModifiers: { 'red': 0.2, 'blue': -0.1 }
-  };
-}
-
-// Interpolate parameters from seed
-const speed = interpolateParameter(archetype.parameters.speed, seedComponent);
-
-// Select archetype with bias
-const archetype = selectFromPoolBiased(pool, seed, gen0Data);
-```
-
----
-
-## Visual Blueprint Pattern
-
-**All archetypes include rendering instructions**:
+**Pattern:** Namespace-based RNG for deterministic WARP chains
 
 ```typescript
-interface VisualBlueprint {
-  textureReferences: ['Metal049A', 'Rock025'],
-  visualProperties: {
-    pbr: { metallic: 0.8, roughness: 0.3 },
-    colorPalette: ['#FFBB33', '#FF6633'],
-    proceduralRules: 'surface variation based on depth'
+// engine/rng/RNGRegistry.ts
+class RNGRegistry {
+  private seed: string = '';
+  private rngCache = new Map<string, EnhancedRNG>();
+  
+  setSeed(seed: string): void {
+    this.seed = seed;
+    this.rngCache.clear();
+  }
+  
+  getScopedRNG(namespace: string): EnhancedRNG {
+    const key = `${this.seed}:${namespace}`;
+    if (!this.rngCache.has(key)) {
+      this.rngCache.set(key, new EnhancedRNG(key));
+    }
+    return this.rngCache.get(key)!;
   }
 }
 
-// Frontend uses blueprints directly
-const material = new MeshStandardMaterial({
-  metalness: blueprint.visualProperties.pbr.metallic,
-  roughness: blueprint.visualProperties.pbr.roughness,
-  map: textures[blueprint.textureReferences[0]]
-});
+// Usage (WARP namespaces)
+const genesisRng = rngRegistry.getScopedRNG('genesis');
+const planetRng = rngRegistry.getScopedRNG('planet');
+const creatureRng = rngRegistry.getScopedRNG('creature');
 ```
+
+**Why:**
+- Same seed → same WARP chain
+- Isolated namespaces
+- Testable determinism
 
 ---
 
-## REST API Pattern
+### 9. Subscription Over Polling (React Pattern)
 
-**Backend exposes simulation via HTTP endpoints**:
+**Pattern:** Event-driven re-renders instead of polling
 
 ```typescript
-// Fastify route
-fastify.get('/api/game/:gameId', async (request, reply) => {
-  const engine = gameEngines.get(request.params.gameId);
-  if (!engine) return reply.code(404).send({ error: 'Game not found' });
-  return engine.getState();
-});
+// BAD: Polling
+const scenes = sceneManager.getScenes(); // Called 60fps!
 
-// Frontend fetches
-const response = await fetch(`http://localhost:3001/api/game/${gameId}`);
-const { planet, gen0Data } = await response.json();
+// GOOD: Subscription
+const [scenes, setScenes] = useState(sceneManager.getScenes());
+useEffect(() => {
+  const unsubscribe = sceneManager.onSceneChange(() => {
+    setScenes([...sceneManager.getScenes()]);
+  });
+  return unsubscribe;
+}, []);
+```
+
+**Why:**
+- Performance (only re-render when needed)
+- Prevents memory leaks
+
+---
+
+### 10. Creature AI vs Rival AI (Distinct Systems)
+
+**Pattern:** Two AI layers at different WEFT scales
+
+```typescript
+// CREATURE AI (Organismal scale - WEFT)
+class CreatureAI {
+  goals: Goal[] = [
+    new HungerGoal(priority: 0.8),
+    new SafetyGoal(priority: 0.9),
+  ];
+  
+  stateMachine: StateMachine = new StateMachine([
+    new IdleState(),
+    new HuntState(),
+  ]);
+  
+  update(deltaTime: number): void {
+    // Individual organism behavior
+  }
+}
+
+// RIVAL AI (Population/Surface scale - WEFT)
+class RivalAIGovernorController implements GovernorActionPort {
+  async requestAction(action, target): Promise<GovernorIntent> {
+    // Strategic species-level decisions
+    const ecology = this.evaluateEcology(); // Surface scale
+    const population = this.getPopulation();  // Population scale
+    
+    // Operates at HIGHER WEFT scale than individual creatures
+  }
+}
+```
+
+**Why:**
+- Different WEFT scales = different concerns
+- Creature: Organismal scale (tactical)
+- Rival: Population/Surface scale (strategic)
+
+**Reference:** `docs/AI_HIERARCHY.md`
+
+---
+
+## WARP/WEFT Decision Matrix
+
+**When adding a feature, ask:**
+
+### WARP Questions (Temporal/Causal)
+1. **Where in cosmic timeline does this happen?**
+   - Big Bang? Galaxy formation? Planetary surface? Life emergence?
+   
+2. **What caused this to exist?**
+   - Trace back through WARP chain
+   - Young galaxy → No iron → No steel tools
+   
+3. **Is this deterministic from seed?**
+   - Same seed → same WARP chain → same feature
+
+### WEFT Questions (Spatial/Scale)
+1. **What scale does this operate at?**
+   - Universal? Galactic? Organismal? Molecular?
+   
+2. **Which scales does it influence?**
+   - Metabolism (cellular) affects behavior (organismal)
+   - Galaxy metallicity (galactic) affects chemistry (atomic)
+   
+3. **Are cross-scale interactions handled?**
+   - Macro → Meso → Micro data flow
+
+### Example: Adding "Spear Crafting"
+
+**WARP Analysis:**
+- **Timeline position:** Post-life, post-tool-discovery
+- **Causal chain:** 
+  - Galaxy metallicity → Available elements
+  - Stellar fusion → Carbon/Silicon production
+  - Planetary accretion → Surface mineral deposits
+  - Creature evolution → Dexterity/Intelligence
+  - Tool discovery → Spear invention
+- **Determinism:** Galaxy age determines max tech level
+
+**WEFT Analysis:**
+- **Primary scale:** Organismal (creature crafts)
+- **Influences from:**
+  - Atomic: Element availability (wood, stone, metal)
+  - Molecular: Material bonds (hardness, flexibility)
+  - Cellular: Creature dexterity (genes)
+  - Organismal: Intelligence (learning)
+- **Influences to:**
+  - Organismal: Hunting success
+  - Population: Prey population decline
+  - Surface: Resource depletion
+
+**Implementation:**
+```typescript
+// WARP: Check if spear is possible
+const metallicity = genesis.getMetallicity();
+const canCraftMetal = metallicity > 0.5; // Old galaxy only
+
+// WEFT: Gather requirements from multiple scales
+const availableWood = world.queryElementsAt(position, 'C'); // Atomic
+const creatureDexterity = creature.genes.dexterity; // Cellular
+const creatureIntelligence = creature.intelligence; // Organismal
+
+if (availableWood > 10 && creatureDexterity > 0.7) {
+  // Spear crafting possible
+  const spear = {
+    scale: 'organismal',
+    elementCounts: { 'C': 10, 'Si': 2 }, // From WARP provenance
+    durability: creatureDexterity * 100,  // From WEFT properties
+  };
+}
 ```
 
 ---
 
-## Key Rules
+## Critical Constraints
 
-1. **Monorepo**: Each package has single responsibility
-2. **WARP/WEFT**: Generations flow causally, scales flow hierarchically
-3. **Seed-Driven**: All generation uses deterministic seeds
-4. **Yuka AI**: Appropriate Yuka systems for each generation
-5. **Visual Blueprints**: All archetypes include rendering instructions
-6. **REST API**: Backend exposes simulation via HTTP
-7. **NO Hardcoding**: Everything emergent from seed + AI generation
+### 1. WARP Determinism
+- Same seed → Same cosmic timeline
+- Test: Duplicate seed runs must be identical
+
+### 2. WEFT Scale Separation
+- Don't mix scales (e.g., don't let atomic events directly affect galactic)
+- Data flows: Macro → Meso → Micro
+
+### 3. Conservation Laws
+- Enforced across ALL WEFT scales
+- Cannot create/destroy mass-energy
+
+### 4. Intent API Fairness
+- Player and AI at SAME scale (Population/Surface)
+- Same costs, same constraints
+
+### 5. Documentation Tiers
+- memory-bank/ = ephemeral
+- README = permanent standalone
+- docs/ = permanent technical
+
+---
+
+**For New Agent:** Read this file + `.clinerules` + `docs/COSMIC_PROVENANCE.md` before architectural changes.

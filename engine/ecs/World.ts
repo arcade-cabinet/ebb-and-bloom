@@ -2,6 +2,7 @@ import { World as MiniplexWorld } from 'miniplex';
 import type { Entity } from './components/CoreComponents';
 import { LawOrchestrator } from './core/LawOrchestrator';
 import { SpatialIndex } from './core/SpatialIndex';
+import { worldLogger } from '../logging/logger';
 
 export class World {
   private world: MiniplexWorld<Entity>;
@@ -19,13 +20,15 @@ export class World {
   async initialize(): Promise<void> {
     if (this.initialized) return;
     
+    worldLogger.debug('Initializing ECS World');
     await this.orchestrator.initialize();
     this.initialized = true;
+    worldLogger.info('ECS World initialized with law orchestrator');
   }
 
   tick(delta: number): void {
     if (!this.initialized) {
-      console.warn('World not initialized. Call initialize() first.');
+      worldLogger.warn('World not initialized');
       return;
     }
 
@@ -64,6 +67,12 @@ export class World {
       );
     }
 
+    worldLogger.debug({
+      entityId: fullEntity.entityId,
+      scale: fullEntity.scale,
+      mass: fullEntity.mass,
+    }, 'Entity added to world');
+
     return fullEntity;
   }
 
@@ -79,6 +88,12 @@ export class World {
     }
 
     this.world.remove(entity);
+    
+    worldLogger.debug({
+      entityId: entity.entityId,
+      scale: entity.scale,
+      mass: entity.mass,
+    }, 'Entity removed from world');
   }
 
   queryRadius(center: { x: number; y: number; z: number }, radius: number): Entity[] {

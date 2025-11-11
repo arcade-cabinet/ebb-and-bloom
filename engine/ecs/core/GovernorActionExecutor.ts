@@ -3,6 +3,7 @@ import type { GovernorIntent } from '../../../agents/controllers/GovernorActionP
 import type { GenesisConstants } from '../../genesis/GenesisConstants';
 import * as THREE from 'three';
 import { v4 as uuidv4 } from 'uuid';
+import { intentLogger } from '../../logging/logger';
 
 export class GovernorActionExecutor {
   private world: World;
@@ -15,47 +16,66 @@ export class GovernorActionExecutor {
     this.scene = scene;
   }
 
-  async execute(intent: GovernorIntent): Promise<void> {
-    console.log(`[GovernorActionExecutor] Executing: ${intent.type}`, intent);
+  async execute(intent: GovernorIntent): Promise<boolean> {
+    intentLogger.debug({
+      type: intent.type,
+      target: intent.target,
+      magnitude: intent.magnitude,
+    }, 'Executing governor intent');
 
+    let success = false;
+    
     switch (intent.type) {
       case 'smitePredator':
-        await this.executeSmitePredator(intent);
+        success = await this.executeSmitePredator(intent);
         break;
       case 'nurtureFood':
-        await this.executeNurtureFood(intent);
+        success = await this.executeNurtureFood(intent);
         break;
       case 'shapeTerrain':
-        await this.executeShapeTerrain(intent);
+        success = await this.executeShapeTerrain(intent);
         break;
       case 'applyPressure':
-        await this.executeApplyPressure(intent);
+        success = await this.executeApplyPressure(intent);
         break;
       case 'selectPrey':
-        await this.executeSelectPrey(intent);
+        success = await this.executeSelectPrey(intent);
         break;
       case 'formAlliance':
-        await this.executeFormAlliance(intent);
+        success = await this.executeFormAlliance(intent);
         break;
       case 'migrate':
-        await this.executeMigrate(intent);
+        success = await this.executeMigrate(intent);
         break;
       default:
-        console.warn(`[GovernorActionExecutor] Unknown action: ${intent.type}`);
+        intentLogger.warn({ type: intent.type }, 'Unknown action type');
+        return false;
     }
+    
+    if (success) {
+      intentLogger.info({ type: intent.type }, 'Intent executed successfully');
+    } else {
+      intentLogger.warn({ type: intent.type }, 'Intent execution failed or aborted');
+    }
+    
+    return success;
   }
 
-  private async executeSmitePredator(intent: GovernorIntent): Promise<void> {
-    if (typeof intent.target !== 'string') return;
+  private async executeSmitePredator(intent: GovernorIntent): Promise<boolean> {
+    if (typeof intent.target !== 'string') {
+      intentLogger.warn('Invalid target type for smitePredator');
+      return false;
+    }
     
     const predator = this.world.getEntityById(intent.target);
     if (!predator) {
-      console.warn(`[Smite] Predator ${intent.target} not found`);
-      return;
+      intentLogger.warn({ target: intent.target }, 'Predator not found');
+      return false;
     }
 
     if (predator.mass) {
       const damage = (intent.magnitude || 0.5) * predator.mass;
+      const originalMass = predator.mass;
       predator.mass = Math.max(0, predator.mass - damage);
       
       if (predator.mass <= 0) {
@@ -63,13 +83,28 @@ export class GovernorActionExecutor {
         if (predator.mesh) {
           this.scene.remove(predator.mesh as THREE.Object3D);
         }
-        console.log(`[Smite] Destroyed predator ${intent.target}`);
+        intentLogger.info({
+          target: intent.target,
+          originalMass,
+          damage,
+        }, 'Predator destroyed');
+      } else {
+        intentLogger.debug({
+          target: intent.target,
+          originalMass,
+          newMass: predator.mass,
+          damage,
+        }, 'Predator damaged');
       }
     }
+    return true;
   }
 
-  private async executeNurtureFood(intent: GovernorIntent): Promise<void> {
-    if (!(intent.target && typeof intent.target === 'object')) return;
+  private async executeNurtureFood(intent: GovernorIntent): Promise<boolean> {
+    if (!(intent.target && typeof intent.target === 'object')) {
+      intentLogger.warn('Invalid target type for nurtureFood');
+      return false;
+    }
     
     const position = intent.target as { x: number; y: number; z: number };
     const magnitude = intent.magnitude || 0.5;
@@ -110,11 +145,19 @@ export class GovernorActionExecutor {
       });
     }
 
-    console.log(`[Nurture] Spawned ${foodCount} food items at (${position.x}, ${position.z})`);
+    intentLogger.info({
+      foodCount,
+      position: { x: position.x, z: position.z },
+      magnitude,
+    }, 'Nurture food executed');
+    return true;
   }
 
-  private async executeShapeTerrain(intent: GovernorIntent): Promise<void> {
-    if (!(intent.target && typeof intent.target === 'object')) return;
+  private async executeShapeTerrain(intent: GovernorIntent): Promise<boolean> {
+    if (!(intent.target && typeof intent.target === 'object')) {
+      intentLogger.warn('Invalid target type for shapeTerrain');
+      return false;
+    }
     
     const position = intent.target as { x: number; y: number; z: number };
     const magnitude = intent.magnitude || 0.5;
@@ -131,11 +174,19 @@ export class GovernorActionExecutor {
       }
     }
     
-    console.log(`[ShapeTerrain] Modified terrain at (${position.x}, ${position.z})`);
+    intentLogger.info({
+      position: { x: position.x, z: position.z },
+      magnitude,
+      terrainCount: nearbyTerrain.length,
+    }, 'Shape terrain executed');
+    return true;
   }
 
-  private async executeApplyPressure(intent: GovernorIntent): Promise<void> {
-    if (!(intent.target && typeof intent.target === 'object')) return;
+  private async executeApplyPressure(intent: GovernorIntent): Promise<boolean> {
+    if (!(intent.target && typeof intent.target === 'object')) {
+      intentLogger.warn('Invalid target type for applyPressure');
+      return false;
+    }
     
     const position = intent.target as { x: number; y: number; z: number };
     const magnitude = intent.magnitude || 0.5;
@@ -155,21 +206,34 @@ export class GovernorActionExecutor {
       }
     }
     
-    console.log(`[Pressure] Applied stress to ${nearbyCreatures.length} creatures`);
+    intentLogger.info({
+      creatureCount: nearbyCreatures.length,
+      position: { x: position.x, z: position.z },
+      magnitude,
+    }, 'Apply pressure executed');
+    return true;
   }
 
-  private async executeSelectPrey(intent: GovernorIntent): Promise<void> {
-    console.log(`[SelectPrey] Marked ${intent.target} as prey target`);
+  private async executeSelectPrey(intent: GovernorIntent): Promise<boolean> {
+    intentLogger.info({ target: intent.target }, 'Select prey executed');
+    return true;
   }
 
-  private async executeFormAlliance(intent: GovernorIntent): Promise<void> {
-    console.log(`[Alliance] Formed alliance with ${intent.target}`);
+  private async executeFormAlliance(intent: GovernorIntent): Promise<boolean> {
+    intentLogger.info({ target: intent.target }, 'Form alliance executed');
+    return true;
   }
 
-  private async executeMigrate(intent: GovernorIntent): Promise<void> {
-    if (!(intent.target && typeof intent.target === 'object')) return;
+  private async executeMigrate(intent: GovernorIntent): Promise<boolean> {
+    if (!(intent.target && typeof intent.target === 'object')) {
+      intentLogger.warn('Invalid target type for migrate');
+      return false;
+    }
     
     const newPosition = intent.target as { x: number; y: number; z: number };
-    console.log(`[Migrate] Moving species to (${newPosition.x}, ${newPosition.z})`);
+    intentLogger.info({
+      newPosition: { x: newPosition.x, z: newPosition.z },
+    }, 'Migrate executed');
+    return true;
   }
 }
