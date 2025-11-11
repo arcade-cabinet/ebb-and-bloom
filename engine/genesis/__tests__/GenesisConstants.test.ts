@@ -2,28 +2,36 @@
  * GenesisConstants Test Suite
  * 
  * Comprehensive tests for the Genesis Constants system.
+ * Uses test fixtures, factories, and parameterized tests.
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import { GenesisConstants } from '../GenesisConstants';
 import { PHYSICS_CONSTANTS } from '../../../agents/tables/physics-constants';
+import { rngRegistry } from '../../rng/RNGRegistry';
+import { createTestGenesis } from '../../../tests/factories/cosmicFactories';
 
 describe('GenesisConstants', () => {
   let genesis: GenesisConstants;
 
   beforeEach(() => {
-    genesis = new GenesisConstants('test-seed-42');
+    genesis = createTestGenesis();
   });
 
   describe('Constructor and Initialization', () => {
-    it('should create GenesisConstants from seed', () => {
+    it('should create GenesisConstants from RNG', () => {
       expect(genesis).toBeDefined();
       expect(genesis.getTimeline()).toBeDefined();
     });
 
     it('should produce deterministic constants for same seed', () => {
-      const genesis1 = new GenesisConstants('deterministic-seed');
-      const genesis2 = new GenesisConstants('deterministic-seed');
+      rngRegistry.reset();
+      rngRegistry.setSeed('deterministic-seed');
+      const genesis1 = createTestGenesis();
+      
+      rngRegistry.reset();
+      rngRegistry.setSeed('deterministic-seed');
+      const genesis2 = createTestGenesis();
 
       const constants1 = genesis1.getConstants();
       const constants2 = genesis2.getConstants();
@@ -35,8 +43,11 @@ describe('GenesisConstants', () => {
     });
 
     it('should produce different constants for different seeds', () => {
-      const genesis1 = new GenesisConstants('seed-alpha');
-      const genesis2 = new GenesisConstants('seed-beta');
+      rngRegistry.setSeed('seed-alpha');
+      const genesis1 = createTestGenesis();
+      
+      rngRegistry.setSeed('seed-beta');
+      const genesis2 = createTestGenesis();
 
       const constants1 = genesis1.getConstants();
       const constants2 = genesis2.getConstants();
@@ -47,10 +58,13 @@ describe('GenesisConstants', () => {
   });
 
   describe('Cosmic Constants', () => {
-    it('should have valid time dilation constant', () => {
+    it.each([
+      { name: 'time_dilation', min: 0, max: 10 },
+      { name: 'expansion_rate', min: 40, max: 120 },
+    ])('should have valid $name', ({ name, min, max }) => {
       const constants = genesis.getConstants();
-      expect(constants.time_dilation).toBeGreaterThan(0);
-      expect(constants.time_dilation).toBeLessThan(10);
+      expect(constants[name]).toBeGreaterThan(min);
+      expect(constants[name]).toBeLessThan(max);
     });
 
     it('should have valid entropy baseline', () => {
@@ -59,16 +73,8 @@ describe('GenesisConstants', () => {
       expect(Number.isFinite(constants.entropy_baseline)).toBe(true);
     });
 
-    it('should have valid expansion rate', () => {
-      const constants = genesis.getConstants();
-      // Hubble constant: roughly 50-100 km/s/Mpc
-      expect(constants.expansion_rate).toBeGreaterThan(40);
-      expect(constants.expansion_rate).toBeLessThan(120);
-    });
-
     it('should have valid cosmic curvature', () => {
       const constants = genesis.getConstants();
-      // Universe is nearly flat: |Ω_k| < 0.01
       expect(Math.abs(constants.cosmic_curvature)).toBeLessThan(0.1);
     });
   });
@@ -81,22 +87,19 @@ describe('GenesisConstants', () => {
       expect(sum).toBeLessThan(1.05);
     });
 
-    it('should have dominant hydrogen fraction', () => {
+    it.each([
+      { element: 'hydrogen_fraction', min: 0.7, max: 0.8 },
+      { element: 'lithium_fraction', min: 0, max: 1e-8 },
+    ])('should have $element in expected range', ({ element, min, max }) => {
       const constants = genesis.getConstants();
-      expect(constants.hydrogen_fraction).toBeGreaterThan(0.7);
-      expect(constants.hydrogen_fraction).toBeLessThan(0.8);
-    });
-
-    it('should have lithium as trace element', () => {
-      const constants = genesis.getConstants();
-      expect(constants.lithium_fraction).toBeLessThan(1e-8);
+      expect(constants[element]).toBeGreaterThan(min);
+      expect(constants[element]).toBeLessThan(max);
     });
   });
 
   describe('Stellar Properties', () => {
     it('should have reasonable stellar mass', () => {
       const constants = genesis.getConstants();
-      // Main sequence stars: 0.08 - 100 solar masses
       const massRatio = constants.stellar_mass / PHYSICS_CONSTANTS.SOLAR_MASS;
       expect(massRatio).toBeGreaterThan(0.05);
       expect(massRatio).toBeLessThan(200);
@@ -107,7 +110,6 @@ describe('GenesisConstants', () => {
       const massRatio = constants.stellar_mass / PHYSICS_CONSTANTS.SOLAR_MASS;
       const expectedLuminosity = PHYSICS_CONSTANTS.SOLAR_LUMINOSITY * Math.pow(massRatio, 3.5);
       
-      // Should be within order of magnitude
       expect(constants.stellar_luminosity).toBeGreaterThan(expectedLuminosity * 0.5);
       expect(constants.stellar_luminosity).toBeLessThan(expectedLuminosity * 2.0);
     });
@@ -121,7 +123,6 @@ describe('GenesisConstants', () => {
   describe('Planetary Properties', () => {
     it('should have reasonable planet mass', () => {
       const constants = genesis.getConstants();
-      // Terrestrial planets: 0.01 - 10 Earth masses
       const massRatio = constants.planet_mass / PHYSICS_CONSTANTS.EARTH_MASS;
       expect(massRatio).toBeGreaterThan(0.001);
       expect(massRatio).toBeLessThan(100);
@@ -132,8 +133,8 @@ describe('GenesisConstants', () => {
       expect(constants.planet_radius).toBeGreaterThan(0);
       expect(Number.isFinite(constants.planet_radius)).toBe(true);
       
-      // Rough check: larger mass → larger radius
-      const genesis2 = new GenesisConstants('high-mass-planet');
+      rngRegistry.setSeed('high-mass-planet');
+      const genesis2 = createTestGenesis();
       const c2 = genesis2.getConstants();
       
       if (c2.planet_mass > constants.planet_mass) {
@@ -151,7 +152,6 @@ describe('GenesisConstants', () => {
 
     it('should have reasonable orbital radius', () => {
       const constants = genesis.getConstants();
-      // Planets orbit between 0.1 - 50 AU typically
       const radiusAU = constants.orbital_radius / PHYSICS_CONSTANTS.AU;
       expect(radiusAU).toBeGreaterThan(0.01);
       expect(radiusAU).toBeLessThan(100);
@@ -168,15 +168,13 @@ describe('GenesisConstants', () => {
       expect(sum).toBeLessThan(1.05);
     });
 
-    it('should have core fraction between 0.2 and 0.5', () => {
+    it.each([
+      { property: 'core_fraction', min: 0.15, max: 0.55 },
+      { property: 'magnetic_field', min: 0, max: Infinity },
+    ])('should have $property in range', ({ property, min, max }) => {
       const constants = genesis.getConstants();
-      expect(constants.core_fraction).toBeGreaterThan(0.15);
-      expect(constants.core_fraction).toBeLessThan(0.55);
-    });
-
-    it('should have positive magnetic field', () => {
-      const constants = genesis.getConstants();
-      expect(constants.magnetic_field).toBeGreaterThan(0);
+      expect(constants[property]).toBeGreaterThan(min);
+      expect(constants[property]).toBeLessThan(max);
     });
 
     it('should have reasonable crust thickness', () => {
@@ -205,28 +203,21 @@ describe('GenesisConstants', () => {
 
     it('should have realistic atmospheric pressure', () => {
       const constants = genesis.getConstants();
-      // 0.01 atm (Mars) to 100 atm (Venus-like)
       expect(constants.atmospheric_pressure).toBeGreaterThan(1000);
       expect(constants.atmospheric_pressure).toBeLessThan(10000000);
     });
   });
 
   describe('Chemistry and Life', () => {
-    it('should have pH in reasonable range', () => {
+    it.each([
+      { property: 'ph_value', min: 0, max: 14 },
+      { property: 'organic_carbon_concentration', min: 0, max: Infinity },
+      { property: 'amino_acid_formation_rate', min: 0, max: Infinity },
+    ])('should have valid $property', ({ property, min, max }) => {
       const constants = genesis.getConstants();
-      expect(constants.ph_value).toBeGreaterThan(0);
-      expect(constants.ph_value).toBeLessThan(14);
-    });
-
-    it('should have positive organic carbon concentration', () => {
-      const constants = genesis.getConstants();
-      expect(constants.organic_carbon_concentration).toBeGreaterThan(0);
-    });
-
-    it('should have amino acid formation rate', () => {
-      const constants = genesis.getConstants();
-      expect(constants.amino_acid_formation_rate).toBeGreaterThan(0);
-      expect(Number.isFinite(constants.amino_acid_formation_rate)).toBe(true);
+      expect(constants[property]).toBeGreaterThan(min);
+      expect(constants[property]).toBeLessThan(max);
+      expect(Number.isFinite(constants[property])).toBe(true);
     });
   });
 
@@ -236,18 +227,16 @@ describe('GenesisConstants', () => {
       expect(constants.solar_constant).toBeGreaterThan(0);
     });
 
-    it('should have solar constant decrease with distance', () => {
-      // Create two planets at different distances
-      const closeGenesis = new GenesisConstants('close-planet');
-      const farGenesis = new GenesisConstants('far-planet');
+    it('should have solar constant follow inverse square law', () => {
+      const constants = genesis.getConstants();
       
-      const closeConstants = closeGenesis.getConstants();
-      const farConstants = farGenesis.getConstants();
+      // Solar constant should equal L / (4π r²)
+      const expectedSolarConstant = constants.stellar_luminosity / 
+        (4 * Math.PI * constants.orbital_radius * constants.orbital_radius);
       
-      // If far planet is actually farther, it should have lower solar constant
-      if (farConstants.orbital_radius > closeConstants.orbital_radius) {
-        expect(farConstants.solar_constant).toBeLessThan(closeConstants.solar_constant);
-      }
+      // Should be within order of magnitude (accounting for variations)
+      expect(constants.solar_constant).toBeGreaterThan(expectedSolarConstant * 0.5);
+      expect(constants.solar_constant).toBeLessThan(expectedSolarConstant * 2.0);
     });
 
     it('should have positive UV index', () => {
@@ -257,17 +246,19 @@ describe('GenesisConstants', () => {
   });
 
   describe('Volatile Delivery', () => {
-    it('should have water delivery rate', () => {
+    it.each([
+      { property: 'water_delivery_rate', min: 0, max: Infinity },
+    ])('should have valid $property', ({ property, min, max }) => {
       const constants = genesis.getConstants();
-      expect(constants.water_delivery_rate).toBeGreaterThan(0);
-      expect(Number.isFinite(constants.water_delivery_rate)).toBe(true);
+      expect(constants[property]).toBeGreaterThan(min);
+      expect(constants[property]).toBeLessThan(max);
+      expect(Number.isFinite(constants[property])).toBe(true);
     });
 
     it('should have volatile ratios summing to reasonable value', () => {
       const constants = genesis.getConstants();
       const sum = Object.values(constants.volatile_ratios).reduce((a, b) => a + b, 0);
       
-      // Total volatiles should be < 100% of planet mass
       expect(sum).toBeGreaterThan(0);
       expect(sum).toBeLessThan(2.0);
     });
@@ -298,31 +289,28 @@ describe('GenesisConstants', () => {
       expect(constants.habitable_zone_inner).toBeLessThan(constants.habitable_zone_outer);
     });
 
-    it('should have positive tidal locking timescale', () => {
+    it.each([
+      { property: 'tidal_locking_timescale', min: 0, max: Infinity },
+      { property: 'surface_temperature', min: 50, max: 2000 },
+    ])('should have valid $property', ({ property, min, max }) => {
       const constants = genesis.getConstants();
-      expect(constants.tidal_locking_timescale).toBeGreaterThan(0);
-      expect(Number.isFinite(constants.tidal_locking_timescale)).toBe(true);
-    });
-
-    it('should have reasonable surface temperature', () => {
-      const constants = genesis.getConstants();
-      // 50 K (frozen) to 2000 K (very hot, but still allows interesting universes)
-      expect(constants.surface_temperature).toBeGreaterThan(50);
-      expect(constants.surface_temperature).toBeLessThan(2000);
+      expect(constants[property]).toBeGreaterThan(min);
+      expect(constants[property]).toBeLessThan(max);
+      expect(Number.isFinite(constants[property])).toBe(true);
     });
   });
 
   describe('Convenience Getters', () => {
-    it('should provide gravity getter', () => {
-      expect(genesis.getGravity()).toBe(genesis.getConstants().gravity);
-    });
-
-    it('should provide metallicity getter', () => {
-      expect(genesis.getMetallicity()).toBe(genesis.getConstants().metallicity);
-    });
-
-    it('should provide solar radiation getter', () => {
-      expect(genesis.getSolarRadiation()).toBe(genesis.getConstants().solar_constant);
+    it.each([
+      { getter: 'getGravity', property: 'gravity' },
+      { getter: 'getMetallicity', property: 'metallicity' },
+      { getter: 'getSolarRadiation', property: 'solar_constant' },
+      { getter: 'getOrganicFormationRate', property: 'amino_acid_formation_rate' },
+      { getter: 'getSurfaceTemperature', property: 'surface_temperature' },
+      { getter: 'getPlanetRadius', property: 'planet_radius' },
+      { getter: 'getEscapeVelocity', property: 'escape_velocity' },
+    ])('$getter should return $property', ({ getter, property }) => {
+      expect(genesis[getter]()).toBe(genesis.getConstants()[property]);
     });
 
     it('should provide atmospheric composition getter', () => {
@@ -334,22 +322,6 @@ describe('GenesisConstants', () => {
       const ratios = genesis.getVolatileRatios();
       expect(ratios).toEqual(genesis.getConstants().volatile_ratios);
     });
-
-    it('should provide organic formation rate getter', () => {
-      expect(genesis.getOrganicFormationRate()).toBe(genesis.getConstants().amino_acid_formation_rate);
-    });
-
-    it('should provide surface temperature getter', () => {
-      expect(genesis.getSurfaceTemperature()).toBe(genesis.getConstants().surface_temperature);
-    });
-
-    it('should provide planet radius getter', () => {
-      expect(genesis.getPlanetRadius()).toBe(genesis.getConstants().planet_radius);
-    });
-
-    it('should provide escape velocity getter', () => {
-      expect(genesis.getEscapeVelocity()).toBe(genesis.getConstants().escape_velocity);
-    });
   });
 
   describe('Validation System', () => {
@@ -359,11 +331,10 @@ describe('GenesisConstants', () => {
     });
 
     it('should validate gravity range', () => {
-      // Create extreme cases
-      const extremeGenesis = new GenesisConstants('extreme-gravity-test');
+      rngRegistry.setSeed('extreme-gravity-test');
+      const extremeGenesis = createTestGenesis();
       const warnings = extremeGenesis.getWarnings();
       
-      // Warnings should be structured correctly
       warnings.forEach(warning => {
         expect(warning).toHaveProperty('parameter');
         expect(warning).toHaveProperty('value');
@@ -381,10 +352,12 @@ describe('GenesisConstants', () => {
       });
     });
 
-    it('should not throw on extreme values', () => {
-      // Even extreme universes should be calculable
-      expect(() => new GenesisConstants('extreme-test-1')).not.toThrow();
-      expect(() => new GenesisConstants('extreme-test-2')).not.toThrow();
+    it.each([
+      { seed: 'extreme-test-1' },
+      { seed: 'extreme-test-2' },
+    ])('should not throw on extreme values ($seed)', ({ seed }) => {
+      rngRegistry.setSeed(seed);
+      expect(() => createTestGenesis()).not.toThrow();
     });
   });
 
@@ -395,15 +368,16 @@ describe('GenesisConstants', () => {
       expect(timeline.getStages).toBeDefined();
     });
 
-    it('should use timeline constants', () => {
+    it.each([
+      { constant: 'hydrogen_fraction' },
+      { constant: 'helium_fraction' },
+      { constant: 'metallicity' },
+    ])('should map timeline $constant to genesis', ({ constant }) => {
       const timeline = genesis.getTimeline();
       const timelineConstants = timeline.getAllConstants();
       const genesisConstants = genesis.getConstants();
 
-      // Direct mapping
-      expect(genesisConstants.hydrogen_fraction).toBe(timelineConstants.hydrogen_fraction);
-      expect(genesisConstants.helium_fraction).toBe(timelineConstants.helium_fraction);
-      expect(genesisConstants.metallicity).toBe(timelineConstants.metallicity);
+      expect(genesisConstants[constant]).toBe(timelineConstants[constant]);
     });
   });
 
@@ -411,24 +385,19 @@ describe('GenesisConstants', () => {
     it('should have physically consistent planetary system', () => {
       const constants = genesis.getConstants();
       
-      // Planet should be within stellar Hill sphere (very rough check)
-      const stellarHillSphere = 1000 * PHYSICS_CONSTANTS.AU; // Rough stellar influence
+      const stellarHillSphere = 1000 * PHYSICS_CONSTANTS.AU;
       expect(constants.orbital_radius).toBeLessThan(stellarHillSphere);
     });
 
     it('should have energy balance consistent', () => {
       const constants = genesis.getConstants();
       
-      // Solar constant should produce reasonable surface temperature
       const receivedPower = constants.solar_constant;
-      const earthSolarConstant = 1361; // W/m²
+      const earthSolarConstant = 1361;
       
-      // Temperature should scale roughly with power^0.25
-      const earthTemp = 288; // K
+      const earthTemp = 288;
       const expectedTemp = earthTemp * Math.pow(receivedPower / earthSolarConstant, 0.25);
       
-      // Should be within factor of 5 (greenhouse effect and albedo vary greatly)
-      // Extreme greenhouse (Venus) or extreme albedo (ice world) can produce large variations
       expect(constants.surface_temperature).toBeGreaterThan(expectedTemp * 0.3);
       expect(constants.surface_temperature).toBeLessThan(expectedTemp * 5.0);
     });
@@ -436,41 +405,37 @@ describe('GenesisConstants', () => {
     it('should have escape velocity prevent atmosphere loss for larger planets', () => {
       const constants = genesis.getConstants();
       
-      // Molecular velocity of H2 at 300K
       const kT = PHYSICS_CONSTANTS.k_B * 300;
-      const m_H2 = 2 * 1.67e-27; // kg (2 protons)
+      const m_H2 = 2 * 1.67e-27;
       const v_thermal = Math.sqrt(3 * kT / m_H2);
       
-      // Escape velocity should be >> thermal velocity for atmosphere retention
-      // Factor of 6 is typical threshold
       const canRetainH2 = constants.escape_velocity > 6 * v_thermal;
       
-      // This is info, not assertion - some planets can't retain H2
       expect(typeof canRetainH2).toBe('boolean');
     });
   });
 
   describe('Regression Tests', () => {
     it('should match known Earth-like values for Earth-like seed', () => {
-      const earthLike = new GenesisConstants('earth-analog-seed');
+      rngRegistry.setSeed('earth-analog-seed');
+      const earthLike = createTestGenesis();
       const constants = earthLike.getConstants();
       
-      // Should produce vaguely Earth-like values (within order of magnitude)
       const gravityRatio = constants.gravity / 9.81;
       expect(gravityRatio).toBeGreaterThan(0.1);
       expect(gravityRatio).toBeLessThan(10);
     });
 
     it('should produce stable results across multiple instantiations', () => {
-      const seed = 'stability-test';
       const results: number[] = [];
       
       for (let i = 0; i < 5; i++) {
-        const g = new GenesisConstants(seed);
+        rngRegistry.reset();
+        rngRegistry.setSeed('stability-test');
+        const g = createTestGenesis();
         results.push(g.getGravity());
       }
       
-      // All should be identical
       const first = results[0];
       results.forEach(r => expect(r).toBe(first));
     });
