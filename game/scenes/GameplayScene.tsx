@@ -157,17 +157,25 @@ function World() {
   const { seed, world } = useGameState();
   const [isReady, setIsReady] = useState(false);
   const spawnedRef = useRef(false);
+  const initializedRef = useRef(false);
 
   useEffect(() => {
+    if (initializedRef.current) {
+      console.log('🌍 World already initialized (ref guard)');
+      return;
+    }
+
     const { isInitialized } = useGameState.getState();
 
     if (isInitialized) {
       console.log('🌍 World already initialized');
       setIsReady(true);
+      initializedRef.current = true;
       return;
     }
 
     console.log(`🌍 Initializing unified world with seed: ${seed}`);
+    initializedRef.current = true;
 
     const { initializeWorld } = useGameState.getState();
     initializeWorld(seed, scene, camera, 'auto').then(() => {
@@ -185,14 +193,7 @@ function World() {
       setIsReady(true);
       console.log('🌍 World initialized with law-based ECS');
     });
-
-    return () => {
-      console.log('🧹 Cleaning up world (component unmounting)');
-      const { dispose } = useGameState.getState();
-      dispose();
-      spawnedRef.current = false;
-    };
-  }, [scene, camera, seed]);
+  }, [seed]);
 
   useFrame((_state, delta) => {
     if (!isReady || !world) return;

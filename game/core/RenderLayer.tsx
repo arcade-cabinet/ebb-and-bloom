@@ -4,14 +4,14 @@ import { SceneManager } from '../scenes/SceneManager';
 const sceneManager = SceneManager.getInstance();
 
 export function RenderLayer() {
-  const [, setTick] = useState(0);
+  const [scenes, setScenes] = useState<any[]>(sceneManager.getScenes());
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTick(t => t + 1);
-    }, 16);
+    const unsubscribe = sceneManager.onSceneChange(() => {
+      setScenes([...sceneManager.getScenes()]);
+    });
 
-    return () => clearInterval(interval);
+    return unsubscribe;
   }, []);
 
   useEffect(() => {
@@ -26,8 +26,6 @@ export function RenderLayer() {
 
     return () => cancelAnimationFrame(animationFrame);
   }, []);
-
-  const scenes = sceneManager.getScenes();
 
   return (
     <div style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>

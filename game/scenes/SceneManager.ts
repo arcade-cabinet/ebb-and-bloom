@@ -20,6 +20,7 @@ export class SceneManager {
     loadingMessage: '',
   };
   private transitionListeners: Set<() => void> = new Set();
+  private sceneChangeListeners: Set<() => void> = new Set();
   
   private constructor() {}
   
@@ -35,12 +36,21 @@ export class SceneManager {
     return () => this.transitionListeners.delete(listener);
   }
   
+  onSceneChange(listener: () => void): () => void {
+    this.sceneChangeListeners.add(listener);
+    return () => this.sceneChangeListeners.delete(listener);
+  }
+  
   getTransitionState(): TransitionState {
     return { ...this.transitionState };
   }
   
   private notifyTransitionListeners(): void {
     this.transitionListeners.forEach(listener => listener());
+  }
+  
+  private notifySceneChangeListeners(): void {
+    this.sceneChangeListeners.forEach(listener => listener());
   }
   
   private async fadeOut(duration: number): Promise<void> {
@@ -147,6 +157,7 @@ export class SceneManager {
       await newScene.enter();
       
       this.sceneStack.push(newScene);
+      this.notifySceneChangeListeners();
       
       if (loadingMessage) {
         this.setLoadingMessage('');
@@ -193,6 +204,7 @@ export class SceneManager {
       await newScene.enter();
       
       this.sceneStack.push(newScene);
+      this.notifySceneChangeListeners();
     } finally {
       this.isTransitioning = false;
     }
@@ -213,6 +225,7 @@ export class SceneManager {
     
     try {
       const currentScene = this.sceneStack.pop();
+      this.notifySceneChangeListeners();
       if (currentScene) {
         await currentScene.exit();
         
