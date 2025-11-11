@@ -6,9 +6,9 @@
  * Monitors Vite dev server memory usage and generates reports
  */
 
-import { spawn } from 'child_process';
-import { writeFileSync } from 'fs';
-import { performance } from 'perf_hooks';
+const { spawn } = require('child_process');
+const { writeFileSync } = require('fs');
+const { performance } = require('perf_hooks');
 
 const samples = [];
 let startTime = performance.now();
@@ -25,7 +25,6 @@ const vite = spawn('node', [
   '--host',
   '0.0.0.0'
 ], {
-  cwd: 'game',
   stdio: 'inherit'
 });
 

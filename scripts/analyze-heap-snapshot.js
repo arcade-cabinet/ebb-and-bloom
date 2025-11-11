@@ -6,8 +6,7 @@
  * Takes heap snapshots and compares them to find leaks
  */
 
-import v8 from 'v8';
-import { writeFileSync } from 'fs';
+const v8 = require('v8');
 
 console.log('📸 Taking initial heap snapshot...');
 const snapshot1 = v8.writeHeapSnapshot('./heap-snapshot-1.heapsnapshot');
