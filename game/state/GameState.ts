@@ -6,6 +6,8 @@ import { EnhancedRNG } from '../../engine/utils/EnhancedRNG';
 import { GenesisConstants } from '../../engine/genesis/GenesisConstants';
 import { CosmicProvenanceTimeline } from '../../engine/genesis/CosmicProvenanceTimeline';
 import { World } from '../../engine/ecs/World';
+import { GovernorActionExecutor } from '../../engine/ecs/core/GovernorActionExecutor';
+import type { GovernorIntent } from '../../agents/controllers/GovernorActionPort';
 
 export type { Entity } from '../../engine/ecs/components/CoreComponents';
 
@@ -21,6 +23,9 @@ interface GameState {
   // === CORE: ECS World ===
   world: World | null;
   
+  // === UNIFIED GOVERNOR INTERFACE ===
+  governorExecutor: GovernorActionExecutor | null;
+  
   // === Three.js Context ===
   scene: THREE.Scene | null;
   camera: THREE.Camera | null;
@@ -29,6 +34,7 @@ interface GameState {
   initializeWorld: (seed: string, scene: THREE.Scene, camera: THREE.Camera, source?: 'user' | 'auto') => Promise<void>;
   dispose: () => void;
   getScopedRNG: (namespace: string) => EnhancedRNG;
+  executeGovernorIntent: (intent: GovernorIntent) => Promise<void>;
   
   isInitialized: boolean;
 }
@@ -41,6 +47,7 @@ export const useGameState = create<GameState>()(
       genesisConstants: null,
       cosmicTimeline: null,
       world: null,
+      governorExecutor: null,
       scene: null,
       camera: null,
       isInitialized: false,
@@ -72,6 +79,9 @@ export const useGameState = create<GameState>()(
         await ecsWorld.initialize();
         console.log('[GameState] ✅ ECS World with law orchestrator created');
         
+        const executor = new GovernorActionExecutor(ecsWorld, genesis, scene);
+        console.log('[GameState] ✅ Governor action executor created');
+        
         console.log('[GameState] ✅ Three.js scene/camera refs stored');
         
         set({
@@ -80,6 +90,7 @@ export const useGameState = create<GameState>()(
           genesisConstants: genesis,
           cosmicTimeline: timeline,
           world: ecsWorld,
+          governorExecutor: executor,
           scene,
           camera,
           isInitialized: true
@@ -106,10 +117,19 @@ export const useGameState = create<GameState>()(
         
         set({
           world: null,
+          governorExecutor: null,
           scene: null,
           camera: null,
           isInitialized: false
         });
+      },
+      
+      executeGovernorIntent: async (intent: GovernorIntent) => {
+        const { governorExecutor } = get();
+        if (!governorExecutor) {
+          throw new Error('❌ Governor executor not initialized! Call initializeWorld() first.');
+        }
+        await governorExecutor.execute(intent);
       },
     }),
     {
