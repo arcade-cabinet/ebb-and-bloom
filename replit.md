@@ -96,6 +96,19 @@ Visuals and structures are created through chemical synthesis, eliminating the n
 - `agents/`: Governors, law tables, and Yuka agent classes.
 - `generation/`: DFU-compatible world spawners (ChunkManager, BiomeSystem).
 - `game/`: React UI and game-specific components (HUD, Game.tsx).
+- `tests/`: Centralized test infrastructure (fixtures, factories, helpers).
+
+**Testing Infrastructure:**
+- **Fixtures** (`tests/fixtures/`): Shared test setup (RNG, audio, haptics mocks)
+  - `rngFixture.ts`: Global RNG auto-reset, `withSeed()` helper for determinism
+- **Factories** (`tests/factories/`): Test data generation
+  - `cosmicFactories.ts`: `createTestGenesis()`, `createTestTimeline()`, `createTestStageContext()`
+- **Helpers** (`tests/helpers/`): Shared test utilities
+- **Conventions:**
+  - Use RNGRegistry exclusively (never instantiate EnhancedRNG directly)
+  - Prefer parameterized tests (`test.each`) over repetitive test functions
+  - Use factories for consistent object creation
+  - Leverage Playwright codegen for E2E test generation
 
 ## External Dependencies
 
