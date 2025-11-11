@@ -4,7 +4,6 @@ import { PointerLockControls, Stats, PerformanceMonitor, AdaptiveDpr, AdaptiveEv
 import { Button, Box } from '@mui/material';
 import { BaseScene } from './BaseScene';
 import { SceneManager } from './SceneManager';
-import { WorldManager } from '../../engine/core/WorldManager';
 import { WorldProvider } from '../ui/WorldContext';
 import { HUD } from '../ui/hud/HUD';
 import { useGameState } from '../state/GameState';
@@ -32,10 +31,9 @@ export class GameplayScene extends BaseScene {
   async dispose(): Promise<void> {
     console.log('GameplayScene: Disposing world resources');
     
-    if (worldRef.current) {
-      await worldRef.current.dispose();
-      worldRef.current = null;
-    }
+    // Use GameState disposal
+    const { dispose } = useGameState.getState();
+    dispose();
     
     const resourceManager = RenderResourceManager.getInstance();
     resourceManager.disposeScene(this.sceneId);
@@ -55,43 +53,50 @@ interface GameplaySceneComponentProps {
   manager: SceneManager;
 }
 
-const worldRef = { current: null as WorldManager | null };
-
 function World() {
   const { scene, camera } = useThree();
-  const { currentSeed } = useGameState();
+  const { seed, world } = useGameState();
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    console.log(`🌍 Initializing world with seed: ${currentSeed}`);
+    // Check if already initialized WITHOUT adding to deps (prevents cleanup loop)
+    const { isInitialized } = useGameState.getState();
+    
+    if (isInitialized) {
+      console.log('🌍 World already initialized');
+      setIsReady(true);
+      return;
+    }
 
-    const world = new WorldManager();
-    world.initialize({
-      seed: currentSeed,
-      scene,
-      camera,
-      chunkDistance: 3
-    });
+    console.log(`🌍 Initializing unified world with seed: ${seed}`);
 
-    worldRef.current = world;
+    // UNIFIED INITIALIZATION
+    const { initializeWorld } = useGameState.getState();
+    initializeWorld(seed, scene, camera, 'auto');
+    
     setIsReady(true);
+    console.log('🌍 World initialized using UNIFIED GameState');
 
-    console.log('🌍 World initialized using WorldManager API');
-
+    // Cleanup ONLY runs on unmount (when scene/camera/seed changes)
     return () => {
+      console.log('🧹 Cleaning up world (component unmounting)');
+      const { dispose } = useGameState.getState();
+      dispose();
     };
-  }, [scene, camera, currentSeed]);
+  }, [scene, camera, seed]);
 
-  useFrame((_state, delta) => {
-    if (!isReady || !worldRef.current) return;
-    worldRef.current.update(delta);
+  useFrame((_state, _delta) => {
+    if (!isReady || !world) return;
+    
+    // Phase 2 will add ECS systems here
+    // For now, world exists but has no entities/systems
   });
 
   return null;
 }
 
 function GameplaySceneComponent({ manager }: GameplaySceneComponentProps) {
-  const { currentSeed } = useGameState();
+  const { seed } = useGameState();
   const [dpr, setDpr] = useState(1);
 
   useEffect(() => {
@@ -106,7 +111,7 @@ function GameplaySceneComponent({ manager }: GameplaySceneComponentProps) {
   }, [manager]);
 
   return (
-    <WorldProvider world={worldRef.current} seed={currentSeed}>
+    <WorldProvider world={null} seed={seed}>
       <TransitionWrapper fadeIn duration={1000} delay={0}>
         <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
           <Canvas

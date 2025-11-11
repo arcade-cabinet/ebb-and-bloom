@@ -67,8 +67,7 @@ export class WorldManager {
             this.scene,
             this.seed,
             this.entityManager,
-            config.chunkDistance || 3,
-            this.genesisConstants
+            config.chunkDistance || 3
         );
 
         // Load initial terrain chunks (pure engine - no governor)

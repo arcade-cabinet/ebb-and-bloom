@@ -44,7 +44,6 @@ interface MenuSceneComponentProps {
 }
 
 function MenuSceneComponent({ manager }: MenuSceneComponentProps) {
-  const { setCurrentSeed } = useGameState();
   const [seed, setSeed] = useState<string>('');
   const [seedValid, setSeedValid] = useState(true);
   const [copied, setCopied] = useState(false);
@@ -85,11 +84,13 @@ function MenuSceneComponent({ manager }: MenuSceneComponentProps) {
   const handleNewGame = async () => {
     if (seedValid) {
       try {
-        setCurrentSeed(seed);
+        // Don't initialize here - we need scene/camera from GameplayScene
+        // Just validate and navigate
+        useGameState.setState({ seed, seedSource: 'user' });
         await manager.changeScene('intro');
       } catch (err) {
-        console.error('Failed to start game:', err);
-        setError('Failed to start game. Please try again.');
+        console.error('Failed to set seed:', err);
+        setError('Failed to set seed. Please try again.');
       }
     }
   };

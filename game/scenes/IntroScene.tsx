@@ -2,6 +2,7 @@ import { BaseScene } from './BaseScene';
 import { SceneManager } from './SceneManager';
 import { CosmicExpansionFMV } from '../components/CosmicExpansionFMV';
 import { GenesisConstants } from '../../engine/genesis/GenesisConstants';
+import { CosmicProvenanceTimeline } from '../../engine/genesis/CosmicProvenanceTimeline';
 import { useGameState } from '../state/GameState';
 import { TransitionWrapper } from '../ui/TransitionWrapper';
 import { RenderResourceManager } from '../core/RenderResourceManager';
@@ -46,23 +47,33 @@ interface IntroSceneComponentProps {
 }
 
 function IntroSceneComponent({ manager }: IntroSceneComponentProps) {
-  const { currentSeed, setGenesisConstants } = useGameState();
+  const { seed, genesisConstants, cosmicTimeline } = useGameState();
+  
+  // Genesis should already exist from GameplayScene initialization
+  // If it doesn't exist yet, IntroScene will receive it from FMV completion
   
   const handleComplete = (constants: GenesisConstants) => {
-    console.log('Cosmic expansion complete, storing genesis constants');
-    setGenesisConstants(constants);
+    console.log('✅ Cosmic expansion visualization complete');
+    
+    // Store genesis/timeline if not already present
+    // Note: FMV currently only provides genesis, timeline will be added in Phase 3
+    if (!genesisConstants) {
+      console.log('📝 Storing genesis constants from FMV');
+      useGameState.setState({ genesisConstants: constants });
+    }
+    
     manager.changeScene('gameplay');
   };
   
   const handleSkip = () => {
-    console.log('Skipping intro, transitioning to gameplay');
+    console.log('⏭️ Skipping intro visualization');
     manager.changeScene('gameplay');
   };
   
   return (
     <TransitionWrapper fadeIn duration={800} delay={0}>
       <CosmicExpansionFMV 
-        seed={currentSeed}
+        seed={seed}
         onComplete={handleComplete}
         onSkip={handleSkip}
         autoPlay={true}
