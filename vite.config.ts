@@ -27,6 +27,9 @@ export default defineConfig({
       overlay: false,
       timeout: 30000
     },
+    fs: {
+      strict: false
+    },
     watch: {
       ignored: [
         '**/tsconfig*.json',

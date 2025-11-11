@@ -10,6 +10,9 @@ const sceneManager = SceneManager.getInstance();
 export function RenderLayer() {
   const [scenes, setScenes] = useState<any[]>(sceneManager.getScenes());
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const rendererRef = useRef<THREE.Renderer | null>(null);
+  const sceneRef = useRef<THREE.Scene | null>(null);
+  const cameraRef = useRef<THREE.Camera | null>(null);
 
   useEffect(() => {
     const unsubscribe = sceneManager.onSceneChange(() => {
@@ -56,6 +59,41 @@ export function RenderLayer() {
 
       // Clear all cached geometries and materials
       THREE.Cache.clear();
+
+      // Comprehensive cleanup
+      if (sceneRef.current) {
+        sceneRef.current.traverse((object: any) => {
+          if (object.geometry) {
+            object.geometry.dispose();
+          }
+          if (object.material) {
+            if (Array.isArray(object.material)) {
+              object.material.forEach((material: any) => material.dispose());
+            } else {
+              object.material.dispose();
+            }
+          }
+          if (object.texture) {
+            object.texture.dispose();
+          }
+        });
+        sceneRef.current.clear();
+      }
+
+      if (rendererRef.current) {
+        rendererRef.current.renderLists.dispose();
+        rendererRef.current.dispose();
+        rendererRef.current.forceContextLoss();
+      }
+
+      if (cameraRef.current) {
+        cameraRef.current = null;
+      }
+
+      // Force garbage collection hint
+      if (global.gc) {
+        global.gc();
+      }
     };
   }, []);
 

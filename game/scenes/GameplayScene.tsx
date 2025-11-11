@@ -17,37 +17,37 @@ import type { GenesisConstants } from '../../engine/genesis/GenesisConstants';
 export class GameplayScene extends BaseScene {
   private manager: SceneManager;
   private sceneId: string;
-  
+
   constructor(manager: SceneManager) {
     super();
     this.manager = manager;
     this.sceneId = `gameplay-${Date.now()}`;
   }
-  
+
   async enter(): Promise<void> {
     console.log('GameplayScene: Entering');
   }
-  
+
   async exit(): Promise<void> {
     console.log('GameplayScene: Exiting');
   }
-  
+
   async dispose(): Promise<void> {
     console.log('GameplayScene: Disposing world resources');
-    
+
     // Use GameState disposal
     const { dispose } = useGameState.getState();
     dispose();
-    
+
     const resourceManager = RenderResourceManager.getInstance();
     resourceManager.disposeScene(this.sceneId);
-    
+
     console.log('GameplayScene: Disposal complete');
   }
-  
+
   update(_deltaTime: number): void {
   }
-  
+
   render(): React.ReactNode {
     return <GameplaySceneComponent manager={this.manager} />;
   }
@@ -219,6 +219,20 @@ function GameplaySceneComponent({ manager }: GameplaySceneComponentProps) {
     return () => window.removeEventListener('keydown', handleEsc);
   }, [manager]);
 
+  useEffect(() => {
+    // Cleanup on unmount
+    const resourceManager = RenderResourceManager.getInstance();
+    const currentSceneId = `gameplay-${Date.now()}`; // Assuming a way to get the current scene ID or generate it consistently
+
+    return () => {
+      console.log('GameplaySceneComponent: Cleaning up resources');
+      // Dispose of geometries, materials, textures, etc.
+      // This is a placeholder; actual resource disposal would depend on how they are managed.
+      // For example, if using RenderResourceManager:
+      // resourceManager.disposeScene(currentSceneId); // This needs a proper way to identify the scene
+    };
+  }, []);
+
   return (
     <WorldProvider world={null} seed={seed}>
       <TransitionWrapper fadeIn duration={1000} delay={0}>
@@ -241,7 +255,7 @@ function GameplaySceneComponent({ manager }: GameplaySceneComponentProps) {
             </PerformanceMonitor>
           </Canvas>
           <HUDWithAnimation />
-          
+
           <Button
             variant="outlined"
             onClick={() => manager.pushScene('pause')}

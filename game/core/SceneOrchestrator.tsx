@@ -1,4 +1,4 @@
-import { useEffect, useRef, ReactNode, useState } from 'react';
+import { useEffect, useRef, ReactNode, useState, useCallback } from 'react';
 import { SceneManager } from '../scenes/SceneManager';
 import { MenuScene } from '../scenes/MenuScene';
 import { IntroScene } from '../scenes/IntroScene';
@@ -15,12 +15,20 @@ sceneManager.registerScene('intro', IntroScene);
 sceneManager.registerScene('gameplay', GameplayScene);
 sceneManager.registerScene('pause', PauseScene);
 
+// Define a type for scene instances that might have cleanup methods
+type SceneInstance = {
+  cleanup?: () => void;
+  // other scene properties
+};
+
 interface SceneOrchestratorProps {
   children: ReactNode;
 }
 
 export function SceneOrchestrator({ children }: SceneOrchestratorProps) {
   const initializedRef = useRef(false);
+  const currentSceneRef = useRef<SceneInstance | null>(null); // Ref to hold the current scene instance
+  const [currentSceneName, setCurrentSceneName] = useState<SceneType | null>(null); // State to track the current scene name
 
   // This useEffect is responsible for the initial scene change.
   // It should not be removed as it ensures the application starts with the correct scene.
@@ -28,15 +36,52 @@ export function SceneOrchestrator({ children }: SceneOrchestratorProps) {
     if (!initializedRef.current) {
       console.log('SceneOrchestrator: Initializing with menu scene');
       initializedRef.current = true;
-      sceneManager.changeScene('menu');
+      // Fetch the initial scene instance and store it
+      const initialScene = sceneManager.changeScene('menu');
+      currentSceneRef.current = initialScene as SceneInstance;
+      setCurrentSceneName('menu');
     }
   }, []);
 
-  // The following state and return statement were part of a different approach (component-based scene rendering).
-  // Given the existing sceneManager implementation, this part is redundant and has been replaced.
-  // The original SceneManager.changeScene is the intended way to switch scenes.
+  // Transition logic with cleanup
+  const transitionToScene = useCallback((newSceneName: SceneType) => {
+    console.log(`SceneOrchestrator: Transitioning to ${newSceneName}`);
 
-  // Aggressive cleanup effect
+    // Clean up current scene before transition
+    if (currentSceneRef.current?.cleanup) {
+      console.log('SceneOrchestrator: Cleaning up previous scene');
+      currentSceneRef.current.cleanup();
+    }
+    // Get the new scene instance and store it
+    const newScene = sceneManager.changeScene(newSceneName);
+    currentSceneRef.current = newScene as SceneInstance;
+    setCurrentSceneName(newSceneName);
+  }, []);
+
+  // Add event listener for scene changes initiated by SceneManager
+  useEffect(() => {
+    const handleSceneChange = (newSceneName: SceneType) => {
+      // Ensure we don't transition if it's the same scene or if not initialized
+      if (newSceneName !== currentSceneName) {
+        transitionToScene(newSceneName);
+      }
+    };
+
+    // Subscribe to scene change events from SceneManager
+    sceneManager.on('sceneChange', handleSceneChange);
+
+    // Cleanup subscription on unmount
+    return () => {
+      sceneManager.off('sceneChange', handleSceneChange);
+      // Also perform cleanup for the last active scene on unmount
+      if (currentSceneRef.current?.cleanup) {
+        console.log('SceneOrchestrator: Cleaning up last scene on unmount');
+        currentSceneRef.current.cleanup();
+      }
+    };
+  }, [currentSceneName, transitionToScene]); // Depend on currentSceneName to re-subscribe if it changes
+
+  // Aggressive cleanup effect (less critical now with explicit scene cleanup, but kept for safety)
   useEffect(() => {
     const cleanup = () => {
       // Clear all intervals/timeouts
@@ -53,7 +98,7 @@ export function SceneOrchestrator({ children }: SceneOrchestratorProps) {
 
       // Request browser to release memory
       if ((performance as any).memory) {
-        console.log('Memory before cleanup:', (performance as any).memory.usedJSHeapSize / 1048576, 'MB');
+        console.log('Memory before aggressive cleanup:', (performance as any).memory.usedJSHeapSize / 1048576, 'MB');
       }
     };
 
@@ -62,7 +107,7 @@ export function SceneOrchestrator({ children }: SceneOrchestratorProps) {
 
     return () => {
       clearInterval(cleanupInterval);
-      cleanup();
+      cleanup(); // Ensure cleanup happens on unmount as well
     };
   }, []);
 
