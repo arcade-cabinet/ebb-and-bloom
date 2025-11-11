@@ -101,5 +101,15 @@ export class TerrainSystem {
     getNearestSettlement(x: number, z: number) {
         return this.chunkManager.getNearestSettlement(x, z);
     }
+    
+    /**
+     * Dispose terrain resources
+     */
+    dispose(): void {
+        console.log('[TerrainSystem] Disposing terrain chunks');
+        if (this.chunkManager) {
+            this.chunkManager.dispose();
+        }
+    }
 }
 

@@ -522,5 +522,33 @@ export class NPCSpawner {
     }
     return undefined;
   }
+  
+  /**
+   * Dispose all NPC resources
+   */
+  dispose(): void {
+    console.log(`[NPCSpawner] Disposing ${this.npcs.size} NPCs`);
+    
+    for (const npc of this.npcs.values()) {
+      this.entityManager.remove(npc.agent);
+      this.scene.remove(npc.mesh);
+      
+      if (npc.mesh.geometry) {
+        npc.mesh.geometry.dispose();
+      }
+      
+      if (npc.mesh.material) {
+        if (Array.isArray(npc.mesh.material)) {
+          npc.mesh.material.forEach(m => m.dispose());
+        } else {
+          npc.mesh.material.dispose();
+        }
+      }
+    }
+    
+    this.npcs.clear();
+    
+    console.log('[NPCSpawner] Disposal complete');
+  }
 }
 

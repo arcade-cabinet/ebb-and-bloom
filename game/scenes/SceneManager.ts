@@ -128,6 +128,12 @@ export class SceneManager {
       if (hasCurrentScene) {
         const currentScene = this.sceneStack[this.sceneStack.length - 1];
         await currentScene.exit();
+        
+        console.log('[SceneManager] Disposing previous scene resources');
+        const disposeStart = performance.now();
+        await currentScene.dispose();
+        const disposeTime = performance.now() - disposeStart;
+        console.log(`[SceneManager] Disposal complete (${disposeTime.toFixed(2)}ms)`);
       }
       
       this.sceneStack = [];
@@ -209,6 +215,9 @@ export class SceneManager {
       const currentScene = this.sceneStack.pop();
       if (currentScene) {
         await currentScene.exit();
+        
+        console.log('[SceneManager] Disposing popped scene resources');
+        await currentScene.dispose();
       }
     } finally {
       this.isTransitioning = false;

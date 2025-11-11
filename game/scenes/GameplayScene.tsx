@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { PointerLockControls, Stats } from '@react-three/drei';
+import { PointerLockControls, Stats, PerformanceMonitor, AdaptiveDpr, AdaptiveEvents } from '@react-three/drei';
 import { Button, Box } from '@mui/material';
 import { BaseScene } from './BaseScene';
 import { SceneManager } from './SceneManager';
@@ -9,13 +9,16 @@ import { WorldProvider } from '../ui/WorldContext';
 import { HUD } from '../ui/hud/HUD';
 import { useGameState } from '../state/GameState';
 import { TransitionWrapper } from '../ui/TransitionWrapper';
+import { RenderResourceManager } from '../core/RenderResourceManager';
 
 export class GameplayScene extends BaseScene {
   private manager: SceneManager;
+  private sceneId: string;
   
   constructor(manager: SceneManager) {
     super();
     this.manager = manager;
+    this.sceneId = `gameplay-${Date.now()}`;
   }
   
   async enter(): Promise<void> {
@@ -24,6 +27,20 @@ export class GameplayScene extends BaseScene {
   
   async exit(): Promise<void> {
     console.log('GameplayScene: Exiting');
+  }
+  
+  async dispose(): Promise<void> {
+    console.log('GameplayScene: Disposing world resources');
+    
+    if (worldRef.current) {
+      await worldRef.current.dispose();
+      worldRef.current = null;
+    }
+    
+    const resourceManager = RenderResourceManager.getInstance();
+    resourceManager.disposeScene(this.sceneId);
+    
+    console.log('GameplayScene: Disposal complete');
   }
   
   update(_deltaTime: number): void {
@@ -75,6 +92,7 @@ function World() {
 
 function GameplaySceneComponent({ manager }: GameplaySceneComponentProps) {
   const { currentSeed } = useGameState();
+  const [dpr, setDpr] = useState(1);
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -95,10 +113,18 @@ function GameplaySceneComponent({ manager }: GameplaySceneComponentProps) {
             shadows
             camera={{ fov: 90, near: 0.1, far: 1500 }}
             style={{ width: '100%', height: '100%' }}
+            dpr={dpr}
           >
-            <World />
-            <PointerLockControls />
-            <Stats />
+            <PerformanceMonitor
+              onIncline={() => setDpr(1)}
+              onDecline={() => setDpr(0.5)}
+            >
+              <AdaptiveDpr pixelated />
+              <AdaptiveEvents />
+              <World />
+              <PointerLockControls />
+              <Stats />
+            </PerformanceMonitor>
           </Canvas>
           <HUDWithAnimation />
           

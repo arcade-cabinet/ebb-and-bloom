@@ -683,5 +683,16 @@ export class SettlementPlacer {
     
     return nearest;
   }
+  
+  /**
+   * Dispose all settlement resources
+   */
+  dispose(): void {
+    console.log(`[SettlementPlacer] Disposing ${this.settlements.size} settlements`);
+    
+    this.settlements.clear();
+    
+    console.log('[SettlementPlacer] Disposal complete');
+  }
 }
 

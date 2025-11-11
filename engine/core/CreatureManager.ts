@@ -12,13 +12,13 @@
 import * as THREE from 'three';
 import { EntityManager, Vehicle } from 'yuka';
 import { CreatureMeshGenerator, CreatureTraits, BiomeContext } from '../procedural/CreatureMeshGenerator';
-import { isCreatureGovernorsEnabled } from '../config/featureFlags';
 // Agentic imports - only used if feature flag enabled
 // import { 
 //     MetabolismSystem,
 //     LifecycleStateMachine,
 //     FlockingGovernor,
-//     PredatorPreyBehavior
+//     PredatorPreyBehavior,
+//     isCreatureGovernorsEnabled
 // } from '../../agents';
 import { EnhancedRNG } from '../utils/EnhancedRNG';
 
@@ -105,14 +105,14 @@ export class CreatureManager {
     /**
      * Update all creatures (PURE ENGINE MODE - no governor updates)
      */
-    update(delta: number): void {
+    update(_delta: number): void {
         // PURE ENGINE: No governor-based updates
         // Creatures just exist, Yuka handles basic movement
         // if (isCreatureGovernorsEnabled()) {
         //     for (const { agent } of this.creatures.values()) {
-        //         MetabolismSystem.update(agent as any, delta);
+        //         MetabolismSystem.update(agent as any, _delta);
         //         if ((agent as any).stateMachine) {
-        //             (agent as any).stateMachine.update(delta);
+        //             (agent as any).stateMachine.update(_delta);
         //         }
         //     }
         // }
@@ -123,6 +123,36 @@ export class CreatureManager {
      */
     getCreatures(): Vehicle[] {
         return Array.from(this.creatures.values()).map(c => c.agent);
+    }
+    
+    /**
+     * Dispose all creatures and their resources
+     */
+    dispose(): void {
+        console.log(`[CreatureManager] Disposing ${this.creatures.size} creatures`);
+        
+        for (const { agent, mesh } of this.creatures.values()) {
+            this.entityManager.remove(agent);
+            this.scene.remove(mesh);
+            
+            mesh.traverse((child) => {
+                if (child instanceof THREE.Mesh) {
+                    if (child.geometry) {
+                        child.geometry.dispose();
+                    }
+                    if (child.material) {
+                        if (Array.isArray(child.material)) {
+                            child.material.forEach(m => m.dispose());
+                        } else {
+                            child.material.dispose();
+                        }
+                    }
+                }
+            });
+        }
+        
+        this.creatures.clear();
+        console.log('[CreatureManager] Disposal complete');
     }
 }
 

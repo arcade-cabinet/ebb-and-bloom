@@ -468,5 +468,28 @@ export class VegetationSpawner {
     }
     return total;
   }
+  
+  /**
+   * Dispose all vegetation resources
+   */
+  dispose(): void {
+    console.log('[VegetationSpawner] Disposing vegetation resources');
+    
+    for (const mesh of this.instancedTrees.values()) {
+      this.scene.remove(mesh);
+      mesh.geometry.dispose();
+      
+      if (Array.isArray(mesh.material)) {
+        mesh.material.forEach(m => m.dispose());
+      } else {
+        mesh.material.dispose();
+      }
+    }
+    
+    this.instancedTrees.clear();
+    this.instanceCounts.clear();
+    
+    console.log('[VegetationSpawner] Disposal complete');
+  }
 }
 

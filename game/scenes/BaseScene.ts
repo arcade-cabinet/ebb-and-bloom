@@ -3,4 +3,5 @@ export abstract class BaseScene {
   abstract exit(): Promise<void>;
   abstract update(deltaTime: number): void;
   abstract render(): React.ReactNode;
+  abstract dispose(): Promise<void>;
 }

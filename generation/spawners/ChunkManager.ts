@@ -482,5 +482,42 @@ export class ChunkManager {
   getNearestSettlement(x: number, z: number): import('./SettlementPlacer').Settlement | undefined {
     return this.settlements.getNearestSettlement(x, z);
   }
+  
+  /**
+   * Dispose all chunk resources
+   */
+  dispose(): void {
+    console.log(`[ChunkManager] Disposing ${this.chunks.size} chunks`);
+    
+    for (const chunk of this.chunks.values()) {
+      this.scene.remove(chunk.mesh);
+      chunk.mesh.geometry.dispose();
+      
+      if (Array.isArray(chunk.mesh.material)) {
+        chunk.mesh.material.forEach(m => m.dispose());
+      } else {
+        chunk.mesh.material.dispose();
+      }
+    }
+    
+    this.chunks.clear();
+    
+    if (this.vegetation) {
+      this.vegetation.dispose();
+    }
+    
+    if (this.settlements) {
+      this.settlements.dispose();
+    }
+    
+    if (this.npcSpawner) {
+      this.npcSpawner.dispose();
+    }
+    
+    this.settlementsPlaced.clear();
+    this.npcsSpawned.clear();
+    
+    console.log('[ChunkManager] Disposal complete');
+  }
 }
 

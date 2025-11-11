@@ -4,13 +4,16 @@ import { CosmicExpansionFMV } from '../components/CosmicExpansionFMV';
 import { GenesisConstants } from '../../engine/genesis/GenesisConstants';
 import { useGameState } from '../state/GameState';
 import { TransitionWrapper } from '../ui/TransitionWrapper';
+import { RenderResourceManager } from '../core/RenderResourceManager';
 
 export class IntroScene extends BaseScene {
   private manager: SceneManager;
+  private sceneId: string;
   
   constructor(manager: SceneManager) {
     super();
     this.manager = manager;
+    this.sceneId = `intro-${Date.now()}`;
   }
   
   async enter(): Promise<void> {
@@ -19,6 +22,15 @@ export class IntroScene extends BaseScene {
   
   async exit(): Promise<void> {
     console.log('IntroScene: Exiting');
+  }
+  
+  async dispose(): Promise<void> {
+    console.log('IntroScene: Disposing Three.js resources');
+    
+    const resourceManager = RenderResourceManager.getInstance();
+    resourceManager.disposeScene(this.sceneId);
+    
+    console.log('IntroScene: Disposal complete');
   }
   
   update(_deltaTime: number): void {

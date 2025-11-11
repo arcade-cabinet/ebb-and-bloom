@@ -20,6 +20,10 @@ export class PauseScene extends BaseScene {
     console.log('PauseScene: Exiting');
   }
   
+  async dispose(): Promise<void> {
+    console.log('PauseScene: Disposing (no Three.js resources)');
+  }
+  
   update(_deltaTime: number): void {
   }
   

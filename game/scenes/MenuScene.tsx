@@ -27,6 +27,10 @@ export class MenuScene extends BaseScene {
     console.log('MenuScene: Exiting');
   }
   
+  async dispose(): Promise<void> {
+    console.log('MenuScene: Disposing (no Three.js resources)');
+  }
+  
   update(_deltaTime: number): void {
   }
   

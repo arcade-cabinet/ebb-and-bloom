@@ -126,6 +126,28 @@ export class WorldManager {
     }
 
     /**
+     * Dispose all world resources (DFU cleanup pattern)
+     */
+    async dispose(): Promise<void> {
+        console.log('[WorldManager] Disposing all resources');
+        
+        if (this.terrain) {
+            this.terrain.dispose();
+        }
+        
+        if (this.creatures) {
+            this.creatures.dispose();
+        }
+        
+        if (this.entityManager) {
+            this.entityManager.clear();
+        }
+        
+        this.isReady = false;
+        console.log('[WorldManager] Disposal complete');
+    }
+
+    /**
      * Position player to location (DFU StreamingWorld.PositionPlayerToLocation pattern)
      * 
      * Based on:
