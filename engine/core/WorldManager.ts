@@ -15,6 +15,7 @@ import { isGenerationGovernorEnabled } from '../config/featureFlags';
 import { CreatureManager } from './CreatureManager';
 import { PlayerController } from './PlayerController';
 import { TerrainSystem } from './TerrainSystem';
+import { SpawnGovernor } from '../../agents/governors/physics/SpawnGovernor';
 
 export interface WorldConfig {
     seed: string;
@@ -138,13 +139,19 @@ export class WorldManager {
         const settlement = this.terrain.getNearestSettlement(startX, startZ);
 
         if (!settlement) {
-            // No settlement found - spawn in wilderness (offset from origin)
-            // Get terrain height at spawn location (DFU pattern)
-            const spawnX = 50;
-            const spawnZ = 50;
-            const terrainHeight = this.terrain.getTerrainHeight(spawnX, spawnZ);
-            console.log(`[WorldManager] No settlement found, spawning in wilderness at (${spawnX}, ${spawnZ}), terrain height: ${terrainHeight.toFixed(2)}m`);
-            return new THREE.Vector3(spawnX, terrainHeight, spawnZ);
+            // No settlement found - use SpawnGovernor to find safe flat terrain
+            // Governor analyzes terrain physics (slope, height) instead of hardcoded coords
+            console.log(`[WorldManager] No settlement found, using SpawnGovernor to find safe spawn near (${startX}, ${startZ})`);
+            
+            const spawnGovernor = new SpawnGovernor(this.seed);
+            const safeSpawn = spawnGovernor.findSafeSpawn(
+                startX,
+                startZ,
+                (x: number, z: number) => this.terrain.getTerrainHeight(x, z),
+                200 // Search 200m radius
+            );
+            
+            return safeSpawn || new THREE.Vector3(startX, this.terrain.getTerrainHeight(startX, startZ), startZ);
         }
 
         console.log(`[WorldManager] Positioning player near ${settlement.name} (${settlement.type})`);

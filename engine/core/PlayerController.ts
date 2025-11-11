@@ -27,6 +27,7 @@ export class PlayerController {
     private readonly jumpSpeed: number = 4.5;         // DFU jump velocity (AcrobatMotor.defaultJumpSpeed = 4.5)
     private readonly walkSpeed: number = 5.0;         // DFU walk speed ≈(50+150-25)/39.5 ≈ 4.43, rounded to 5.0
     private readonly groundTolerance: number = 0.1;   // DFU grounding tolerance
+    private readonly stepHeight: number = 1.0;       // Maximum height player can step up without jumping (increased for procedural terrain with 4m frequency noise)
 
     // State
     private verticalVelocity: number = 0;
@@ -129,13 +130,46 @@ export class PlayerController {
             moveDirection.addScaledVector(right, this.moveInput.x);   // Left/right
             moveDirection.normalize();
 
-            // Apply movement (DFU: controller.Move(moveDirection * Time.deltaTime))
-            // Pure engine - direct position manipulation
+            // Calculate proposed movement
             const moveX = moveDirection.x * this.walkSpeed * delta;
             const moveZ = moveDirection.z * this.walkSpeed * delta;
 
-            this.position.x += moveX;
-            this.position.z += moveZ;
+            // CRITICAL FIX: Check terrain at proposed position BEFORE moving
+            // This prevents walking UP steep terrain that causes upward drift
+            const proposedX = this.position.x + moveX;
+            const proposedZ = this.position.z + moveZ;
+            const proposedTerrainHeight = this.terrain.getTerrainHeight(proposedX, proposedZ);
+            const currentTerrainHeight = this.terrain.getTerrainHeight(this.position.x, this.position.z);
+            
+            // Check if we're trying to climb UP steep terrain
+            // Compare terrain-to-terrain height difference
+            const terrainHeightChange = proposedTerrainHeight - currentTerrainHeight;
+            
+            // AIRBORNE DRIFT PREVENTION:
+            // When grounded, block climbing steep terrain
+            // When airborne, check if horizontal movement is causing upward drift
+            let blockMovement = false;
+            
+            if (this.isGrounded) {
+                // Grounded: Can't climb steep terrain (block upward movement)
+                if (terrainHeightChange > this.stepHeight) {
+                    blockMovement = true;
+                }
+            } else if (!this.isGrounded && this.verticalVelocity <= 0) {
+                // Airborne AND falling: Prevent drift onto steep terrain
+                // Only check when falling (verticalVelocity <= 0) to allow normal jumping
+                // Check if we're trying to move horizontally onto terrain that would require climbing
+                if (terrainHeightChange > this.stepHeight) {
+                    // Would drift onto steep terrain while falling - block to prevent drift
+                    blockMovement = true;
+                }
+            }
+            
+            if (!blockMovement) {
+                // Movement is allowed - apply it (includes downward slopes and small steps)
+                this.position.x = proposedX;
+                this.position.z = proposedZ;
+            }
         }
 
         // Check grounding (DFU: collisionFlags & CollisionFlags.Below)
@@ -145,19 +179,43 @@ export class PlayerController {
         );
         const feetHeight = terrainHeight + (this.controllerHeight * 0.65); // DFU pattern
 
-        this.isGrounded = Math.abs(this.position.y - feetHeight) < this.groundTolerance;
-
-        if (this.isGrounded) {
-            // Snap to ground (DFU pattern)
+        // Grounding logic (DFU CharacterController pattern)
+        // Since horizontal movement is blocked for steep terrain, we can use simple grounding
+        const heightDifference = feetHeight - this.position.y;
+        
+        if (Math.abs(heightDifference) <= this.groundTolerance) {
+            // We're at ground level (within tolerance) - snap to ground
             this.position.y = feetHeight;
             this.verticalVelocity = 0;
+            this.isGrounded = true;
+        } else if (heightDifference > 0) {
+            // Ground is above us - step up or fall depending on height
+            if (heightDifference <= this.stepHeight) {
+                // Within step height - step up
+                this.position.y = feetHeight;
+                this.verticalVelocity = 0;
+                this.isGrounded = true;
+            } else {
+                // Too high - become airborne and fall
+                this.isGrounded = false;
+                this.verticalVelocity += this.gravity * delta;
+                this.position.y += this.verticalVelocity * delta;
+
+                // Check if we've landed
+                if (this.position.y <= feetHeight) {
+                    this.position.y = feetHeight;
+                    this.verticalVelocity = 0;
+                    this.isGrounded = true;
+                }
+            }
         } else {
-            // Apply DFU gravity
+            // Ground is below us - we're airborne, falling
+            this.isGrounded = false;
             this.verticalVelocity += this.gravity * delta;
             this.position.y += this.verticalVelocity * delta;
 
-            // Don't fall through terrain
-            if (this.position.y < feetHeight) {
+            // Check if we've landed
+            if (this.position.y <= feetHeight) {
                 this.position.y = feetHeight;
                 this.verticalVelocity = 0;
                 this.isGrounded = true;

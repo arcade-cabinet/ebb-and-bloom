@@ -6,4 +6,5 @@
 
 export { GravityBehavior } from './GravityBehavior';
 export { TemperatureBehavior, createTemperatureFuzzy } from './TemperatureFuzzy';
+export { SpawnGovernor } from './SpawnGovernor';
 
