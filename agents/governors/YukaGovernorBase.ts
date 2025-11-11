@@ -37,7 +37,7 @@ export abstract class YukaGovernorBase {
      * @param id - Unique identifier for this entity
      * @param entity - GameEntity/MovingEntity/Vehicle instance
      */
-    registerEntity(id: string, entity: GameEntity): void {
+    registerEntity<T extends GameEntity>(id: string, entity: T): void {
         this.entities.set(id, entity);
         this.entityManager.add(entity);
     }

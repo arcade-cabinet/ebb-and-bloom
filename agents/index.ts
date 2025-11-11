@@ -4,14 +4,10 @@
  * ALL agentic logic lives here.
  * 
  * Exports:
- * - Shared utilities (YUKA math adapter, zero-allocation patterns)
  * - Governors (Yuka-native law implementations)
  * - Agents (Yuka agent classes)
  * - World Generation (GenerationGovernor)
  */
-
-// Shared utilities (YUKA math adapter)
-export * from './shared';
 
 // Governors
 export * from './governors/physics';

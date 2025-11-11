@@ -6,14 +6,16 @@ export default defineConfig({
     include: ['tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     exclude: ['**/node_modules/**', '**/dist/**'],
     globals: true,
-    environment: 'jsdom', // Use jsdom for DOM APIs like document.createElement
-    setupFiles: ['./tests/setup.ts'], // Setup file for testing-library
+    environment: 'jsdom', // React/UI tests need DOM
+    setupFiles: ['./tests/setup.ts'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
       include: [
+        'agents/**/*.ts',
         'engine/**/*.ts',
         'game/**/*.{ts,tsx}',
+        'generation/**/*.ts',
       ],
       exclude: [
         '**/*.d.ts',
