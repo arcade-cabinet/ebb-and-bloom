@@ -73,7 +73,7 @@ export function CosmicExpansionFMV({
         hapticSystem.current.stopAll();
       }
     };
-  }, [seed, initializeWithSeed, getScopedRNG, enableAudio, enableHaptics]);
+  }, [seed, enableAudio, enableHaptics]);
   
   useEffect(() => {
     const timer = setTimeout(() => {
