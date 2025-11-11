@@ -1,0 +1,44 @@
+{
+  "duration": 30,
+  "samples": [
+    {
+      "timestamp": 5,
+      "heapUsed": 4,
+      "heapTotal": 6,
+      "external": 2,
+      "rss": 56
+    },
+    {
+      "timestamp": 10,
+      "heapUsed": 4,
+      "heapTotal": 6,
+      "external": 2,
+      "rss": 56
+    },
+    {
+      "timestamp": 15,
+      "heapUsed": 4,
+      "heapTotal": 6,
+      "external": 2,
+      "rss": 56
+    },
+    {
+      "timestamp": 20,
+      "heapUsed": 5,
+      "heapTotal": 6,
+      "external": 2,
+      "rss": 56
+    },
+    {
+      "timestamp": 25,
+      "heapUsed": 5,
+      "heapTotal": 6,
+      "external": 2,
+      "rss": 56
+    }
+  ],
+  "initialHeap": 4,
+  "finalHeap": 5,
+  "peakHeap": 5,
+  "averageGrowth": "0.20"
+}
