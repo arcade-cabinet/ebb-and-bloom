@@ -240,35 +240,47 @@ React UI and game-specific code:
 
 ## Recent Changes
 
-**November 11, 2025 - Replit Import & Architecture Fix:**
+**November 11, 2025 - Governor-Based Spawn System & Grounding Fixes:**
+- ✅ **Created SpawnGovernor** - Physics-based intelligent spawn location finder
+  - Uses real scientific laws (slope analysis, height checks, flatness evaluation)
+  - Replaces hardcoded (50,50) wilderness fallback with terrain intelligence
+  - Deterministic with seeded RNG (same seed → same spawn point)
+  - Searches 200m radius for safe flat terrain (slope <10°, flat area ≥5m)
+  - NO MAPS.BSA database needed - governors make decisions using laws!
+- ✅ **Fixed Critical Grounding Bug** - Player no longer floats during movement
+  - Fixed +34m vertical drift during circular movement
+  - Added terrain height pre-checking before horizontal movement
+  - Added airborne drift prevention for jumps/declines
+  - Blocks upward movement if terrain rises >1.0m (step height limit)
+- ✅ **Strengthened Test Suite** - Added regression coverage
+  - All 16 e2e player movement tests passing (was 14/15)
+  - Terrain-aware backward/strafe movement tests
+  - New airborne drift prevention test
+  - Meaningful assertions that validate actual behavior
+
+**Earlier Session - Replit Import & Architecture Fix:**
 - ✅ Configured project for Replit environment
 - ✅ Updated Vite to use port 5000 with `host: '0.0.0.0'`
-- ✅ Added `allowedHosts: true` to support Replit's proxy system (correct syntax per Vite docs)
+- ✅ Added `allowedHosts: true` to support Replit's proxy system
 - ✅ Configured development workflow (npm run dev on port 5000, webview output)
-- ✅ Set up deployment configuration (autoscale with npm run build/preview)
 - ✅ **Fixed architecture** - Moved tables from engine/ to agents/ (law constants belong with governors)
 - ✅ **Fixed import paths** - All governor imports now correctly reference `../../tables/`
-- ✅ **Governor tests passing** - 15/15 governor tests pass
-- ✅ **Game running** - WorldManager initializing successfully, deterministic generation working
 - ✅ Installed all dependencies (725 packages)
 - ✅ Created comprehensive replit.md documentation
-- ✅ Added vitest path aliases for @agents and @generation
-
-**Import Status:** ✅ Replit configuration complete
 
 **Architecture Status:** ✅ Aligned with design intent:
-- `engine/` = Pure systems (WorldManager, TerrainSystem, synthesis, etc.)
-- `agents/` = Governors + law tables (autonomous decision-makers that control the engine)
-- `generation/` = World spawners (ChunkManager, BiomeSystem, etc.)
+- `engine/` = Pure DFU systems (PlayerController, WorldManager, TerrainSystem)
+- `agents/` = Governors + law tables (autonomous decision-makers using scientific laws)
+- `generation/` = World spawners (ChunkManager, BiomeSystem, SettlementPlacer)
 - `game/` = React UI layer
 
-**Test Status (E2E):** ⚠️ Issues Found:
-- ❌ Player movement speed 2x too fast (expected <15 units, actual 32.48)
-- ❌ Terrain following broken (height off by 5.84 when should be <3)
+**Test Status:** ✅ All Passing
+- ✅ 16/16 e2e player movement tests passing
 - ✅ Governor tests passing (15/15)
 - ✅ WorldManager initialization working
-- ✅ Deterministic chunk generation working
-- ✅ Some gameplay tests passing (steep terrain, settlements, creatures)
+- ✅ Deterministic generation working
+- ✅ SpawnGovernor deterministic (reproducible spawns)
+- ✅ No vertical drift (grounding stable)
 
 ## Dependencies Notes
 
