@@ -212,3 +212,9 @@ packages/gen/public/textures/
 
 # AI cache
 packages/gen/data/cache/
+
+# Playwright
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

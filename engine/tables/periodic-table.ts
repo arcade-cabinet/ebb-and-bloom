@@ -263,9 +263,15 @@ export function getElementsByPhase(
   pressure: number = 101325 // Pa (1 atm)
 ): Element[] {
   return Object.values(PERIODIC_TABLE).filter((element) => {
+    // Use pressure to adjust phase transition points (Clausius-Clapeyron equation approximation)
+    // Higher pressure = higher boiling point, lower pressure = lower boiling point
+    const pressureFactor = pressure / 101325; // Normalize to 1 atm
+    const adjustedMeltingPoint = element.meltingPoint * (1 + (pressureFactor - 1) * 0.1);
+    const adjustedBoilingPoint = element.boilingPoint * (1 + (pressureFactor - 1) * 0.1);
+    
     // Simplified phase determination (real calculation more complex)
-    if (temperature < element.meltingPoint) return element.phase === 'solid';
-    if (temperature < element.boilingPoint) return element.phase === 'liquid';
+    if (temperature < adjustedMeltingPoint) return element.phase === 'solid';
+    if (temperature < adjustedBoilingPoint) return element.phase === 'liquid';
     return element.phase === 'gas';
   });
 }

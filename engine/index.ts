@@ -30,17 +30,18 @@ export * from './tables';
 // SPAWNERS (World Generation)
 // ============================================================================
 
-export { ChunkManager } from './spawners/ChunkManager';
-export { BiomeSystem } from './spawners/BiomeSystem';
-export type { BiomeType, BiomeInfo } from './spawners/BiomeSystem';
-export { SimplexNoise } from './spawners/SimplexNoise';
-export { VegetationSpawner } from './spawners/VegetationSpawner';
-export type { TreeType, VegetationConfig } from './spawners/VegetationSpawner';
-export { SettlementPlacer } from './spawners/SettlementPlacer';
-export type { Settlement, SettlementType, Building, BuildingType } from './spawners/SettlementPlacer';
-export { NPCSpawner } from './spawners/NPCSpawner';
-export { CreatureSpawner } from './spawners/CreatureSpawner';
-export { WaterSystem } from './spawners/WaterSystem';
+// Spawners moved to generation/ package (not engine code)
+// export { ChunkManager } from '../generation/spawners/ChunkManager';
+// export { BiomeSystem } from '../generation/spawners/BiomeSystem';
+// export type { BiomeType, BiomeData } from '../generation/spawners/BiomeSystem';
+// export { SimplexNoise } from '../generation/spawners/SimplexNoise';
+// export { VegetationSpawner } from '../generation/spawners/VegetationSpawner';
+// export type { TreeType, VegetationConfig } from '../generation/spawners/VegetationSpawner';
+// export { SettlementPlacer } from '../generation/spawners/SettlementPlacer';
+// export type { Settlement, SettlementType, Building, BuildingType } from '../generation/spawners/SettlementPlacer';
+// export { NPCSpawner } from '../generation/spawners/NPCSpawner';
+// export { CreatureSpawner } from '../generation/spawners/CreatureSpawner';
+// export { WaterSystem } from '../generation/spawners/WaterSystem';
 
 // ============================================================================
 // CORE ENGINE (DFU-Based Architecture)
@@ -88,20 +89,21 @@ export { StructureBuildingSystem } from './systems/StructureBuildingSystem';
 // AGENTS (Creature AI)
 // ============================================================================
 
-export { CreatureAgent } from './agents/CreatureAgent';
+export { CreatureAgent } from '../agents/agents-yuka/CreatureAgent';
 
 // ============================================================================
 // GOVERNORS (Yuka-Native Law Implementation)
 // ============================================================================
 
-export * from './governors';
+export * from '../agents';
 
 // ============================================================================
 // TYPES
 // ============================================================================
 
 export type * from './types/generation-zero';
-export type * from './types/yuka';
+// Yuka types are declared in types/yuka.d.ts as module augmentation
+// They are available globally when importing from 'yuka'
 
 // ============================================================================
 // METADATA

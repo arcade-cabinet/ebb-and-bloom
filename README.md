@@ -29,6 +29,17 @@ world.update(deltaTime); // Governors + synthesis handle everything
 
 ## ✨ Architecture
 
+**✅ DFU PARITY VERIFIED** - All core gameplay systems match Daggerfall Unity patterns:
+- Player movement (PlayerMotor → PlayerController)
+- World streaming (StreamingWorld → TerrainSystem)  
+- Player positioning (PositionPlayerToLocation)
+- Ground detection (FixStanding)
+- 7x7 chunk grid (TerrainDistance=3)
+- Vegetation spawning (steepness + clearance)
+- Settlement spawning (outside edges)
+
+**See:** `memory-bank/DFU_PARITY_VERIFICATION.md` for complete verification.
+
 ### Governors (15) - DECIDE
 - **Physics (2)** - Gravity, Temperature
 - **Biology (5)** - Metabolism, Lifecycle, Reproduction, Genetics, Cognition

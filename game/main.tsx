@@ -9,11 +9,16 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { ThemeProvider, CssBaseline } from '@mui/material';
+import { gameTheme } from './ui/theme';
 import { Game } from './Game';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <Game />
+    <ThemeProvider theme={gameTheme}>
+      <CssBaseline />
+      <Game />
+    </ThemeProvider>
   </React.StrictMode>
 );
 

@@ -17,6 +17,7 @@ declare module 'yuka' {
     clone(): Vector3;
     add(v: Vector3): this;
     sub(v: Vector3): this;
+    subVectors(a: Vector3, b: Vector3): this; // Yuka convenience method
     multiplyScalar(scalar: number): this;
     divideScalar(scalar: number): this;
     length(): number;
@@ -194,6 +195,83 @@ declare module 'yuka' {
     constructor();
   }
   
+  export class AlignmentBehavior extends SteeringBehavior {
+    neighbors: Vehicle[];
+    constructor();
+  }
+  
+  export class CohesionBehavior extends SteeringBehavior {
+    neighbors: Vehicle[];
+    constructor();
+  }
+  
+  export class SeparationBehavior extends SteeringBehavior {
+    neighbors: Vehicle[];
+    constructor();
+  }
+  
+  export class FollowPathBehavior extends SteeringBehavior {
+    path: Path;
+    nextWaypointDistance: number;
+    constructor(path: Path);
+  }
+  
+  export class Path {
+    waypoints: Vector3[];
+    loop: boolean;
+    constructor();
+    add(waypoint: Vector3): this;
+    clear(): this;
+  }
+  
+  export class FuzzyVariable {
+    name: string;
+    fuzzySets: FuzzySet[];
+    constructor(name?: string);
+    add(fuzzySet: FuzzySet): this; // Yuka uses add(), not addSet()
+    fuzzify(value: number): void;
+    defuzzify(): number;
+  }
+  
+  export class FuzzySet {
+    representativeValue: number;
+    constructor(representativeValue?: number);
+    degreeOfMembership(value: number): number;
+  }
+  
+  export class LeftShoulderFuzzySet extends FuzzySet {
+    constructor(left: number, midpoint: number, right: number);
+  }
+  
+  export class RightShoulderFuzzySet extends FuzzySet {
+    constructor(left: number, midpoint: number, right: number);
+  }
+  
+  export class TriangularFuzzySet extends FuzzySet {
+    constructor(left: number, midpoint: number, right: number);
+  }
+  
+  export class FuzzyRule {
+    antecedent: FuzzySet;
+    consequent: FuzzySet;
+    constructor(antecedent?: FuzzySet, consequent?: FuzzySet);
+    evaluate(): FuzzySet;
+  }
+  
+  export class FuzzyModule {
+    variables: Map<string, FuzzyVariable>;
+    rules: FuzzyRule[];
+    constructor();
+    addFLV(name: string, variable: FuzzyVariable): this; // Yuka uses addFLV(), not createFLV()
+    addRule(rule: FuzzyRule): this;
+    fuzzify(name: string, value: number): void;
+    defuzzify(name: string): number;
+  }
+  
+  export class FuzzyAND extends FuzzySet {
+    constructor(...sets: FuzzySet[]);
+  }
+  
   export class Telegram {
     sender: GameEntity;
     receiver: GameEntity;
@@ -209,5 +287,26 @@ declare module 'yuka' {
     
     deliver(telegram: Telegram): void;
     dispatch(telegram: Telegram): void;
+  }
+  
+  export class State {
+    enter(entity: any): void;
+    execute(entity: any): void;
+    exit(entity: any): void;
+  }
+  
+  export class StateMachine {
+    owner: any;
+    currentState: string | null;
+    states: Map<string, State>;
+    globalState: State | null;
+    
+    constructor(owner?: any);
+    
+    add(name: string, state: State): this;
+    remove(name: string): boolean;
+    changeTo(name: string): void;
+    revertToPreviousState(): void;
+    update(delta: number): void;
   }
 }

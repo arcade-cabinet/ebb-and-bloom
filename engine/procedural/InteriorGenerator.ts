@@ -123,33 +123,52 @@ export class InteriorGenerator {
     private generateFurniture(room: Room, buildingType: string): FurnitureItem[] {
         const furniture: FurnitureItem[] = [];
         
-        // Furniture based on room type
+        // Furniture based on room type AND building type
         if (room.type === 'living') {
-            // Bed
-            furniture.push({
-                type: 'bed',
-                position: new THREE.Vector3(
-                    room.position.x + room.size.x * 0.3,
-                    room.position.y,
-                    room.position.z + room.size.z * 0.3
-                ),
-                rotation: 0,
-                mesh: this.createBed()
-            });
-            
-            // Chest
-            furniture.push({
-                type: 'chest',
-                position: new THREE.Vector3(
-                    room.position.x - room.size.x * 0.3,
-                    room.position.y,
-                    room.position.z
-                ),
-                rotation: 0,
-                mesh: this.createChest()
-            });
+            // Houses: Bed + chest
+            if (buildingType === 'house' || buildingType === 'tavern') {
+                furniture.push({
+                    type: 'bed',
+                    position: new THREE.Vector3(
+                        room.position.x + room.size.x * 0.3,
+                        room.position.y,
+                        room.position.z + room.size.z * 0.3
+                    ),
+                    rotation: 0,
+                    mesh: this.createBed()
+                });
+                
+                furniture.push({
+                    type: 'chest',
+                    position: new THREE.Vector3(
+                        room.position.x - room.size.x * 0.3,
+                        room.position.y,
+                        room.position.z
+                    ),
+                    rotation: 0,
+                    mesh: this.createChest()
+                });
+            }
+            // Shops: Display cases + counter
+            else if (buildingType === 'shop') {
+                furniture.push({
+                    type: 'table',
+                    position: new THREE.Vector3(room.position.x, room.position.y, room.position.z),
+                    rotation: 0,
+                    mesh: this.createTable()
+                });
+            }
+            // Temples: Altar + benches
+            else if (buildingType === 'temple') {
+                furniture.push({
+                    type: 'table',
+                    position: new THREE.Vector3(room.position.x, room.position.y, room.position.z),
+                    rotation: 0,
+                    mesh: this.createTable() // Altar
+                });
+            }
         } else if (room.type === 'work') {
-            // Table
+            // Work rooms: Table + tools
             furniture.push({
                 type: 'table',
                 position: new THREE.Vector3(room.position.x, room.position.y, room.position.z),

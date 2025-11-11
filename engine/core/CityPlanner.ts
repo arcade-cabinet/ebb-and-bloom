@@ -6,7 +6,6 @@
  */
 
 import * as THREE from 'three';
-import { SOCIAL_CONSTANTS } from '../tables/social-constants';
 import { EnhancedRNG } from '../utils/EnhancedRNG';
 
 export interface CityLayout {

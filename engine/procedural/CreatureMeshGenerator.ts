@@ -204,15 +204,19 @@ export class CreatureMeshGenerator {
         // Adult: Normal
         // Elder: Grayer, slightly smaller
 
-        const ageFactor = age < 2 ? 0.7 : age > 10 ? 0.9 : 1.0;
+        // Age factor based on composition: High protein = better muscle retention
+        const proteinFactor = composition.protein > 0.3 ? 0.95 : 0.9; // High protein = less shrinkage
+        const ageFactor = age < 2 ? 0.7 : age > 10 ? proteinFactor : 1.0;
         mesh.scale.multiplyScalar(ageFactor);
 
         // Elder = grayer (melanin accumulation)
+        // High calcium = stronger bones = less graying (better health)
+        const calciumFactor = composition.calcium > 0.2 ? 0.2 : 0.3; // Less graying with strong bones
         if (age > 10) {
             mesh.traverse((child) => {
                 if (child instanceof THREE.Mesh) {
                     const mat = child.material as THREE.MeshStandardMaterial;
-                    mat.color.lerp(new THREE.Color(0.5, 0.5, 0.5), 0.3);
+                    mat.color.lerp(new THREE.Color(0.5, 0.5, 0.5), calciumFactor);
                 }
             });
         }

@@ -2,15 +2,15 @@
 
 **For**: All AI agents (Cursor, Claude, Cline, Copilot)  
 **Purpose**: Critical permanent information that should never be lost  
-**Last Updated**: 2025-11-10 (Engine refactor complete)
+**Last Updated**: 2025-11-10 (DFU parity verified, all bugs fixed, docs consolidated)
 
 ---
 
-## Project
+## Project Overview
 
-**Ebb & Bloom**: Explore living, procedurally generated worlds.
+**Ebb & Bloom**: Law-based multi-agent universe simulator. Start at t=0 (Big Bang), watch emergence.
 
-**Core Principle**: Three-word seeds generate complete worlds with evolving creatures, ecosystems, and civilizations. 15 autonomous governors power everything.
+**Core Principle**: Bottom-up emergence - Molecular → Stars → Galaxies → Cosmic web. Yuka decides everything. EntropyAgent governs. Legal Brokers mediate.
 
 **Platform**: Web (React Three Fiber) + Cross-platform (iOS, Android via Capacitor)
 
@@ -18,113 +18,124 @@
 
 ## 🔥 CRITICAL: ENGINE ARCHITECTURE
 
-**MAJOR REFACTOR + LAW PORT COMPLETED (Nov 10, 2025):**
+**PURE ENGINE MODE + GENERATION SEPARATION (Jan 2025):**
 
 **What changed:**
-- ✅ Flattened monorepo → `engine/` + `demo/` structure
-- ✅ Added React Three Fiber + Drei + Zustand
-- ✅ Removed BabylonJS completely
-- ✅ Removed pnpm workspace (now npm)
-- ✅ **ELIMINATED engine/laws (8,755 lines deleted)**
-- ✅ **PORTED to engine/governors (17 Yuka-native governors)**
-- ✅ Proper engine/game separation
+- ✅ **Feature flags system** - Pure engine mode (agentic systems disabled by default)
+- ✅ **Generation package** - Spawners/prefabs moved from `engine/` to `generation/` root
+- ✅ **Three-word seed system** - Integrated into main menu (shuffle/copy/validate)
+- ✅ **Governor-prefab integration** - Governors work WITH prefabs (composable, law-aligned)
+- ✅ **Production ready** - Vite build + Capacitor for web (NO Python server)
 
 **Current Structure:**
 ```
-engine/              # Complete simulation engine (10,000 lines)
-├── governors/      # 15 governors (decide behavior)
-├── procedural/     # 6 synthesis systems (create visuals)
-├── core/           # 5 core systems (WorldManager API)
-├── spawners/       # Terrain, biomes, creatures, NPCs
+engine/              # Pure rendering/physics/coordination engine
+├── governors/      # Yuka-native governors (optional, feature-flagged)
+├── procedural/     # Synthesis systems (create visuals)
+├── core/           # WorldManager, TerrainSystem, PlayerController, CreatureManager
 ├── systems/        # Tools, structures, trade
 ├── tables/         # Constants
 ├── agents/         # CreatureAgent
+├── config/         # Feature flags (agentic systems on/off)
 ├── types/          # TypeScript definitions
-└── utils/          # RNG, seeds
+└── utils/          # RNG, seeds (three-word format)
 
-game/               # Clean game package (~100 lines)
-├── Game.tsx        # Main component
+generation/          # Generation logic (NOT engine code)
+├── spawners/       # All spawners/generators (terrain, creatures, settlements, vegetation)
+│   ├── BuildingPrefab.ts         # Prefab definitions (law-aligned, composable)
+│   ├── BuildingGenerator.ts      # Mesh generation from prefabs
+│   ├── GovernorPrefabIntegration.ts  # Bridge governors ↔ prefabs
+│   └── ...                        # ChunkManager, BiomeSystem, etc.
+
+game/               # Game package (UI + game loop)
+├── Game.tsx        # Main component (uses WorldManager API)
+├── ui/             # React UI (MenuScreen with seed input)
 ├── main.tsx        # Entry point
 └── index.html      # HTML shell
 
-tests/              # 87% coverage (977 lines)
-├── unit/           # Governors, synthesis, spawners
-└── integration/    # World, determinism, performance
+tests/              # Test suite
+├── unit/           # Unit tests
+└── integration/    # Integration tests
 ```
 
 **The new flow:**
 ```
-Three-Word Seed
+Three-Word Seed (MenuScreen)
     ↓
-Governors DECIDE (biology, ecology, social, physics)
+sessionStorage → Game.tsx → WorldManager.initialize(seed)
     ↓
-Synthesis CREATES (molecular → visuals)
+Generation Package (spawners/prefabs) - Determines WHAT/WHERE
     ↓
-WorldManager API
+Engine (rendering/physics) - Renders results
     ↓
-Game (React + R3F)
+Game Loop (world.update())
     ↓
 Living World
 ```
 
-**Same seed = same world. Always. Deterministic.**
+**Pure Engine Mode (default):**
+- Feature flags: `ENABLE_AGENTIC_SYSTEMS = false`
+- Deterministic prefab-based spawning
+- No governor decisions
+- Simple, predictable, testable
 
-**NO PREFABS. Governors + Synthesis.**
+**Governor Mode (optional):**
+- Feature flags: `ENABLE_AGENTIC_SYSTEMS = true`
+- Governors evolve/compose prefabs
+- Law-aligned generation
+- Emergent behavior
+
+**Same seed = same world. Always. Deterministic.**
 
 ---
 
 ## Architecture
 
-**Engine Structure:**
+**Engine Structure (Pure Engine):**
 ```
 engine/
-├── governors/         # 17 Yuka-native agent behaviors
-│   ├── physics/       # Gravity, Orbit, Temperature, Stellar (4)
-│   ├── biological/    # Metabolism, Lifecycle, Reproduction, Genetics, Cognitive (5)
-│   ├── ecological/    # Flocking, PredatorPrey, Territory, Foraging, Migration (5)
-│   ├── social/        # Hierarchy, Warfare, Cooperation (3)
-│   ├── README.md      # Governor architecture guide
-│   └── index.ts       # Main export
-│
+├── config/
+│   └── featureFlags.ts      # ENABLE_AGENTIC_SYSTEMS, etc.
+├── governors/         # Yuka-native governors (optional, feature-flagged)
+│   ├── physics/       # Gravity, Temperature
+│   ├── biological/    # Metabolism, Lifecycle, Reproduction, Genetics, Cognitive
+│   ├── ecological/    # Flocking, PredatorPrey, Territory, Foraging, Migration
+│   └── social/        # Hierarchy, Warfare, Cooperation
+├── core/              # Core systems (WorldManager API)
+│   ├── WorldManager.ts      # Central coordinator (DFU GameManager pattern)
+│   ├── TerrainSystem.ts     # Chunk streaming (DFU StreamingWorld pattern)
+│   ├── PlayerController.ts  # Player movement (DFU PlayerMotor pattern)
+│   └── CreatureManager.ts   # Creature management
+├── procedural/        # Synthesis systems (molecular → visuals)
+├── systems/           # Tools, structures, trade
+├── agents/            # CreatureAgent (Yuka integration)
 ├── tables/            # Universal constants
-│   ├── physics-constants.ts
-│   ├── biological-constants.ts
-│   ├── ecological-constants.ts
-│   ├── social-constants.ts
-│   ├── periodic-table.ts
-│   └── linguistic-roots.ts
-│
-├── spawners/          # World generation (Daggerfall-inspired)
-│   ├── ChunkManager.ts      # 7x7 chunk streaming
-│   ├── BiomeSystem.ts       # 11 biomes
-│   ├── SimplexNoise.ts      # Terrain heightmaps
-│   ├── VegetationSpawner.ts # Instanced trees
-│   ├── SettlementPlacer.ts  # Law-based cities
-│   ├── NPCSpawner.ts        # Daily schedules
-│   ├── CreatureSpawner.ts   # Kleiber's Law
-│   └── WaterSystem.ts       # Animated shaders
-│
-├── agents/            # Yuka AI integration
-│   ├── AgentSpawner.ts
-│   ├── AgentLODSystem.ts
-│   ├── CreatureAgent.ts
-│   ├── PlanetaryAgent.ts
-│   ├── evaluators/    # Decision-making
-│   └── behaviors/     # Steering behaviors
-│
-├── simulation/        # Timeline engine
-│   ├── UniverseSimulator.ts
-│   ├── TimelineSimulator.ts
-│   └── UniverseActivityMap.ts
-│
-├── utils/             # Core utilities
-│   ├── EnhancedRNG.ts       # Deterministic RNG
-│   └── seed/                # Seed management
-│
-└── tables/            # Universal constants
-    ├── periodic-table.ts
-    ├── physics-constants.ts
-    └── linguistic-roots.ts
+├── types/             # TypeScript definitions
+└── utils/             # RNG, seeds (three-word format)
+
+generation/            # Generation logic (separated from engine)
+├── spawners/
+│   ├── ChunkManager.ts           # 7x7 chunk streaming
+│   ├── BiomeSystem.ts            # 11 biomes
+│   ├── SimplexNoise.ts           # Terrain heightmaps
+│   ├── VegetationSpawner.ts      # Instanced trees
+│   ├── SettlementPlacer.ts       # Settlement placement
+│   ├── NPCSpawner.ts             # Daily schedules
+│   ├── CreatureSpawner.ts        # Creature spawning
+│   ├── BuildingPrefab.ts         # Prefab definitions (law-aligned)
+│   ├── BuildingGenerator.ts      # Mesh generation
+│   ├── GovernorPrefabIntegration.ts  # Governors ↔ prefabs bridge
+│   └── WaterSystem.ts           # Animated shaders
+└── README.md          # Generation package docs
+
+game/                  # Game package
+├── Game.tsx           # Main component (uses WorldManager API)
+├── ui/
+│   ├── screens/
+│   │   └── MenuScreen.tsx    # Three-word seed input (shuffle/copy/validate)
+│   └── UIManager.tsx
+├── main.tsx           # Entry point
+└── index.html         # HTML shell
 ```
 
 **Technology Stack:**
@@ -137,35 +148,35 @@ engine/
 
 ---
 
-## Critical Rules
+## Key Principles (from .clinerules)
 
-1. **Law-Based Generation**: Everything emerges from mathematical laws
-2. **Deterministic**: Same seed must produce same result
-3. **Engine/Demo Separation**: Engine has NO rendering code
-4. **String Seeds**: Three-word format (`v1-word-word-word`)
-5. **No Status Docs**: All status goes in memory-bank/ only
-6. **React Three Fiber**: Use R3F for all 3D rendering
+1. **Bottom-up emergence** - Molecular → Stars → Galaxies → Cosmic web
+2. **Yuka decides everything** - No forcing positions, counts, timing
+3. **EntropyAgent governs** - Top-level thermodynamics (lightweight)
+4. **Legal Brokers mediate** - All spawning/decisions validated by laws
+5. **Law-Based Generation**: Everything emerges from mathematical laws
+6. **Deterministic**: Same seed must produce same result
+7. **Engine/Game Separation**: Engine has NO rendering code
+8. **String Seeds**: Three-word format (`v1-word-word-word`)
+9. **No Status Docs**: All status goes in memory-bank/ only (NO root docs except README.md)
+10. **React Three Fiber**: Use R3F for all 3D rendering
 
 ---
 
 ## Development Commands
 
 ```bash
-# Engine (root)
-npm install              # Install engine dependencies
-npm test                 # Run tests
-npm run type-check       # TypeScript validation
+# Root (all packages)
+pnpm install             # Install dependencies
+pnpm dev                 # Dev server (localhost:5173)
+pnpm build               # Production build
+pnpm preview             # Preview production build
+pnpm test                # Run tests
+pnpm type-check          # TypeScript validation
 
-# Demo (separate package)
-cd demo
-npm install              # Install demo dependencies
-npm run dev              # Dev server (localhost:5173)
-npm run build            # Production build
-
-# Tools
-cd tools/cli
-tsx validate-laws.ts     # Validate all laws
-tsx test-determinism.ts  # Test determinism
+# Testing
+pnpm test:browser        # Playwright E2E tests
+pnpm test:browser:prod   # Test production build
 ```
 
 ---
@@ -173,45 +184,52 @@ tsx test-determinism.ts  # Test determinism
 ## Key Files
 
 **Engine Core:**
-- `engine/index.ts` - Main API export
-- `engine/laws/*.ts` - All 57 law implementations
-- `engine/spawners/ChunkManager.ts` - Terrain streaming
+- `engine/core/WorldManager.ts` - Central coordinator (DFU GameManager pattern)
+- `engine/core/TerrainSystem.ts` - Chunk streaming (DFU StreamingWorld pattern)
+- `engine/core/PlayerController.ts` - Player movement (DFU PlayerMotor pattern)
+- `engine/config/featureFlags.ts` - Feature flags (pure engine mode)
 - `engine/utils/EnhancedRNG.ts` - Deterministic RNG
+- `engine/utils/seed/seed-manager.ts` - Three-word seed system
 
-**Demo:**
-- `demo/src/demos/TerrainDemo.tsx` - R3F terrain demo
-- `demo/src/store/gameStore.ts` - Zustand state
-- `demo/index.html` - Entry point
+**Generation:**
+- `generation/spawners/ChunkManager.ts` - Terrain chunk generation
+- `generation/spawners/BuildingPrefab.ts` - Prefab definitions (law-aligned, composable)
+- `generation/spawners/GovernorPrefabIntegration.ts` - Governors ↔ prefabs bridge
+- `generation/spawners/SettlementPlacer.ts` - Settlement placement
+
+**Game:**
+- `game/Game.tsx` - Main component (uses WorldManager API)
+- `game/ui/screens/MenuScreen.tsx` - Three-word seed input (shuffle/copy/validate)
+- `game/index.html` - Entry point
 
 **Documentation:**
-- `README.md` - Engine overview
-- `ENGINE.md` - Complete API docs
-- `ENGINE_ARCHITECTURE.md` - Technical architecture
-- `docs/` - Additional architecture docs
+- `README.md` - Project overview
+- `generation/README.md` - Generation package docs
+- `memory-bank/` - All status/docs (NO root cruft)
 
 ---
 
 ## Current Status
 
-**Engine**: ✅ Complete (v1.0)
-- 57 law files implemented
-- DFU proven patterns (7x7 chunks, steepness check, clearance)
-- SimplexNoise terrain (superior to Perlin)
-- Instanced vegetation (efficient)
-- Yuka AI agents
-- Deterministic generation verified
+**Engine**: ✅ Pure Engine Mode (v1.1) - PRODUCTION READY
+- ✅ Feature flags system - Agentic systems disabled by default
+- ✅ Three-word seed system - Integrated into main menu
+- ✅ Generation package separated - Spawners/prefabs in `generation/` root
+- ✅ Governor-prefab integration - Governors work WITH prefabs
+- ✅ DFU parity verified - Player movement, world streaming, chunk grid
+- ✅ Production build - Vite + Capacitor (NO Python server)
+- ✅ Deterministic generation - Same seed = same world
 
-**Demo**: ✅ Working
-- R3F integration complete
-- 3 demos created (Terrain, Universe, Playground)
-- Zustand state management
-- Beautiful landing page
+**Game**: ✅ Working
+- MenuScreen with seed shuffle/copy/validate
+- WorldManager API integration
+- React Three Fiber rendering
+- Session storage for seed persistence
 
 **Documentation**: ✅ Comprehensive
-- README.md (engine overview)
-- ENGINE.md (400 lines API docs)
-- ENGINE_ARCHITECTURE.md (600 lines architecture)
-- Memory bank updated
+- Memory bank updated (NO root cruft)
+- Generation package docs
+- Feature flags documented
 
 ---
 
@@ -298,8 +316,12 @@ const { player, world } = useGameStore();
 
 ---
 
-**CRITICAL**: 
+**CRITICAL RULES**: 
 - Engine is in `engine/` (not `packages/game/src/`)
 - Use R3F for rendering (not BabylonJS)
 - Import from `ebb-and-bloom-engine` package
 - Status docs go in `memory-bank/` ONLY
+- NO status documents in root (use memory-bank/ only)
+- NO forcing outcomes (Yuka decides)
+- ALL loops > 100 iterations MUST yield (call stack!)
+- Root should ONLY have README.md and CLAUDE.md (if needed)

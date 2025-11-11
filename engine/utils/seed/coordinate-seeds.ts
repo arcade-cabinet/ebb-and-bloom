@@ -9,7 +9,14 @@
  */
 
 import seedrandom from 'seedrandom';
-import type { SpacetimeCoordinates } from '../simulation/UniverseSimulator';
+
+// SpacetimeCoordinates type (moved here to avoid circular dependency)
+export interface SpacetimeCoordinates {
+  x: number; // light-years
+  y: number;
+  z: number;
+  t: number; // seconds since Big Bang
+}
 
 // Word lists for readable seeds
 const ADJECTIVES = [

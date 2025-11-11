@@ -1,38 +1,42 @@
 # Progress Tracker
-**Last Updated:** November 10, 2025
+**Last Updated:** January 2025 (Pure Engine Mode Complete)
 
 ---
 
-## CURRENT: Planetary Exploration Engine v1.1
+## CURRENT: Pure Engine Mode v1.1
 
 **Status:** ✅ PRODUCTION READY  
-**Focus:** World exploration powered by 15 governors
+**Focus:** Pure engine gameplay with feature flags, three-word seeds, generation separation
 
 ---
 
-## Latest Milestone: Complete Engine + Game (Nov 10, 2025)
+## Latest Milestone: Pure Engine Mode + Generation Separation (Jan 2025)
 
-### Beast Mode Session - 40 Commits:
+### Pure Engine Mode Session:
 
-**Engine Built:**
-- ✅ **Laws → Governors** (8,755 lines → 15 governors)
-- ✅ **Universe/stellar removed** (4,664 lines eliminated)
-- ✅ **Complex agents removed** (2,580 lines eliminated)
-- ✅ **Demos removed** (3,477 lines eliminated)
-- ✅ **Total deletion: 19,476 lines (71% reduction)**
-- ✅ **15 Governors** (biology, ecology, social, physics)
-- ✅ **6 Synthesis systems** (molecular → visuals)
-- ✅ **5 Core systems** (WorldManager API, DFU-based)
-- ✅ **CityPlanner** (social governor-driven)
-- ✅ **Tests: 87% coverage** (45/52 passing, 977 lines)
-- ✅ **DFU architecture studied** and replicated
-- ✅ **Complete documentation** (ENGINE.md, READMEs, architecture docs)
+**Feature Flags System:**
+- ✅ **Feature flags implemented** (`engine/config/featureFlags.ts`)
+- ✅ **Pure engine mode default** (agentic systems disabled)
+- ✅ **Governor mode optional** (enable via flags)
+- ✅ **Clean separation** (engine vs generation)
 
-**Game Created:**
-- ✅ **Clean package** (uses WorldManager API only)
-- ✅ **Flat organization** (matches engine/)
-- ✅ **Single update call** (world.update())
-- ✅ **Proper separation** (no engine internals)
+**Three-Word Seed System:**
+- ✅ **MenuScreen integration** (shuffle/copy/validate)
+- ✅ **Session storage** (seed persists)
+- ✅ **WorldManager integration** (seed flows through all systems)
+- ✅ **Deterministic generation** (same seed = same world)
+
+**Generation Package:**
+- ✅ **Spawners moved** (`engine/spawners/` → `generation/spawners/`)
+- ✅ **Prefabs separated** (BuildingPrefab in generation/)
+- ✅ **Governor-prefab integration** (GovernorPrefabIntegration.ts)
+- ✅ **Clean architecture** (engine renders, generation decides)
+
+**Production Ready:**
+- ✅ **Vite build** (production optimized)
+- ✅ **Capacitor configured** (web deployment)
+- ✅ **NO Python server** (removed)
+- ✅ **Preview server** (Vite preview for testing)
 
 ### Git History:
 - `65484c0` - DFU foundation checkpoint
@@ -53,15 +57,16 @@
 - Agent system (Yuka integration)
 - Simulation systems (timeline, genesis)
 
-### ✅ World Generation
-- ChunkManager (7x7 streaming, DFU pattern)
+### ✅ World Generation (DFU PARITY VERIFIED)
+- ChunkManager (7x7 streaming, TerrainDistance=3) - ✅ PARITY
 - BiomeSystem (11 types, Whittaker diagram)
-- SimplexNoise (O(n²), superior to Perlin)
-- VegetationSpawner (steepness + clearance filters)
-- SettlementPlacer (law-based)
+- SimplexNoise (O(n²), superior to DFU's Perlin)
+- VegetationSpawner (steepness + clearance filters) - ✅ PARITY
+- SettlementPlacer (law-based, outside edge spawning) - ✅ PARITY
 - NPCSpawner (daily schedules)
 - CreatureSpawner (Kleiber's Law)
 - WaterSystem (animated shaders)
+- **See:** `memory-bank/DFU_PARITY_VERIFICATION.md` for complete verification
 
 ### ✅ Demo Package
 - React Three Fiber integration
@@ -162,4 +167,12 @@
 
 ---
 
-**Current Status:** v1.0 Complete, ready for feature development
+**Current Status:** v1.1 Complete, Pure Engine Mode, Production Ready
+
+**Key Features:**
+- ✅ Feature flags system (pure engine mode default)
+- ✅ Three-word seed system (MenuScreen integration)
+- ✅ Generation package separated (clean architecture)
+- ✅ Governor-prefab integration (composable, law-aligned)
+- ✅ Production build (Vite + Capacitor, NO Python server)
+- ✅ DFU parity verified (player movement, world streaming, chunk grid)

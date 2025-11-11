@@ -9,7 +9,6 @@
  */
 
 import * as THREE from 'three';
-import { SOCIAL_CONSTANTS } from '../tables/social-constants';
 
 export interface BuildingSpec {
     type: 'house' | 'shop' | 'temple' | 'tavern' | 'workshop' | 'warehouse';

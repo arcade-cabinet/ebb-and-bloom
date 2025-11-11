@@ -82,7 +82,14 @@ export class PigmentationSynthesis {
         const canvas = document.createElement('canvas');
         canvas.width = 256;
         canvas.height = 256;
-        const ctx = canvas.getContext('2d')!;
+        const ctx = canvas.getContext('2d');
+        
+        // Handle case where canvas context is not available (e.g., in tests)
+        if (!ctx) {
+            // Return a simple solid color texture as fallback
+            const texture = new THREE.CanvasTexture(canvas);
+            return texture;
+        }
 
         // Base color from environment
         const baseColor = this.getEnvironmentColor(environment);

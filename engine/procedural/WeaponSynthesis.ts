@@ -164,30 +164,51 @@ export class WeaponSynthesis {
     private synthesizeSword(materials: WeaponMaterials): THREE.Group {
         const sword = new THREE.Group();
         
+        // Blade material based on available materials
+        let bladeColor = 0x909090; // Default metal
+        let bladeMetalness = 0.9;
+        let bladeRoughness = 0.3;
+        
+        if (materials.head === 'metal') {
+            bladeColor = 0x909090; // Metal - gray
+            bladeMetalness = 0.9;
+            bladeRoughness = 0.3;
+        } else if (materials.head === 'bone') {
+            bladeColor = 0xD3D3D3; // Bone - white
+            bladeMetalness = 0.1;
+            bladeRoughness = 0.8;
+        } else if (materials.head === 'stone') {
+            bladeColor = 0x696969; // Stone - dark gray
+            bladeMetalness = 0.1;
+            bladeRoughness = 0.9;
+        }
+        
         // Blade
         const blade = new THREE.Mesh(
             new THREE.BoxGeometry(0.05, 1, 0.02),
             new THREE.MeshStandardMaterial({ 
-                color: 0x909090,
-                metalness: 0.9,
-                roughness: 0.3
+                color: bladeColor,
+                metalness: bladeMetalness,
+                roughness: bladeRoughness
             })
         );
         blade.position.y = 0.6;
         sword.add(blade);
         
-        // Guard
+        // Guard (wood or bone based on shaft)
+        const guardMaterial = materials.shaft === 'wood' ? 0x8B4513 : 0xD3D3D3; // Wood brown or bone white
         const guard = new THREE.Mesh(
             new THREE.BoxGeometry(0.3, 0.03, 0.05),
-            new THREE.MeshStandardMaterial({ color: 0x8B4513 })
+            new THREE.MeshStandardMaterial({ color: guardMaterial })
         );
         guard.position.y = 0.1;
         sword.add(guard);
         
-        // Handle
+        // Handle (wood or bone based on shaft)
+        const handleMaterial = materials.shaft === 'wood' ? 0x654321 : 0xD3D3D3; // Wood brown or bone white
         const handle = new THREE.Mesh(
             new THREE.CylinderGeometry(0.03, 0.03, 0.2, 8),
-            new THREE.MeshStandardMaterial({ color: 0x654321 })
+            new THREE.MeshStandardMaterial({ color: handleMaterial })
         );
         handle.position.y = -0.1;
         sword.add(handle);
@@ -198,10 +219,13 @@ export class WeaponSynthesis {
     private synthesizeBow(materials: WeaponMaterials): THREE.Group {
         const bow = new THREE.Group();
         
+        // Bow material based on shaft type
+        const bowColor = materials.shaft === 'wood' ? 0x8B4513 : 0xD3D3D3; // Wood brown or bone white
+        
         // Bow curve (torus segment)
         const curve = new THREE.Mesh(
             new THREE.TorusGeometry(0.6, 0.02, 6, 12, Math.PI),
-            new THREE.MeshStandardMaterial({ color: 0x8B4513 })
+            new THREE.MeshStandardMaterial({ color: bowColor })
         );
         curve.rotation.z = Math.PI / 2;
         bow.add(curve);

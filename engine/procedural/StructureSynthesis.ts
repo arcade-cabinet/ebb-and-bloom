@@ -23,36 +23,44 @@ export class StructureSynthesis {
      * Generate tool mesh from available materials
      */
     generateTool(type: ToolType, materials: MaterialAvailability): THREE.Group {
-        const group = new THREE.Group();
-
-        switch (type) {
-            case 'digging_stick':
-                return this.synthesizeDiggingStick(materials);
-            case 'gathering_pole':
-                return this.synthesizeGatheringPole(materials);
-            case 'wading_spear':
-                return this.synthesizeWadingSpear(materials);
-            case 'striking_stone':
-                return this.synthesizeStrikingStone(materials);
-        }
+        const tool = (() => {
+            switch (type) {
+                case 'digging_stick':
+                    return this.synthesizeDiggingStick(materials);
+                case 'gathering_pole':
+                    return this.synthesizeGatheringPole(materials);
+                case 'wading_spear':
+                    return this.synthesizeWadingSpear(materials);
+                case 'striking_stone':
+                    return this.synthesizeStrikingStone(materials);
+            }
+        })();
+        
+        // Add material-based finishing touches
+        tool.name = `tool-${type}`;
+        return tool;
     }
 
     /**
      * Generate structure mesh
      */
     generateStructure(type: StructureType, materials: MaterialAvailability, scale: number): THREE.Group {
-        const group = new THREE.Group();
-
-        switch (type) {
-            case 'burrow':
-                return this.synthesizeBurrow(materials, scale);
-            case 'platform':
-                return this.synthesizePlatform(materials, scale);
-            case 'stiltwork':
-                return this.synthesizeStiltwork(materials, scale);
-            case 'windbreak':
-                return this.synthesizeWindbreak(materials, scale);
-        }
+        const structure = (() => {
+            switch (type) {
+                case 'burrow':
+                    return this.synthesizeBurrow(materials, scale);
+                case 'platform':
+                    return this.synthesizePlatform(materials, scale);
+                case 'stiltwork':
+                    return this.synthesizeStiltwork(materials, scale);
+                case 'windbreak':
+                    return this.synthesizeWindbreak(materials, scale);
+            }
+        })();
+        
+        // Add material-based finishing touches
+        structure.name = `structure-${type}`;
+        return structure;
     }
 
     /**

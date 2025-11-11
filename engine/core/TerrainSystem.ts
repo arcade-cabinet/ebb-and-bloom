@@ -11,7 +11,7 @@
 
 import * as THREE from 'three';
 import { EntityManager } from 'yuka';
-import { ChunkManager } from '../spawners/ChunkManager';
+import { ChunkManager } from '../../generation/spawners/ChunkManager';
 
 export interface RaycastHit {
     point: THREE.Vector3;
@@ -21,7 +21,6 @@ export interface RaycastHit {
 
 export class TerrainSystem {
     private chunkManager: ChunkManager;
-    private chunkDistance: number;
     
     constructor(
         scene: THREE.Scene,
@@ -29,7 +28,6 @@ export class TerrainSystem {
         entityManager: EntityManager,
         chunkDistance: number = 3
     ) {
-        this.chunkDistance = chunkDistance;
         this.chunkManager = new ChunkManager(scene, seed, entityManager);
         
         console.log(`[TerrainSystem] Initialized with distance ${chunkDistance} (${(2*chunkDistance+1)**2} chunks)`);
