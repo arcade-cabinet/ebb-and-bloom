@@ -59,6 +59,7 @@
     "@react-three/postprocessing": "3.0.4",
     "@recast-navigation/three": "0.43.0",
     "@use-gesture/react": "10.3.1",
+    "chemicaltools": "1.2.22",
     "d3-force-3d": "3.0.6",
     "fast-simplex-noise": "^4.0.0",
     "happy-dom": "20.0.10",
