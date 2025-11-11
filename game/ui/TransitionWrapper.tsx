@@ -14,7 +14,8 @@ export function TransitionWrapper({
   duration = 500,
   delay = 0,
 }: TransitionWrapperProps) {
-  const [shouldShow, setShouldShow] = useState(!fadeIn);
+  // SIMPLIFIED: Always show content immediately
+  const [shouldShow, setShouldShow] = useState(true); // Changed from !fadeIn to true
 
   useEffect(() => {
     if (fadeIn) {

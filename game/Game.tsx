@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { SceneManager } from './scenes/SceneManager';
 import { MenuScene } from './scenes/MenuScene';
 import { IntroScene } from './scenes/IntroScene';
@@ -16,9 +16,15 @@ sceneManager.registerScene('pause', PauseScene);
 export function Game() {
   const [, setTick] = useState(0);
   const [transitionState, setTransitionState] = useState(sceneManager.getTransitionState());
+  const initializedRef = useRef(false);
   
   useEffect(() => {
-    sceneManager.changeScene('menu');
+    // Prevent double-initialization in React StrictMode using ref
+    if (!initializedRef.current) {
+      console.log('Game: Initializing with menu scene');
+      initializedRef.current = true;
+      sceneManager.changeScene('menu');
+    }
     
     const interval = setInterval(() => {
       setTick(t => t + 1);

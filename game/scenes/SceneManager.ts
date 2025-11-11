@@ -113,14 +113,19 @@ export class SceneManager {
     this.isTransitioning = true;
     
     try {
-      await this.fadeOut(duration / 2);
+      // Skip fade animation if this is the initial scene (no current scene)
+      const hasCurrentScene = this.sceneStack.length > 0;
+      
+      if (hasCurrentScene) {
+        await this.fadeOut(duration / 2);
+      }
       
       if (loadingMessage) {
         this.setLoadingMessage(loadingMessage);
         await new Promise(resolve => setTimeout(resolve, 100));
       }
       
-      if (this.sceneStack.length > 0) {
+      if (hasCurrentScene) {
         const currentScene = this.sceneStack[this.sceneStack.length - 1];
         await currentScene.exit();
       }
@@ -141,7 +146,9 @@ export class SceneManager {
         this.setLoadingMessage('');
       }
       
-      await this.fadeIn(duration / 2);
+      if (hasCurrentScene) {
+        await this.fadeIn(duration / 2);
+      }
     } finally {
       this.isTransitioning = false;
     }
