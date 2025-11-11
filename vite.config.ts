@@ -20,11 +20,13 @@ export default defineConfig({
     strictPort: true,
     allowedHosts: true,
     hmr: {
+      protocol: 'ws',
+      host: 'localhost',
+      port: 5000,
       clientPort: 5000,
-      overlay: false  // Disable error overlay that can cause reloads
+      overlay: false
     },
     watch: {
-      // Ignore files that cause reload loops
       ignored: [
         '**/tsconfig*.json',
         '**/node_modules/**',
