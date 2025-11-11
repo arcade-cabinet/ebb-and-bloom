@@ -7,6 +7,9 @@
 
 import { useEffect, useState } from 'react';
 import * as THREE from 'three';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@mui/material';
+import ScienceIcon from '@mui/icons-material/Science';
 import { useUIManager } from '../UIManager';
 import { useWorld } from '../WorldContext';
 import { HUDVitals } from './HUDVitals';
@@ -17,8 +20,12 @@ import { HUDInfo } from './HUDInfo';
 export function HUD() {
   const { isHUDVisible } = useUIManager();
   const { world, seed } = useWorld();
+  const navigate = useNavigate();
   const [playerPosition, setPlayerPosition] = useState<{ x: number; y: number; z: number } | null>(null);
   const [heading, setHeading] = useState(0);
+  
+  // Check if we're in development mode
+  const isDev = import.meta.env.DEV;
 
   // Update player position and heading from world
   useEffect(() => {
@@ -58,6 +65,28 @@ export function HUD() {
       <HUDCompass heading={heading} />
       <HUDCrosshair />
       <HUDInfo seed={seed || undefined} position={playerPosition || undefined} />
+      
+      {/* DEV-ONLY: Demos menu button for testing isolated features */}
+      {isDev && (
+        <Button
+          variant="contained"
+          startIcon={<ScienceIcon />}
+          onClick={() => navigate('/demos')}
+          sx={{
+            position: 'fixed',
+            bottom: 16,
+            right: 16,
+            bgcolor: '#7fb069',
+            color: '#1a1a1a',
+            fontWeight: 'bold',
+            minHeight: '44px',
+            zIndex: 1000,
+            '&:hover': { bgcolor: '#6a9557' },
+          }}
+        >
+          Demos Lab
+        </Button>
+      )}
     </>
   );
 }
