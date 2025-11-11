@@ -24,7 +24,8 @@ export default defineConfig({
       host: 'localhost',
       port: 5000,
       clientPort: 5000,
-      overlay: false
+      overlay: false,
+      timeout: 30000
     },
     watch: {
       ignored: [
@@ -35,8 +36,13 @@ export default defineConfig({
         '**/android/**',
         '**/docs/**',
         '**/memory-bank/**',
+        '**/playwright-report/**',
+        '**/test-results/**',
         '**/*.md'
-      ]
+      ],
+      // Reduce file watching overhead
+      usePolling: false,
+      interval: 1000
     }
   },
   preview: {
