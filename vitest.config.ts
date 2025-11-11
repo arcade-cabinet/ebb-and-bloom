@@ -5,8 +5,12 @@ export default defineConfig({
   test: {
     include: [
       'tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
+      'tests/**/*.bench.{js,ts}',
       'engine/**/__tests__/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'
     ],
+    benchmark: {
+      include: ['tests/**/*.bench.{js,ts}'],
+    },
     exclude: [
       '**/node_modules/**',
       '**/dist/**',

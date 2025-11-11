@@ -2,39 +2,87 @@ import { useMemo, useState, useRef, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useSpring, animated } from '@react-spring/three';
 import * as THREE from 'three';
+import { Box, Button, CircularProgress, Typography, LinearProgress } from '@mui/material';
 import { CosmicProvenanceTimeline, CosmicStage } from '../../engine/genesis/CosmicProvenanceTimeline';
 import { GenesisConstants } from '../../engine/genesis/GenesisConstants';
 import { EnhancedRNG } from '../../engine/utils/EnhancedRNG';
 import { useGameState } from '../state/GameState';
+import { CosmicAudioSonification } from '../../engine/audio/CosmicAudioSonification';
+import { CosmicHapticFeedback } from '../../engine/haptics/CosmicHapticFeedback';
+import { useGyroscopeCamera } from '../../engine/input/useGyroscopeCamera';
 
 interface CosmicExpansionFMVProps {
   seed: string;
   onComplete: (constants: GenesisConstants) => void;
+  onSkip?: () => void;
   autoPlay?: boolean;
   stageIndex?: number;
+  enableAudio?: boolean;
+  enableHaptics?: boolean;
+  enableGyroscope?: boolean;
 }
 
 export function CosmicExpansionFMV({ 
   seed, 
   onComplete, 
+  onSkip,
   autoPlay = true, 
-  stageIndex 
+  stageIndex,
+  enableAudio = true,
+  enableHaptics = true,
+  enableGyroscope = false
 }: CosmicExpansionFMVProps) {
   const { initializeWithSeed, getScopedRNG } = useGameState();
   
-  useEffect(() => {
-    initializeWithSeed(seed, 'user');
-  }, [seed, initializeWithSeed]);
-  
-  const timeline = useMemo(() => new CosmicProvenanceTimeline(getScopedRNG('cosmic-timeline')), [getScopedRNG]);
-  const genesis = useMemo(() => new GenesisConstants(getScopedRNG('genesis')), [getScopedRNG]);
-  const stages = useMemo(() => timeline.getStages(), [timeline]);
-  
+  const [isLoading, setIsLoading] = useState(true);
   const [currentStage, setCurrentStage] = useState(stageIndex ?? 0);
   const [progress, setProgress] = useState(0);
+  const [showSkip, setShowSkip] = useState(false);
+  
+  const timeline = useRef<CosmicProvenanceTimeline | null>(null);
+  const genesis = useRef<GenesisConstants | null>(null);
+  const audioSystem = useRef<CosmicAudioSonification | null>(null);
+  const hapticSystem = useRef<CosmicHapticFeedback | null>(null);
+  
+  const gyroscopeOffset = useGyroscopeCamera(enableGyroscope, 0.5, 0.15);
   
   useEffect(() => {
-    if (!autoPlay) return;
+    initializeWithSeed(seed, 'user');
+    
+    const masterRng = getScopedRNG('cosmic');
+    timeline.current = new CosmicProvenanceTimeline(getScopedRNG('cosmic-timeline'));
+    genesis.current = new GenesisConstants(getScopedRNG('genesis'));
+    
+    if (enableAudio) {
+      audioSystem.current = new CosmicAudioSonification(masterRng);
+    }
+    
+    if (enableHaptics) {
+      hapticSystem.current = new CosmicHapticFeedback(masterRng);
+    }
+    
+    setIsLoading(false);
+    
+    return () => {
+      if (audioSystem.current) {
+        audioSystem.current.stopAll();
+      }
+      if (hapticSystem.current) {
+        hapticSystem.current.stopAll();
+      }
+    };
+  }, [seed, initializeWithSeed, getScopedRNG, enableAudio, enableHaptics]);
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSkip(true);
+    }, 3000);
+    
+    return () => clearTimeout(timer);
+  }, []);
+  
+  useEffect(() => {
+    if (!autoPlay || !timeline.current) return;
     
     const stageDuration = 5000;
     const startTime = Date.now();
@@ -45,33 +93,133 @@ export function CosmicExpansionFMV({
       setProgress(newProgress);
       
       if (elapsed > stageDuration) {
+        const stages = timeline.current!.getStages();
         if (currentStage < stages.length - 1) {
-          setCurrentStage(currentStage + 1);
+          setCurrentStage(prev => prev + 1);
         } else {
           clearInterval(interval);
-          onComplete(genesis);
+          if (genesis.current) {
+            onComplete(genesis.current);
+          }
         }
       }
     }, 16);
     
     return () => clearInterval(interval);
-  }, [autoPlay, currentStage, stages.length, genesis, onComplete]);
+  }, [autoPlay, currentStage, onComplete]);
   
+  useEffect(() => {
+    if (!timeline.current) return;
+    
+    const stages = timeline.current.getStages();
+    const stage = stages[currentStage];
+    
+    if (audioSystem.current && enableAudio) {
+      audioSystem.current.playSoundForStage(stage.id, progress);
+    }
+    
+    if (hapticSystem.current && enableHaptics) {
+      hapticSystem.current.playHapticForStage(stage.id, progress);
+    }
+  }, [currentStage, progress, enableAudio, enableHaptics]);
+  
+  if (isLoading || !timeline.current) {
+    return (
+      <Box
+        sx={{
+          width: '100vw',
+          height: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: '#000',
+          color: '#fff',
+        }}
+      >
+        <CircularProgress size={60} sx={{ mb: 2 }} />
+        <Typography variant="h6">Initializing Cosmic Timeline...</Typography>
+      </Box>
+    );
+  }
+  
+  const stages = timeline.current.getStages();
   const stage = stages[currentStage];
+  const overallProgress = ((currentStage + progress) / stages.length) * 100;
   
   return (
-    <Canvas camera={{ position: [0, 0, 10], fov: 75 }}>
-      <ambientLight intensity={0.3} />
-      <StageRenderer 
-        stage={stage}
-        progress={progress}
-        seed={seed}
-      />
-      <CameraAnimator 
-        stage={stage}
-        _progress={progress}
-      />
-    </Canvas>
+    <Box 
+      sx={{ width: '100vw', height: '100vh', position: 'relative', backgroundColor: '#000' }}
+      data-stage-index={currentStage}
+      data-timeline-ready="true"
+    >
+      <Canvas camera={{ position: [0, 0, 10], fov: 75 }}>
+        <ambientLight intensity={0.3} />
+        <StageRenderer 
+          stage={stage}
+          progress={progress}
+          seed={seed}
+        />
+        <CameraAnimator 
+          stage={stage}
+          _progress={progress}
+          gyroscopeOffset={gyroscopeOffset}
+        />
+      </Canvas>
+      
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 20,
+          left: 20,
+          right: 20,
+          color: 'white',
+          zIndex: 10,
+        }}
+      >
+        <Typography variant="h5" sx={{ mb: 1, textShadow: '0 0 10px rgba(0,0,0,0.8)' }}>
+          {stage.name}
+        </Typography>
+        <Typography variant="body2" sx={{ mb: 2, textShadow: '0 0 10px rgba(0,0,0,0.8)' }}>
+          Stage {currentStage + 1} of {stages.length}
+        </Typography>
+        <LinearProgress 
+          variant="determinate" 
+          value={overallProgress} 
+          sx={{
+            height: 6,
+            borderRadius: 3,
+            backgroundColor: 'rgba(255,255,255,0.2)',
+            '& .MuiLinearProgress-bar': {
+              backgroundColor: '#00ccff',
+            },
+          }}
+        />
+      </Box>
+      
+      {showSkip && onSkip && (
+        <Button
+          variant="outlined"
+          onClick={onSkip}
+          sx={{
+            position: 'absolute',
+            bottom: 40,
+            right: 40,
+            color: 'white',
+            borderColor: 'white',
+            opacity: showSkip ? 1 : 0,
+            transition: 'opacity 0.5s ease-in',
+            zIndex: 10,
+            '&:hover': {
+              borderColor: 'white',
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            },
+          }}
+        >
+          Skip Intro
+        </Button>
+      )}
+    </Box>
   );
 }
 
@@ -118,7 +266,15 @@ function StageRenderer({ stage, progress, seed }: StageRendererProps) {
   }
 }
 
-function CameraAnimator({ stage, _progress }: { stage: CosmicStage; _progress: number }) {
+function CameraAnimator({ 
+  stage, 
+  _progress, 
+  gyroscopeOffset 
+}: { 
+  stage: CosmicStage; 
+  _progress: number;
+  gyroscopeOffset?: { x: number; y: number; z: number };
+}) {
   void _progress;
   
   const cameraPositions: Record<string, [number, number, number]> = {
@@ -139,10 +295,30 @@ function CameraAnimator({ stage, _progress }: { stage: CosmicStage; _progress: n
     'surface-and-life': [0, 2, 8],
   };
   
+  const basePosition = cameraPositions[stage.id] || [0, 0, 10];
+  
+  const finalPosition = gyroscopeOffset 
+    ? [
+        basePosition[0] + gyroscopeOffset.x * 2,
+        basePosition[1] + gyroscopeOffset.y * 2,
+        basePosition[2] + gyroscopeOffset.z * 2,
+      ]
+    : basePosition;
+  
   const { position } = useSpring({
-    position: cameraPositions[stage.id] || [0, 0, 10],
+    position: finalPosition,
     config: { duration: 1000 }
   });
+  
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      (window as any).__CAMERA_POSITION__ = {
+        x: finalPosition[0],
+        y: finalPosition[1],
+        z: finalPosition[2],
+      };
+    }
+  }, [finalPosition]);
   
   return (
     <animated.perspectiveCamera

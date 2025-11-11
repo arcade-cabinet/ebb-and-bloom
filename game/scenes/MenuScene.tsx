@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Button, Typography, Stack, Paper, TextField, Box, IconButton } from '@mui/material';
+import { Button, Typography, Stack, Paper, TextField, Box, IconButton, InputAdornment, Alert } from '@mui/material';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CheckIcon from '@mui/icons-material/Check';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { BaseScene } from './BaseScene';
 import { SceneManager } from './SceneManager';
 import { BaseScreen } from '../ui/screens/BaseScreen';
 import { generateSeed, validateSeed } from '../../engine/utils/seed/seed-manager';
 import { useGameState } from '../state/GameState';
+import { TransitionWrapper } from '../ui/TransitionWrapper';
 
 export class MenuScene extends BaseScene {
   private manager: SceneManager;
@@ -42,6 +44,7 @@ function MenuSceneComponent({ manager }: MenuSceneComponentProps) {
   const [seed, setSeed] = useState<string>('');
   const [seedValid, setSeedValid] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setSeed(generateSeed());
@@ -51,6 +54,11 @@ function MenuSceneComponent({ manager }: MenuSceneComponentProps) {
     if (seed) {
       const validation = validateSeed(seed);
       setSeedValid(validation.valid);
+      if (!validation.valid && validation.error) {
+        setError(validation.error);
+      } else {
+        setError(null);
+      }
     }
   }, [seed]);
 
@@ -66,19 +74,43 @@ function MenuSceneComponent({ manager }: MenuSceneComponentProps) {
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error('Failed to copy seed:', err);
+      setError('Failed to copy seed to clipboard');
     }
   };
 
-  const handleNewGame = () => {
+  const handleNewGame = async () => {
     if (seedValid) {
-      setCurrentSeed(seed);
-      manager.changeScene('intro');
+      try {
+        setCurrentSeed(seed);
+        await manager.changeScene('intro');
+      } catch (err) {
+        console.error('Failed to start game:', err);
+        setError('Failed to start game. Please try again.');
+      }
     }
   };
 
   return (
     <BaseScreen className="menu-scene">
-      <Paper
+      <TransitionWrapper fadeIn duration={600} delay={100}>
+        <>
+          {error && (
+            <Alert 
+              severity="error" 
+              onClose={() => setError(null)}
+              sx={{ 
+                position: 'absolute',
+                top: 20,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                maxWidth: 500,
+                zIndex: 1000,
+              }}
+            >
+              {error}
+            </Alert>
+          )}
+          <Paper
         elevation={8}
         sx={{
           p: 6,
@@ -133,6 +165,13 @@ function MenuSceneComponent({ manager }: MenuSceneComponentProps) {
               placeholder="v1-word-word-word"
               error={!seedValid}
               helperText={seedValid ? 'Three-word seed determines your world' : 'Invalid seed format'}
+              InputProps={{
+                endAdornment: seedValid && seed ? (
+                  <InputAdornment position="end">
+                    <CheckCircleIcon sx={{ color: 'success.main' }} />
+                  </InputAdornment>
+                ) : null,
+              }}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   fontFamily: '"JetBrains Mono", monospace',
@@ -186,6 +225,14 @@ function MenuSceneComponent({ manager }: MenuSceneComponentProps) {
             sx={{
               minHeight: 44,
               py: 1.5,
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                transform: 'translateY(-2px)',
+                boxShadow: 4,
+              },
+              '&:active': {
+                transform: 'translateY(0px)',
+              },
             }}
           >
             New Game
@@ -196,12 +243,22 @@ function MenuSceneComponent({ manager }: MenuSceneComponentProps) {
             sx={{
               minHeight: 44,
               py: 1.5,
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                transform: 'translateY(-2px)',
+                boxShadow: 2,
+              },
+              '&:active': {
+                transform: 'translateY(0px)',
+              },
             }}
           >
             Settings
           </Button>
         </Stack>
       </Paper>
+        </>
+      </TransitionWrapper>
     </BaseScreen>
   );
 }

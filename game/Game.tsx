@@ -4,6 +4,7 @@ import { MenuScene } from './scenes/MenuScene';
 import { IntroScene } from './scenes/IntroScene';
 import { GameplayScene } from './scenes/GameplayScene';
 import { PauseScene } from './scenes/PauseScene';
+import { LoadingOverlay } from './ui/LoadingOverlay';
 
 const sceneManager = SceneManager.getInstance();
 
@@ -14,6 +15,7 @@ sceneManager.registerScene('pause', PauseScene);
 
 export function Game() {
   const [, setTick] = useState(0);
+  const [transitionState, setTransitionState] = useState(sceneManager.getTransitionState());
   
   useEffect(() => {
     sceneManager.changeScene('menu');
@@ -38,7 +40,16 @@ export function Game() {
     return () => cancelAnimationFrame(animationFrame);
   }, []);
   
+  useEffect(() => {
+    const unsubscribe = sceneManager.onTransitionStateChange(() => {
+      setTransitionState(sceneManager.getTransitionState());
+    });
+    
+    return unsubscribe;
+  }, []);
+  
   const scenes = sceneManager.getScenes();
+  const { fadeProgress, loadingMessage } = transitionState;
   
   return (
     <div style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>
@@ -57,6 +68,24 @@ export function Game() {
           {scene.render()}
         </div>
       ))}
+      
+      {fadeProgress > 0 && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            backgroundColor: '#000',
+            opacity: fadeProgress,
+            pointerEvents: 'none',
+            zIndex: 9998,
+          }}
+        />
+      )}
+      
+      <LoadingOverlay message={loadingMessage} show={!!loadingMessage} />
     </div>
   );
 }

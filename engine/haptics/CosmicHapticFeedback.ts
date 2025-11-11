@@ -25,15 +25,24 @@ interface PatternStep {
   delay: number;
 }
 
+export interface CosmicHapticOptions {
+  setTimeout?: typeof setTimeout;
+  clearTimeout?: typeof clearTimeout;
+}
+
 export class CosmicHapticFeedback {
   private enabled: boolean = true;
   private currentPattern: NodeJS.Timeout | null = null;
   private patternTimeouts: NodeJS.Timeout[] = [];
   private isHapticsAvailable: boolean = true;
   private rng: EnhancedRNG;
+  private _setTimeout: typeof setTimeout;
+  private _clearTimeout: typeof clearTimeout;
 
-  constructor(masterRng: EnhancedRNG) {
+  constructor(masterRng: EnhancedRNG, options?: CosmicHapticOptions) {
     this.rng = masterRng;
+    this._setTimeout = options?.setTimeout || setTimeout;
+    this._clearTimeout = options?.clearTimeout || clearTimeout;
     this.checkAvailability();
   }
 
@@ -60,12 +69,12 @@ export class CosmicHapticFeedback {
 
   public async stopAll(): Promise<void> {
     if (this.currentPattern) {
-      clearTimeout(this.currentPattern);
+      this._clearTimeout(this.currentPattern);
       this.currentPattern = null;
     }
 
     for (const timeout of this.patternTimeouts) {
-      clearTimeout(timeout);
+      this._clearTimeout(timeout);
     }
     this.patternTimeouts = [];
   }
@@ -139,7 +148,7 @@ export class CosmicHapticFeedback {
       if (!this.enabled) break;
 
       await new Promise<void>((resolve) => {
-        const timeout = setTimeout(async () => {
+        const timeout = this._setTimeout(async () => {
           if (this.enabled && this.isHapticsAvailable) {
             try {
               await Haptics.impact({ style: step.style });

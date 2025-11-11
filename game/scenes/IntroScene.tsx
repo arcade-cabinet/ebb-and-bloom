@@ -1,10 +1,9 @@
-import { useState } from 'react';
-import { Button, Box } from '@mui/material';
 import { BaseScene } from './BaseScene';
 import { SceneManager } from './SceneManager';
 import { CosmicExpansionFMV } from '../components/CosmicExpansionFMV';
 import { GenesisConstants } from '../../engine/genesis/GenesisConstants';
 import { useGameState } from '../state/GameState';
+import { TransitionWrapper } from '../ui/TransitionWrapper';
 
 export class IntroScene extends BaseScene {
   private manager: SceneManager;
@@ -36,7 +35,6 @@ interface IntroSceneComponentProps {
 
 function IntroSceneComponent({ manager }: IntroSceneComponentProps) {
   const { currentSeed } = useGameState();
-  const [showSkip, setShowSkip] = useState(true);
   
   const handleComplete = (_constants: GenesisConstants) => {
     console.log('Cosmic expansion complete, transitioning to gameplay');
@@ -44,42 +42,21 @@ function IntroSceneComponent({ manager }: IntroSceneComponentProps) {
   };
   
   const handleSkip = () => {
+    console.log('Skipping intro, transitioning to gameplay');
     manager.changeScene('gameplay');
   };
   
   return (
-    <Box sx={{ 
-      width: '100vw', 
-      height: '100vh', 
-      backgroundColor: '#000',
-      position: 'relative' 
-    }}>
+    <TransitionWrapper fadeIn duration={800} delay={0}>
       <CosmicExpansionFMV 
         seed={currentSeed}
         onComplete={handleComplete}
+        onSkip={handleSkip}
         autoPlay={true}
+        enableAudio={true}
+        enableHaptics={true}
+        enableGyroscope={false}
       />
-      
-      {showSkip && (
-        <Button
-          variant="outlined"
-          onClick={handleSkip}
-          onMouseEnter={() => setShowSkip(true)}
-          sx={{
-            position: 'absolute',
-            bottom: 40,
-            right: 40,
-            color: 'white',
-            borderColor: 'white',
-            '&:hover': {
-              borderColor: 'white',
-              backgroundColor: 'rgba(255, 255, 255, 0.1)',
-            },
-          }}
-        >
-          Skip Intro
-        </Button>
-      )}
-    </Box>
+    </TransitionWrapper>
   );
 }

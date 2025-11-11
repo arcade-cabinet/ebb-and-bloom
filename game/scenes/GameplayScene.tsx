@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { PointerLockControls, Stats } from '@react-three/drei';
-import { Button } from '@mui/material';
+import { Button, Box } from '@mui/material';
 import { BaseScene } from './BaseScene';
 import { SceneManager } from './SceneManager';
 import { WorldManager } from '../../engine/core/WorldManager';
 import { WorldProvider } from '../ui/WorldContext';
 import { HUD } from '../ui/hud/HUD';
 import { useGameState } from '../state/GameState';
+import { TransitionWrapper } from '../ui/TransitionWrapper';
 
 export class GameplayScene extends BaseScene {
   private manager: SceneManager;
@@ -88,36 +89,62 @@ function GameplaySceneComponent({ manager }: GameplaySceneComponentProps) {
 
   return (
     <WorldProvider world={worldRef.current} seed={currentSeed}>
-      <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
-        <Canvas
-          shadows
-          camera={{ fov: 90, near: 0.1, far: 1500 }}
-          style={{ width: '100%', height: '100%' }}
-        >
-          <World />
-          <PointerLockControls />
-          <Stats />
-        </Canvas>
-        <HUD />
-        
-        <Button
-          variant="outlined"
-          onClick={() => manager.pushScene('pause')}
-          sx={{
-            position: 'absolute',
-            top: 20,
-            right: 20,
-            color: 'white',
-            borderColor: 'white',
-            '&:hover': {
+      <TransitionWrapper fadeIn duration={1000} delay={0}>
+        <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
+          <Canvas
+            shadows
+            camera={{ fov: 90, near: 0.1, far: 1500 }}
+            style={{ width: '100%', height: '100%' }}
+          >
+            <World />
+            <PointerLockControls />
+            <Stats />
+          </Canvas>
+          <HUDWithAnimation />
+          
+          <Button
+            variant="outlined"
+            onClick={() => manager.pushScene('pause')}
+            sx={{
+              position: 'absolute',
+              top: 20,
+              right: 20,
+              color: 'white',
               borderColor: 'white',
-              backgroundColor: 'rgba(255, 255, 255, 0.1)',
-            },
-          }}
-        >
-          Pause
-        </Button>
-      </div>
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                borderColor: 'white',
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                transform: 'scale(1.05)',
+              },
+            }}
+          >
+            Pause
+          </Button>
+        </div>
+      </TransitionWrapper>
     </WorldProvider>
+  );
+}
+
+function HUDWithAnimation() {
+  return (
+    <Box
+      sx={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        pointerEvents: 'none',
+        '& > *': {
+          pointerEvents: 'auto',
+        },
+      }}
+    >
+      <TransitionWrapper fadeIn duration={600} delay={800}>
+        <HUD />
+      </TransitionWrapper>
+    </Box>
   );
 }
