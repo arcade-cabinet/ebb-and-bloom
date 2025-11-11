@@ -114,16 +114,27 @@ Visuals and structures are created through chemical synthesis, eliminating the n
 
 ### Current Session Progress
 
+**PHASE 2 COMPLETE - ECS Integration with Law-Based Systems:**
+- ✅ **Deleted Duplicate Work:** Removed `game/ecs/` directory (was duplicating `engine/ecs/`)
+- ✅ **Integrated Existing ECS:** GameState now uses `engine/ecs/World` with LawOrchestrator
+- ✅ **11 Scientific Systems Running:** Physics, Chemistry, Biology, Ecology, Culture all active
+- ✅ **Rendering Components Added:** Extended CoreComponents with mesh, visible, castShadow, receiveShadow
+- ✅ **Entity Spawning Works:** 3x3 terrain grid + trees spawned with proper physics/chemistry/biology data
+- ✅ **Conservation Laws Active:** ConservationLedger tracks mass, charge, energy across all entities
+- ✅ **Provenance Chain Integrated:** Tree density based on genesis.getMetallicity(), elementCounts from cosmic synthesis
+- ✅ **Browser Compatibility Fixed:** UUID generation uses uuid.v4() instead of Node crypto
+- ✅ **Architect Reviewed:** Phase 2 approved, ready for Phase 3
+
 **PHASE 1 COMPLETE - Unified GameState with Miniplex ECS:**
 - ✅ **WorldManager Eliminated:** Redundant world management replaced by unified GameState
-- ✅ **Miniplex ECS Integrated:** GameState now owns `World<Entity>` instance
+- ✅ **Miniplex ECS Integrated:** GameState now owns `World<Entity>` instance  
 - ✅ **Functional Twins:** RNG + Genesis + Timeline + ECS World initialized atomically via `initializeWorld()`
 - ✅ **Clean API:** Only 3 methods: `initializeWorld()`, `dispose()`, `getScopedRNG()`
 - ✅ **All Legacy Methods Removed:** No backward compatibility cruft
 - ✅ **Scene Flow Updated:** Menu validates → Intro visualizes → Gameplay initializes
 - ✅ **React Hook Bug Fixed:** Prevented dispose/reinit loop in GameplayScene
 - ✅ **Zero LSP Errors:** Clean TypeScript across entire codebase
-- ✅ **Architect Reviewed:** Phase 1 approved and ready for Phase 2
+- ✅ **Architect Reviewed:** Phase 1 approved
 
 **PREVIOUS CRITICAL FIXES - Game Now Playable:**
 - ✅ **Routing Fixed:** App.tsx now routes "/" to Game component (was redirecting to /demos)
