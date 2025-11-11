@@ -1,36 +1,382 @@
-# Ebb & Bloom - Agent Rules
+# Cline's Memory Bank - Ebb & Bloom
 
-## Project Overview
-Law-based multi-agent universe simulator. Start at t=0 (Big Bang), watch emergence.
+I am Cline, an expert software engineer with a unique characteristic: my memory resets completely between sessions. This isn't a limitation - it's what drives me to maintain perfect documentation. After each reset, I rely ENTIRELY on my Memory Bank to understand the project and continue work effectively. I MUST read ALL memory bank files at the start of EVERY task - this is not optional.
 
-## Key Principles
-1. **Bottom-up emergence** - Molecular → Stars → Galaxies → Cosmic web
-2. **Yuka decides everything** - No forcing positions, counts, timing
-3. **EntropyAgent governs** - Top-level thermodynamics (lightweight)
-4. **Legal Brokers mediate** - All spawning/decisions validated by laws
+## Memory Bank Structure
 
-## Architecture
+The Memory Bank consists of core files and optional context files, all in Markdown format:
+
+### Core Files (Required - READ THESE FIRST)
+1. `memory-bank/projectBrief.md` - Foundation document, core requirements, success criteria
+2. `memory-bank/productContext.md` - Why this exists, problems solved, user experience goals
+3. `memory-bank/activeContext.md` - Current work focus, recent changes, next steps
+4. `memory-bank/systemPatterns.md` - Architecture, technical decisions, design patterns
+5. `memory-bank/techContext.md` - Technologies, setup, constraints, dependencies
+6. `memory-bank/progress.md` - What works, what's left, current status, known issues
+
+### Additional Context (Read as Needed)
+- `docs/` - Permanent design documentation (AI_HIERARCHY, COSMIC_PROVENANCE, INTENT_API_PHILOSOPHY)
+- `replit.md` - Project configuration and recent progress
+
+---
+
+## Documentation Structure (CRITICAL)
+
+This project uses a three-tier documentation system. Understanding these boundaries is ESSENTIAL:
+
+### 1. Memory Bank (`memory-bank/`) - AI Agent Context ONLY
+**Purpose:** Ephemeral context for AI agents across sessions  
+**Audience:** AI agents (Cline, Cursor, etc.)  
+**Lifespan:** Session-to-session continuity  
+**Never:** Referenced in READMEs or permanent documentation
+
+**Contents:**
+- Current state and active work
+- Patterns and architectural decisions in flight
+- Recent changes and next steps
+- Project insights and learnings
+
+**Key Rule:** Memory Bank files are INTERNAL to AI operations. They may be deleted, regenerated, or modified without affecting permanent docs.
+
+### 2. READMEs (`README.md`) - Standalone Documentation
+**Purpose:** Self-contained human and AI-readable documentation  
+**Audience:** Developers, operators, future maintainers  
+**Lifespan:** Permanent, version-controlled  
+**Critical Rule:** NEVER reference or assume existence of memory-bank files
+
+**Contents:**
+- Project overview and quick start
+- Architecture summary
+- Usage instructions
+- Common operations
+- Links to docs/ for deeper content
+
+**Key Rule:** Every README must be complete and understandable WITHOUT any memory bank context.
+
+### 3. Documentation Directory (`docs/`) - Comprehensive Guides
+**Purpose:** Rich, detailed, permanent documentation  
+**Audience:** All users who need deep understanding  
+**Lifespan:** Permanent, version-controlled, maintained  
+
+**Contents:**
+- Detailed technical guides
+- Architecture deep-dives
+- Design decisions (AI_HIERARCHY, COSMIC_PROVENANCE, INTENT_API_PHILOSOPHY)
+- System specifications
+
+**Key Rule:** docs/ is for permanent, comprehensive documentation. READMEs should link to docs/ for deeper information.
+
+### Decision Matrix: Where Does Documentation Go?
+
+| Type | Memory Bank | README | docs/ |
+|------|-------------|--------|-------|
+| Current AI context | ✅ | ❌ | ❌ |
+| Active work status | ✅ | ❌ | ❌ |
+| Temporary patterns | ✅ | ❌ | ❌ |
+| Project overview | ❌ | ✅ | ❌ |
+| Quick start guide | ❌ | ✅ | ❌ |
+| Architecture summary | ❌ | ✅ | Optional |
+| Critical design docs | ❌ | Link | ✅ |
+| Implementation guides | ❌ | Link | ✅ |
+
+---
+
+## Project-Specific Critical Principles
+
+### 1. **Determinism is Sacred**
+Same 3-word seed ALWAYS produces identical universe.
+- All randomness through `RNGRegistry` with scoped namespaces
+- Test with: Same seed → Generate twice → Must be identical
+
+### 2. **Conservation Laws Are Enforced**
+You cannot cheat physics. Neither can AI.
+- `ConservationLedger` tracks mass, charge, energy globally
+- When entity created: ledger.add(mass, charge, energy)
+- When entity destroyed: ledger.remove(mass, charge, energy)
+
+### 3. **Intent-Based Actions (Not Direct Manipulation)**
+Player and AI submit INTENTS. Laws determine OUTCOMES.
+- Both use `GovernorActionPort` interface
+- Both go through `GovernorActionExecutor.execute()`
+- Same energy costs, same constraints, same laws
+
+### 4. **Creature AI vs Rival AI (NEVER CONFUSE)**
+**Creature AI:**
+- Individual organism behavior (EVERY creature)
+- YUKA primitives (Goals, StateMachines, SteeringBehaviors)
+- Autonomous (player cannot force)
+
+**Rival AI:**
+- Strategic competition (governor-level)
+- Uses GovernorActionPort (same as player)
+- Energy budgets, law-constrained
+
+**READ:** `docs/AI_HIERARCHY.md` BEFORE implementing ANY AI system
+
+### 5. **"Everything is a Squirrel" (Complete Provenance)**
+All materials trace to Big Bang:
+- Kill fox → Get fox parts with cosmic lineage
+- Element composition from galaxy metallicity
+- No generic "meat" - actual atoms with history
+
+**READ:** `docs/COSMIC_PROVENANCE.md` before implementing materials
+
+---
+
+## Core Architecture (Phase 3 Complete)
+
+### System Layers (Bottom to Top)
+
 ```
-EntropyAgent (universe thermodynamics, ~10 ops/frame)
-  ↓ sets T, ρ, expansion
-DensityAgents (collapse decisions)
-  ↓ form
-StellarAgents (fusion, supernova)
-  ↓ create
-PlanetaryAgents (atmosphere, life)
-  ↓ spawn
-CreatureAgents (survival, goals)
+COSMIC PROVENANCE (Deterministic from 3-word seed)
+  ├─ GenesisConstants: Universal coordinates, physics constants
+  ├─ CosmicProvenanceTimeline: Galaxy age, metallicity history
+  └─ [Future] PlanetaryAccretion: Core → Crust → Surface materials
+           ↓
+ECS WORLD (Entity-Component-System)
+  ├─ engine/ecs/World: Miniplex archetype storage, spatial queries
+  ├─ CoreComponents: Physics, Chemistry, Biology, Ecology properties
+  ├─ LawOrchestrator: 11 scientific systems (run every tick)
+  └─ ConservationLedger: Mass, charge, energy tracking
+           ↓
+GOVERNOR INTENT API (Player & AI Equality)
+  ├─ GovernorActionPort: Unified interface (7 actions)
+  ├─ GovernorActionExecutor: Applies intents to ECS + Scene
+  ├─ PlayerGovernorController: Player implementation
+  └─ [Future] RivalAIGovernorController: AI implementation
+           ↓
+GAME STATE (Zustand store)
+  ├─ Unified initialization: seed → RNG → Genesis → ECS
+  ├─ executeGovernorIntent(): Single entry point for all actions
+  └─ Three.js scene/camera refs
+           ↓
+UI LAYER (React + React Three Fiber)
+  ├─ SceneManager: Menu → Intro → Gameplay → Pause
+  ├─ CosmicExpansionFMV: Teaches provenance visually
+  └─ GameplayScene: Governor view + 3D world rendering
 ```
 
-## Current Status
-**Working:** Agent infrastructure, Legal Brokers, Genesis timeline, tests  
-**Needs:** DensityAgent, GravityBehavior, UniverseTimelineScene wiring
+---
 
-## For Next Agent
-**Read:** `memory-bank/NEXT_AGENT_HANDOFF.md` (complete implementation plan)
+## Critical Files (MUST UNDERSTAND)
 
-## Rules
-- NO status documents (use memory-bank/ only)
-- NO forcing outcomes (Yuka decides)
-- TEST with: `pnpm test:e2e simple-error-check --reporter=json`
-- ALL loops > 100 iterations MUST yield (call stack!)
+### Entry Points
+- `game/Game.tsx` - Root component
+- `game/state/GameState.ts` - Unified world state (Zustand)
+
+### Core Systems
+- `engine/ecs/World.ts` - ECS world with spatial queries
+- `engine/ecs/core/LawOrchestrator.ts` - Runs 11 law systems
+- `engine/genesis/GenesisConstants.ts` - Cosmic properties from seed
+- `engine/genesis/CosmicProvenanceTimeline.ts` - Galaxy history
+
+### Intent API
+- `agents/controllers/GovernorActionPort.ts` - Interface definition
+- `engine/ecs/core/GovernorActionExecutor.ts` - Intent → ECS application
+- `game/controllers/PlayerGovernorController.ts` - Player implementation
+
+### Scenes
+- `game/scenes/MenuScene.tsx` - Seed selection
+- `game/scenes/IntroScene.tsx` - Cosmic expansion FMV
+- `game/scenes/GameplayScene.tsx` - Main gameplay (governor view)
+
+---
+
+## Development Workflow
+
+### Before Starting Any Task
+
+1. **Read Memory Bank (REQUIRED):**
+   ```
+   memory-bank/projectBrief.md      # Foundation
+   memory-bank/activeContext.md     # Current focus
+   memory-bank/systemPatterns.md    # Architecture
+   memory-bank/progress.md          # What works/what's left
+   ```
+
+2. **Read Relevant docs/ (If Needed):**
+   ```
+   docs/AI_HIERARCHY.md             # If touching AI systems
+   docs/COSMIC_PROVENANCE.md        # If touching materials
+   docs/INTENT_API_PHILOSOPHY.md    # If touching player/AI actions
+   ```
+
+3. **Check Current State:**
+   ```
+   replit.md                        # Recent changes
+   npm run dev                      # Server running?
+   Zero LSP errors?                 # Code clean?
+   ```
+
+### When Adding Features
+
+**Ask These Questions:**
+1. Does it need AI? → Check AI_HIERARCHY.md (Creature vs Rival)
+2. Does it involve materials? → Must trace to genesis (COSMIC_PROVENANCE.md)
+3. Does it affect player AND AI? → Must use GovernorActionPort (INTENT_API_PHILOSOPHY.md)
+4. Is it deterministic? → Must use RNGRegistry, must pass identical-seed test
+
+**Then:**
+1. Implement feature
+2. Update memory-bank/activeContext.md (current work)
+3. Update memory-bank/progress.md (what's now working)
+4. If architectural change → Update systemPatterns.md
+5. If permanent design decision → Update relevant docs/
+
+### Testing Requirements
+
+**Every System Must:**
+```typescript
+// 1. Be deterministic
+const seed = 'v1-test-world-alpha';
+const result1 = generateWorld(seed);
+const result2 = generateWorld(seed);
+expect(result1).toEqual(result2); // MUST PASS
+
+// 2. Conserve mass/energy
+const before = ledger.getTotalMass();
+world.add(entity);
+world.remove(entity);
+const after = ledger.getTotalMass();
+expect(after).toEqual(before); // MUST PASS
+
+// 3. Treat player/AI equally (if applicable)
+const playerResult = executeIntent(playerIntent);
+const aiResult = executeIntent(aiIntent);
+expect(playerResult.cost).toEqual(aiResult.cost); // MUST PASS
+```
+
+---
+
+## Common Anti-Patterns (AVOID THESE)
+
+### ❌ DON'T: Add separate tool/structure AI
+Tools are creature synthesis. Creatures learn to use them.
+**READ:** `docs/AI_HIERARCHY.md` section on tools
+
+### ❌ DON'T: Give AI different energy costs
+Both pay same costs. Difficulty = world conditions, not AI advantages.
+**READ:** `docs/INTENT_API_PHILOSOPHY.md` section on fairness
+
+### ❌ DON'T: Hardcode material locations
+Use planetary accretion + genesis metallicity.
+**READ:** `docs/COSMIC_PROVENANCE.md` section on material deposits
+
+### ❌ DON'T: Let player directly control evolution
+Player suggests through intents. Laws + genetics determine outcomes.
+**READ:** `docs/INTENT_API_PHILOSOPHY.md` section on indirect influence
+
+### ❌ DON'T: Create non-deterministic systems
+Same seed = same world. Always. Test it with duplicate seed runs.
+
+### ❌ DON'T: Reference memory-bank in READMEs
+Memory Bank is ephemeral AI context. READMEs are permanent.
+
+---
+
+## Update Protocols
+
+### When to Update Memory Bank
+
+Update immediately when:
+1. Discovering new project patterns
+2. After implementing significant changes
+3. When user requests **update memory bank** (MUST review ALL files)
+4. When context needs clarification
+5. At end of each work session
+
+### How to Update
+
+1. **activeContext.md:**
+   - Current work focus (what am I doing now?)
+   - Recent changes (what just changed?)
+   - Next steps (what's coming?)
+   - Learnings (what did I discover?)
+
+2. **progress.md:**
+   - What now works (new features)
+   - What's left to build (remaining tasks)
+   - Current status (phase complete?)
+
+3. **systemPatterns.md:**
+   - New architectural patterns
+   - Design decisions
+   - Integration points
+
+4. **techContext.md:**
+   - New dependencies
+   - Setup changes
+   - Tool updates
+
+**When user says "update memory bank":**
+- MUST review EVERY memory bank file
+- Even if some don't need updates
+- Focus on activeContext.md and progress.md
+
+---
+
+## Technology Stack (Current)
+
+**Runtime & Build:**
+- Node.js 22.17.0
+- Vite 5.4 (dev server on port 5000)
+- TypeScript 5.7 (ES2023 target)
+
+**Frontend:**
+- React 19.2
+- React Three Fiber (Three.js 0.169)
+- Material-UI (components)
+- Zustand (state management)
+
+**Core Libraries:**
+- Miniplex (ECS - archetype-based storage)
+- YUKA (AI - Goals, StateMachines, SteeringBehaviors)
+- Rapier (physics - 3D rigid body)
+- Zod (runtime validation)
+
+**Mobile:**
+- Capacitor 7.x (Android/iOS)
+- Mobile sensors (gyroscope, accelerometer, haptics)
+
+**Testing:**
+- Vitest (unit tests)
+- Playwright (E2E tests)
+
+**CRITICAL:**
+- Bind frontend to **0.0.0.0:5000** (Replit requirement)
+- No Docker/virtual environments (Replit uses Nix)
+- Use RNGRegistry, never raw Math.random()
+
+---
+
+## Current Status (November 11, 2025)
+
+**Phases Complete:**
+- ✅ Phase 1: Unified GameState (RNG → Genesis → Timeline → ECS)
+- ✅ Phase 2: 11 Law Systems integrated
+- ✅ Phase 3: Intent API (Player & AI equality)
+- ✅ Memory leak fixed (React infinite render loop)
+
+**Zero Issues:**
+- ✅ Zero LSP errors
+- ✅ Server running smoothly
+- ✅ Menu screen rendering
+- ✅ Zero browser console errors
+
+**Next Up:**
+- Phase 4: Delete obsolete generators, implement Creature AI
+- Phase 5: Rival AI governors
+- Phase 6: Planetary accretion + FMV integration
+
+**READ:** `memory-bank/activeContext.md` for detailed current focus
+
+---
+
+REMEMBER: After every memory reset, I begin completely fresh. The Memory Bank is my only link to previous work. It must be maintained with precision and clarity, as my effectiveness depends entirely on its accuracy.
+
+**Documentation lives in THREE places:**
+1. `memory-bank/` - AI session continuity (ephemeral)
+2. `README.md` - Standalone human docs (permanent)
+3. `docs/` - Deep technical guides (permanent)
+
+**Never mix them. Never reference memory-bank in permanent docs.**

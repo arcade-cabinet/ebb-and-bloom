@@ -6,6 +6,20 @@ Ebb & Bloom is a competitive evolution game where players guide a single species
 
 The technical foundation relies on law-based generation, ensuring deterministic outcomes for any given seed. The game supports multi-scale simulation from quantum to cosmic levels and adapts Daggerfall Unity's spawner logic, but with law-computed data instead of hardcoded content.
 
+## Documentation Structure
+
+**CRITICAL:** This project uses a three-tier documentation system:
+
+1. **Memory Bank (`memory-bank/`)** - AI agent context (ephemeral, session-to-session)
+2. **READMEs (`README.md`)** - Standalone human documentation (permanent)
+3. **Documentation (`docs/`)** - Comprehensive technical guides (permanent)
+
+**For AI agents:** Read `.clinerules` for complete memory bank structure and workflows.
+
+**Key Rule:** NEVER reference memory-bank files in READMEs or permanent docs. Memory Bank is internal to AI operations only.
+
+---
+
 ## User Preferences
 
 **Gameplay Philosophy:**
