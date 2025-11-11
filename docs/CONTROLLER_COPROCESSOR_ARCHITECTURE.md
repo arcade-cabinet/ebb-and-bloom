@@ -96,22 +96,54 @@ class AIControllerAdapter implements ControllerAdapter {
   }
 }
 
-// 4. Player Adapter - Shows UI
+// 4. Player Adapter - Shows UI (Material-UI + DESIGN.md)
 class PlayerControllerAdapter implements ControllerAdapter {
+  private uiManager: GovernorUIManager; // Material-UI components
+  
   async provideInput(
     actionId: string,
     context: ActionContext
   ): Promise<GovernorIntent> {
     switch(actionId) {
       case 'selectPrey':
-        // Show UI: "Select prey species"
-        const target = await this.ui.showTargetSelector(context.preyOptions);
+        // Show UI: Species selector (DESIGN.md styling)
+        // - Bloom Emerald button (#38A169)
+        // - Ebb Indigo background (#4A5568)
+        // - Trait Gold highlights (#D69E2E)
+        const target = await this.uiManager.showSpeciesSelector({
+          title: 'Select Prey Species',
+          options: context.preyOptions,
+          energyCost: 0, // Free but opportunity cost
+        });
         return { type: 'selectPrey', target };
       
       case 'smitePredator':
-        // Show UI: "Click location for lightning strike"
-        const position = await this.ui.showPositionPicker();
+        // Show UI: Position picker with energy cost
+        // - Lightning icon (generated asset)
+        // - Warning Orange for high cost (#ED8936)
+        // - Haptic feedback on selection (mobile)
+        const position = await this.uiManager.showPositionPicker({
+          title: 'Lightning Strike',
+          subtitle: 'Smite predators threatening your species',
+          energyCost: 1000,
+          icon: 'lightning-bolt', // Generated image asset
+          color: '#ED8936', // Warning orange
+        });
         return { type: 'smite', position };
+      
+      case 'nurtureFood':
+        // Show UI: Intensity slider
+        // - Success Green (#48BB78) for nurture action
+        // - Slider for magnitude (law-constrained max)
+        const magnitude = await this.uiManager.showMagnitudeSlider({
+          title: 'Nurture Food Supply',
+          subtitle: 'Increase carrying capacity for your species',
+          energyCost: 500,
+          icon: 'growing-plant', // Generated image asset
+          color: '#48BB78', // Success green
+          max: context.carryingCapacityLimit, // Law constraint
+        });
+        return { type: 'nurture', magnitude };
     }
   }
 }
@@ -361,6 +393,152 @@ class EcologyGovernor {
     
     // Execute (SAME for both)
     return this.executePredation(intent.target);
+  }
+}
+```
+
+---
+
+## UI/UX Integration (PlayerControllerAdapter)
+
+### Design System Connection
+
+**PlayerControllerAdapter is WHERE we build the governor UI** according to DESIGN.md:
+
+```typescript
+class GovernorUIManager {
+  // Material-UI components with DESIGN.md styling
+  
+  async showGovernorPowerPanel(): Promise<void> {
+    return (
+      <Card sx={{
+        background: '#4A5568',  // Ebb Indigo
+        borderRadius: '20px',
+        padding: '24px',
+      }}>
+        <Typography variant="h4" sx={{ 
+          fontFamily: 'Playfair Display',  // DESIGN.md: Titles
+          color: '#F7FAFC' 
+        }}>
+          Governor Powers
+        </Typography>
+        
+        <EnergyBudget current={800} max={1000} />
+        
+        <GovernorActionButton
+          icon={<LightningIcon />}  // Generated asset
+          label="Smite Predators"
+          cost={1000}
+          color="#ED8936"  // Warning Orange
+          onClick={() => this.requestSmite()}
+        />
+        
+        <GovernorActionButton
+          icon={<PlantIcon />}  // Generated asset
+          label="Nurture Food"
+          cost={500}
+          color="#48BB78"  // Success Green
+          onClick={() => this.requestNurture()}
+        />
+      </Card>
+    );
+  }
+}
+```
+
+### Visual Assets to Generate
+
+**Using image generation tool for governor UI:**
+
+1. **Governor Power Icons** (icon category)
+   - Lightning bolt (smite) - Warning Orange theme
+   - Growing plant (nurture) - Success Green theme
+   - Terrain shaper (shape) - Haptic Blue theme
+   - Pressure wave (pressure) - Pollution Red theme
+
+2. **Splash Screen** (splash category)
+   - Primordial soup → Civilization ascent
+   - Ebb Indigo background with Bloom Emerald accents
+   - Atmospheric, evolutionary theme
+
+3. **UI Decorative Elements** (hud category)
+   - Energy bar ornate frame (Trait Gold)
+   - Governor panel parchment background
+   - Species lineage tree decorative scroll
+
+4. **Buttons & Banners** (banner category)
+   - "Begin Evolution" CTA button
+   - "Generation X Complete" banner
+   - "Transcendence Achieved" victory banner
+
+### Material-UI Component Mapping
+
+**DESIGN.md → Material-UI:**
+```typescript
+// Color Palette (from DESIGN.md)
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#38A169',  // Bloom Emerald
+    },
+    secondary: {
+      main: '#4A5568',  // Ebb Indigo
+    },
+    warning: {
+      main: '#ED8936',  // Warning Orange
+    },
+    success: {
+      main: '#48BB78',  // Success Green
+    },
+  },
+  typography: {
+    h1: { fontFamily: 'Playfair Display' },  // Titles
+    body1: { fontFamily: 'Inter' },          // UI text
+    code: { fontFamily: 'JetBrains Mono' },  // Data
+  },
+});
+
+// Governor Power Button Component
+const GovernorActionButton = ({ icon, label, cost, color, onClick }) => (
+  <Button
+    startIcon={icon}  // Generated image asset
+    sx={{
+      background: color,
+      color: '#F7FAFC',
+      borderRadius: '10px',
+      padding: '12px 24px',
+      '&:hover': {
+        background: adjustBrightness(color, 0.8),
+      },
+    }}
+    onClick={onClick}
+  >
+    {label}
+    <Chip label={`-${cost} Energy`} size="small" />
+  </Button>
+);
+```
+
+### Haptic Feedback (Mobile)
+
+**From DESIGN.md haptic language:**
+```typescript
+class PlayerControllerAdapter {
+  async showPositionPicker(config) {
+    // Haptic feedback on action
+    if (isMobile()) {
+      switch(config.actionType) {
+        case 'smite':
+          Haptics.impact({ style: ImpactStyle.Heavy });  // Sharp impact
+          break;
+        case 'nurture':
+          Haptics.notification({ type: NotificationType.Success });  // Gentle pulse
+          break;
+      }
+    }
+    
+    // Visual feedback for all platforms
+    return await this.uiManager.showPicker(config);
   }
 }
 ```
