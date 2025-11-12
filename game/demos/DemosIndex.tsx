@@ -5,6 +5,7 @@ import ViewInArIcon from '@mui/icons-material/ViewInAr';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import LinkIcon from '@mui/icons-material/Link';
 import CategoryIcon from '@mui/icons-material/Category';
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
 
 interface DemoCard {
   title: string;
@@ -16,6 +17,14 @@ interface DemoCard {
 }
 
 const demos: DemoCard[] = [
+  {
+    title: 'Unified Rendering',
+    description: 'Three rendering systems working together: SDF raymarching, marching cubes, and instanced meshes with Rapier physics.',
+    path: '/demos/unified-rendering',
+    icon: <AccountTreeIcon />,
+    tags: ['Phase 0.6', 'SDF', 'Marching Cubes', 'Instanced', 'Physics'],
+    status: 'stable'
+  },
   {
     title: 'Primitives Showcase',
     description: 'Interactive gallery of all 21 SDF primitives with material controls and rotation.',

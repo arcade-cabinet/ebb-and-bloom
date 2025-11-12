@@ -20,7 +20,7 @@ export class RapierPhysicsSystem {
     try {
       // Use raw Rapier for web - NOT react-three-rapier (that requires R3F context)
       const RAPIER = await import('@dimforge/rapier3d-compat');
-      await RAPIER.init({});
+      await RAPIER.init();
       this.RAPIER = RAPIER;
       
       // Create physics world with default gravity

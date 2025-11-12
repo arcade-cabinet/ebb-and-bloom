@@ -8,6 +8,7 @@ const PrimitivesShowcase = lazy(() => import('./demos/PrimitivesShowcase'));
 const CoordinateTargetingDemo = lazy(() => import('./demos/CoordinateTargetingDemo'));
 const ForeignBodyDemo = lazy(() => import('./demos/ForeignBodyDemo'));
 const LightingDemo = lazy(() => import('./demos/LightingDemo'));
+const UnifiedRenderingDemo = lazy(() => import('./demos/UnifiedRenderingDemo'));
 
 export function App() {
   const isDev = import.meta.env.MODE === 'development';
@@ -24,6 +25,7 @@ export function App() {
               <Route path="/demos/coordinate-targeting" element={<CoordinateTargetingDemo />} />
               <Route path="/demos/foreign-body" element={<ForeignBodyDemo />} />
               <Route path="/demos/lighting" element={<LightingDemo />} />
+              <Route path="/demos/unified-rendering" element={<UnifiedRenderingDemo />} />
             </>
           )}
           {!isDev && <Route path="/demos/*" element={<Navigate to="/" replace />} />}

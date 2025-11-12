@@ -22,14 +22,19 @@ The technical foundation relies on law-based generation, ensuring deterministic 
 
 ## Recent Changes
 
-**November 12, 2024 - Iconic FMV Intro Implementation:**
-- Built production-ready three-part FMV intro (Big Bang → Splash Screen → Planetary Accretion)
-- **Hybrid Rendering Architecture:** Instanced meshes for YUKA particle swarms (550 particles) + SDF for hero objects (≤6 primitives)
-- **Performance Optimizations:** Spatial grid for O(n log n) particle interactions, mobile GPU budget under control
-- **Mobile-First Features:** Gyroscope camera control, haptic feedback, loading screen, FPS counter
-- **GameState Integration:** All calculations pre-computed from seed, FMV is pure visualization
-- **Modular Architecture:** All files <200 LOC (BigBangStage, PlanetaryAccretionStage, SplashScreen, StageDirector, IconicIntro)
-- **Systems Proven:** YUKA steering, SDF rendering, MaterialRegistry, CosmicAudioSonification, CosmicHapticFeedback
+**November 12, 2024 - Unified Rendering Architecture + Iconic FMV Intro:**
+- **Three Complementary Rendering Systems:**
+  - **SDFRenderer** - Raymarched complex shapes (21 primitives, material blending, coordinate targeting)
+  - **MarchingCubesRenderer** - Smooth mesh extraction from SDF fields via @react-three/drei
+  - **InstancedRenderer** - High-performance particles with MaterialRegistry integration
+- **Molecular Physics:** RapierBonds component for stable physics joints (fixed/spherical/revolute/prismatic)
+- **ChemicalBlobBuilder:** Generate molecular blobs from formulas (H2, O2, H2O, CO2, CH4)
+- **FMV Intro:** Hybrid rendering - instanced meshes for YUKA swarms (550 particles) + SDF heroes (≤6 primitives)
+- **Mobile-First:** Gyroscope camera, haptic feedback, loading screen, FPS counter, spatial grid optimization
+- **GameState Integration:** All calculations pre-computed from seed, visualization is pure
+- **Modular:** All files <200 LOC, clean separation of concerns
+- **Proven Systems:** YUKA steering, SDF, MaterialRegistry, audio sonification, haptics
+- **Known Limitation:** Joint limits not yet supported (Rapier API limitation, documented in code)
 - Ready for mobile testing on OnePlus foldable at 60fps target
 
 ---
