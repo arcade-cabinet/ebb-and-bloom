@@ -36,6 +36,10 @@ function Scene() {
         }
     ];
 
+    console.log('[BaseSDFProof] Created primitives:', primitives);
+    console.log('[BaseSDFProof] Primitives count:', primitives.length);
+    console.log('[BaseSDFProof] Material IDs:', primitives.map(p => p.materialId));
+
     return <SDFRenderer primitives={primitives} />;
 }
 

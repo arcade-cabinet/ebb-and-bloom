@@ -48,11 +48,11 @@ export function SDFRenderer({
 
   const { materialUniforms, materialIndexMap } = useMemo(
     () => {
-      const result = createMaterialUniforms(expandedPrimitives);
+      const { indexMap, ...uniforms } = createMaterialUniforms(expandedPrimitives);
       const textureUniforms = createTextureUniforms(defaultTexture);
       return {
-        materialUniforms: { ...result, ...textureUniforms },
-        materialIndexMap: result.indexMap
+        materialUniforms: { ...uniforms, ...textureUniforms },
+        materialIndexMap: indexMap
       };
     },
     [expandedPrimitives, defaultTexture]
