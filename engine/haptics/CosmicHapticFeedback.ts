@@ -43,7 +43,10 @@ export class CosmicHapticFeedback {
     this.rng = masterRng;
     this._setTimeout = options?.setTimeout || setTimeout;
     this._clearTimeout = options?.clearTimeout || clearTimeout;
-    this.checkAvailability();
+  }
+
+  public async initialize(): Promise<void> {
+    await this.checkAvailability();
   }
 
   private async checkAvailability(): Promise<void> {

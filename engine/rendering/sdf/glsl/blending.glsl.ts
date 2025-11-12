@@ -36,76 +36,76 @@ struct MaterialData {
   float opacity;
 };
 
-MaterialData linearBlend(MaterialData mat1, MaterialData mat2, float factor) {
+MaterialData linearBlend(MaterialData material1, MaterialData material2, float factor) {
   float t = clamp(factor, 0.0, 1.0);
   
   return MaterialData(
-    mix(mat1.baseColor, mat2.baseColor, t),
-    mix(mat1.roughness, mat2.roughness, t),
-    mix(mat1.metallic, mat2.metallic, t),
-    mix(mat1.emission, mat2.emission, t),
-    mix(mat1.emissiveColor, mat2.emissiveColor, t),
-    mix(mat1.opacity, mat2.opacity, t)
+    mix(material1.baseColor, material2.baseColor, t),
+    mix(material1.roughness, material2.roughness, t),
+    mix(material1.metallic, material2.metallic, t),
+    mix(material1.emission, material2.emission, t),
+    mix(material1.emissiveColor, material2.emissiveColor, t),
+    mix(material1.opacity, material2.opacity, t)
   );
 }
 
-MaterialData smoothBlend(MaterialData mat1, MaterialData mat2, float factor, float smoothness) {
+MaterialData smoothBlend(MaterialData material1, MaterialData material2, float factor, float smoothness) {
   float t = clamp(factor, 0.0, 1.0);
   t = smoothstep(0.0, 1.0, t);
   
   float blendFactor = pow(t, smoothness);
   
   return MaterialData(
-    mix(mat1.baseColor, mat2.baseColor, blendFactor),
-    mix(mat1.roughness, mat2.roughness, blendFactor),
-    mix(mat1.metallic, mat2.metallic, blendFactor),
-    mix(mat1.emission, mat2.emission, blendFactor),
-    mix(mat1.emissiveColor, mat2.emissiveColor, blendFactor),
-    mix(mat1.opacity, mat2.opacity, t)
+    mix(material1.baseColor, material2.baseColor, blendFactor),
+    mix(material1.roughness, material2.roughness, blendFactor),
+    mix(material1.metallic, material2.metallic, blendFactor),
+    mix(material1.emission, material2.emission, blendFactor),
+    mix(material1.emissiveColor, material2.emissiveColor, blendFactor),
+    mix(material1.opacity, material2.opacity, t)
   );
 }
 
-MaterialData noiseBlend(MaterialData mat1, MaterialData mat2, float factor, float scale, vec3 p) {
+MaterialData noiseBlend(MaterialData material1, MaterialData material2, float factor, float scale, vec3 p) {
   float t = clamp(factor, 0.0, 1.0);
   float noiseValue = noise3D(p * scale);
   t = mix(t - 0.2, t + 0.2, noiseValue);
   t = clamp(t, 0.0, 1.0);
   
   return MaterialData(
-    mix(mat1.baseColor, mat2.baseColor, t),
-    mix(mat1.roughness, mat2.roughness, t),
-    mix(mat1.metallic, mat2.metallic, t),
-    mix(mat1.emission, mat2.emission, t),
-    mix(mat1.emissiveColor, mat2.emissiveColor, t),
-    mix(mat1.opacity, mat2.opacity, t)
+    mix(material1.baseColor, material2.baseColor, t),
+    mix(material1.roughness, material2.roughness, t),
+    mix(material1.metallic, material2.metallic, t),
+    mix(material1.emission, material2.emission, t),
+    mix(material1.emissiveColor, material2.emissiveColor, t),
+    mix(material1.opacity, material2.opacity, t)
   );
 }
 
-MaterialData gradientBlend(MaterialData mat1, MaterialData mat2, vec3 p, vec3 direction, float distance) {
+MaterialData gradientBlend(MaterialData material1, MaterialData material2, vec3 p, vec3 direction, float distance) {
   vec3 dir = normalize(direction);
   float projection = dot(p, dir);
   float t = clamp(projection / distance + 0.5, 0.0, 1.0);
   
   return MaterialData(
-    mix(mat1.baseColor, mat2.baseColor, t),
-    mix(mat1.roughness, mat2.roughness, t),
-    mix(mat1.metallic, mat2.metallic, t),
-    mix(mat1.emission, mat2.emission, t),
-    mix(mat1.emissiveColor, mat2.emissiveColor, t),
-    mix(mat1.opacity, mat2.opacity, t)
+    mix(material1.baseColor, material2.baseColor, t),
+    mix(material1.roughness, material2.roughness, t),
+    mix(material1.metallic, material2.metallic, t),
+    mix(material1.emission, material2.emission, t),
+    mix(material1.emissiveColor, material2.emissiveColor, t),
+    mix(material1.opacity, material2.opacity, t)
   );
 }
 
-MaterialData distanceBlend(MaterialData mat1, MaterialData mat2, float sdfDistance, float transitionDistance) {
+MaterialData distanceBlend(MaterialData material1, MaterialData material2, float sdfDistance, float transitionDistance) {
   float t = clamp(abs(sdfDistance) / transitionDistance, 0.0, 1.0);
   
   return MaterialData(
-    mix(mat1.baseColor, mat2.baseColor, t),
-    mix(mat1.roughness, mat2.roughness, t),
-    mix(mat1.metallic, mat2.metallic, t),
-    mix(mat1.emission, mat2.emission, t),
-    mix(mat1.emissiveColor, mat2.emissiveColor, t),
-    mix(mat1.opacity, mat2.opacity, t)
+    mix(material1.baseColor, material2.baseColor, t),
+    mix(material1.roughness, material2.roughness, t),
+    mix(material1.metallic, material2.metallic, t),
+    mix(material1.emission, material2.emission, t),
+    mix(material1.emissiveColor, material2.emissiveColor, t),
+    mix(material1.opacity, material2.opacity, t)
   );
 }
 
@@ -115,25 +115,25 @@ MaterialData makeMaterialData(vec3 baseColor, float roughness, float metallic,
 }
 
 MaterialData blendMaterialsByMode(
-  MaterialData mat1, 
-  MaterialData mat2, 
+  MaterialData material1, 
+  MaterialData material2, 
   int mode,
   float factor,
   float param1,
   vec3 param2
 ) {
   if (mode == 0) {
-    return linearBlend(mat1, mat2, factor);
+    return linearBlend(material1, material2, factor);
   } else if (mode == 1) {
-    return smoothBlend(mat1, mat2, factor, param1);
+    return smoothBlend(material1, material2, factor, param1);
   } else if (mode == 2) {
-    return noiseBlend(mat1, mat2, factor, param1, param2);
+    return noiseBlend(material1, material2, factor, param1, param2);
   } else if (mode == 3) {
-    return gradientBlend(mat1, mat2, param2, normalize(vec3(param1, 0.5, 0.5)), 1.0);
+    return gradientBlend(material1, material2, param2, normalize(vec3(param1, 0.5, 0.5)), 1.0);
   } else if (mode == 4) {
-    return distanceBlend(mat1, mat2, factor, param1);
+    return distanceBlend(material1, material2, factor, param1);
   }
   
-  return linearBlend(mat1, mat2, factor);
+  return linearBlend(material1, material2, factor);
 }
 `;

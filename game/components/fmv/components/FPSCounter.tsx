@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { Html } from '@react-three/drei';
 
 export function FPSCounter() {
   const [fps, setFps] = useState(60);
@@ -26,24 +27,30 @@ export function FPSCounter() {
   const color = fps >= 55 ? '#00ff00' : fps >= 30 ? '#ffaa00' : '#ff0000';
 
   return (
-    <div
+    <Html
+      position={[0, 0, 0]}
+      center
       style={{
         position: 'fixed',
         top: '10px',
         right: '10px',
-        padding: '8px 12px',
-        background: 'rgba(0, 0, 0, 0.7)',
-        color,
-        fontFamily: 'monospace',
-        fontSize: '14px',
-        fontWeight: 'bold',
-        borderRadius: '4px',
-        border: `2px solid ${color}`,
-        zIndex: 10000,
         pointerEvents: 'none',
       }}
     >
-      {fps} FPS
-    </div>
+      <div
+        style={{
+          padding: '8px 12px',
+          background: 'rgba(0, 0, 0, 0.7)',
+          color,
+          fontFamily: 'monospace',
+          fontSize: '14px',
+          fontWeight: 'bold',
+          borderRadius: '4px',
+          border: `2px solid ${color}`,
+        }}
+      >
+        {fps} FPS
+      </div>
+    </Html>
   );
 }

@@ -36,6 +36,14 @@ export class CosmicAudioSonification {
     this.router = new AudioRouter();
   }
 
+  public async initialize(): Promise<void> {
+    try {
+      await this.contextManager.initialize();
+    } catch (error) {
+      console.warn('[CosmicAudioSonification] Audio initialization failed:', error);
+    }
+  }
+
   public playSoundForStage(stageId: string, progress: number): void {
     const audioContext = this.contextManager.getAudioContext();
     const masterGain = this.contextManager.getMasterGain();

@@ -29,10 +29,7 @@ export function composeFragmentShader(
     ${SDF_BLENDING_GLSL}
     ${SDF_TRANSFORMS_GLSL}
     ${SDF_UV_GENERATION_GLSL}
-    ${SDF_SURFACE_NORMALS_GLSL}
-    ${SDF_SURFACE_SAMPLING_GLSL}
     ${SDF_ATTACHMENT_ALIGNMENT_GLSL}
-    ${SDF_LIGHTING_GLSL}
     
     uniform float uTime;
     uniform vec2 uResolution;
@@ -133,6 +130,10 @@ export function composeFragmentShader(
     }
 
     ${sceneSDF.sdfFunction}
+    
+    ${SDF_SURFACE_NORMALS_GLSL}
+    ${SDF_SURFACE_SAMPLING_GLSL}
+    ${SDF_LIGHTING_GLSL}
 
     vec3 raymarch(vec3 ro, vec3 rd) {
       float t = 0.0;
