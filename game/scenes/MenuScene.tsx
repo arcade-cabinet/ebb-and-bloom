@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
-import { Button, Typography, Stack, Paper, TextField, Box, IconButton, InputAdornment, Alert } from '@mui/material';
+import { Button, Typography, Stack, Paper, TextField, Box, IconButton, InputAdornment, Alert, Divider, Chip } from '@mui/material';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CheckIcon from '@mui/icons-material/Check';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CodeIcon from '@mui/icons-material/Code';
 import { BaseScene } from './BaseScene';
 import { SceneManager } from './SceneManager';
 import { BaseScreen } from '../ui/screens/BaseScreen';
 import { generateSeed, validateSeed } from '../../engine/utils/seed/seed-manager';
 import { useGameState } from '../state/GameState';
 import { TransitionWrapper } from '../ui/TransitionWrapper';
+import { Link } from 'react-router-dom';
 
 export class MenuScene extends BaseScene {
   private manager: SceneManager;
@@ -48,6 +50,7 @@ function MenuSceneComponent({ manager }: MenuSceneComponentProps) {
   const [seedValid, setSeedValid] = useState(true);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isDev = import.meta.env.MODE === 'development';
 
   useEffect(() => {
     setSeed(generateSeed());
@@ -262,6 +265,163 @@ function MenuSceneComponent({ manager }: MenuSceneComponentProps) {
           </Button>
         </Stack>
       </Paper>
+
+      {isDev && (
+        <Paper
+          elevation={4}
+          sx={{
+            p: 3,
+            mt: 3,
+            backgroundColor: 'background.paper',
+            minWidth: { xs: '90%', sm: 500 },
+            maxWidth: 600,
+            border: '1px solid rgba(255, 165, 0, 0.3)',
+          }}
+        >
+          <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
+            <CodeIcon sx={{ color: 'warning.main', fontSize: 20 }} />
+            <Typography 
+              variant="h6" 
+              sx={{ 
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: '14px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+                color: 'warning.main',
+              }}
+            >
+              Developer Demos
+            </Typography>
+            <Chip 
+              label="DEV ONLY" 
+              size="small" 
+              sx={{ 
+                backgroundColor: 'warning.main',
+                color: 'warning.contrastText',
+                fontWeight: 'bold',
+                fontSize: '10px',
+              }} 
+            />
+          </Stack>
+          
+          <Divider sx={{ mb: 2, borderColor: 'rgba(255, 165, 0, 0.2)' }} />
+          
+          <Stack spacing={1.5}>
+            <Button
+              component={Link}
+              to="/demos/primitives-showcase"
+              variant="outlined"
+              size="small"
+              sx={{ 
+                justifyContent: 'flex-start',
+                textTransform: 'none',
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: '12px',
+              }}
+            >
+              1. Primitives Showcase (21 types)
+            </Button>
+            <Button
+              component={Link}
+              to="/demos/materials-showcase"
+              variant="outlined"
+              size="small"
+              sx={{ 
+                justifyContent: 'flex-start',
+                textTransform: 'none',
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: '12px',
+              }}
+            >
+              2. Materials Showcase (26 elements + 11 biomes)
+            </Button>
+            <Button
+              component={Link}
+              to="/demos/joining-showcase"
+              variant="outlined"
+              size="small"
+              sx={{ 
+                justifyContent: 'flex-start',
+                textTransform: 'none',
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: '12px',
+              }}
+            >
+              3. Joining Showcase (8 operations)
+            </Button>
+            <Button
+              component={Link}
+              to="/demos/blending-showcase"
+              variant="outlined"
+              size="small"
+              sx={{ 
+                justifyContent: 'flex-start',
+                textTransform: 'none',
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: '12px',
+              }}
+            >
+              4. Blending Showcase (4 blend modes)
+            </Button>
+            <Button
+              component={Link}
+              to="/demos/lighting-showcase"
+              variant="outlined"
+              size="small"
+              sx={{ 
+                justifyContent: 'flex-start',
+                textTransform: 'none',
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: '12px',
+              }}
+            >
+              5. Lighting Showcase (3 R3F lights)
+            </Button>
+            <Button
+              component={Link}
+              to="/demos/ecs-integration"
+              variant="outlined"
+              size="small"
+              sx={{ 
+                justifyContent: 'flex-start',
+                textTransform: 'none',
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: '12px',
+              }}
+            >
+              6. ECS Integration (Miniplex → SDF)
+            </Button>
+            <Button
+              component={Link}
+              to="/demos/performance-benchmark"
+              variant="outlined"
+              size="small"
+              sx={{ 
+                justifyContent: 'flex-start',
+                textTransform: 'none',
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: '12px',
+              }}
+            >
+              7. Performance Benchmark (FPS tracking)
+            </Button>
+            <Button
+              component={Link}
+              to="/demos/base-sdf-proof"
+              variant="outlined"
+              size="small"
+              sx={{ 
+                justifyContent: 'flex-start',
+                textTransform: 'none',
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: '12px',
+              }}
+            >
+              8. BaseSDFProof (minimal example)
+            </Button>
+          </Stack>
+        </Paper>
+      )}
         </>
       </TransitionWrapper>
     </BaseScreen>
