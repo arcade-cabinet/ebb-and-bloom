@@ -22,20 +22,47 @@ The technical foundation relies on law-based generation, ensuring deterministic 
 
 ## Recent Changes
 
-**November 12, 2024 - Unified Rendering Architecture + Iconic FMV Intro:**
-- **Three Complementary Rendering Systems:**
-  - **SDFRenderer** - Raymarched complex shapes (21 primitives, material blending, coordinate targeting)
-  - **MarchingCubesRenderer** - Smooth mesh extraction from SDF fields via @react-three/drei
-  - **InstancedRenderer** - High-performance particles with MaterialRegistry integration
-- **Molecular Physics:** RapierBonds component for stable physics joints (fixed/spherical/revolute/prismatic)
-- **ChemicalBlobBuilder:** Generate molecular blobs from formulas (H2, O2, H2O, CO2, CH4)
-- **FMV Intro:** Hybrid rendering - instanced meshes for YUKA swarms (550 particles) + SDF heroes (≤6 primitives)
-- **Mobile-First:** Gyroscope camera, haptic feedback, loading screen, FPS counter, spatial grid optimization
-- **GameState Integration:** All calculations pre-computed from seed, visualization is pure
-- **Modular:** All files <200 LOC, clean separation of concerns
-- **Proven Systems:** YUKA steering, SDF, MaterialRegistry, audio sonification, haptics
-- **Known Limitation:** Joint limits not yet supported (Rapier API limitation, documented in code)
-- Ready for mobile testing on OnePlus foldable at 60fps target
+**November 12, 2024 - Complete SDF Rendering System + Miniplex ECS Integration:**
+
+**Unified Rendering Architecture:**
+- **SDFRenderer** - Raymarched complex shapes (21 primitives, material blending, coordinate targeting)
+- **MarchingCubesRenderer** - Smooth mesh extraction from SDF fields via @react-three/drei
+- **InstancedRenderer** - High-performance particles with MaterialRegistry integration
+- **RapierBonds** - Stable physics joints (fixed/spherical/revolute/prismatic) with Map-based tracking
+- **ChemicalBlobBuilder** - Generate molecular blobs from formulas (H2, O2, H2O, CO2, CH4)
+
+**Miniplex ECS Integration:**
+- **SDFComponents** - Zod schemas for SDFShape, SDFMaterial, SDFOperation, SDFLOD
+- **useSDFEntities Hook** - Query entities with SDF components, filter by visibility/type/material
+- **useSDFMaterials Hook** - Track material usage across entities, query by material
+- **entityToSDFPrimitive** - Pure materializer function converting ECS entities to SDFPrimitives
+- **SDFEntityRenderer** - React component rendering Miniplex entities via SDFRenderer
+
+**Complete Demo Suite (8 Production-Ready Demos):**
+1. **Primitives Showcase** - All 21 SDF primitive types with FPS monitoring
+2. **Materials Showcase** - 26 elements + 11 biomes with interactive toggle
+3. **Joining Showcase** - 8 operation examples (union, subtract, intersect, smooth operations)
+4. **Blending Showcase** - 4 blend modes (replace, mix, add, multiply) with visual examples
+5. **Lighting Showcase** - 3 R3F light types (directional, point, spot) with color controls
+6. **ECS Integration** - Full Miniplex → SDF pipeline with dynamic entity management
+7. **Performance Benchmark** - 4 scenarios (10, 50, 100, 200 primitives) with FPS tracking
+8. **BaseSDFProof** - Minimal proof-of-concept demonstrating core raymarching
+
+**Testing Infrastructure:**
+- Playwright E2E tests for all 8 demos
+- Screenshot verification (12 total screenshots captured)
+- Automated testing workflows
+
+**FMV Intro (Previously Completed):**
+- Hybrid rendering - instanced meshes for YUKA swarms (550 particles) + SDF heroes (≤6 primitives)
+- Mobile-First: Gyroscope camera, haptic feedback, loading screen, FPS counter
+- GameState Integration: All calculations pre-computed from seed, visualization is pure
+
+**System Status:**
+- All files <200 LOC (modular, clean separation of concerns)
+- Zero LSP errors in new code
+- Production-ready for mobile testing on OnePlus foldable at 60fps target
+- Known Limitation: Joint limits not yet supported (Rapier API limitation, documented in code)
 
 ---
 
