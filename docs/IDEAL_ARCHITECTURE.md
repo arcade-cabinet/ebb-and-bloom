@@ -115,32 +115,159 @@ Scoped RNG Generators (via ECS context injection)
 
 ```typescript
 // engine/stores/worldSeed.ts
+interface SeedMetadata {
+  version: string;        // e.g., "v1"
+  phrase: string;         // e.g., "cosmic-dawn-hope"
+  
+  // Note: NO timestamps or dates. Seed persistence is deterministic.
+  // UI can display creation/play time from other sources if needed,
+  // but seed storage itself has no time-based data.
+}
+
 export class ThreeWordSeedStore {
-  save(seed: string): void;
-  load(): string | null;
-  generate(): string; // Generates random 3-word seed
+  private storageKey = 'ebb-bloom-seed';
+  
+  /**
+   * Save seed to localStorage (deterministic - no timestamps)
+   */
+  save(seed: string): void {
+    const [version, ...words] = seed.split('-');
+    const metadata: SeedMetadata = {
+      version,
+      phrase: words.join('-')
+    };
+    localStorage.setItem(this.storageKey, JSON.stringify(metadata));
+  }
+  
+  /**
+   * Load seed from localStorage
+   * Returns null if no seed exists or version incompatible
+   */
+  load(): string | null {
+    const stored = localStorage.getItem(this.storageKey);
+    if (!stored) return null;
+    
+    const metadata: SeedMetadata = JSON.parse(stored);
+    
+    // Check version compatibility
+    if (!this.isVersionCompatible(metadata.version)) {
+      console.warn(`Seed version ${metadata.version} incompatible, discarding`);
+      return null;
+    }
+    
+    return `${metadata.version}-${metadata.phrase}`;
+  }
+  
+  /**
+   * Generate new random 3-word seed with version prefix
+   * Uses crypto.getRandomValues() for non-deterministic secure randomness
+   * This is the ONLY place non-deterministic RNG is allowed (seed initialization)
+   */
+  generate(): string {
+    const wordList = ['cosmic', 'stellar', 'quantum', 'nebula', 'dawn', 'hope', 'ember', 'twilight' /* ... 100+ words */];
+    
+    // Use crypto.getRandomValues() for secure random seed generation
+    // This is acceptable because we're creating the INITIAL seed, not using it
+    const randomBytes = new Uint32Array(3);
+    crypto.getRandomValues(randomBytes);
+    
+    const words = [
+      wordList[randomBytes[0] % wordList.length],
+      wordList[randomBytes[1] % wordList.length],
+      wordList[randomBytes[2] % wordList.length]
+    ];
+    
+    return `v1-${words.join('-')}`;
+  }
+  
+  /**
+   * Check if seed version is compatible with current game version
+   */
+  private isVersionCompatible(version: string): boolean {
+    // Only v1 seeds supported currently
+    return version === 'v1';
+  }
+  
+  /**
+   * Upgrade seed to new version (future use)
+   */
+  upgrade(oldSeed: string): string | null {
+    // Future: handle v1 → v2 migration
+    return null;
+  }
+  
+  /**
+   * Clear saved seed
+   */
+  clear(): void {
+    localStorage.removeItem(this.storageKey);
+  }
 }
 
 // game/state/GameState.ts
 interface GameState {
-  seed: string;
-  initializeWorld(seed: string): void;
-  getScopedRNG(namespace: string): EnhancedRNG;
+  seed: string;                                    // Current world seed
+  seedStore: ThreeWordSeedStore;                  // Persistence layer
+  
+  initializeWorld(seed: string): void;            // Initialize from seed
+  getScopedRNG(namespace: string): EnhancedRNG;  // Get scoped RNG
+  
+  saveSeed(): void;                               // Persist current seed
+  loadSeed(): string | null;                      // Load persisted seed
 }
 
 // engine/rng/RNGRegistry.ts (existing)
 class RNGRegistry {
+  private globalSeed: string | null = null;
+  private scopedGenerators: Map<string, EnhancedRNG> = new Map();
+  
   setSeed(seed: string): void;
   getScopedRNG(namespace: string): EnhancedRNG;
+  reset(): void;                                  // Clear all scoped RNGs
 }
+```
+
+### Seed Lifecycle
+
+```
+1. NEW GAME:
+   User enters seed OR generates random seed
+     ↓
+   GameState.initializeWorld(seed)
+     ↓
+   rngRegistry.setSeed(seed)
+     ↓
+   seedStore.save(seed)
+     ↓
+   All systems use scoped RNGs
+
+2. LOAD GAME:
+   seedStore.load() → seed
+     ↓
+   GameState.initializeWorld(seed)
+     ↓
+   rngRegistry.setSeed(seed)
+     ↓
+   World regenerates deterministically
+
+3. VERSION UPGRADE (Future):
+   seedStore.load() → old v1 seed
+     ↓
+   seedStore.upgrade(v1 seed) → v2 seed
+     ↓
+   GameState.initializeWorld(v2 seed)
 ```
 
 ### Rules
 
 1. **Single Source of Truth**: GameState.seed is the ONLY seed
-2. **No Direct Math.random()**: All randomness through rngRegistry
-3. **Deterministic Namespaces**: Same namespace = same RNG sequence
-4. **Versioned Seeds**: Include version prefix (e.g., "v1-cosmic-dawn-hope")
+2. **No Direct Math.random()**: All randomness through rngRegistry (EXCEPT seed generation)
+3. **Seed Generation Exception**: ThreeWordSeedStore.generate() uses crypto.getRandomValues() for secure initial seed creation
+4. **Deterministic Namespaces**: Same namespace = same RNG sequence
+5. **Versioned Seeds**: Include version prefix (e.g., "v1-cosmic-dawn-hope")
+6. **Persistence**: Save/load through ThreeWordSeedStore
+7. **Version Compatibility**: Check compatibility on load, discard incompatible seeds
+8. **No Timestamps**: Use deterministic counters/sequence numbers, not Date.now()
 
 ---
 
@@ -319,17 +446,156 @@ engine/ecs/systems/spawners/
 ```typescript
 // engine/ecs/governors/base.ts
 interface Governor {
-  update(world: World, dt: number): void;
-  processIntent(intent: GovernorIntent, world: World): void;
+  name: string;
+  priority: number;                                    // Execution order (lower = earlier)
+  
+  update(world: World, dt: number): void;              // Tick update
+  processIntent(intent: GovernorIntent, world: World): void;  // Handle player/AI intent
 }
 
 // Governors read/write ECS components
 class PhysicsGovernor implements Governor {
+  name = 'physics';
+  priority = 1;  // Run first
+  
   update(world: World, dt: number) {
     const entities = world.with('physics', 'position');
     for (const entity of entities) {
-      // Apply physics laws
+      // Apply physics laws (gravity, collision, etc.)
     }
+  }
+  
+  processIntent(intent: GovernorIntent, world: World) {
+    if (intent.action === 'smite') {
+      // Apply force to entities in area
+    }
+  }
+}
+```
+
+### Controller Contracts
+
+```typescript
+// engine/ecs/controllers/PlayerGovernorController.ts
+interface GovernorController {
+  submitIntent(intent: GovernorIntent): Promise<IntentResult>;
+  getEnergyBudget(): number;
+  getAvailableActions(): GovernorAction[];
+}
+
+class PlayerGovernorController implements GovernorController {
+  constructor(
+    private executor: GovernorActionExecutor,
+    private energyBudget: number = 100
+  ) {}
+  
+  async submitIntent(intent: GovernorIntent): Promise<IntentResult> {
+    // Validate energy cost
+    const cost = this.calculateCost(intent);
+    if (cost > this.energyBudget) {
+      return { success: false, reason: 'Insufficient energy' };
+    }
+    
+    // Execute through law-based executor
+    const result = await this.executor.execute(intent);
+    
+    // Deduct energy on success
+    if (result.success) {
+      this.energyBudget -= cost;
+    }
+    
+    return result;
+  }
+  
+  getEnergyBudget(): number {
+    return this.energyBudget;
+  }
+  
+  getAvailableActions(): GovernorAction[] {
+    // Returns actions player can afford
+    return this.executor.getAllActions().filter(
+      action => action.cost <= this.energyBudget
+    );
+  }
+  
+  private calculateCost(intent: GovernorIntent): number {
+    // Cost determined by laws, not arbitrary
+    return this.executor.calculateCost(intent);
+  }
+}
+
+// engine/ecs/controllers/RivalAIController.ts
+class RivalAIController implements GovernorController {
+  constructor(
+    private executor: GovernorActionExecutor,
+    private energyBudget: number = 100,
+    private strategy: AIStrategy
+  ) {}
+  
+  async submitIntent(intent: GovernorIntent): Promise<IntentResult> {
+    // Same implementation as player - IDENTICAL CODE PATH
+    // This enforces fair competition
+  }
+  
+  // AI uses same energy budget and costs as player
+  // No cheating possible
+}
+```
+
+### Service Contracts
+
+```typescript
+// engine/ecs/services/MaterialDataProvider.ts
+interface DataProvider<T> {
+  get(id: string): T | undefined;
+  getAll(): T[];
+  query(filter: (item: T) => boolean): T[];
+}
+
+class MaterialDataProvider implements DataProvider<Material> {
+  constructor(private registry: MaterialRegistry) {}
+  
+  get(id: string): Material | undefined {
+    return this.registry.get(id);
+  }
+  
+  getAll(): Material[] {
+    return Object.values(this.registry.listAll());
+  }
+  
+  query(filter: (item: Material) => boolean): Material[] {
+    return this.getAll().filter(filter);
+  }
+  
+  // Additional domain-specific queries
+  getByElement(element: string): Material | undefined {
+    return this.get(`element-${element.toLowerCase()}`);
+  }
+  
+  getByBiome(biome: BiomeType): Material | undefined {
+    return this.get(`biome-${biome}`);
+  }
+}
+
+// engine/ecs/services/BiomeDataProvider.ts
+class BiomeDataProvider implements DataProvider<BiomeData> {
+  constructor(private biomeSystem: BiomeSystem) {}
+  
+  get(id: string): BiomeData | undefined {
+    // Lookup biome data by ID
+  }
+  
+  getAll(): BiomeData[] {
+    // Return all 11 biome types
+  }
+  
+  query(filter: (item: BiomeData) => boolean): BiomeData[] {
+    return this.getAll().filter(filter);
+  }
+  
+  // Domain-specific queries
+  getByTemperaturePrecipitation(temp: number, precip: number): BiomeData {
+    return this.biomeSystem.whittakerDiagram(temp, precip);
   }
 }
 ```
@@ -358,23 +624,85 @@ Render pipeline
 
 ```typescript
 // engine/ecs/systems/ChunkManager.ts
+interface ChunkCoords {
+  x: number;
+  z: number;
+}
+
+interface ChunkData {
+  coords: ChunkCoords;
+  biome: BiomeType;
+  placements: LayerPlacement[];
+  temperature: number;
+  precipitation: number;
+  elevation: number;
+}
+
 class ChunkManager {
+  private activeChunks: Map<string, ChunkData>;
+  private readonly gridSize: number = 7; // 7x7 streaming grid
+  
   constructor(
-    rng: RNGRegistry,
-    biomeSystem: BiomeSystem,
-    spawners: Spawner[]
-  );
+    private rng: RNGRegistry,
+    private biomeSystem: BiomeSystem,
+    private spawners: Spawner[]
+  ) {}
   
   generateChunk(chunkCoords: ChunkCoords): ChunkData {
+    // Deterministic RNG scoped to chunk coordinates
     const rng = this.rng.getScopedRNG(`chunk-${chunkCoords.x}-${chunkCoords.z}`);
-    const biome = this.biomeSystem.classify(chunkCoords);
     
+    // Classify biome based on temperature/precipitation
+    const biome = this.biomeSystem.classify(chunkCoords, rng);
+    
+    // Generate placements from all registered spawners
     const placements: LayerPlacement[] = [];
     for (const spawner of this.spawners) {
-      placements.push(...spawner.generate(rng, biome, chunkCoords));
+      const spawnerPlacements = spawner.generate(rng, biome, chunkCoords);
+      placements.push(...spawnerPlacements);
     }
     
-    return { biome, placements };
+    return {
+      coords: chunkCoords,
+      biome: biome.type,
+      placements,
+      temperature: biome.temperature,
+      precipitation: biome.precipitation,
+      elevation: biome.elevation
+    };
+  }
+  
+  updateActiveGrid(centerChunk: ChunkCoords): void {
+    // Maintain 7x7 grid around center
+    const halfGrid = Math.floor(this.gridSize / 2);
+    
+    for (let x = -halfGrid; x <= halfGrid; x++) {
+      for (let z = -halfGrid; z <= halfGrid; z++) {
+        const coords = {
+          x: centerChunk.x + x,
+          z: centerChunk.z + z
+        };
+        
+        const key = `${coords.x},${coords.z}`;
+        if (!this.activeChunks.has(key)) {
+          const chunk = this.generateChunk(coords);
+          this.activeChunks.set(key, chunk);
+        }
+      }
+    }
+    
+    // Remove chunks outside grid
+    this.pruneDistantChunks(centerChunk, halfGrid);
+  }
+  
+  private pruneDistantChunks(center: ChunkCoords, radius: number): void {
+    for (const [key, chunk] of this.activeChunks) {
+      const dx = Math.abs(chunk.coords.x - center.x);
+      const dz = Math.abs(chunk.coords.z - center.z);
+      if (dx > radius || dz > radius) {
+        this.activeChunks.delete(key);
+      }
+    }
   }
 }
 ```
@@ -383,15 +711,184 @@ class ChunkManager {
 
 ```typescript
 // engine/ecs/systems/BiomeSystem.ts
+enum BiomeType {
+  OCEAN = 'ocean',
+  BEACH = 'beach',
+  DESERT = 'desert',
+  GRASSLAND = 'grassland',
+  FOREST = 'forest',
+  RAINFOREST = 'rainforest',
+  SAVANNA = 'savanna',
+  TUNDRA = 'tundra',
+  TAIGA = 'taiga',
+  SNOW = 'snow',
+  MOUNTAIN = 'mountain'
+}
+
+interface BiomeClassification {
+  type: BiomeType;
+  temperature: number;      // 0-1 range
+  precipitation: number;    // 0-1 range
+  elevation: number;        // 0-1 range
+}
+
 class BiomeSystem {
-  classify(coords: ChunkCoords): BiomeType {
-    const temperature = this.getTemperature(coords);
-    const precipitation = this.getPrecipitation(coords);
-    return this.whittakerDiagram(temperature, precipitation);
+  constructor(private genesis: GenesisConstants) {}
+  
+  classify(coords: ChunkCoords, rng: EnhancedRNG): BiomeClassification {
+    // Deterministic temperature/precipitation from chunk coords + seed
+    const temperature = this.getTemperature(coords, rng);
+    const precipitation = this.getPrecipitation(coords, rng);
+    const elevation = this.getElevation(coords, rng);
+    
+    // Whittaker biome diagram classification
+    const type = this.whittakerDiagram(temperature, precipitation, elevation);
+    
+    return {
+      type,
+      temperature,
+      precipitation,
+      elevation
+    };
   }
   
-  private whittakerDiagram(temp: number, precip: number): BiomeType {
-    // 11 biome classifications
+  private getTemperature(coords: ChunkCoords, rng: EnhancedRNG): number {
+    // Base temperature from cosmic genesis (galaxy position affects climate)
+    const baseTemp = this.genesis.planetaryTemperature;
+    
+    // Latitude effect (distance from equator = chunk.z)
+    const latitude = Math.abs(coords.z) / 100;
+    const latitudeEffect = 1.0 - (latitude * 0.7);
+    
+    // Noise variation
+    const noise = rng.noise2D(coords.x * 0.01, coords.z * 0.01);
+    
+    return Math.max(0, Math.min(1, baseTemp * latitudeEffect + noise * 0.2));
+  }
+  
+  private getPrecipitation(coords: ChunkCoords, rng: EnhancedRNG): number {
+    // Precipitation patterns from planetary water content
+    const baseWater = this.genesis.planetaryWaterContent;
+    
+    // Noise-based weather patterns
+    const noise = rng.noise2D(coords.x * 0.02, coords.z * 0.02);
+    
+    return Math.max(0, Math.min(1, baseWater + noise * 0.3));
+  }
+  
+  private getElevation(coords: ChunkCoords, rng: EnhancedRNG): number {
+    // Multi-octave noise for realistic terrain
+    let elevation = 0;
+    let amplitude = 1.0;
+    let frequency = 0.005;
+    
+    for (let i = 0; i < 4; i++) {
+      elevation += rng.noise2D(coords.x * frequency, coords.z * frequency) * amplitude;
+      amplitude *= 0.5;
+      frequency *= 2.0;
+    }
+    
+    return Math.max(0, Math.min(1, elevation * 0.5 + 0.5));
+  }
+  
+  private whittakerDiagram(temp: number, precip: number, elevation: number): BiomeType {
+    // Elevation overrides (mountains, ocean)
+    if (elevation > 0.8) return BiomeType.MOUNTAIN;
+    if (elevation < 0.3) return BiomeType.OCEAN;
+    if (elevation < 0.35) return BiomeType.BEACH;
+    
+    // Whittaker biome classification
+    if (temp < 0.2) {
+      return precip > 0.3 ? BiomeType.TUNDRA : BiomeType.SNOW;
+    } else if (temp < 0.4) {
+      return precip > 0.5 ? BiomeType.TAIGA : BiomeType.TUNDRA;
+    } else if (temp < 0.6) {
+      if (precip < 0.3) return BiomeType.DESERT;
+      if (precip < 0.6) return BiomeType.GRASSLAND;
+      return BiomeType.FOREST;
+    } else {
+      if (precip < 0.3) return BiomeType.DESERT;
+      if (precip < 0.5) return BiomeType.SAVANNA;
+      if (precip < 0.7) return BiomeType.FOREST;
+      return BiomeType.RAINFOREST;
+    }
+  }
+}
+```
+
+### Deterministic Factory Pattern
+
+All spawners must implement deterministic factories:
+
+```typescript
+// engine/ecs/systems/spawners/base.ts
+interface DeterministicFactory<T> {
+  create(rng: EnhancedRNG, ...params: any[]): T;
+  validate(output: T): boolean;
+}
+
+interface ComponentArchetype {
+  components: {
+    physics?: PhysicsComponent;
+    chemistry?: ChemistryComponent;
+    biology?: BiologyComponent;
+    visual?: VisualComponent;
+    governance?: GovernanceComponent;
+  };
+  placement: LayerPlacement;
+  metadata: {
+    seed: string;              // World seed used to generate this entity
+    biome: BiomeType;          // Biome where entity was spawned
+    spawner: string;           // Spawner that created this entity
+    sequenceNumber: number;    // Deterministic counter from spawner (not timestamp)
+  };
+}
+
+abstract class BaseSpawner implements Spawner, DeterministicFactory<ComponentArchetype[]> {
+  abstract name: string;
+  private sequenceCounter: number = 0;  // Deterministic counter, NOT timestamp
+  
+  generate(rng: EnhancedRNG, biome: BiomeType, chunk: ChunkCoords): ComponentArchetype[] {
+    const archetypes = this.create(rng, biome, chunk);
+    
+    // Add deterministic sequence numbers (not timestamps)
+    for (const archetype of archetypes) {
+      archetype.metadata.sequenceNumber = this.sequenceCounter++;
+      
+      // Validate archetype
+      if (!this.validate(archetype)) {
+        throw new Error(`Invalid archetype from ${this.name}`);
+      }
+    }
+    
+    return archetypes;
+  }
+  
+  abstract create(rng: EnhancedRNG, biome: BiomeType, chunk: ChunkCoords): ComponentArchetype[];
+  
+  validate(archetype: ComponentArchetype): boolean {
+    // Must have at least one component
+    const hasComponent = Object.values(archetype.components).some(c => c !== undefined);
+    
+    // Must have valid placement
+    const hasPlacement = archetype.placement && 
+      archetype.placement.layer >= 0 && 
+      archetype.placement.layer <= 3;
+    
+    // Must have metadata
+    const hasMetadata = archetype.metadata && 
+      archetype.metadata.seed && 
+      archetype.metadata.spawner === this.name &&
+      typeof archetype.metadata.sequenceNumber === 'number';
+    
+    return hasComponent && hasPlacement && hasMetadata;
+  }
+  
+  /**
+   * Reset sequence counter (for testing or world reset)
+   */
+  resetSequence(): void {
+    this.sequenceCounter = 0;
   }
 }
 ```
