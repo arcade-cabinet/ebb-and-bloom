@@ -136,10 +136,9 @@ export function IconicIntro({ onComplete, skipIntro = false }: IconicIntroProps)
               hapticSystem={hapticSystem}
             />
           )}
+          <FPSCounter />
         </Suspense>
       </Canvas>
-      
-      <FPSCounter />
       
       <div style={{
         position: 'absolute',
