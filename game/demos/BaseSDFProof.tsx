@@ -1,82 +1,49 @@
 /**
  * BASE SDF RENDERER PROOF
  * 
- * A single, focused demo to prove the base SDF rendering layer.
- * Renders multiple complex primitives with PBR textures from AmbientCG.
+ * Minimal proof-of-concept demo showing basic SDF rendering works.
+ * Demonstrates raymarching with three simple primitives:
+ * - Sphere (left)
+ * - Box (center)
+ * - Torus (right)
  */
 
 import { Box } from '@mui/material';
-import { OrbitControls, useTexture } from '@react-three/drei';
+import { OrbitControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
-import { Suspense } from 'react';
 import { SDFPrimitive } from '../../engine/rendering/sdf/types';
 import { SDFRenderer } from '../../engine/rendering/sdf/renderer/SDFRenderer';
 
 function Scene() {
-    const textures = {
-        rock: {
-            diffuse: useTexture('/textures/ambientcg/Rock027/Rock027_1K_Color.jpg'),
-            normal: useTexture('/textures/ambientcg/Rock027/Rock027_1K_NormalGL.jpg'),
-            roughness: useTexture('/textures/ambientcg/Rock027/Rock027_1K_Roughness.jpg'),
-        },
-        metal: {
-            diffuse: useTexture('/textures/ambientcg/Metal034/Metal034_1K_Color.jpg'),
-            normal: useTexture('/textures/ambientcg/Metal034/Metal034_1K_NormalGL.jpg'),
-            roughness: useTexture('/textures/ambientcg/Metal034/Metal034_1K_Roughness.jpg'),
-        }
-    };
-
     const primitives: SDFPrimitive[] = [
-        // Rock Octahedron
         {
-            type: 'octahedron',
+            type: 'sphere',
             position: [-2, 0, 0],
-            params: [0.8],
-            materialId: 'element-fe'
+            params: [0.6],
+            materialId: 'element-h'
         },
-        // Metal Pyramid (hollowed out)
         {
-            type: 'pyramid',
-            position: [0, -0.2, 0],
-            params: [0.8],
+            type: 'box',
+            position: [0, 0, 0],
+            params: [0.5, 0.5, 0.5],
             materialId: 'element-c'
         },
-        {
-            type: 'pyramid',
-            position: [0, -0.2, 0],
-            params: [0.7],
-            materialId: 'element-c',
-            operation: 'subtract'
-        },
-        // Rock Torus and Sphere (smoothly blended)
         {
             type: 'torus',
             position: [2, 0, 0],
             params: [0.5, 0.2],
             materialId: 'element-o'
-        },
-        {
-            type: 'sphere',
-            position: [2.5, 0, 0],
-            params: [0.3],
-            materialId: 'element-h',
-            operation: 'smooth-union',
-            operationStrength: 0.4
         }
     ];
 
-    // For this proof, we will apply textures manually in the shader based on object position.
-    // A full implementation would involve material indices and texture arrays.
-    return <SDFRenderer primitives={primitives} textures={{ ...textures.rock, ...textures.metal }} />;
+    return <SDFRenderer primitives={primitives} />;
 }
 
 export function BaseSDFProof() {
     return (
         <Box sx={{ width: '100vw', height: '100vh', bgcolor: '#111' }}>
             <Canvas camera={{ position: [0, 1, 5], fov: 60 }}>
-                <Suspense fallback={null}>
-                    <Scene />
-                </Suspense>
+                <Scene />
                 <OrbitControls />
                 <ambientLight intensity={0.1} />
                 <directionalLight position={[5, 5, 5]} intensity={1.5} />
