@@ -1,8 +1,64 @@
 # Progress Tracker
 
-**Last Updated:** November 11, 2025  
-**Current Phase:** Phase 3 Complete - Intent API Integrated  
-**Next Phase:** Phase 4 - Creature AI Implementation
+**Last Updated:** January 2025 (SDF Foundation Assessment)  
+**Current Phase:** Phase 0 - SDF Rendering Foundation (CRITICAL - Blocks all rendering work)  
+**Next Phase:** Phase 0.1 - Core API Expansion
+
+---
+
+## 🔴 CRITICAL FOUNDATION PHASE
+
+### Phase 0: SDF Rendering Foundation (IN PROGRESS - BLOCKS ALL RENDERING)
+
+**Status:** ~15% complete - Basic primitives exist, but missing critical API features  
+**Priority:** **HIGHEST** - Must be completed before any domain-specific rendering (chemical, biological, physics, ecological)
+
+**Goal:** Build a complete, robust, tested SDF raymarching API that serves as the foundation for all rendering in the project.
+
+**See:** `memory-bank/SDF_RENDERING_FOUNDATION.md` for complete assessment and specification.
+
+**Current State:**
+- ✅ Basic SDF renderer with 11 primitives
+- ✅ Basic boolean operations
+- ✅ Hardcoded material system (5 IDs)
+- ✅ Basic texture support (global, not per-primitive)
+- ❌ No per-primitive material assignment
+- ❌ No per-primitive texture mapping
+- ❌ No coordinate system targeting
+- ❌ No material blending API
+- ❌ No foreign body joining API
+- ❌ No proper R3F lighting integration
+- ❌ No miniplex-react hooks
+- ❌ No comprehensive tests (only 1 failing E2E test)
+- ❌ No performance optimization
+- ❌ No documentation
+
+**Required Deliverables:**
+1. **20+ primitives** (currently 11)
+2. **MaterialRegistry system** with chemical/ecological integration
+3. **Per-primitive texture mapping**
+4. **Coordinate targeting API** (for foreign body joining)
+5. **Material blending API** (for smooth transitions)
+6. **Foreign body joining API** (for tool+creature, structure+foundation)
+7. **R3F lighting auto-detection**
+8. **miniplex-react hooks** (reactive rendering)
+9. **Comprehensive test suite** (unit, integration, E2E)
+10. **Performance optimization** (LOD, batching, frustum culling)
+11. **Complete documentation** (API, examples, integration guides)
+
+**Estimated Effort:** 4 weeks (160 hours)
+
+**Sub-Phases:**
+- **Phase 0.1:** Core API Expansion (Week 1)
+- **Phase 0.2:** Advanced Features (Week 2)
+- **Phase 0.3:** ECS Integration (Week 3)
+- **Phase 0.4:** Performance & Polish (Week 4)
+
+**Blocks:**
+- Phase 1: Chemical Rendering Layer (molecules, bonds, reactions)
+- Phase 2: Biological Rendering Layer (organisms, organs, tissues)
+- Phase 3: Physics Rendering Layer (tools, structures, foreign body joining)
+- Phase 4: Ecological Rendering Layer (terrain, vegetation, geological features)
 
 ---
 
@@ -136,26 +192,127 @@
 
 ## 🔄 IN PROGRESS
 
-**None.** Phase 3 complete, ready for Phase 4.
+### Phase 0: SDF Rendering Foundation
+**Status:** ~15% complete  
+**Current Focus:** Phase 0.1 - Core API Expansion  
+**See:** `memory-bank/SDF_RENDERING_FOUNDATION.md` for complete specification
 
 ---
 
 ## ⏳ TODO (Remaining Phases)
 
-### Phase 4: Creature AI & Cleanup (Next)
+### Phase 0: SDF Rendering Foundation (CURRENT - CRITICAL FOUNDATION)
 
-**Goal:** Delete obsolete code, implement individual organism AI
+**See:** `memory-bank/SDF_RENDERING_FOUNDATION.md` for complete assessment
+
+**Sub-Phases:**
+- **Phase 0.1:** Core API Expansion
+  - [ ] Add missing primitives (10 new types)
+  - [ ] Implement MaterialRegistry system
+  - [ ] Add per-primitive texture mapping
+  - [ ] Add rotation and scaling support
+  - [ ] Unit tests for all primitives
+
+- **Phase 0.2:** Advanced Features
+  - [ ] Coordinate system targeting
+  - [ ] Material blending API
+  - [ ] Foreign body joining API
+  - [ ] R3F lighting integration
+  - [ ] Integration tests
+
+- **Phase 0.3:** ECS Integration
+  - [ ] miniplex-react hooks
+  - [ ] ECS component definitions
+  - [ ] Reactive rendering system
+  - [ ] E2E tests for ECS integration
+
+- **Phase 0.4:** Performance & Polish
+  - [ ] LOD system
+  - [ ] Batching optimization
+  - [ ] Frustum culling
+  - [ ] Adaptive stepping
+  - [ ] Performance benchmarks
+  - [ ] Documentation
+
+**Critical:** This phase blocks ALL rendering work. Must be completed before proceeding to domain-specific rendering layers.
+
+---
+
+### Phase 1: Chemical Rendering Layer (BLOCKED by Phase 0)
+
+**Goal:** Render molecules, bonds, orbitals, reactions using SDF foundation
 
 **Tasks:**
-- [ ] Delete obsolete generators (replaced by ECS + Laws)
-- [ ] Clean up any WorldManager remnants
-- [ ] Implement Creature AI behaviors:
-  - [ ] YUKA Goals (hunger, safety, reproduction, exploration)
-  - [ ] YUKA StateMachines (idle → hunt → eat → rest → sleep)
-  - [ ] YUKA SteeringBehaviors (seek, flee, wander, pursue)
-  - [ ] Tool use learning (spear-making, fire-starting)
-  - [ ] Social interaction (communication, cooperation, conflict)
-- [ ] State persistence (despawn → save state → respawn → fast-forward)
+- [ ] ChemicalSDFBuilder integration with MaterialRegistry
+- [ ] Bond rendering (covalent, ionic, metallic)
+- [ ] Orbital visualization (s, p, d, f orbitals)
+- [ ] Reaction animation (bond breaking/forming)
+- [ ] Molecular geometry (VSEPR theory)
+- [ ] Periodic table integration (element materials)
+
+**Depends on:** Phase 0 complete (MaterialRegistry, coordinate targeting, foreign body joining)
+
+---
+
+### Phase 2: Biological Rendering Layer (BLOCKED by Phase 0)
+
+**Goal:** Render organisms, organs, tissues, cellular structures using SDF foundation
+
+**Tasks:**
+- [ ] Organism shape generation (SDF-based)
+- [ ] Organ rendering (heart, brain, etc.)
+- [ ] Tissue layer rendering
+- [ ] Cellular structure visualization
+- [ ] Material blending (skin to fur, etc.)
+
+**Depends on:** Phase 0 complete (material blending, coordinate targeting)
+
+---
+
+### Phase 3: Physics Rendering Layer (BLOCKED by Phase 0)
+
+**Goal:** Render tools, structures, foreign body joining using SDF foundation
+
+**Tasks:**
+- [ ] Tool rendering (SDF-based shapes)
+- [ ] Structure rendering (buildings, foundations)
+- [ ] Foreign body joining (tool + creature, structure + foundation)
+- [ ] Material synthesis visualization
+
+**Depends on:** Phase 0 complete (foreign body joining API, coordinate targeting)
+
+---
+
+### Phase 4: Ecological Rendering Layer (BLOCKED by Phase 0)
+
+**Goal:** Render terrain features, vegetation, geological formations using SDF foundation
+
+**Tasks:**
+- [ ] Terrain feature rendering (rocks, cliffs, etc.)
+- [ ] Vegetation rendering (trees, plants)
+- [ ] Geological formation rendering (caves, mineral deposits)
+- [ ] Weathering effects (material blending over time)
+
+**Depends on:** Phase 0 complete (material blending, coordinate targeting)
+
+---
+
+### Phase 5: ECS Consolidation (The Missing Phase)
+
+**CRITICAL:** This was the phase Replit never completed!
+
+**Goal:** "Move agents/ and generation/ INTO engine/ecs/ and FINISH the plan"
+
+**Tasks:**
+- [ ] **FIX FMV BROWSER ERRORS** (critical - genesis system depends on this)
+- [ ] Move **agents/governors/** → **engine/ecs/governors/**
+- [ ] Move **agents/tables/** → **engine/ecs/constants/**  
+- [ ] Move **generation/spawners/** → **engine/ecs/systems/**
+- [ ] Complete governor-spawner bridge (governors provide data to DFU algorithms)
+- [ ] **COMPLETE PLANETARY ACCRETION** (deterministic material locations)
+- [ ] Integrate WorldManager into GameState (eliminate singleton)
+- [ ] Fix broken multi-scale imports (AtomicWorld, UnifiedWorld, Evolvable)
+- [ ] Test unified engine/ecs/ architecture
 
 **Read First:** `docs/AI_HIERARCHY.md`
 
@@ -163,19 +320,20 @@
 
 ---
 
-### Phase 5: Rival AI Governors (Future)
+### Phase 6: Creature AI Implementation (The Lost Phase)
 
-**Goal:** AI opponents using same tools as player
+**Goal:** "Every spawned sign of life HAS to have attached creature AI including player creatures"
 
+**Your Vision:** SUB AI directly attached to EVERY active creature
 **Tasks:**
-- [ ] RivalAIGovernorController implements GovernorActionPort
-- [ ] Strategic decision-making:
-  - [ ] Ecology evaluation (carrying capacity, resource density)
-  - [ ] Threat assessment (predator populations, rival species)
-  - [ ] Opportunity identification (food sources, territory expansion)
-  - [ ] Energy budget management (save vs spend decisions)
-- [ ] Territory awareness (spatial queries for owned land)
-- [ ] Competitive responses (react to player actions)
+- [ ] Creature questions system: environment, cognition, tool competency
+- [ ] Goal-driven behavior with ranked interactions (weighing options)
+- [ ] YUKA Goals (hunger, safety, reproduction, exploration)  
+- [ ] YUKA StateMachines (idle → hunt → eat → rest → sleep)
+- [ ] YUKA SteeringBehaviors (seek, flee, wander, pursue)
+- [ ] Tool use learning and competency progression
+- [ ] State persistence: save exact state on despawn
+- [ ] Fast-forward system: "While you were away so and so did this..."
 
 **Read First:** `docs/INTENT_API_PHILOSOPHY.md`
 
@@ -183,23 +341,19 @@
 
 ---
 
-### Phase 6: Planetary Accretion & FMV (Future)
+### Phase 7: Rival AI Governors (Strategic Competition)
 
-**Goal:** Deterministic material location generation
+**Goal:** "RIVAL AIs are Yuka AI systems playing at YOUR LEVEL"
 
 **Tasks:**
-- [ ] Planetary accretion system:
-  - [ ] Core formation (solid iron vs liquid, magnetic field)
-  - [ ] Mantle convection (heat flow, volcanic activity)
-  - [ ] Crust differentiation (tectonic plates, fault lines)
-  - [ ] Mineral deposits (copper veins, tin deposits, diamond pipes)
-  - [ ] Hydrosphere (ocean depth, lake positions, river systems)
-  - [ ] Pedosphere (soil depth, nutrient patches)
-  - [ ] Lithosphere (cave systems, aquifers, geothermal vents)
-- [ ] Wire to FMV sequence (visual + deterministic genesis)
-- [ ] Surface coordinate mapping (every (x,z) → line to core)
-- [ ] Life probability calculation (water + nutrients + temperature)
-- [ ] Dead World Bias (main menu difficulty setting)
+- [ ] RivalAIGovernorController implements GovernorActionPort
+- [ ] Strategic decision-making at player level:
+  - [ ] Territory management with own starting areas
+  - [ ] Resource evaluation and competition
+  - [ ] Energy budget management 
+  - [ ] Threat assessment and responses
+- [ ] Use same Intent API as player (no cheating)
+- [ ] Competitive responses to player actions
 
 **Read First:** `docs/COSMIC_PROVENANCE.md`
 
@@ -207,7 +361,27 @@
 
 ---
 
-### Phase 7: Material Synthesis & Technology (Future)
+### Phase 8: Planetary Accretion & Material Genesis (CRITICAL)
+
+**Goal:** "EVERY point on the surface is a coordinate line down to the planet core"
+
+**Your Vision:** Complete deterministic material mapping from FMV genesis
+**Tasks:**
+- [ ] Planetary core formation (solid/liquid iron, magnetic field)
+- [ ] Layer-by-layer accretion (mantle, crust differentiation)  
+- [ ] Material deposits (copper veins, tin deposits, diamond pipes)
+- [ ] Hydrosphere (ocean depth, lakes, rivers, water table)
+- [ ] Pedosphere (soil depth, nutrient distribution)
+- [ ] Cave systems and geothermal mapping
+- [ ] Life probability zones (water + nutrients + temperature)
+- [ ] Dead World Bias difficulty setting
+- [ ] Surface coordinate → core lineage mapping
+
+**Critical:** "When an AI wants to execute an action, the AI is never STUCK. It can evaluate based on information at hand."
+
+---
+
+### Phase 9: Material Synthesis & Technology (Future)
 
 **Goal:** Chemistry-based technology progression
 
@@ -226,7 +400,7 @@
 
 ---
 
-### Phase 8: Mobile Polish & Sensors (Future)
+### Phase 10: Mobile Polish & Sensors (Future)
 
 **Goal:** Premium mobile experience
 
@@ -243,7 +417,7 @@
 
 ---
 
-### Phase 9: Performance & Testing (Future)
+### Phase 11: Performance & Testing (Future)
 
 **Goal:** Production-ready polish
 
@@ -260,7 +434,7 @@
 
 ---
 
-### Phase 10: Production Deployment (Future)
+### Phase 12: Production Deployment (Future)
 
 **Goal:** App Store release
 
@@ -280,12 +454,18 @@
 
 ## 📊 Overall Progress
 
-**Phases Complete:** 3/10 (30%)
+**Phases Complete:** 3/13 (23%)  
+**Foundation Phase:** Phase 0 in progress (~15% complete)
 
-**Core Systems:** 60% complete
+**Core Systems:** 50% complete
 - ✅ Unified GameState
 - ✅ ECS World + 11 Law Systems
 - ✅ Intent API (Player & AI interface)
+- 🔴 **SDF Rendering Foundation (15% - BLOCKS ALL RENDERING)**
+- ⏳ Chemical Rendering Layer (blocked by Phase 0)
+- ⏳ Biological Rendering Layer (blocked by Phase 0)
+- ⏳ Physics Rendering Layer (blocked by Phase 0)
+- ⏳ Ecological Rendering Layer (blocked by Phase 0)
 - ⏳ Creature AI (individual behaviors)
 - ⏳ Rival AI (strategic competition)
 - ⏳ Planetary Accretion (material locations)
@@ -326,7 +506,7 @@
 - ⏳ Mobile sensor integration (gyroscope, haptics)
 - ⏳ Performance optimization (60fps sustained)
 
-**Zero Blockers:** Ready to proceed to Phase 4.
+**Critical Blocker:** Phase 0 (SDF Rendering Foundation) must be completed before any rendering work can proceed.
 
 ---
 
@@ -376,4 +556,4 @@
 
 ---
 
-**Next Agent:** Read `.clinerules` first, then `activeContext.md`, then start Phase 4.
+**Next Agent:** Read `.clinerules` first, then `activeContext.md`, then `memory-bank/SDF_RENDERING_FOUNDATION.md`, then `memory-bank/PHASE_0_COMPLETE_HANDOFF.md` for complete implementation instructions, then start Phase 0.1.

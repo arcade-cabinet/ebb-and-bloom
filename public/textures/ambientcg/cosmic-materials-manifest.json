@@ -1,0 +1,47 @@
+[
+  {
+    "id": "Ground037",
+    "category": null,
+    "tags": [
+      "37",
+      "forest",
+      "grass",
+      "ground",
+      "moss"
+    ],
+    "baseColor": "#ffffff",
+    "pbr": {
+      "metallic": 0.2,
+      "roughness": 0.5,
+      "normalStrength": 1
+    },
+    "sdf": {
+      "displacement": false,
+      "tiling": 1,
+      "blendMode": "multiply"
+    },
+    "paths": {}
+  },
+  {
+    "id": "Wood049",
+    "category": null,
+    "tags": [
+      "49",
+      "plain",
+      "smooth",
+      "wood"
+    ],
+    "baseColor": "#ffffff",
+    "pbr": {
+      "metallic": 0,
+      "roughness": 0.7,
+      "normalStrength": 1
+    },
+    "sdf": {
+      "displacement": false,
+      "tiling": 1,
+      "blendMode": "multiply"
+    },
+    "paths": {}
+  }
+]

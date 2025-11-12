@@ -1,17 +1,29 @@
 import type { World } from 'miniplex';
 import type { Entity } from '../components/CoreComponents';
 import { ConservationLedger } from './ConservationLedger';
-import { CosmicEnvironmentSystem } from '../systems/CosmicEnvironmentSystem';
-import { ThermodynamicsSystem } from '../systems/ThermodynamicsSystem';
-import { ReactionKineticsSystem } from '../systems/ReactionKineticsSystem';
-import { DiffusionSystem } from '../systems/DiffusionSystem';
-import { AggregationSystem } from '../systems/AggregationSystem';
+// Physics Systems
+import { CosmicEnvironmentSystem } from '../systems/physics/CosmicEnvironmentSystem';
+import { ThermodynamicsSystem } from '../systems/physics/ThermodynamicsSystem';
+import { DiffusionSystem } from '../systems/physics/DiffusionSystem';
+// import { RapierPhysicsSystem } from '../systems/physics/RapierPhysicsSystem';
+
+// Chemistry Systems
+import { ReactionKineticsSystem } from '../systems/chemistry/ReactionKineticsSystem';
+import { AggregationSystem } from '../systems/chemistry/AggregationSystem';
+import { AtomicChemistrySystem } from '../systems/chemistry/AtomicSystems';
+
+// Biology Systems
+import { MetabolismSystem } from '../systems/biology/MetabolismSystem';
+import { EvolutionSelectionSystem } from '../systems/biology/EvolutionSelectionSystem';
+
+// Ecology Systems
+import { OdexEcologySystem } from '../systems/ecology/OdexEcologySystem';
+
+// Social Systems
+import { CulturalTransmissionSystem } from '../systems/social/CulturalTransmissionSystem';
+
+// Meta Systems
 import { ConservationValidationSystem } from '../systems/ConservationValidationSystem';
-import { RapierPhysicsSystem } from '../systems/RapierPhysicsSystem';
-import { MetabolismSystem } from '../systems/MetabolismSystem';
-import { EvolutionSelectionSystem } from '../systems/EvolutionSelectionSystem';
-import { CulturalTransmissionSystem } from '../systems/CulturalTransmissionSystem';
-import { OdexEcologySystem } from '../systems/OdexEcologySystem';
 
 export interface System {
   update(world: World<Entity>, delta: number): void;
@@ -30,15 +42,16 @@ export class LawOrchestrator {
     this.systems = [
       new CosmicEnvironmentSystem(),
       new ThermodynamicsSystem(),
-      new ReactionKineticsSystem(this.conservationLedger),
       new DiffusionSystem(),
+      // this.rapierPhysicsSystem,
+      new ReactionKineticsSystem(this.conservationLedger),
       new AggregationSystem(this.conservationLedger),
-      new ConservationValidationSystem(this.conservationLedger),
-      this.rapierPhysicsSystem,
+      new AtomicChemistrySystem(),
       new MetabolismSystem(),
       new EvolutionSelectionSystem(),
       new OdexEcologySystem(),
       new CulturalTransmissionSystem(),
+      new ConservationValidationSystem(this.conservationLedger),
     ];
   }
 

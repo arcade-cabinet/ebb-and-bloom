@@ -115,7 +115,7 @@ export function CosmicExpansionFMV({
         clearInterval(progressIntervalRef.current);
       }
     };
-  }, [autoPlay, onComplete]);
+  }, [autoPlay, onComplete, currentStage]);
   
   useEffect(() => {
     if (!timeline.current) return;

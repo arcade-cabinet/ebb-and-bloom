@@ -1,6 +1,6 @@
 import type { World } from 'miniplex';
-import type { Entity } from '../components/CoreComponents';
-import { ConservationLedger } from '../core/ConservationLedger';
+import type { Entity } from '../../components/CoreComponents';
+import { ConservationLedger } from '../../core/ConservationLedger';
 
 export class ConservationValidationSystem {
   private conservationLedger: ConservationLedger;
