@@ -1,5 +1,5 @@
 import { EnhancedRNG } from '../../utils/EnhancedRNG';
-import { CosmicProvenanceTimeline } from '../CosmicProvenanceTimeline';
+import { CosmicProvenanceTimeline } from '../timeline/CosmicProvenanceTimeline';
 
 export class GenesisSeedContext {
   private readonly baseSeed: string;

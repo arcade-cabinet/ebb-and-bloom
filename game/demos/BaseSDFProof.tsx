@@ -9,8 +9,8 @@ import { Box } from '@mui/material';
 import { OrbitControls, useTexture } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { Suspense } from 'react';
-import { SDFPrimitive } from '../../engine/rendering/sdf/SDFPrimitives';
-import { SDFRenderer } from '../../engine/rendering/sdf/SDFRenderer';
+import { SDFPrimitive } from '../../engine/rendering/sdf/types';
+import { SDFRenderer } from '../../engine/rendering/sdf/renderer/SDFRenderer';
 
 function Scene() {
     const textures = {

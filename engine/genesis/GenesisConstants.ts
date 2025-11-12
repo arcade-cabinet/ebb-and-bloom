@@ -15,7 +15,7 @@
  * PRODUCTION-READY: No stubs, no placeholders, no TODOs.
  */
 
-import { CosmicProvenanceTimeline } from './CosmicProvenanceTimeline';
+import { CosmicProvenanceTimeline } from './timeline/CosmicProvenanceTimeline';
 import { PHYSICS_CONSTANTS } from '../../agents/tables/physics-constants';
 import EnhancedRNG from '../utils/EnhancedRNG';
 

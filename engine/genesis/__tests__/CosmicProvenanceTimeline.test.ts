@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { CosmicProvenanceTimeline } from '../CosmicProvenanceTimeline';
+import { CosmicProvenanceTimeline } from '../timeline/CosmicProvenanceTimeline';
 import { createTestTimeline, createTestStageContext } from '../../../tests/factories/cosmicFactories';
 import { rngRegistry } from '../../rng/RNGRegistry';
 

@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { rngRegistry } from '../../engine/rng/RNGRegistry';
 import { EnhancedRNG } from '../../engine/utils/EnhancedRNG';
 import { GenesisFacade } from '../../engine/genesis/facade/GenesisFacade';
-import { CosmicProvenanceTimeline } from '../../engine/genesis/CosmicProvenanceTimeline';
+import { CosmicProvenanceTimeline } from '../../engine/genesis/timeline/CosmicProvenanceTimeline';
 import { World } from '../../engine/ecs/World';
 import { GovernorActionExecutor } from '../../engine/ecs/core/GovernorActionExecutor';
 import type { GovernorIntent } from '../../agents/controllers/GovernorActionPort';

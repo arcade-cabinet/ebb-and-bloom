@@ -1,7 +1,7 @@
 import { EnhancedRNG } from '../../utils/EnhancedRNG';
 import { GenesisSeedContext } from '../context/GenesisSeedContext';
 import { GenesisKernel } from '../core/GenesisKernel';
-import { CosmicProvenanceTimeline } from '../CosmicProvenanceTimeline';
+import { CosmicProvenanceTimeline } from '../timeline/CosmicProvenanceTimeline';
 import { 
   CosmicProfile, 
   StellarProfile, 

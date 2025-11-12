@@ -63,7 +63,7 @@ class MockAudioContext {
 vi.stubGlobal('AudioContext', MockAudioContext);
 vi.stubGlobal('webkitAudioContext', MockAudioContext);
 
-import { CosmicAudioSonification } from '../CosmicAudioSonification';
+import { CosmicAudioSonification } from '../cosmic';
 import { createTestTimeline, createTestStageContext } from '../../../tests/factories/cosmicFactories';
 import { rngRegistry } from '../../rng/RNGRegistry';
 

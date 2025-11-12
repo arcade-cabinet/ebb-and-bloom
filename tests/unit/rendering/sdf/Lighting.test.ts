@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { 
   SDF_LIGHTING_GLSL 
-} from '../../../../engine/rendering/sdf/SDFPrimitives';
+} from '../../../../engine/rendering/sdf/glsl';
 
 describe('SDF Lighting System', () => {
   describe('SDF_LIGHTING_GLSL', () => {

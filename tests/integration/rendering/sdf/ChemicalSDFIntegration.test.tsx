@@ -9,7 +9,7 @@ import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import { Canvas } from '@react-three/fiber';
 import { ChemicalSDFBuilder } from '../../../../engine/rendering/chemistry/ChemicalSDFBuilder';
-import { SDFRenderer } from '../../../../engine/rendering/sdf/SDFRenderer';
+import { SDFRenderer } from '../../../../engine/rendering/sdf/renderer/SDFRenderer';
 import { validateSDFScene } from '../../../utils/sdf-test-helpers';
 import type { Entity } from '../../../../engine/ecs/components/CoreComponents';
 

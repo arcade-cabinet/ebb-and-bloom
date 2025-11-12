@@ -12,8 +12,8 @@
 
 import { describe, bench, beforeEach } from 'vitest';
 import { GenesisConstants } from '../../engine/genesis/GenesisConstants';
-import { CosmicProvenanceTimeline } from '../../engine/genesis/CosmicProvenanceTimeline';
-import { CosmicAudioSonification } from '../../engine/audio/CosmicAudioSonification';
+import { CosmicProvenanceTimeline } from '../../engine/genesis/timeline/CosmicProvenanceTimeline';
+import { CosmicAudioSonification } from '../../engine/audio/cosmic';
 import { CosmicHapticFeedback } from '../../engine/haptics/CosmicHapticFeedback';
 import { rngRegistry } from '../../engine/rng/RNGRegistry';
 import { EnhancedRNG } from '../../engine/utils/EnhancedRNG';

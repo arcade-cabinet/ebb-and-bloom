@@ -5,7 +5,7 @@
  * Provides factories, matchers, and benchmark helpers.
  */
 
-import { SDFScene, SDFPrimitive } from '../../engine/rendering/sdf/SDFPrimitives';
+import { SDFScene, SDFPrimitive } from '../../engine/rendering/sdf/types';
 import { expect } from 'vitest';
 import * as THREE from 'three';
 

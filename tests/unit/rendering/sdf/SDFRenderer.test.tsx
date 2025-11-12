@@ -9,8 +9,8 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render } from '@testing-library/react';
 import { Canvas } from '@react-three/fiber';
 import * as THREE from 'three';
-import { SDFRenderer } from '../../../../engine/rendering/sdf/SDFRenderer';
-import { SDFPrimitive } from '../../../../engine/rendering/sdf/SDFPrimitives';
+import { SDFRenderer } from '../../../../engine/rendering/sdf/renderer/SDFRenderer';
+import { SDFPrimitive } from '../../../../engine/rendering/sdf/types';
 
 describe('SDFRenderer - All Primitives', () => {
   const mockCamera = new THREE.PerspectiveCamera();

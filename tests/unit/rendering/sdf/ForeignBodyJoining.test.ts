@@ -11,7 +11,7 @@ import {
   ForeignBody,
   AttachmentPoint 
 } from '../../../../engine/rendering/sdf/ForeignBodySystem';
-import { SDFPrimitive } from '../../../../engine/rendering/sdf/SDFPrimitives';
+import { SDFPrimitive } from '../../../../engine/rendering/sdf/types';
 
 describe('ForeignBodySystem', () => {
   let system: ForeignBodySystem;

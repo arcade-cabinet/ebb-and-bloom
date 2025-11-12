@@ -14,8 +14,8 @@ import { Box, Button, Chip, Stack, Typography, Slider, ToggleButtonGroup, Toggle
 import { OrbitControls, Html } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Suspense, useState, useRef } from 'react';
-import { SDFPrimitive } from '../../engine/rendering/sdf/SDFPrimitives';
-import { SDFRenderer } from '../../engine/rendering/sdf/SDFRenderer';
+import { SDFPrimitive } from '../../engine/rendering/sdf/types';
+import { SDFRenderer } from '../../engine/rendering/sdf/renderer/SDFRenderer';
 
 type RegionType = 'all' | 'top' | 'bottom' | 'sides' | 'front' | 'back' | 'left' | 'right';
 type TargetType = 'surface' | 'volume' | 'edge' | 'vertex';

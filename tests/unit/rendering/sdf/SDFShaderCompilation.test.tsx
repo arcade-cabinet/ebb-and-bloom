@@ -8,8 +8,8 @@
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import { Canvas } from '@react-three/fiber';
-import { SDFRenderer } from '../../../../engine/rendering/sdf/SDFRenderer';
-import { SDFPrimitive } from '../../../../engine/rendering/sdf/SDFPrimitives';
+import { SDFRenderer } from '../../../../engine/rendering/sdf/renderer/SDFRenderer';
+import { SDFPrimitive } from '../../../../engine/rendering/sdf/types';
 import { createTestSDFScene } from '../../../utils/sdf-test-helpers';
 
 describe('SDF Shader Compilation', () => {

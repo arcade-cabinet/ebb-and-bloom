@@ -1,7 +1,7 @@
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
-import { SDFRenderer } from '../../engine/rendering/sdf/SDFRenderer';
-import { SDFPrimitive } from '../../engine/rendering/sdf/SDFPrimitives';
+import { SDFRenderer } from '../../engine/rendering/sdf/renderer/SDFRenderer';
+import { SDFPrimitive } from '../../engine/rendering/sdf/types';
 import { useMemo } from 'react';
 import { useControls, folder } from 'leva';
 

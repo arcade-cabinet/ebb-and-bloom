@@ -5,7 +5,7 @@
  * Supports "squirrel = body + legs + tail" composite construction.
  */
 
-import { SDFPrimitive } from './SDFPrimitives';
+import { SDFPrimitive } from './types';
 import * as THREE from 'three';
 
 export interface AttachmentPoint {

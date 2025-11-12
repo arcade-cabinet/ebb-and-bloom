@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { SDF_UV_GENERATION_GLSL } from '../../../../engine/rendering/sdf/SDFPrimitives';
+import { SDF_UV_GENERATION_GLSL } from '../../../../engine/rendering/sdf/glsl';
 
 describe('SDF UV Generation', () => {
   describe('GLSL Code Structure', () => {

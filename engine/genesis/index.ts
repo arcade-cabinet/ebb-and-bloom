@@ -6,7 +6,7 @@
  * RECOMMENDED: Use the modular architecture via GenesisFacade
  */
 
-export { CosmicProvenanceTimeline, type CosmicStage } from './CosmicProvenanceTimeline';
+export { CosmicProvenanceTimeline, type CosmicStage } from './timeline/CosmicProvenanceTimeline';
 
 export { GenesisFacade } from './facade/GenesisFacade';
 export { GenesisKernel } from './core/GenesisKernel';

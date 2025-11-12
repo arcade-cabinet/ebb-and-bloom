@@ -13,8 +13,8 @@ import { Box, Button, Chip, Stack, Typography, Paper, Slider, Switch, FormContro
 import { OrbitControls, Html } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Suspense, useState, useRef, useMemo } from 'react';
-import { SDFPrimitive } from '../../engine/rendering/sdf/SDFPrimitives';
-import { SDFRenderer } from '../../engine/rendering/sdf/SDFRenderer';
+import { SDFPrimitive } from '../../engine/rendering/sdf/types';
+import { SDFRenderer } from '../../engine/rendering/sdf/renderer/SDFRenderer';
 import { HostPrimitive, ForeignBody, foreignBodySystem } from '../../engine/rendering/sdf/ForeignBodySystem';
 
 interface FPSCounterProps {

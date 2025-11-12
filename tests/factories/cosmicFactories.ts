@@ -5,7 +5,7 @@
  */
 
 import { GenesisConstants } from '../../engine/genesis/GenesisConstants';
-import { CosmicProvenanceTimeline } from '../../engine/genesis/CosmicProvenanceTimeline';
+import { CosmicProvenanceTimeline } from '../../engine/genesis/timeline/CosmicProvenanceTimeline';
 import { rngRegistry } from '../../engine/rng/RNGRegistry';
 import type { EnhancedRNG } from '../../engine/utils/EnhancedRNG';
 

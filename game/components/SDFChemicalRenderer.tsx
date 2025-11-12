@@ -5,7 +5,7 @@
 import { useEntities } from 'miniplex-react';
 import { useMemo } from 'react';
 import { useGameState } from '../state/GameState';
-import { SDFRenderer } from '../../engine/rendering/sdf/SDFRenderer';
+import { SDFRenderer } from '../../engine/rendering/sdf/renderer/SDFRenderer';
 import { ChemicalSDFBuilder } from '../../engine/rendering/chemistry/ChemicalSDFBuilder';
 
 export function SDFChemicalRenderer() {

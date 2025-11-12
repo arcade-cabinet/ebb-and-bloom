@@ -5,7 +5,7 @@
  * Uses periodic table data and bonding information.
  */
 
-import { SDFScene, SDFPrimitive } from '../sdf/SDFPrimitives';
+import { SDFScene, SDFPrimitive } from '../sdf/types';
 import type { Entity } from '../../ecs/components/CoreComponents';
 import periodicTableData from '../../../data/PeriodicTableJSON.json';
 

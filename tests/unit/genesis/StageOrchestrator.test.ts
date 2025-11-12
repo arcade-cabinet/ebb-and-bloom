@@ -6,9 +6,9 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { EnhancedRNG } from '../../../engine/utils/EnhancedRNG';
-import { CosmicProvenanceTimeline } from '../../../engine/genesis/CosmicProvenanceTimeline';
+import { CosmicProvenanceTimeline } from '../../../engine/genesis/timeline/CosmicProvenanceTimeline';
 import { GenesisConstants } from '../../../engine/genesis/GenesisConstants';
-import { CosmicAudioSonification } from '../../../engine/audio/CosmicAudioSonification';
+import { CosmicAudioSonification } from '../../../engine/audio/cosmic';
 import { CosmicHapticFeedback } from '../../../engine/haptics/CosmicHapticFeedback';
 import { StageOrchestrator, OrchestratorState } from '../../../engine/genesis/StageOrchestrator';
 

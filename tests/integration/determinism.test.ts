@@ -9,8 +9,8 @@ import { EnhancedRNG } from '../../engine';
 import { SimplexNoise } from '../../generation/spawners/SimplexNoise';
 import { BiomeSystem } from '../../generation/spawners/BiomeSystem';
 import { GenesisConstants } from '../../engine/genesis/GenesisConstants';
-import { CosmicProvenanceTimeline } from '../../engine/genesis/CosmicProvenanceTimeline';
-import { CosmicAudioSonification } from '../../engine/audio/CosmicAudioSonification';
+import { CosmicProvenanceTimeline } from '../../engine/genesis/timeline/CosmicProvenanceTimeline';
+import { CosmicAudioSonification } from '../../engine/audio/cosmic';
 import { CosmicHapticFeedback } from '../../engine/haptics/CosmicHapticFeedback';
 import { rngRegistry } from '../../engine/rng/RNGRegistry';
 

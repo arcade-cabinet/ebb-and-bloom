@@ -8,9 +8,9 @@
  */
 
 import { EnhancedRNG } from '../utils/EnhancedRNG';
-import { CosmicProvenanceTimeline } from './CosmicProvenanceTimeline';
+import { CosmicProvenanceTimeline } from './timeline/CosmicProvenanceTimeline';
 import { GenesisConstants } from './GenesisConstants';
-import { CosmicAudioSonification } from '../audio/CosmicAudioSonification';
+import { CosmicAudioSonification } from '../audio/cosmic';
 import { CosmicHapticFeedback } from '../haptics/CosmicHapticFeedback';
 import { CosmicStageDescriptor, createStageDescriptors } from './CosmicStageDescriptor';
 
