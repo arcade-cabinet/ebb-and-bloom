@@ -10,6 +10,7 @@ const CoordinateTargetingDemo = lazy(() => import('./demos/CoordinateTargetingDe
 const ForeignBodyDemo = lazy(() => import('./demos/ForeignBodyDemo'));
 const LightingDemo = lazy(() => import('./demos/LightingDemo'));
 const UnifiedRenderingDemo = lazy(() => import('./demos/UnifiedRenderingDemo'));
+const ECSIntegrationShowcase = lazy(() => import('./demos/ECSIntegrationShowcase'));
 
 export function App() {
   const isDev = import.meta.env.MODE === 'development';
@@ -28,6 +29,7 @@ export function App() {
               <Route path="/demos/foreign-body" element={<ForeignBodyDemo />} />
               <Route path="/demos/lighting" element={<LightingDemo />} />
               <Route path="/demos/unified-rendering" element={<UnifiedRenderingDemo />} />
+              <Route path="/demos/ecs-integration" element={<ECSIntegrationShowcase />} />
             </>
           )}
           {!isDev && <Route path="/demos/*" element={<Navigate to="/" replace />} />}
