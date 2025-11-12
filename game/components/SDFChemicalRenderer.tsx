@@ -21,7 +21,7 @@ export function SDFChemicalRenderer() {
       entities.slice(i + 1).forEach(e2 => {
         if (!e2.position) return;
         const d = Math.sqrt(Math.pow(e1.position.x - e2.position.x, 2) + Math.pow(e1.position.y - e2.position.y, 2) + Math.pow(e1.position.z - e2.position.z, 2));
-        if (d > 0.5 && d < 3.0) bonds.push({ type: 'capsule' as const, position: [e1.position.x, e1.position.y, e1.position.z], params: [e2.position.x, e2.position.y, e2.position.z, 0.06], materialId: 4, operation: 'smooth-union' as const, operationStrength: 0.2 });
+        if (d > 0.5 && d < 3.0) bonds.push({ type: 'capsule' as const, position: [e1.position.x, e1.position.y, e1.position.z], params: [e2.position.x, e2.position.y, e2.position.z, 0.06], materialId: 'element-c', operation: 'smooth-union' as const, operationStrength: 0.2 });
       });
     });
     return [...atoms, ...bonds];

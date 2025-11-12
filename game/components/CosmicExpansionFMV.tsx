@@ -4,7 +4,7 @@ import { useSpring, animated } from '@react-spring/three';
 import * as THREE from 'three';
 import { Box, Button, CircularProgress, Typography, LinearProgress } from '@mui/material';
 import { CosmicProvenanceTimeline, CosmicStage } from '../../engine/genesis/CosmicProvenanceTimeline';
-import { GenesisConstants } from '../../engine/genesis/GenesisConstants';
+import { GenesisFacade } from '../../engine/genesis/facade/GenesisFacade';
 import { EnhancedRNG } from '../../engine/utils/EnhancedRNG';
 import { useGameState } from '../state/GameState';
 import { CosmicAudioSonification } from '../../engine/audio/CosmicAudioSonification';
@@ -13,7 +13,7 @@ import { useGyroscopeCamera } from '../../engine/input/useGyroscopeCamera';
 
 interface CosmicExpansionFMVProps {
   seed: string;
-  onComplete: (constants: GenesisConstants) => void;
+  onComplete: (facade: GenesisFacade) => void;
   onSkip?: () => void;
   autoPlay?: boolean;
   stageIndex?: number;
@@ -40,7 +40,7 @@ export function CosmicExpansionFMV({
   const [showSkip, setShowSkip] = useState(false);
   
   const timeline = useRef<CosmicProvenanceTimeline | null>(null);
-  const genesis = useRef<GenesisConstants | null>(null);
+  const facade = useRef<GenesisFacade | null>(null);
   const audioSystem = useRef<CosmicAudioSonification | null>(null);
   const hapticSystem = useRef<CosmicHapticFeedback | null>(null);
   const stageStartTimeRef = useRef(Date.now());
@@ -52,8 +52,9 @@ export function CosmicExpansionFMV({
     initializeWithSeed(seed, 'user');
     
     const masterRng = getScopedRNG('cosmic');
-    timeline.current = new CosmicProvenanceTimeline(getScopedRNG('cosmic-timeline'));
-    genesis.current = new GenesisConstants(getScopedRNG('genesis'));
+    const genesisFacade = new GenesisFacade(getScopedRNG('genesis'));
+    timeline.current = genesisFacade.getTimeline();
+    facade.current = genesisFacade;
     
     if (enableAudio) {
       audioSystem.current = new CosmicAudioSonification(masterRng);
@@ -103,8 +104,8 @@ export function CosmicExpansionFMV({
           if (progressIntervalRef.current) {
             clearInterval(progressIntervalRef.current);
           }
-          if (genesis.current) {
-            onComplete(genesis.current);
+          if (facade.current) {
+            onComplete(facade.current);
           }
         }
       }

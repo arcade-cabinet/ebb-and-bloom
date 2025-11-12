@@ -1,8 +1,16 @@
 /**
  * Genesis Constants System
  * 
- * Bridges CosmicProvenanceTimeline to World.ts initialization.
- * Provides all physical constants needed for world generation.
+ * @deprecated This monolithic class has been refactored into a modular architecture.
+ * Use GenesisFacade instead: `import { GenesisFacade } from './facade/GenesisFacade'`
+ * 
+ * The new architecture provides:
+ * - GenesisFacade: Public API with getter methods
+ * - GenesisKernel: Orchestrator with lazy memoization
+ * - Modular calculation functions in ./modules/
+ * 
+ * This file is kept for reference and backward compatibility only.
+ * It will be removed in a future version.
  * 
  * PRODUCTION-READY: No stubs, no placeholders, no TODOs.
  */

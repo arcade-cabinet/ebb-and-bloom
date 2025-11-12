@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { SceneManager } from '../scenes/SceneManager';
 import { Canvas } from '@react-three/fiber';
 import { Suspense, useRef } from 'react';
-import { LoadingOverlay } from '../ui/LoadingOverlay';
 import * as THREE from 'three';
 
 const sceneManager = SceneManager.getInstance();
@@ -10,7 +9,7 @@ const sceneManager = SceneManager.getInstance();
 export function RenderLayer() {
   const [scenes, setScenes] = useState<any[]>(sceneManager.getScenes());
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const rendererRef = useRef<THREE.Renderer | null>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cameraRef = useRef<THREE.Camera | null>(null);
 
@@ -40,7 +39,7 @@ export function RenderLayer() {
       sceneManager.update(0.016);
     };
 
-    const animationFrame = requestAnimationFrame(frameThrottle(function loop(time) {
+    const animationFrame = requestAnimationFrame(frameThrottle(function loop() {
       handleUpdate();
       requestAnimationFrame(loop);
     }));
@@ -90,9 +89,9 @@ export function RenderLayer() {
         cameraRef.current = null;
       }
 
-      // Force garbage collection hint
-      if (global.gc) {
-        global.gc();
+      // Force garbage collection hint (only available when --expose-gc flag is set)
+      if (typeof (window as any).gc === 'function') {
+        (window as any).gc();
       }
     };
   }, []);

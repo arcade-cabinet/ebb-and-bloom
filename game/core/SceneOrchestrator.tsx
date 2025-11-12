@@ -1,4 +1,4 @@
-import { useEffect, useRef, ReactNode, useState, useCallback } from 'react';
+import { useEffect, useRef, ReactNode, useState } from 'react';
 import { SceneManager } from '../scenes/SceneManager';
 import { MenuScene } from '../scenes/MenuScene';
 import { IntroScene } from '../scenes/IntroScene';
@@ -43,43 +43,32 @@ export function SceneOrchestrator({ children }: SceneOrchestratorProps) {
     }
   }, []);
 
-  // Transition logic with cleanup
-  const transitionToScene = useCallback((newSceneName: SceneType) => {
-    console.log(`SceneOrchestrator: Transitioning to ${newSceneName}`);
-
-    // Clean up current scene before transition
-    if (currentSceneRef.current?.cleanup) {
-      console.log('SceneOrchestrator: Cleaning up previous scene');
-      currentSceneRef.current.cleanup();
-    }
-    // Get the new scene instance and store it
-    const newScene = sceneManager.changeScene(newSceneName);
-    currentSceneRef.current = newScene as SceneInstance;
-    setCurrentSceneName(newSceneName);
-  }, []);
 
   // Add event listener for scene changes initiated by SceneManager
   useEffect(() => {
-    const handleSceneChange = (newSceneName: SceneType) => {
-      // Ensure we don't transition if it's the same scene or if not initialized
-      if (newSceneName !== currentSceneName) {
-        transitionToScene(newSceneName);
+    const handleSceneChange = () => {
+      const currentScene = sceneManager.getCurrentScene();
+      if (currentScene) {
+        const sceneName = currentScene.constructor.name.replace('Scene', '').toLowerCase() as SceneType;
+        if (sceneName !== currentSceneName) {
+          setCurrentSceneName(sceneName);
+        }
       }
     };
 
     // Subscribe to scene change events from SceneManager
-    sceneManager.on('sceneChange', handleSceneChange);
+    const unsubscribe = sceneManager.onSceneChange(handleSceneChange);
 
     // Cleanup subscription on unmount
     return () => {
-      sceneManager.off('sceneChange', handleSceneChange);
+      unsubscribe();
       // Also perform cleanup for the last active scene on unmount
       if (currentSceneRef.current?.cleanup) {
         console.log('SceneOrchestrator: Cleaning up last scene on unmount');
         currentSceneRef.current.cleanup();
       }
     };
-  }, [currentSceneName, transitionToScene]); // Depend on currentSceneName to re-subscribe if it changes
+  }, [currentSceneName]); // Depend on currentSceneName to re-subscribe if it changes
 
   // Aggressive cleanup effect (less critical now with explicit scene cleanup, but kept for safety)
   useEffect(() => {

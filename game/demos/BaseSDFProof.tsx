@@ -32,20 +32,20 @@ function Scene() {
             type: 'octahedron',
             position: [-2, 0, 0],
             params: [0.8],
-            materialId: 3 // Metal-like base material
+            materialId: 'element-fe'
         },
         // Metal Pyramid (hollowed out)
         {
             type: 'pyramid',
             position: [0, -0.2, 0],
             params: [0.8],
-            materialId: 3
+            materialId: 'element-c'
         },
         {
             type: 'pyramid',
             position: [0, -0.2, 0],
             params: [0.7],
-            materialId: 3,
+            materialId: 'element-c',
             operation: 'subtract'
         },
         // Rock Torus and Sphere (smoothly blended)
@@ -53,13 +53,13 @@ function Scene() {
             type: 'torus',
             position: [2, 0, 0],
             params: [0.5, 0.2],
-            materialId: 3
+            materialId: 'element-o'
         },
         {
             type: 'sphere',
             position: [2.5, 0, 0],
             params: [0.3],
-            materialId: 3,
+            materialId: 'element-h',
             operation: 'smooth-union',
             operationStrength: 0.4
         }
@@ -85,3 +85,5 @@ export function BaseSDFProof() {
         </Box>
     );
 }
+
+export default BaseSDFProof;

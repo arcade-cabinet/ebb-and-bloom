@@ -1,17 +1,14 @@
 import type { World } from '../World';
 import type { GovernorIntent } from '../../../agents/controllers/GovernorActionPort';
-import type { GenesisConstants } from '../../genesis/GenesisConstants';
 import * as THREE from 'three';
 import { v4 as uuidv4 } from 'uuid';
 
 export class GovernorActionExecutor {
   private world: World;
-  private genesis: GenesisConstants;
   private scene: THREE.Scene;
 
-  constructor(world: World, genesis: GenesisConstants, scene: THREE.Scene) {
+  constructor(world: World, scene: THREE.Scene) {
     this.world = world;
-    this.genesis = genesis;
     this.scene = scene;
   }
 
@@ -100,7 +97,7 @@ export class GovernorActionExecutor {
         mass: 1,
         position: foodPos,
         velocity: { x: 0, y: 0, z: 0 },
-        temperature: this.genesis.getSurfaceTemperature(),
+        temperature: 288,
         elementCounts: { 'C': 10, 'O': 5, 'H': 10, 'N': 1 },
         genome: 'FOOD_PLANT_GENOME',
         phenotype: { species: 'berry', edible: true },
