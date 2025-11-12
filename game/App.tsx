@@ -5,6 +5,7 @@ import { Suspense, lazy } from 'react';
 const DemosIndex = lazy(() => import('./demos/DemosIndex'));
 const BaseSDFProof = lazy(() => import('./demos/BaseSDFProof'));
 const PrimitivesShowcase = lazy(() => import('./demos/PrimitivesShowcase'));
+const MaterialsShowcase = lazy(() => import('./demos/MaterialsShowcase'));
 const CoordinateTargetingDemo = lazy(() => import('./demos/CoordinateTargetingDemo'));
 const ForeignBodyDemo = lazy(() => import('./demos/ForeignBodyDemo'));
 const LightingDemo = lazy(() => import('./demos/LightingDemo'));
@@ -22,6 +23,7 @@ export function App() {
               <Route path="/demos" element={<DemosIndex />} />
               <Route path="/demos/base-sdf-proof" element={<BaseSDFProof />} />
               <Route path="/demos/primitives-showcase" element={<PrimitivesShowcase />} />
+              <Route path="/demos/materials-showcase" element={<MaterialsShowcase />} />
               <Route path="/demos/coordinate-targeting" element={<CoordinateTargetingDemo />} />
               <Route path="/demos/foreign-body" element={<ForeignBodyDemo />} />
               <Route path="/demos/lighting" element={<LightingDemo />} />
