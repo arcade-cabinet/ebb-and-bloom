@@ -18,5 +18,5 @@ export * from './governors/social';
 // export * from './governors/world-generation/GenerationGovernor';
 
 // Agents
-// export { CreatureAgent } from './agents-yuka/CreatureAgent'; // TODO: Implement CreatureAgent with YUKA Vehicle pattern
+export { CreatureAgent } from './agents-yuka/CreatureAgent';
 
