@@ -102,7 +102,7 @@ export function RapierBonds({ bonds }: RapierBondsProps) {
           if (jointData) {
             const jointHandle = world.createImpulseJoint(jointData, rawBody1, rawBody2, true);
             if (bond.limits && (bond.bondType === 'revolute' || bond.bondType === 'prismatic')) {
-              (jointHandle as any).setLimits(bond.limits[0], bond.limits[1]);
+              (jointHandle as import('@dimforge/rapier3d-compat').RevoluteImpulseJoint | import('@dimforge/rapier3d-compat').PrismaticImpulseJoint).setLimits(bond.limits[0], bond.limits[1]);
             }
             jointsMapRef.current.set(bond.id, jointHandle);
           }
