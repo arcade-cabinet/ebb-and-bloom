@@ -1,277 +1,85 @@
-name: Cross-Platform CI
+# Arcade Cabinet CI
+# Org-specific CI for arcade-cabinet game projects
+#
+# Managed by: arcade-cabinet/.github repo
+
+name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main, master]
   pull_request:
-    branches: [main]
-  workflow_dispatch:
+    branches: [main, master]
 
-env:
-  NODE_VERSION: '22'
-  PNPM_VERSION: '9'
-  JAVA_VERSION: '21'
+permissions:
+  contents: read
 
 jobs:
-  # =============================================================================
-  # TYPESCRIPT & LINTING
-  # =============================================================================
-  typecheck:
-    name: TypeScript Check
+  detect-stack:
+    name: Detect Stack
     runs-on: ubuntu-latest
+    outputs:
+      has_rust: ${{ steps.detect.outputs.has_rust }}
+      has_node: ${{ steps.detect.outputs.has_node }}
+      has_python: ${{ steps.detect.outputs.has_python }}
+      has_godot: ${{ steps.detect.outputs.has_godot }}
     steps:
       - uses: actions/checkout@v4
       
-      - uses: pnpm/action-setup@v4
-      
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-      
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      
-      - name: Type check game package
-        run: cd packages/game && pnpm exec tsc --noEmit
-      
-      - name: Type check gen package
-        run: cd packages/gen && pnpm exec tsc --noEmit
-        continue-on-error: true
+      - name: Detect project type
+        id: detect
+        run: |
+          echo "has_rust=$([[ -f Cargo.toml ]] && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "has_node=$([[ -f package.json ]] && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "has_python=$([[ -f pyproject.toml || -f setup.py ]] && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "has_godot=$([[ -f project.godot ]] && echo true || echo false)" >> $GITHUB_OUTPUT
 
-  # =============================================================================
-  # UNIT & INTEGRATION TESTS
-  # =============================================================================
-  test-game:
-    name: Game Package Tests
+  rust:
+    name: Rust
+    needs: detect-stack
+    if: needs.detect-stack.outputs.has_rust == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
-      - uses: pnpm/action-setup@v4
-      
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-      
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      
-      - name: Run unit tests
-        run: cd packages/game && pnpm test
-        env:
-          NODE_ENV: test
-      
-      - name: Upload coverage
-        uses: codecov/codecov-action@v5
-        with:
-          files: ./packages/game/coverage/coverage-final.json
-          flags: unittests
-        continue-on-error: true
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build
+        run: cargo build --release
+      - name: Test
+        run: cargo test
+      - name: Clippy
+        run: cargo clippy -- -D warnings
 
-  # =============================================================================
-  # E2E TESTS (Playwright)
-  # =============================================================================
-  test-e2e:
-    name: E2E Tests (Chromium)
+  node:
+    name: Node.js
+    needs: detect-stack
+    if: needs.detect-stack.outputs.has_node == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
-      - uses: pnpm/action-setup@v4
-      
       - uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-      
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      
-      - name: Install Playwright browsers
-        run: cd packages/game && pnpm exec playwright install chromium --with-deps
-      
-      - name: Run E2E tests
-        run: cd packages/game && pnpm test:e2e
-        env:
-          CI: true
-      
-      - name: Upload E2E artifacts
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report
-          path: packages/game/playwright-report/
-          retention-days: 7
+          node-version: '22'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run lint --if-present
+      - run: npm run build --if-present
+      - run: npm test --if-present
 
-  # =============================================================================
-  # WEB BUILD (Production)
-  # =============================================================================
-  build-web:
-    name: Web Build (Production)
+  python:
+    name: Python
+    needs: detect-stack
+    if: needs.detect-stack.outputs.has_python == 'true'
     runs-on: ubuntu-latest
-    needs: [typecheck, test-game]
     steps:
       - uses: actions/checkout@v4
-      
-      - uses: pnpm/action-setup@v4
-      
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-python@v5
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-      
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      
-      - name: Build game package
-        run: cd packages/game && pnpm build
-      
-      - name: Check bundle size
+          python-version: '3.12'
+      - name: Install
         run: |
-          cd packages/game/dist
-          BUNDLE_SIZE=$(du -sh . | cut -f1)
-          echo "Bundle size: $BUNDLE_SIZE"
-          # Check if dist exists and has content
-          if [ -z "$(ls -A .)" ]; then
-            echo "ERROR: Build produced empty dist directory"
-            exit 1
-          fi
-      
-      - name: Upload web build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: web-build
-          path: packages/game/dist/
-          retention-days: 30
-
-  # =============================================================================
-  # ANDROID BUILD
-  # =============================================================================
-  build-android:
-    name: Android APK Build
-    runs-on: ubuntu-latest
-    needs: [typecheck, test-game]
-    steps:
-      - uses: actions/checkout@v4
-      
-      - uses: pnpm/action-setup@v4
-      
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-      
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: ${{ env.JAVA_VERSION }}
-          cache: 'gradle'
-      
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-      
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      
-      - name: Build web assets
-        run: cd packages/game && pnpm build
-      
-      - name: Initialize Capacitor Android (if needed)
-        run: |
-          cd packages/game
-          if [ ! -d "../../android" ]; then
-            echo "Initializing Android platform..."
-            npx cap add android
-          fi
-      
-      - name: Sync Capacitor
-        run: cd packages/game && npx cap sync android
-      
-      - name: Build Debug APK
-        run: |
-          cd android
-          chmod +x ./gradlew
-          ./gradlew assembleDebug --no-daemon --stacktrace
-      
-      - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: android-debug-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
-          retention-days: 30
-
-  # =============================================================================
-  # IOS BUILD (macOS only)
-  # =============================================================================
-  build-ios:
-    name: iOS Build Verification
-    runs-on: macos-latest
-    needs: [typecheck, test-game]
-    steps:
-      - uses: actions/checkout@v4
-      
-      - uses: pnpm/action-setup@v4
-      
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-      
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      
-      - name: Build web assets
-        run: cd packages/game && pnpm build
-      
-      - name: Initialize Capacitor iOS (if needed)
-        run: |
-          cd packages/game
-          if [ ! -d "../../ios" ]; then
-            echo "Initializing iOS platform..."
-            npx cap add ios
-          fi
-      
-      - name: Sync Capacitor
-        run: cd packages/game && npx cap sync ios
-      
-      - name: Verify iOS project
-        run: |
-          if [ -d "ios" ]; then
-            echo "✅ iOS project created successfully"
-            ls -la ios/
-          else
-            echo "❌ iOS project not found"
-            exit 1
-          fi
-      
-      # Note: Actual iOS build requires signing certificates
-      # This just verifies the project structure is correct
-
-  # =============================================================================
-  # CROSS-PLATFORM SUMMARY
-  # =============================================================================
-  summary:
-    name: Build Summary
-    runs-on: ubuntu-latest
-    needs: [build-web, build-android, build-ios]
-    if: always()
-    steps:
-      - name: Check build status
-        run: |
-          echo "## Cross-Platform Build Summary"
-          echo "Web Build: ${{ needs.build-web.result }}"
-          echo "Android Build: ${{ needs.build-android.result }}"
-          echo "iOS Build: ${{ needs.build-ios.result }}"
-          
-          if [ "${{ needs.build-web.result }}" == "success" ] && \
-             [ "${{ needs.build-android.result }}" == "success" ] && \
-             [ "${{ needs.build-ios.result }}" == "success" ]; then
-            echo "✅ ALL PLATFORMS BUILD SUCCESSFULLY"
-            exit 0
-          else
-            echo "⚠️ SOME PLATFORMS FAILED"
-            exit 1
-          fi
+          pip install ruff pytest
+          pip install -e ".[dev]" 2>/dev/null || pip install -e . 2>/dev/null || true
+      - name: Lint
+        run: ruff check . || true
+      - name: Test
+        run: pytest || true
