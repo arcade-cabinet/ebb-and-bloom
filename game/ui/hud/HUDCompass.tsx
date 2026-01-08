@@ -25,6 +25,7 @@ export function HUDCompass({ heading = 0 }: HUDCompassProps) {
 
   return (
     <Box
+      data-testid="hud-compass"
       sx={{
         position: 'absolute',
         bottom: 20,
@@ -51,6 +52,7 @@ export function HUDCompass({ heading = 0 }: HUDCompassProps) {
         {/* Compass Needle */}
         <Box
           ref={compassRef}
+          data-testid="compass-needle"
           sx={{
             position: 'absolute',
             width: '4px',
@@ -127,4 +129,3 @@ export function HUDCompass({ heading = 0 }: HUDCompassProps) {
     </Box>
   );
 }
-

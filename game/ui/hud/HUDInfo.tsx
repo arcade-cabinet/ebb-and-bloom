@@ -16,6 +16,7 @@ interface HUDInfoProps {
 export function HUDInfo({ seed, position }: HUDInfoProps) {
   return (
     <Paper
+      data-testid="hud-info"
       elevation={4}
       sx={{
         position: 'absolute',
@@ -65,6 +66,7 @@ export function HUDInfo({ seed, position }: HUDInfoProps) {
         </Typography>
       )}
       <Typography 
+        data-testid="hud-controls"
         variant="caption" 
         sx={{ 
           opacity: 0.7, 
@@ -80,4 +82,3 @@ export function HUDInfo({ seed, position }: HUDInfoProps) {
     </Paper>
   );
 }
-

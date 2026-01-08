@@ -39,6 +39,7 @@ export function HUDVitals({
 
   return (
     <Box
+      data-testid="hud-vitals"
       sx={{
         position: 'absolute',
         bottom: 20,
@@ -50,6 +51,7 @@ export function HUDVitals({
     >
       {/* Health Bar */}
       <Box
+        data-testid="health-bar"
         sx={{
           width: 32,
           height: 128,
@@ -62,6 +64,7 @@ export function HUDVitals({
       >
         <Box
           ref={healthBarRef}
+          data-testid="health-fill"
           sx={{
             position: 'absolute',
             bottom: 0,
@@ -74,6 +77,7 @@ export function HUDVitals({
 
       {/* Fatigue Bar */}
       <Box
+        data-testid="fatigue-bar"
         sx={{
           width: 32,
           height: 128,
@@ -86,6 +90,7 @@ export function HUDVitals({
       >
         <Box
           ref={fatigueBarRef}
+          data-testid="fatigue-fill"
           sx={{
             position: 'absolute',
             bottom: 0,
@@ -98,6 +103,7 @@ export function HUDVitals({
 
       {/* Magicka Bar */}
       <Box
+        data-testid="magicka-bar"
         sx={{
           width: 32,
           height: 128,
@@ -110,6 +116,7 @@ export function HUDVitals({
       >
         <Box
           ref={magickaBarRef}
+          data-testid="magicka-fill"
           sx={{
             position: 'absolute',
             bottom: 0,
@@ -122,4 +129,3 @@ export function HUDVitals({
     </Box>
   );
 }
-

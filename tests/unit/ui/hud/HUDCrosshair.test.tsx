@@ -4,42 +4,46 @@
  * Tests for HUDCrosshair component.
  */
 
-import { describe, it, expect } from 'vitest';
-import { render } from '@testing-library/react';
+import { describe, it, expect, afterEach } from 'vitest';
+import { render, screen, cleanup } from '@testing-library/react';
 import { HUDCrosshair } from '../../../../game/ui/hud/HUDCrosshair';
+
+afterEach(() => {
+  cleanup();
+});
 
 describe('HUDCrosshair', () => {
   it('should render crosshair container', () => {
-    const { container } = render(<HUDCrosshair />);
+    render(<HUDCrosshair />);
 
-    const crosshairContainer = container.querySelector('[style*="position: absolute"]');
+    const crosshairContainer = screen.getByTestId('hud-crosshair');
     expect(crosshairContainer).toBeInTheDocument();
   });
 
   it('should be centered on screen', () => {
-    const { container } = render(<HUDCrosshair />);
+    render(<HUDCrosshair />);
 
-    const crosshairContainer = container.firstChild as HTMLElement;
-    expect(crosshairContainer.style.top).toBe('50%');
-    expect(crosshairContainer.style.left).toBe('50%');
-    expect(crosshairContainer.style.transform).toContain('translate(-50%, -50%)');
+    const crosshairContainer = screen.getByTestId('hud-crosshair');
+    expect(crosshairContainer).toHaveStyle({
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)'
+    });
   });
 
   it('should have pointer-events: none', () => {
-    const { container } = render(<HUDCrosshair />);
+    render(<HUDCrosshair />);
 
-    const crosshairContainer = container.firstChild as HTMLElement;
-    expect(crosshairContainer.style.pointerEvents).toBe('none');
+    const crosshairContainer = screen.getByTestId('hud-crosshair');
+    expect(crosshairContainer).toHaveStyle({
+        pointerEvents: 'none'
+    });
   });
 
   it('should render horizontal and vertical lines', () => {
-    const { container } = render(<HUDCrosshair />);
+    render(<HUDCrosshair />);
 
-    const lines = container.querySelectorAll('[style*="background-color: rgba(255, 255, 255, 0.8)"]');
-    expect(lines.length).toBeGreaterThanOrEqual(2); // Horizontal and vertical
+    expect(screen.getByTestId('crosshair-horizontal')).toBeInTheDocument();
+    expect(screen.getByTestId('crosshair-vertical')).toBeInTheDocument();
   });
 });
-
-
-
-

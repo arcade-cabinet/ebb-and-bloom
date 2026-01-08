@@ -4,10 +4,15 @@
  * Tests that verify actual behavior, not just rendering.
  */
 
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi, afterEach } from 'vitest';
+import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { UIManagerProvider, ScreenType, useUIManager } from '../../../../game/ui/UIManager';
 import { MenuScreen } from '../../../../game/ui/screens/MenuScreen';
+
+afterEach(() => {
+  cleanup();
+});
 
 describe('MenuScreen Behavior', () => {
   it('should navigate to game screen when New Game is clicked', () => {
@@ -22,18 +27,20 @@ describe('MenuScreen Behavior', () => {
     }
     
     render(
-      <UIManagerProvider>
-        <TestWrapper />
-      </UIManagerProvider>
+      <MemoryRouter>
+        <UIManagerProvider>
+          <TestWrapper />
+        </UIManagerProvider>
+      </MemoryRouter>
     );
 
-    expect(screen.getByTestId('screen')).toHaveTextContent(ScreenType.MENU);
+    const statusDivs = screen.getAllByTestId('screen');
+    expect(statusDivs[0]).toHaveTextContent(ScreenType.MENU);
     
-    const newGameButton = screen.getByText('New Game');
+    const newGameButton = screen.getAllByText('New Game')[0];
     fireEvent.click(newGameButton);
     
-    // Should navigate to game screen
-    expect(screen.getByTestId('screen')).toHaveTextContent(ScreenType.GAME);
+    expect(screen.getAllByTestId('screen')[0]).toHaveTextContent(ScreenType.GAME);
   });
 
   it('should navigate to settings screen when Settings is clicked', () => {
@@ -48,31 +55,34 @@ describe('MenuScreen Behavior', () => {
     }
     
     render(
-      <UIManagerProvider>
-        <TestWrapper />
-      </UIManagerProvider>
+      <MemoryRouter>
+        <UIManagerProvider>
+          <TestWrapper />
+        </UIManagerProvider>
+      </MemoryRouter>
     );
 
-    expect(screen.getByTestId('screen')).toHaveTextContent(ScreenType.MENU);
+    const statusDivs = screen.getAllByTestId('screen');
+    expect(statusDivs[0]).toHaveTextContent(ScreenType.MENU);
     
-    const settingsButton = screen.getByText('Settings');
+    const settingsButton = screen.getAllByText('Settings')[0];
     fireEvent.click(settingsButton);
     
-    // Should navigate to settings screen
-    expect(screen.getByTestId('screen')).toHaveTextContent(ScreenType.SETTINGS);
+    expect(screen.getAllByTestId('screen')[0]).toHaveTextContent(ScreenType.SETTINGS);
   });
 
   it('should be accessible via keyboard navigation', () => {
     render(
-      <UIManagerProvider>
-        <MenuScreen />
-      </UIManagerProvider>
+      <MemoryRouter>
+        <UIManagerProvider>
+          <MenuScreen />
+        </UIManagerProvider>
+      </MemoryRouter>
     );
 
     const buttons = screen.getAllByRole('button');
     expect(buttons.length).toBeGreaterThan(0);
     
-    // All buttons should be focusable
     buttons.forEach(button => {
       expect(button).not.toHaveAttribute('tabindex', '-1');
     });
@@ -82,9 +92,11 @@ describe('MenuScreen Behavior', () => {
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
     
     render(
-      <UIManagerProvider>
-        <MenuScreen />
-      </UIManagerProvider>
+      <MemoryRouter>
+        <UIManagerProvider>
+          <MenuScreen />
+        </UIManagerProvider>
+      </MemoryRouter>
     );
 
     const buttons = screen.getAllByRole('button');
@@ -95,4 +107,3 @@ describe('MenuScreen Behavior', () => {
     consoleError.mockRestore();
   });
 });
-

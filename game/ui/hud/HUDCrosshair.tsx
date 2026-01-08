@@ -11,6 +11,7 @@ import { Box } from '@mui/material';
 export function HUDCrosshair() {
   return (
     <Box
+      data-testid="hud-crosshair"
       sx={{
         position: 'absolute',
         top: '50%',
@@ -24,6 +25,7 @@ export function HUDCrosshair() {
     >
       {/* Horizontal line */}
       <Box
+        data-testid="crosshair-horizontal"
         sx={{
           position: 'absolute',
           top: '50%',
@@ -36,6 +38,7 @@ export function HUDCrosshair() {
       />
       {/* Vertical line */}
       <Box
+        data-testid="crosshair-vertical"
         sx={{
           position: 'absolute',
           left: '50%',
@@ -49,4 +52,3 @@ export function HUDCrosshair() {
     </Box>
   );
 }
-

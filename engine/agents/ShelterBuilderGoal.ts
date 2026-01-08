@@ -12,7 +12,7 @@
  * 5. Upgrade shelter when materials + environmental pressure sufficient
  */
 
-import { Goal, GoalEvaluator, Vector3 } from 'yuka';
+import { Goal, CompositeGoal, GoalEvaluator, Vector3 } from 'yuka';
 import type { World } from '../ecs/World';
 import type { Entity } from '../ecs/components/CoreComponents';
 
@@ -266,7 +266,6 @@ export class GatherMaterialGoal extends Goal {
   owner: ShelterAgent;
   materialType: 'wood' | 'stone' | 'mud' | 'thatch';
   targetEntity: Entity | null = null;
-  status: string = 'inactive';
 
   constructor(owner: ShelterAgent, materialType: 'wood' | 'stone' | 'mud' | 'thatch') {
     super(owner);
@@ -278,15 +277,16 @@ export class GatherMaterialGoal extends Goal {
     const materials = this.findNearbyMaterials();
     if (materials.length > 0) {
       this.targetEntity = materials[0];
-      this.status = 'active';
     } else {
-      this.status = 'failed';
+      this.status = Goal.STATUS.FAILED;
     }
   }
 
   execute(): void {
+    if (this.status === Goal.STATUS.FAILED) return;
+
     if (!this.targetEntity || !this.targetEntity.position) {
-      this.status = 'failed';
+      this.status = Goal.STATUS.FAILED;
       return;
     }
 
@@ -302,7 +302,7 @@ export class GatherMaterialGoal extends Goal {
       this.owner.inventory[this.materialType] += amount;
       
       this.owner.world.remove(this.targetEntity);
-      this.status = 'completed';
+      this.status = Goal.STATUS.COMPLETED;
     } else {
       const direction = new Vector3().subVectors(targetPos, this.owner.position).normalize();
       this.owner.velocity.add(direction.multiplyScalar(0.1));
@@ -333,9 +333,8 @@ export class GatherMaterialGoal extends Goal {
  * 3. Gather required materials
  * 4. Construct shelter when materials sufficient
  */
-export class ShelterBuilderGoal extends Goal {
+export class ShelterBuilderGoal extends CompositeGoal {
   owner: ShelterAgent;
-  status: string = 'inactive';
   targetShelterType: ShelterType = 'pit';
 
   constructor(owner: ShelterAgent) {
@@ -345,24 +344,40 @@ export class ShelterBuilderGoal extends Goal {
 
   activate(): void {
     this.targetShelterType = this.determineNextShelter();
-    this.status = 'active';
   }
 
   execute(): void {
+    // Process subgoals if any
+    if (this.hasSubgoals()) {
+      const status = this.executeSubgoals();
+
+      // If subgoals are active, we remain active
+      if (status === Goal.STATUS.ACTIVE) {
+        this.status = Goal.STATUS.ACTIVE;
+        return;
+      }
+
+      // If executeSubgoals returns COMPLETED or FAILED, subgoals are done.
+      // We keep ourselves active to check logic in next frame.
+      this.status = Goal.STATUS.ACTIVE;
+      return;
+    }
+
     if (!this.hasSufficientMaterials()) {
       const neededMaterial = this.getNextNeededMaterial();
       if (neededMaterial) {
-        // TODO: Implement subgoal management (YUKA Goal doesn't have addSubgoal method)
-        // For now, just gather materials sequentially
+        // Add subgoal to gather material
+        this.addSubgoal(new GatherMaterialGoal(this.owner, neededMaterial));
+        this.status = Goal.STATUS.ACTIVE;
       }
     } else {
       this.constructShelter();
-      this.status = 'completed';
+      this.status = Goal.STATUS.COMPLETED;
     }
   }
 
   terminate(): void {
-    // Cleanup
+    this.clearSubgoals();
   }
 
   private determineNextShelter(): ShelterType {
